@@ -1,17 +1,15 @@
 TODO
 
-1) Clean guitarmy qml - no more tabs, not realtime midi player
+1) Record and play
 
-2) Android run
+2) Move SF generator (update lib and midi render_
 
-3) LibrosaCPP
+3) Generator from midi and play
 
-4) Picture simple paint
+4) Tap control? 
 
-5) STFT paint
+5) Yin
 
-6) Move SF generator (update lib and midi render_
+6) RMS
 
-7) Record and play
 
-8) Generator from midi and play

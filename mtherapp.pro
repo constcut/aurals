@@ -36,6 +36,11 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     app/loghandler.h \
+    libs/stft/HannWindow.h \
+    libs/stft/Ooura_FFT.h \
+    libs/stft/PostProcessor.h \
+    libs/stft/STFT.h \
+    libs/stft/WAV.h \
     log.hpp \
     midi/MidiFile.hpp \
     midi/MidiMessage.hpp \

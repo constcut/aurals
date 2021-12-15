@@ -1,7 +1,7 @@
 #include "midirender.h"
 
-#include "mit/sf/tml.h"
-#include "mit/sf/tsf.h"
+#include "libs/sf/tml.h"
+#include "libs/sf/tsf.h"
 
 #include <QElapsedTimer>
 #include "log.hpp"
