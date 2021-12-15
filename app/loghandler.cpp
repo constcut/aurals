@@ -21,8 +21,8 @@ void newLogMessageHandler(QtMsgType type, const QMessageLogContext &context, con
     if (type == QtFatalMsg)
         typeLetter = "F";
 
-    QString logLine =  QString("[%1][%2:%3:%4] %5")
-            .arg(typeLetter).arg(context.file).arg(context.function).arg(context.line).arg(msg);
+    QString logLine =  QString("[%1] %2") //[%2:%3:%4] -> 5
+            .arg(typeLetter).arg(msg); //arg(context.file).arg(context.function).arg(context.line)
 
     LogHandler::instance->addLine(logLine);
 

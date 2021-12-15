@@ -15,30 +15,7 @@
 #include "music/midirender.h"
 #include "music/midifile.h"
 
-#include <QAudioOutput>
-
 #include <QTextCodec>
-
-MidiSaver midiSaver;
-MidiRender render;
-MidiEngine midEng; //ps can make a slot, to make possible play midi notes from keyboar also here
-//MidiSpeaker midiSpeaker;
-
-
-void saveRawAudio(QByteArray& ba) {
-    QString defaultRecFile = QString("/home/punnalyse/.local/share/applications/wavOutput.graw");
-    QFile f;
-    f.setFileName(defaultRecFile);
-    ///int compressedSize = compress.size(); //TODO compress
-    if (f.open(QIODevice::WriteOnly)) {
-        qDebug() << "Collector size was "<<ba.size();
-        f.write(ba);
-        f.flush();
-    }
-    else
-        qDebug() << "Open file for raw record error;";
-}
-
 
 int mainInit(int argc, char *argv[]) {
 
@@ -60,20 +37,8 @@ int mainInit(int argc, char *argv[]) {
     else
         qWarning() << "Failed to load font";
 
-    QTextCodec::setCodecForLocale(QTextCodec::codecForName("Windows-1251")); //KOI8-R //ISO 8859-5 //UTF-8 //Windows-1251
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("Windows-1251")); //Настройки //KOI8-R //ISO 8859-5 //UTF-8 //Windows-1251
     QQmlApplicationEngine engine;
-    //engine.rootContext()->setContextProperty("wavGen", &midiSpeaker.wavGen);
-
-    QAudioFormat format;
-    format.setSampleRate(8000);
-    format.setChannelCount(1);
-    format.setSampleSize(16);
-    format.setSampleType(QAudioFormat::SignedInt);
-    format.setByteOrder(QAudioFormat::LittleEndian);
-    format.setCodec("audio/pcm");
-
-    QAudioOutput audioOutput(QAudioDeviceInfo::defaultOutputDevice(), format,0);
-
 
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
     if (engine.rootObjects().isEmpty())
