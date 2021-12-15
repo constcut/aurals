@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QFile>
 #include <QtEndian>
+#include <QTimer>
 
 
 //const int BufferSize = 4096;
@@ -119,6 +120,8 @@ qint64 AudioReceiver::writeData(const char *data, qint64 len)
 
     if (collector.size() > border*10) //format*bitrate*minute
     {
+        //TODO stop if more then minute
+
         ///QByteArray compress = qCompress(collector,7);
         QString defaultRecFile = QString("record.temp");
         QFile f; f.setFileName(defaultRecFile);
@@ -176,6 +179,9 @@ AudioSpeaker::~AudioSpeaker()
 
 void AudioSpeaker::start()
 {
+    int ms = m_buffer.size() / (2 * 8); //16 bit 8k samplerate - k is ms
+    AudioHandler* handler = dynamic_cast<AudioHandler*>(this->parent());
+    QTimer::singleShot(ms, handler, &AudioHandler::stopPlayback); //TODO stop player on level of handler
     open(QIODevice::ReadOnly);
 }
 
@@ -188,15 +194,19 @@ void AudioSpeaker::stop()
 
 qint64 AudioSpeaker::readData(char *data, qint64 len)
 {
+    qDebug() << "Reading " << len;
+
     qint64 total = 0;
     if (!m_buffer.isEmpty()) {
         while (len - total > 0) {
             const qint64 chunk = qMin((m_buffer.size() - m_pos), len - total);
-            memcpy(data + total, m_buffer.constData() + m_pos, chunk);
+            memcpy(data + total, m_buffer.constData() + m_pos, chunk); //TODO std
             m_pos = (m_pos + chunk) % m_buffer.size();
             total += chunk;
         }
     }
+
+    qDebug() << "Total " << total;
     return total;
 }
 
@@ -297,7 +307,7 @@ void AudioHandler::initPlayer() {
         format = info.nearestFormat(format);
     }
 
-    audioPlayer = std::make_unique<AudioSpeaker>(format);
+    audioPlayer = std::make_unique<AudioSpeaker>(format, this);
     audioOutput = std::make_unique<QAudioOutput>(QAudioDeviceInfo::defaultOutputDevice(), format, nullptr);
 
 }
