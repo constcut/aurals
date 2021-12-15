@@ -14,11 +14,32 @@ ApplicationWindow {
 
     header: ToolBar {
         RowLayout {
-            anchors.fill: parent
+            //anchors.fill: parent
             ToolButton {
                 text: "Console"
                 onClicked: mainLoader.setSource("ConsoleLog.qml")
             }
+            ToolButton {
+                text: "Start record"
+                onClicked: audio.startRecord()
+            }
+            ToolButton {
+                text: "Stop record"
+                onClicked: audio.stopRecord()
+            }
+            ToolButton {
+                text: "Start player"
+                onClicked: audio.startPlayback()
+            }
+            ToolButton {
+                text: "Stop player"
+                onClicked: audio.stopPlayback()
+            }
+            ToolButton {
+                text: "Delete default"
+                 onClicked: audio.deleteDump();
+            }
+
             /*ToolButton {
                 text: "Piano"
                 onClicked: mainLoader.setSource("PianoMap.qml")

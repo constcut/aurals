@@ -9,7 +9,7 @@
 
 //const int BufferSize = 4096;
 
-AudioInfo::AudioInfo(const QAudioFormat &format, QObject *parent)
+AudioReceiver::AudioReceiver(const QAudioFormat &format, QObject *parent)
     :   QIODevice(parent)
     ,   m_format(format)
     ,   m_maxAmplitude(0)
@@ -62,17 +62,17 @@ AudioInfo::AudioInfo(const QAudioFormat &format, QObject *parent)
     }
 }
 
-AudioInfo::~AudioInfo()
+AudioReceiver::~AudioReceiver()
 {
 }
 
-void AudioInfo::start()
+void AudioReceiver::start()
 { open(QIODevice::WriteOnly);}
 
-void AudioInfo::stop()
+void AudioReceiver::stop()
 {close();}
 
-qint64 AudioInfo::readData(char *data, qint64 maxlen)
+qint64 AudioReceiver::readData(char *data, qint64 maxlen)
 {   Q_UNUSED(data)
     Q_UNUSED(maxlen)
 
@@ -83,7 +83,7 @@ qint64 AudioInfo::readData(char *data, qint64 maxlen)
 
 
 
-qint64 AudioInfo::writeData(const char *data, qint64 len)
+qint64 AudioReceiver::writeData(const char *data, qint64 len)
 {
 
     collector += QByteArray(data,len);
@@ -143,7 +143,7 @@ qint64 AudioInfo::writeData(const char *data, qint64 len)
 }
 
 
-void AudioInfo::dump() {
+void AudioReceiver::dump() {
     ///QByteArray compress = qCompress(collector,7);
     QString defaultRecFile = QString("record.temp");
     QFile f; f.setFileName(defaultRecFile);
@@ -185,50 +185,6 @@ void AudioSpeaker::stop()
     close();
 }
 
-void AudioSpeaker::generateData(const QAudioFormat &format, qint64 durationUs, int sampleRate)
-{
-    const int channelBytes = format.sampleSize() / 8;
-    const int sampleBytes = format.channelCount() * channelBytes;
-
-    qint64 length = (format.sampleRate() * format.channelCount() * (format.sampleSize() / 8))
-                        * durationUs / 100000;
-
-    Q_ASSERT(length % sampleBytes == 0);
-    Q_UNUSED(sampleBytes); // suppress warning in release builds
-
-    m_buffer.resize(length);
-    unsigned char *ptr = reinterpret_cast<unsigned char *>(m_buffer.data());
-    int sampleIndex = 0;
-
-    while (length) {
-        const qreal x = 0; //qSin(2 * M_PI * sampleRate * qreal(sampleIndex % format.sampleRate()) / format.sampleRate());
-        for (int i=0; i<format.channelCount(); ++i) {
-            if (format.sampleSize() == 8 && format.sampleType() == QAudioFormat::UnSignedInt) {
-                const quint8 value = static_cast<quint8>((1.0 + x) / 2 * 255);
-                *reinterpret_cast<quint8*>(ptr) = value;
-            } else if (format.sampleSize() == 8 && format.sampleType() == QAudioFormat::SignedInt) {
-                const qint8 value = static_cast<qint8>(x * 127);
-                *reinterpret_cast<quint8*>(ptr) = value;
-            } else if (format.sampleSize() == 16 && format.sampleType() == QAudioFormat::UnSignedInt) {
-                quint16 value = static_cast<quint16>((1.0 + x) / 2 * 65535);
-                if (format.byteOrder() == QAudioFormat::LittleEndian)
-                    qToLittleEndian<quint16>(value, ptr);
-                else
-                    qToBigEndian<quint16>(value, ptr);
-            } else if (format.sampleSize() == 16 && format.sampleType() == QAudioFormat::SignedInt) {
-                qint16 value = static_cast<qint16>(x * 32767);
-                if (format.byteOrder() == QAudioFormat::LittleEndian)
-                    qToLittleEndian<qint16>(value, ptr);
-                else
-                    qToBigEndian<qint16>(value, ptr);
-            }
-
-            ptr += channelBytes;
-            length -= channelBytes;
-        }
-        ++sampleIndex;
-    }
-}
 
 qint64 AudioSpeaker::readData(char *data, qint64 len)
 {
@@ -262,4 +218,95 @@ void AudioSpeaker::setAudioBufer(QByteArray &aStream)
 {
     m_buffer.clear();
     m_buffer += aStream;
+}
+
+
+AudioHandler::AudioHandler() {
+    initRecorder();
+    initPlayer();
+    //TODO set params + reset
+}
+
+
+
+void AudioHandler::startRecord() {
+    //TODO request permission
+    audioReceiver->start();
+    audioInput->start(audioReceiver.get());
+}
+
+void AudioHandler::stopRecord() {
+    audioReceiver->stop();
+    audioInput->stop();
+    audioReceiver->dump();
+}
+
+void AudioHandler::startPlayback() {
+    QFile audioFile;
+    QString defaultRecFile = "record.temp";
+    audioFile.setFileName(defaultRecFile);
+
+    if (audioFile.open(QIODevice::ReadOnly) == false)
+        qDebug() << "Failed to open audio for output";
+
+    QByteArray allBytes = audioFile.readAll();
+    audioFile.close();
+
+    audioPlayer->setAudioBufer(allBytes); //TODO хранить в данном классе, общий для IO
+    audioPlayer->start();
+    audioOutput->start(audioPlayer.get());
+}
+
+void AudioHandler::stopPlayback() {
+    audioPlayer->stop();
+    audioOutput->stop();
+}
+
+void AudioHandler::initRecorder() {
+    QAudioFormat format;
+    format.setSampleRate(8000);
+    format.setChannelCount(1);
+    format.setSampleSize(16);
+    format.setSampleType(QAudioFormat::SignedInt);
+    format.setByteOrder(QAudioFormat::LittleEndian);
+    format.setCodec("audio/pcm");
+
+    QAudioDeviceInfo info(QAudioDeviceInfo::defaultInputDevice());
+    if (!info.isFormatSupported(format)) {
+        qDebug() << "Default format not supported - trying to use nearest";
+        format = info.nearestFormat(format);
+    }
+
+    audioReceiver  = std::make_unique<AudioReceiver>(format, nullptr);
+    //connect(audioInfo, SIGNAL(update()), SLOT(refreshDisplay()));
+    audioInput = std::make_unique<QAudioInput>(QAudioDeviceInfo::defaultInputDevice(), format, nullptr);
+}
+
+void AudioHandler::initPlayer() {
+    QAudioFormat format;
+    format.setSampleRate(8000);
+    format.setChannelCount(1); //TODO for pcm but will have issue with records
+    format.setSampleSize(16);
+    format.setSampleType(QAudioFormat::SignedInt);
+    format.setByteOrder(QAudioFormat::LittleEndian);
+    format.setCodec("audio/pcm");
+
+    QAudioDeviceInfo info(QAudioDeviceInfo::defaultInputDevice());
+    if (!info.isFormatSupported(format)) {
+        qDebug() << "Default format not supported - trying to use nearest";
+        format = info.nearestFormat(format);
+    }
+
+    audioPlayer = std::make_unique<AudioSpeaker>(format);
+    audioOutput = std::make_unique<QAudioOutput>(QAudioDeviceInfo::defaultOutputDevice(), format, nullptr);
+
+}
+
+
+void AudioHandler::deleteDump() {
+    QFile audioFile;
+    QString defaultRecFile = "record.temp";
+    audioFile.setFileName(defaultRecFile);
+    audioFile.remove();
+
 }

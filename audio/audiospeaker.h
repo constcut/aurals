@@ -3,20 +3,24 @@
 
 #include <QIODevice>
 #include <QAudioFormat>
+#include <QAudioOutput>
+#include <QAudioInput>
+
+#include <memory>
 
 
-class AudioInfo : public QIODevice
+class AudioReceiver : public QIODevice
 {
     Q_OBJECT
 
 protected:
 
-public: //temp operations
+public: //TODO
     QByteArray collector;
 
 public:
-    AudioInfo(const QAudioFormat &format, QObject *parent);
-    ~AudioInfo();
+    AudioReceiver(const QAudioFormat &format, QObject *parent);
+    ~AudioReceiver();
 
     void start();
     void stop();
@@ -58,13 +62,38 @@ public:
     void setAudioBufer(QByteArray &aStream);
 
 private:
-    void generateData(const QAudioFormat &format, qint64 durationUs, int sampleRate);
-
-private:
     qint64 m_pos;
     QByteArray m_buffer;
 };
 
+
+class AudioHandler : public QObject
+{
+    Q_OBJECT
+
+public:
+    AudioHandler();
+
+    Q_INVOKABLE void startRecord();
+    Q_INVOKABLE void stopRecord();
+
+    Q_INVOKABLE void startPlayback();
+    Q_INVOKABLE void stopPlayback();
+
+    Q_INVOKABLE void deleteDump();
+
+private:
+
+    void initRecorder();
+    void initPlayer();
+
+    std::unique_ptr<QAudioInput> audioInput;
+    std::unique_ptr<AudioReceiver> audioReceiver;
+
+    std::unique_ptr<QAudioOutput> audioOutput;
+    std::unique_ptr<AudioSpeaker> audioPlayer;
+
+};
 
 
 #endif // AUDIOSPEAKER_H
