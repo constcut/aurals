@@ -15,7 +15,7 @@ SOURCES += \
     music/midiengine.cpp \
     music/midifile.cpp \
     music/midirender.cpp \
-    mit/sf/tsf.cpp \
+    libs/sf/tsf.cpp \
     app/init.cpp
 
 RESOURCES += qml.qrc \
@@ -45,8 +45,8 @@ HEADERS += \
     music/midiengine.h \
     music/midifile.h \
     music/midirender.h \
-    mit/sf/tml.h \
-    mit/sf/tsf.h \
+    libs/sf/tml.h \
+    libs/sf/tsf.h \
     app/init.h
 
 
