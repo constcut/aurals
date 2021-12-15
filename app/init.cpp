@@ -20,6 +20,10 @@
 #include <fstream>
 #include <cstdlib>
 
+#include "audio/audiospeaker.h"
+#include <QAudioOutput>
+#include <QAudioInput>
+
 using namespace std;
 
 
@@ -46,10 +50,73 @@ int mainInit(int argc, char *argv[]) {
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("Windows-1251")); //Настройки //KOI8-R //ISO 8859-5 //UTF-8 //Windows-1251
     QQmlApplicationEngine engine;
 
+   QAudioFormat format;
+   format.setSampleRate(8000);
+   format.setChannelCount(1); //TODO for pcm but will have issue with records
+   format.setSampleSize(16);
+   format.setSampleType(QAudioFormat::SignedInt);
+   format.setByteOrder(QAudioFormat::LittleEndian);
+   format.setCodec("audio/pcm");
+
+   QAudioDeviceInfo info(QAudioDeviceInfo::defaultInputDevice());
+   if (!info.isFormatSupported(format)) {
+       qDebug() << "Default format not supported - trying to use nearest";
+       format = info.nearestFormat(format);
+   }
+
+   auto audioSpeaker = std::make_unique<AudioSpeaker>(format);
+   auto audioOutput = std::make_unique<QAudioOutput>(QAudioDeviceInfo::defaultOutputDevice(), format, nullptr);
+
+   QFile audioFile;
+   QString defaultRecFile = "record.temp";
+   audioFile.setFileName(defaultRecFile);
+
+   if (audioFile.open(QIODevice::ReadOnly) == false)
+       qDebug() << "Failed to open audio for output";
+
+   QByteArray allBytes = audioFile.readAll();
+   audioFile.close();
+
+   audioSpeaker->setAudioBufer(allBytes);
+   audioSpeaker->start();
+   audioOutput->start(audioSpeaker.get());
+
+    /*
+    QAudioFormat format;
+    format.setSampleRate(8000);
+    format.setChannelCount(1);
+    format.setSampleSize(16);
+    format.setSampleType(QAudioFormat::SignedInt);
+    format.setByteOrder(QAudioFormat::LittleEndian);
+    format.setCodec("audio/pcm");
+
+    QAudioDeviceInfo info(QAudioDeviceInfo::defaultInputDevice());
+    if (!info.isFormatSupported(format)) {
+        qDebug() << "Default format not supported - trying to use nearest";
+        format = info.nearestFormat(format);
+    }
+
+    auto audioInfo  = std::make_unique<AudioInfo>(format, nullptr);
+    //connect(audioInfo, SIGNAL(update()), SLOT(refreshDisplay()));
+    auto audioInput = std::make_unique<QAudioInput>(QAudioDeviceInfo::defaultInputDevice(), format, nullptr);
+
+    audioInfo->start();
+    audioInput->start(audioInfo.get());*/
+
+
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
     if (engine.rootObjects().isEmpty())
         return -1;
 
     int res = app.exec();
+
+    audioSpeaker->stop();
+    audioOutput->stop();
+
+    /*
+    audioInfo->stop();
+    audioInput->stop();
+    audioInfo->dump();*/
+
     return res;
 }

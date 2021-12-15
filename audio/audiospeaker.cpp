@@ -141,6 +141,25 @@ qint64 AudioInfo::writeData(const char *data, qint64 len)
     qDebug() << "Wroten audio data "<<cutLen<<"; in bufer "<<fullLen;
     return len;
 }
+
+
+void AudioInfo::dump() {
+    ///QByteArray compress = qCompress(collector,7);
+    QString defaultRecFile = QString("record.temp");
+    QFile f; f.setFileName(defaultRecFile);
+    ///int compressedSize = compress.size();
+    if (f.open(QIODevice::Append))
+    {
+        f.write(collector);
+        f.flush();
+        f.close();
+    }
+    else
+        qDebug() << "Open file for raw record error;";
+
+    collector.clear();
+}
+
 /// AUDIO INPUT FINISHED
 // NOW OUTPUT
 
