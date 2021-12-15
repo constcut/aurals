@@ -1,0 +1,13 @@
+#ifndef IDEASINIT_H
+#define IDEASINIT_H
+
+
+class IdeasInit
+{
+public:
+    IdeasInit();
+};
+
+int mainInit(int argc, char *argv[]);
+
+#endif // IDEASINIT_H

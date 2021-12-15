@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/soundfonts"/>
+    <qresource prefix="/">
+        <file>sf/instrument.sf2</file>
+    </qresource>
+</RCC>
