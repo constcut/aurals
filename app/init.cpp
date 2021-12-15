@@ -22,123 +22,6 @@
 
 using namespace std;
 
-#include "libs/stft/STFT.h"
-#include "libs/stft/WAV.h"
-
-int test(){
-
-  const int ch = 2;
-  const int rate = 44100;
-  const int frame = 512;
-  const int shift = 128;
-  int length;
-
-  WAV input;
-  WAV output(ch,rate);
-  STFT process(ch,frame,shift);
-
-  input.OpenFile("/home/punnalyse/Downloads/LibrosaCpp-main/samples/g.wav");
-  output.NewFile("output.wav");
-
-  short buf_in[ch*shift];
-  double **data;
-  short buf_out[ch*shift];
-
-  data = new double*[ch];
-  for(int i=0;i<ch;i++){
-    data[i] = new double[frame+2];
-    memset(data[i],0,sizeof(double)*(frame+2));
-  }
-
-  std::vector<std::vector<double>> sp;
-
-  while(!input.IsEOF()){
-    length = input.ReadUnit(buf_in,shift*ch);
-    process.stft(buf_in,length,data);
-
-    std::vector<double> loc;
-    for (size_t i = 0; i < frame; ++i) {
-        double r = data[0][i];
-        double img = data[0][i + frame]; //frame
-        double amp = sqrt(r*r + img*img);
-        loc.push_back(amp);
-    }
-    sp.push_back(std::move(loc));
-
-
-    process.istft(data,buf_out);
-    output.Append(buf_out,shift*ch);
-  }
-
-  for(int i=0;i<ch;i++)
-    delete[] data[i];
-  delete[] data;
-
-  std::string formatType = "P6";
-  uint32_t width = sp.size();
-  uint32_t height = sp[0].size();
-  uint32_t maxColors = 255;
-
-  std::vector<uint8_t> buffer;
-  buffer.resize(width * height * 3);
-
-  std::ofstream outfile("s_last.ppm", std::ofstream::binary);
-  outfile << formatType << "\n" << width << " " << height << "\n" << maxColors << "\n";
-
-  for (size_t i = 0; i < height; ++i)
-  {
-      for (size_t j = 0; j < width; ++j) {
-
-          double samp = sp[j][i];
-          uint32_t pixel = samp * 16581375;
-          outfile.write(reinterpret_cast<char *>(&pixel), 3);
-
-          /*
-          size_t pos = (i * width + j) * 3;
-          buffer[pos] = 0;
-          buffer[pos + 1] = 254;
-          buffer[pos + 2] = 0;*/
-      }
-  }
-
-
-
-
-  return 0;
-}
-
-
-void testPPMIO() {
-    std::ofstream outfile("check.ppm", std::ofstream::binary);
-    if (outfile.fail()){
-        std::cout << "Failed open PPM file for writing" << std::endl;
-        return;
-    }
-
-    std::string formatType = "P6";
-    uint32_t width = 100;
-    uint32_t height = 100;
-    uint32_t maxColors = 255;
-
-    std::vector<uint8_t> buffer;
-    buffer.resize(width * height * 3);
-
-    for (size_t i = 0; i < height; ++i)
-    {
-        for (size_t j = 0; j < width; ++j) {
-            size_t pos = (i * width + j) * 3;
-            buffer[pos] = 0;
-            buffer[pos + 1] = 254;
-            buffer[pos + 2] = 0;
-        }
-    }
-
-    outfile << formatType << "\n" << width << " " << height << "\n" << maxColors << "\n";
-    outfile.write(reinterpret_cast<char *>(buffer.data()), width * height * 3);
-
-    std::cout << "Test PPMIO finished" << std::endl;
-}
-
 
 int mainInit(int argc, char *argv[]) {
 
@@ -159,11 +42,6 @@ int mainInit(int argc, char *argv[]) {
         app.setFont(QFont(famList[0], 11, QFont::Normal, false));
     else
         qWarning() << "Failed to load font";
-
-    testPPMIO();
-    test();
-
-    return 0;
 
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("Windows-1251")); //Настройки //KOI8-R //ISO 8859-5 //UTF-8 //Windows-1251
     QQmlApplicationEngine engine;

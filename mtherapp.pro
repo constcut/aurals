@@ -1,10 +1,13 @@
 QT += quick multimedia
 CONFIG += c++17
-CONFIG += no_keywords #was used only for python interpreter
+#CONFIG += no_keywords #was used only for python interpreter
 DEFINES += QT_DEPRECATED_WARNINGS
 QMAKE_CXXFLAGS += -std=c++17
 
 SOURCES += \
+    audio/audiospeaker.cpp \
+    audio/fft.cpp \
+    audio/waveanalys.cpp \
     main.cpp \
     app/loghandler.cpp \
     midi/MidiFile.cpp \
@@ -36,6 +39,9 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     app/loghandler.h \
+    audio/audiospeaker.h \
+    audio/fft.h \
+    audio/waveanalys.h \
     libs/stft/HannWindow.h \
     libs/stft/Ooura_FFT.h \
     libs/stft/PostProcessor.h \
