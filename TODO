@@ -1,15 +1,20 @@
 TODO
 
-1.1) Samplerate + other params
-1.2) Common buffer between player and recorder (audio handler that is parent)
-1.3) Seppated files
-1.4) Audio limit
 1.5) Save to filename
 1.6) Load from filename
+{
+    QDir -> create records/
+    ListView for the records
+    default records name is date_time + hidden part SR_BR
+    rename feature
+}
+_ is playing\ is records + blocking
 
-2) Move SF generator (update lib and midi render_
 
-3) Generator from midi and play (select midi file file open dialog)
+
+2) Move SF generator (update lib and midi render)
+
+3) Generator from midi and play (select midi file open dialog)
 
 4) Tap control? 
 

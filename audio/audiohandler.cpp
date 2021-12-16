@@ -109,6 +109,7 @@ void AudioHandler::setSampleRate(int newSampleRate) {
     commonFormat.setSampleRate(newSampleRate);
     initRecorder();
     initPlayer();
+    //TODO если уже есть заполненный буфер, возможно его стоит преобразовать
 }
 
 void AudioHandler::setBitRate(int newBitRate) {
