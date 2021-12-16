@@ -5,6 +5,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 QMAKE_CXXFLAGS += -std=c++17
 
 SOURCES += \
+    audio/audiohandler.cpp \
+    audio/audioreceiver.cpp \
     audio/audiospeaker.cpp \
     audio/fft.cpp \
     audio/waveanalys.cpp \
@@ -39,6 +41,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     app/loghandler.h \
+    audio/audiohandler.h \
+    audio/audioreceiver.h \
     audio/audiospeaker.h \
     audio/fft.h \
     audio/waveanalys.h \

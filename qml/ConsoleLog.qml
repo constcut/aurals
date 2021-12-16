@@ -3,12 +3,13 @@ import mther.app 1.0
 
 Item {
 
+    anchors.fill: parent
     id:item
         ConsoleLog {
 
             id: consoleLog
-            y: 100
-            width: parent.width
+            y: 10
+            width: parent.width - 10
             height: 400
 
             MouseArea {
