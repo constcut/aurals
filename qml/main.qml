@@ -17,7 +17,7 @@ ApplicationWindow {
             //anchors.fill: parent
             ToolButton {
                 text: "Console"
-                onClicked: mainLoader.setSource("ConsoleLog.qml")
+                onClicked: mainLoader.setSource("consoleLog.qml")
             }
             ToolButton {
                 text: "Start record"
@@ -53,6 +53,6 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
-        onClicked: mainLoader.setSource("ConsoleLog.qml")
+        onClicked: mainLoader.setSource("consoleLog.qml")
     }
 }
