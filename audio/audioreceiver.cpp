@@ -83,8 +83,6 @@ qint64 AudioReceiver::readData(char *data, qint64 maxlen)
 
 qint64 AudioReceiver::writeData(const char *data, qint64 len)
 {
-
-
     bufer += QByteArray(data,len);
 
     static int lastSize = 0;
@@ -121,14 +119,5 @@ qint64 AudioReceiver::writeData(const char *data, qint64 len)
         //TODO stop if more then minute on audio format
     }
 
-    int fullLen = bufer.size();
-        qDebug() << "r " << fullLen;
-
     return len;
 }
-
-
-
-
-/// AUDIO INPUT FINISHED
-// NOW OUTPUT

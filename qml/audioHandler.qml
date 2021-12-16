@@ -39,6 +39,10 @@ Item {
                 onClicked: audio.stopRecord()
             }
             ToolButton {
+                text: "Reset"
+                 onClicked: audio.resetBufer();
+            }
+            ToolButton {
                 text: "Start player"
                 onClicked: audio.startPlayback()
             }
@@ -47,9 +51,15 @@ Item {
                 onClicked: audio.stopPlayback()
             }
             ToolButton {
-                text: "Delete default"
-                 onClicked: audio.deleteDump();
+                text: "Save dump"
+                onClicked: audio.saveFile("rec.dump")
             }
+            ToolButton {
+                text: "Load dump"
+                onClicked: audio.loadFile("rec.dump")
+            }
+
+
         }
     }
 
