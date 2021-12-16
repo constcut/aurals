@@ -6,6 +6,9 @@
 
 #include <QDebug>
 #include <QFile>
+#include <QTimer>
+
+#include "audiohandler.h" //TODO interface
 
 //const int BufferSize = 4096;
 
@@ -67,11 +70,16 @@ AudioReceiver::AudioReceiver(const QAudioFormat& format, QObject *parent, QByteA
 
 void AudioReceiver::start(){
     open(QIODevice::WriteOnly);
+    //int border = audioFormat.sampleRate() * (audioFormat.sampleSize() / 8) * 10 //TODO check is buffer already bit in handler
+    AudioHandler* handler = dynamic_cast<AudioHandler*>(this->parent());
+    QTimer::singleShot(10000, handler, &AudioHandler::requestStopRecord);
 }
+
 
 void AudioReceiver::stop() {
     close();
 }
+
 
 qint64 AudioReceiver::readData(char *data, qint64 maxlen)
 {   Q_UNUSED(data)
@@ -111,13 +119,14 @@ qint64 AudioReceiver::writeData(const char *data, qint64 len)
         double freq = (*votes)[0].rFreq;
     }
 
+    /*
+    int border = audioFormat.sampleRate() * (audioFormat.sampleSize() / 8) * 10; // TODO each 60 seconds in smallest
 
-    int border = 16000*30; //each 60 seconds in smallest
-
-    if (bufer.size() > border*10) //format*bitrate*minute
-    {
-        //TODO stop if more then minute on audio format
+    if (bufer.size() > border) {
+        AudioHandler* handler = dynamic_cast<AudioHandler*>(this->parent());
+        handler->requestStopRecord();
     }
+    */
 
     return len;
 }

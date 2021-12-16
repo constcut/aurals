@@ -37,6 +37,9 @@ public:
     Q_INVOKABLE void setSampleRate(int newSampleRate);
     Q_INVOKABLE void setBitRate(int newBitRate);
 
+    void requestStopRecord();
+    void requestStopPlayback();
+
 private:
 
     void initRecorder();

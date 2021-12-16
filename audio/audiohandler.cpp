@@ -108,3 +108,15 @@ void AudioHandler::setBitRate(int newBitRate) {
     initRecorder();
     initPlayer();
 }
+
+
+void AudioHandler::requestStopRecord(){
+    //TODO more?
+    stopRecord();
+}
+
+
+void AudioHandler::requestStopPlayback() {
+    //TODO more?
+    stopPlayback();
+}
