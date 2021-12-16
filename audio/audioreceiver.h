@@ -16,13 +16,13 @@ public: //TODO
     QByteArray collector;
 
 public:
-    AudioReceiver(const QAudioFormat &format, QObject *parent);
-    ~AudioReceiver();
+    AudioReceiver(const QAudioFormat& format, QObject *parent, QByteArray& commonBufer);
+    ~AudioReceiver() = default;
 
     void start();
     void stop();
 
-    qreal level() const { return m_level; }
+    qreal normLevel() const { return level; }
 
     qint64 readData(char *data, qint64 maxlen);
     qint64 writeData(const char *data, qint64 len);
@@ -30,9 +30,11 @@ public:
     void dump();
 
 private:
-    const QAudioFormat m_format;
-    quint32 m_maxAmplitude;
-    qreal m_level; // 0.0 <= m_level <= 1.0
+
+    QByteArray& bufer;
+    const QAudioFormat format;
+    quint32 maxAmplitude;
+    qreal level; // 0.0 <= m_level <= 1.0
 
 
 

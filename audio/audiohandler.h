@@ -35,6 +35,9 @@ private:
     std::unique_ptr<QAudioOutput> audioOutput;
     std::unique_ptr<AudioSpeaker> audioPlayer;
 
+    QByteArray commonBufer;
+    QAudioFormat commonFormat;
+
 };
 
 

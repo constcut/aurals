@@ -59,7 +59,7 @@ void AudioHandler::initRecorder() {
         format = info.nearestFormat(format);
     }
 
-    audioReceiver  = std::make_unique<AudioReceiver>(format, nullptr);
+    audioReceiver  = std::make_unique<AudioReceiver>(format, this, commonBufer);
     //connect(audioInfo, SIGNAL(update()), SLOT(refreshDisplay()));
     audioInput = std::make_unique<QAudioInput>(QAudioDeviceInfo::defaultInputDevice(), format, nullptr);
 }

@@ -9,33 +9,34 @@
 
 //const int BufferSize = 4096;
 
-AudioReceiver::AudioReceiver(const QAudioFormat &format, QObject *parent)
+AudioReceiver::AudioReceiver(const QAudioFormat& format, QObject *parent, QByteArray& commonBufer)
     :   QIODevice(parent)
-    ,   m_format(format)
-    ,   m_maxAmplitude(0)
-    ,   m_level(0.0)
+    ,   format(format)
+    ,   bufer(commonBufer)
+    ,   maxAmplitude(0)
+    ,   level(0.0)
 
 {
-    switch (m_format.sampleSize()) {
+    switch (format.sampleSize()) {
     case 8:
-        switch (m_format.sampleType()) {
+        switch (format.sampleType()) {
         case QAudioFormat::UnSignedInt:
-            m_maxAmplitude = 255;
+            maxAmplitude = 255;
             break;
         case QAudioFormat::SignedInt:
-            m_maxAmplitude = 127;
+            maxAmplitude = 127;
             break;
         default:
             break;
         }
         break;
     case 16:
-        switch (m_format.sampleType()) {
+        switch (format.sampleType()) {
         case QAudioFormat::UnSignedInt:
-            m_maxAmplitude = 65535;
+            maxAmplitude = 65535;
             break;
         case QAudioFormat::SignedInt:
-            m_maxAmplitude = 32767;
+            maxAmplitude = 32767;
             break;
         default:
             break;
@@ -43,15 +44,15 @@ AudioReceiver::AudioReceiver(const QAudioFormat &format, QObject *parent)
         break;
 
     case 32:
-        switch (m_format.sampleType()) {
+        switch (format.sampleType()) {
         case QAudioFormat::UnSignedInt:
-            m_maxAmplitude = 0xffffffff;
+            maxAmplitude = 0xffffffff;
             break;
         case QAudioFormat::SignedInt:
-            m_maxAmplitude = 0x7fffffff;
+            maxAmplitude = 0x7fffffff;
             break;
         case QAudioFormat::Float:
-            m_maxAmplitude = 0x7fffffff; // Kind of
+            maxAmplitude = 0x7fffffff; // Kind of
         default:
             break;
         }
@@ -62,22 +63,19 @@ AudioReceiver::AudioReceiver(const QAudioFormat &format, QObject *parent)
     }
 }
 
-AudioReceiver::~AudioReceiver()
-{
+
+
+void AudioReceiver::start(){
+    open(QIODevice::WriteOnly);
 }
 
-void AudioReceiver::start()
-{ open(QIODevice::WriteOnly);}
-
-void AudioReceiver::stop()
-{close();}
+void AudioReceiver::stop() {
+    close();
+}
 
 qint64 AudioReceiver::readData(char *data, qint64 maxlen)
 {   Q_UNUSED(data)
     Q_UNUSED(maxlen)
-
-    //used for output data stream
-
     return 0;
 }
 
@@ -119,28 +117,11 @@ qint64 AudioReceiver::writeData(const char *data, qint64 len)
 
     if (collector.size() > border*10) //format*bitrate*minute
     {
-        //TODO stop if more then minute
-
-        ///QByteArray compress = qCompress(collector,7);
-        QString defaultRecFile = QString("record.temp");
-        QFile f; f.setFileName(defaultRecFile);
-        ///int compressedSize = compress.size();
-        if (f.open(QIODevice::Append))
-        {
-            f.write(collector);
-            f.flush();
-            f.close();
-        }
-        else
-            qDebug() << "Open file for raw record error;";
-
-        collector.clear();
+        //TODO stop if more then minute on audio format
     }
 
     int fullLen = collector.size();
     int cutLen = len;
-
-    qDebug() << "Wroten audio data "<<cutLen<<"; in bufer "<<fullLen;
     return len;
 }
 
