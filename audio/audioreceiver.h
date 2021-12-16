@@ -22,7 +22,6 @@ public:
     qint64 readData(char *data, qint64 maxlen);
     qint64 writeData(const char *data, qint64 len);
 
-    void dump();
 
 private:
 
@@ -30,8 +29,6 @@ private:
     const QAudioFormat format;
     quint32 maxAmplitude;
     qreal level; // 0.0 <= m_level <= 1.0
-
-
 
 signals:
     void update();

@@ -65,24 +65,33 @@ void AudioHandler::initPlayer() {
 }
 
 
-void AudioHandler::deleteDump() {
-    QFile audioFile;
-    QString defaultRecFile = "record.temp";
-    audioFile.setFileName(defaultRecFile);
-    audioFile.remove();
+void AudioHandler::resetBufer() {
+    commonBufer.clear();
 }
 
-/*
+
 void AudioHandler::loadFile(QString filename) {
     QFile audioFile;
-    QString defaultRecFile = "record.temp";
-    audioFile.setFileName(defaultRecFile);
+    audioFile.setFileName(filename);
 
     if (audioFile.open(QIODevice::ReadOnly) == false)
         qDebug() << "Failed to open audio for output";
 
-    QByteArray allBytes = audioFile.readAll();
+    commonBufer = audioFile.readAll();
     audioFile.close();
+}
 
-    audioPlayer->setAudioBufer(allBytes); //TODO хранить в данном классе, общий для IO
-}*/
+
+void AudioHandler::saveFile(QString filename) {
+    QFile f;
+    f.setFileName(filename);
+    if (f.open(QIODevice::Append))
+    {
+        f.write(commonBufer);
+        f.flush();
+        f.close();
+    }
+    else
+        qDebug() << "Open file for raw record error;";
+
+}

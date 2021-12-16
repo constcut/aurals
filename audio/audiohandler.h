@@ -22,7 +22,10 @@ public:
     Q_INVOKABLE void startPlayback();
     Q_INVOKABLE void stopPlayback();
 
-    Q_INVOKABLE void deleteDump();
+    Q_INVOKABLE void resetBufer();
+
+    Q_INVOKABLE void loadFile(QString filename);
+    Q_INVOKABLE void saveFile(QString filename);
 
 private:
 
