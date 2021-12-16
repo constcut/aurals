@@ -17,11 +17,13 @@ void AudioHandler::startRecord() {
     audioInput->start(audioReceiver.get());
 }
 
+
 void AudioHandler::stopRecord() {
     audioReceiver->stop();
     audioInput->stop();
     audioReceiver->dump();
 }
+
 
 void AudioHandler::startPlayback() {
     QFile audioFile;
@@ -39,10 +41,12 @@ void AudioHandler::startPlayback() {
     audioOutput->start(audioPlayer.get());
 }
 
+
 void AudioHandler::stopPlayback() {
     audioPlayer->stop();
     audioOutput->stop();
 }
+
 
 void AudioHandler::initRecorder() {
     QAudioFormat format;
@@ -64,6 +68,7 @@ void AudioHandler::initRecorder() {
     audioInput = std::make_unique<QAudioInput>(QAudioDeviceInfo::defaultInputDevice(), format, nullptr);
 }
 
+
 void AudioHandler::initPlayer() {
     QAudioFormat format;
     format.setSampleRate(8000);
@@ -79,7 +84,7 @@ void AudioHandler::initPlayer() {
         format = info.nearestFormat(format);
     }
 
-    audioPlayer = std::make_unique<AudioSpeaker>(format, this);
+    audioPlayer = std::make_unique<AudioSpeaker>(format, this, commonBufer);
     audioOutput = std::make_unique<QAudioOutput>(QAudioDeviceInfo::defaultOutputDevice(), format, nullptr);
 
 }
@@ -90,5 +95,4 @@ void AudioHandler::deleteDump() {
     QString defaultRecFile = "record.temp";
     audioFile.setFileName(defaultRecFile);
     audioFile.remove();
-
 }

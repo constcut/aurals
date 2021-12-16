@@ -11,7 +11,7 @@ class AudioSpeaker : public QIODevice
     Q_OBJECT
 
 public:
-    AudioSpeaker(const QAudioFormat &format, QObject *parent=0);
+    AudioSpeaker(const QAudioFormat &format, QObject *parent, QByteArray& commonBufer);
     ~AudioSpeaker();
 
     void start();
@@ -24,8 +24,9 @@ public:
     void setAudioBufer(QByteArray &aStream);
 
 private:
-    qint64 m_pos;
-    QByteArray m_buffer;
+    qint64 position;
+    QAudioFormat audioFormat;
+    QByteArray buffer;
 };
 
 
