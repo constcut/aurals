@@ -23,7 +23,11 @@ AudioSpeaker::~AudioSpeaker()
 
 void AudioSpeaker::start()
 {
-    int ms = buffer.size() / (2 * 8); //16 bit 8k samplerate - k is ms
+    const auto sampleRate = audioFormat.sampleRate();
+    const auto bitRate = audioFormat.sampleSize();
+    const auto bytesPerSample = bitRate / 8;
+    const auto msInSecond = 1000;
+    int ms = buffer.size() / (bytesPerSample * sampleRate / msInSecond); //16 bit 8k samplerate - k is ms
     AudioHandler* handler = dynamic_cast<AudioHandler*>(this->parent());
     QTimer::singleShot(ms, handler, &AudioHandler::stopPlayback); //TODO stop player on level of handler
     open(QIODevice::ReadOnly);

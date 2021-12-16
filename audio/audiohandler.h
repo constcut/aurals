@@ -27,6 +27,16 @@ public:
     Q_INVOKABLE void loadFile(QString filename);
     Q_INVOKABLE void saveFile(QString filename);
 
+    Q_INVOKABLE int getSampleRate() {
+        return commonFormat.sampleRate();
+    }
+    Q_INVOKABLE int getBitRate() {
+        return commonFormat.sampleSize();
+    }
+
+    Q_INVOKABLE void setSampleRate(int newSampleRate);
+    Q_INVOKABLE void setBitRate(int newBitRate);
+
 private:
 
     void initRecorder();

@@ -5,7 +5,7 @@
 
 AudioHandler::AudioHandler() {
 
-    commonFormat.setSampleRate(8000);
+    commonFormat.setSampleRate(16000);
     commonFormat.setChannelCount(1);
     commonFormat.setSampleSize(16);
     commonFormat.setSampleType(QAudioFormat::SignedInt);
@@ -15,7 +15,6 @@ AudioHandler::AudioHandler() {
     initRecorder();
     initPlayer();
 }
-
 
 
 void AudioHandler::startRecord() {
@@ -93,5 +92,18 @@ void AudioHandler::saveFile(QString filename) {
     }
     else
         qDebug() << "Open file for raw record error;";
+}
 
+
+
+void AudioHandler::setSampleRate(int newSampleRate) {
+    commonFormat.setSampleRate(newSampleRate);
+    initRecorder();
+    initPlayer();
+}
+
+void AudioHandler::setBitRate(int newBitRate) {
+    commonFormat.setSampleSize(newBitRate);
+    initRecorder();
+    initPlayer();
 }
