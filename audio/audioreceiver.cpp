@@ -11,7 +11,7 @@
 
 AudioReceiver::AudioReceiver(const QAudioFormat& format, QObject *parent, QByteArray& commonBufer)
     :   QIODevice(parent)
-    ,   format(format)
+    ,   audioFormat(format)
     ,   bufer(commonBufer)
     ,   maxAmplitude(0)
     ,   level(0.0)

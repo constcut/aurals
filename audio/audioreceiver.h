@@ -24,9 +24,8 @@ public:
 
 
 private:
-
+    const QAudioFormat audioFormat;
     QByteArray& bufer;
-    const QAudioFormat format;
     quint32 maxAmplitude;
     qreal level; // 0.0 <= m_level <= 1.0
 
