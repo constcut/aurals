@@ -14,7 +14,9 @@ ApplicationWindow {
     title: "Mtherapp"
 
     header: ToolBar {
+
         RowLayout {
+            spacing:  10
             //anchors.fill: parent
             ToolButton {
                 text: "Console"
@@ -41,6 +43,6 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
-        onClicked: mainLoader.setSource("consoleLog.qml")
+        onClicked: mainLoader.setSource("audioHandler.qml")
     }
 }

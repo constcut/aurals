@@ -5,7 +5,7 @@ Item {
 
     anchors.fill: parent
     id:item
-        ConsoleLog {
+        ConsoleLogView {
 
             id: consoleLog
             y: 10

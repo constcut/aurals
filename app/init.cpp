@@ -31,7 +31,7 @@ int mainInit(int argc, char *argv[]) {
     Q_INIT_RESOURCE(soundfonts);
     QFile::copy(":/soundfonts/instrument.sf2","instrument.sf2");
 
-    qmlRegisterType<ConsoleLogQML>("mther.app",1,0,"ConsoleLog");
+    qmlRegisterType<ConsoleLogQML>("mther.app",1,0,"ConsoleLogView");
     //qmlRegisterType<PianoQML>("mther.app",1,0,"Piano");
 
     QGuiApplication app(argc, argv);
