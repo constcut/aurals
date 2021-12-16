@@ -89,10 +89,10 @@ void AudioHandler::loadFile(QString filename) {
 }
 
 
-void AudioHandler::saveFile(QString filename) {
+void AudioHandler::saveFile(QString filename) const {
     QFile f;
     f.setFileName(filename);
-    if (f.open(QIODevice::Append))
+    if (f.open(QIODevice::WriteOnly))
     {
         f.write(commonBufer);
         f.flush();
@@ -131,6 +131,6 @@ void AudioHandler::requestStopPlayback() {
 }
 
 
-void AudioHandler::requestPermission() {
+void AudioHandler::requestPermission() const {
     ::requestPermission();
 }

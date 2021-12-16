@@ -25,19 +25,19 @@ public:
     Q_INVOKABLE void resetBufer();
 
     Q_INVOKABLE void loadFile(QString filename);
-    Q_INVOKABLE void saveFile(QString filename);
+    Q_INVOKABLE void saveFile(QString filename) const;
 
-    Q_INVOKABLE int getSampleRate() {
+    Q_INVOKABLE int getSampleRate() const {
         return commonFormat.sampleRate();
     }
-    Q_INVOKABLE int getBitRate() {
+    Q_INVOKABLE int getBitRate() const {
         return commonFormat.sampleSize();
     }
 
     Q_INVOKABLE void setSampleRate(int newSampleRate);
     Q_INVOKABLE void setBitRate(int newBitRate);
 
-    Q_INVOKABLE void requestPermission();
+    Q_INVOKABLE void requestPermission() const;
 
     void requestStopRecord();
     void requestStopPlayback();
