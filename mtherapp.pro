@@ -4,7 +4,10 @@ CONFIG += c++17
 DEFINES += QT_DEPRECATED_WARNINGS
 QMAKE_CXXFLAGS += -std=c++17
 
+android: QT += androidextras
+
 SOURCES += \
+    app/androidtools.cpp \
     audio/audiohandler.cpp \
     audio/audioreceiver.cpp \
     audio/audiospeaker.cpp \
@@ -40,6 +43,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 
 HEADERS += \
+    app/androidtools.h \
     app/loghandler.h \
     audio/audiohandler.h \
     audio/audioreceiver.h \

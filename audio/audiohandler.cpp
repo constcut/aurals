@@ -3,6 +3,9 @@
 #include <QFile>
 #include <QDebug>
 
+
+
+
 AudioHandler::AudioHandler() {
 
     commonFormat.setSampleRate(16000);
@@ -18,6 +21,11 @@ AudioHandler::AudioHandler() {
 
 
 void AudioHandler::startRecord() {
+
+    #ifdef Q_OS_ANDROID
+
+    #endif
+
     audioReceiver->start();
     audioInput->start(audioReceiver.get());
 }
