@@ -66,7 +66,10 @@ Item {
                 text: "Load dump"
                 onClicked: audio.loadFile("rec.dump")
             }
-
+            //ToolButton {
+            //    text: "Request permission"
+            //    onClicked: audio.requestPermission()
+            //}
 
         }
     }

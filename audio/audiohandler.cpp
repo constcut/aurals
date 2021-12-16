@@ -3,7 +3,7 @@
 #include <QFile>
 #include <QDebug>
 
-
+#include "app/androidtools.h"
 
 
 AudioHandler::AudioHandler() {
@@ -127,4 +127,9 @@ void AudioHandler::requestStopRecord(){
 void AudioHandler::requestStopPlayback() {
     //TODO more?
     stopPlayback();
+}
+
+
+void AudioHandler::requestPermission() {
+    ::requestPermission();
 }
