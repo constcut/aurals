@@ -97,6 +97,7 @@ void AudioHandler::saveFile(QString filename) {
 
 
 void AudioHandler::setSampleRate(int newSampleRate) {
+    qDebug() << "New sample rate " << newSampleRate;
     commonFormat.setSampleRate(newSampleRate);
     initRecorder();
     initPlayer();
