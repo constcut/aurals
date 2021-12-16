@@ -4,15 +4,21 @@
 #include <QDebug>
 
 AudioHandler::AudioHandler() {
+
+    commonFormat.setSampleRate(8000);
+    commonFormat.setChannelCount(1);
+    commonFormat.setSampleSize(16);
+    commonFormat.setSampleType(QAudioFormat::SignedInt);
+    commonFormat.setByteOrder(QAudioFormat::LittleEndian);
+    commonFormat.setCodec("audio/pcm");
+
     initRecorder();
     initPlayer();
-    //TODO set params + reset
 }
 
 
 
 void AudioHandler::startRecord() {
-    //TODO request permission
     audioReceiver->start();
     audioInput->start(audioReceiver.get());
 }
@@ -21,22 +27,10 @@ void AudioHandler::startRecord() {
 void AudioHandler::stopRecord() {
     audioReceiver->stop();
     audioInput->stop();
-    audioReceiver->dump();
 }
 
 
 void AudioHandler::startPlayback() {
-    QFile audioFile;
-    QString defaultRecFile = "record.temp";
-    audioFile.setFileName(defaultRecFile);
-
-    if (audioFile.open(QIODevice::ReadOnly) == false)
-        qDebug() << "Failed to open audio for output";
-
-    QByteArray allBytes = audioFile.readAll();
-    audioFile.close();
-
-    audioPlayer->setAudioBufer(allBytes); //TODO хранить в данном классе, общий для IO
     audioPlayer->start();
     audioOutput->start(audioPlayer.get());
 }
@@ -49,43 +43,24 @@ void AudioHandler::stopPlayback() {
 
 
 void AudioHandler::initRecorder() {
-    QAudioFormat format;
-    format.setSampleRate(8000);
-    format.setChannelCount(1);
-    format.setSampleSize(16);
-    format.setSampleType(QAudioFormat::SignedInt);
-    format.setByteOrder(QAudioFormat::LittleEndian);
-    format.setCodec("audio/pcm");
-
     QAudioDeviceInfo info(QAudioDeviceInfo::defaultInputDevice());
-    if (!info.isFormatSupported(format)) {
+    if (!info.isFormatSupported(commonFormat)) {
         qDebug() << "Default format not supported - trying to use nearest";
-        format = info.nearestFormat(format);
+        commonFormat = info.nearestFormat(commonFormat);
     }
-
-    audioReceiver  = std::make_unique<AudioReceiver>(format, this, commonBufer);
-    //connect(audioInfo, SIGNAL(update()), SLOT(refreshDisplay()));
-    audioInput = std::make_unique<QAudioInput>(QAudioDeviceInfo::defaultInputDevice(), format, nullptr);
+    audioReceiver  = std::make_unique<AudioReceiver>(commonFormat, this, commonBufer); //    //connect(audioInfo, SIGNAL(update()), SLOT(refreshDisplay()));
+    audioInput = std::make_unique<QAudioInput>(QAudioDeviceInfo::defaultInputDevice(), commonFormat, nullptr);
 }
 
 
 void AudioHandler::initPlayer() {
-    QAudioFormat format;
-    format.setSampleRate(8000);
-    format.setChannelCount(1); //TODO for pcm but will have issue with records
-    format.setSampleSize(16);
-    format.setSampleType(QAudioFormat::SignedInt);
-    format.setByteOrder(QAudioFormat::LittleEndian);
-    format.setCodec("audio/pcm");
-
     QAudioDeviceInfo info(QAudioDeviceInfo::defaultInputDevice());
-    if (!info.isFormatSupported(format)) {
+    if (!info.isFormatSupported(commonFormat)) {
         qDebug() << "Default format not supported - trying to use nearest";
-        format = info.nearestFormat(format);
+        commonFormat = info.nearestFormat(commonFormat);
     }
-
-    audioPlayer = std::make_unique<AudioSpeaker>(format, this, commonBufer);
-    audioOutput = std::make_unique<QAudioOutput>(QAudioDeviceInfo::defaultOutputDevice(), format, nullptr);
+    audioPlayer = std::make_unique<AudioSpeaker>(commonFormat, this, commonBufer);
+    audioOutput = std::make_unique<QAudioOutput>(QAudioDeviceInfo::defaultOutputDevice(), commonFormat, nullptr);
 
 }
 
@@ -96,3 +71,18 @@ void AudioHandler::deleteDump() {
     audioFile.setFileName(defaultRecFile);
     audioFile.remove();
 }
+
+/*
+void AudioHandler::loadFile(QString filename) {
+    QFile audioFile;
+    QString defaultRecFile = "record.temp";
+    audioFile.setFileName(defaultRecFile);
+
+    if (audioFile.open(QIODevice::ReadOnly) == false)
+        qDebug() << "Failed to open audio for output";
+
+    QByteArray allBytes = audioFile.readAll();
+    audioFile.close();
+
+    audioPlayer->setAudioBufer(allBytes); //TODO хранить в данном классе, общий для IO
+}*/

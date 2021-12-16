@@ -21,12 +21,11 @@ public:
     qint64 writeData(const char *data, qint64 len);
     qint64 bytesAvailable() const;
 
-    void setAudioBufer(QByteArray &aStream);
 
 private:
     qint64 position;
     QAudioFormat audioFormat;
-    QByteArray buffer;
+    QByteArray& buffer;
 };
 
 

@@ -10,11 +10,6 @@ class AudioReceiver : public QIODevice
 {
     Q_OBJECT
 
-protected:
-
-public: //TODO
-    QByteArray collector;
-
 public:
     AudioReceiver(const QAudioFormat& format, QObject *parent, QByteArray& commonBufer);
     ~AudioReceiver() = default;

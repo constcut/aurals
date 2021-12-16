@@ -23,6 +23,7 @@ AudioSpeaker::~AudioSpeaker()
 
 void AudioSpeaker::start()
 {
+    qDebug() << "Pressed start " << buffer.size();
     int ms = buffer.size() / (2 * 8); //16 bit 8k samplerate - k is ms
     AudioHandler* handler = dynamic_cast<AudioHandler*>(this->parent());
     QTimer::singleShot(ms, handler, &AudioHandler::stopPlayback); //TODO stop player on level of handler
@@ -39,6 +40,7 @@ void AudioSpeaker::stop()
 
 qint64 AudioSpeaker::readData(char *data, qint64 len)
 {
+    qDebug() << "R " << len;
     qint64 total = 0;
     if (!buffer.isEmpty()) {
         while (len - total > 0) {
@@ -67,10 +69,5 @@ qint64 AudioSpeaker::bytesAvailable() const
 }
 
 
-void AudioSpeaker::setAudioBufer(QByteArray &aStream)
-{
-    buffer.clear();
-    buffer += aStream;
-}
 
 

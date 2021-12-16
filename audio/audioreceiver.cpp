@@ -84,16 +84,17 @@ qint64 AudioReceiver::readData(char *data, qint64 maxlen)
 qint64 AudioReceiver::writeData(const char *data, qint64 len)
 {
 
-    collector += QByteArray(data,len);
+
+    bufer += QByteArray(data,len);
 
     static int lastSize = 0;
 
-    if (collector.size() - lastSize > 4100) {
+    if (bufer.size() - lastSize > 4100) {
 
-        lastSize = collector.size();
-        short *sourceData = (short*)collector.data();
+        lastSize = bufer.size();
+        short *sourceData = (short*)bufer.data();
 
-        int fullSize = collector.size()/2;
+        int fullSize = bufer.size()/2;
         int minusLastFrame = fullSize-2049;
 
         FFT fft(2048);
@@ -115,13 +116,14 @@ qint64 AudioReceiver::writeData(const char *data, qint64 len)
 
     int border = 16000*30; //each 60 seconds in smallest
 
-    if (collector.size() > border*10) //format*bitrate*minute
+    if (bufer.size() > border*10) //format*bitrate*minute
     {
         //TODO stop if more then minute on audio format
     }
 
-    int fullLen = collector.size();
-    int cutLen = len;
+    int fullLen = bufer.size();
+        qDebug() << "r " << fullLen;
+
     return len;
 }
 
@@ -133,14 +135,14 @@ void AudioReceiver::dump() {
     ///int compressedSize = compress.size();
     if (f.open(QIODevice::Append))
     {
-        f.write(collector);
+        f.write(bufer);
         f.flush();
         f.close();
     }
     else
         qDebug() << "Open file for raw record error;";
 
-    collector.clear();
+   // collector.clear();
 }
 
 /// AUDIO INPUT FINISHED
