@@ -1,16 +1,17 @@
-import QtQuick 2.10
-import QtQuick.Window 2.10
+import QtQuick 2.15
+import QtQuick.Window 2.15
 
-import QtQuick.Controls 2.2
-import QtQuick.Layouts 1.3
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
 
 ApplicationWindow {
 
     id: thatWindow
     visible: true
-    width: 1280
-    height: 800
-    title: qsTr("ideas")
+    //width: 1280
+    //height: 800
+    visibility: "FullScreen"
+    title: "Mtherapp"
 
     header: ToolBar {
         RowLayout {
@@ -20,30 +21,17 @@ ApplicationWindow {
                 onClicked: mainLoader.setSource("consoleLog.qml")
             }
             ToolButton {
-                text: "Start record"
-                onClicked: audio.startRecord()
+                text: "Audio"
+                onClicked: mainLoader.setSource("audioHandler.qml")
             }
             ToolButton {
-                text: "Stop record"
-                onClicked: audio.stopRecord()
+                text: "                                "
+                //TODO spacing:
             }
             ToolButton {
-                text: "Start player"
-                onClicked: audio.startPlayback()
+                text: "Exit"
+                onClicked: Qt.exit(0)
             }
-            ToolButton {
-                text: "Stop player"
-                onClicked: audio.stopPlayback()
-            }
-            ToolButton {
-                text: "Delete default"
-                 onClicked: audio.deleteDump();
-            }
-
-            /*ToolButton {
-                text: "Piano"
-                onClicked: mainLoader.setSource("PianoMap.qml")
-            }*/
         }
     }
 
