@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
+import QtQuick.Dialogs 1.1
 
 Item {
     id: audioHandlerItem
@@ -71,38 +72,88 @@ Item {
                         recording = false
                     }
                     else {
+                       audio.resetBufer()
                        audio.startRecord()
                        recording = true
                     }
                 }
             }
+            TextEdit {
+                id: filenameEdit
+                width: 250
+            }
+            ToolButton {
+                text: "Rename"
+                onClicked: {
+                    if (filesModel[filesModel.selected] === -1)
+                        return
+                    //TODO dialog request
+                    audio.renameRecord(filesModel.filename, filenameEdit.text)
+                    audioHandlerItem.reload()
+                    filesModel.selected = -1
+                    filesModel.filename = ""
+                }
+            }
+            ToolButton {
+                text: "Remove"
+                onClicked: {
+                    if (filesModel[filesModel.selected] === -1)
+                        return
+                    confirmDialog.visible = true
+                }
+            }
 
+        }
+
+        MessageDialog {
+            id: confirmDialog
+            title: "Remove file"
+            text: "Confirm file deletion."
+            onAccepted: {
+                audio.deleteRecord(filesModel.filename)
+                audioHandlerItem.reload()
+                filesModel.selected = -1
+                filesModel.filename = ""
+            }
+            visible: false
         }
 
         ListModel {
             id: filesModel
+            property int selected: -1
+            property string filename: ""
         }
 
         Rectangle {
-            width: 200; height: 200
+            width: 500; height: 300
 
             Component {
                 id: fileDeligate
+
                 Rectangle {
                     height: 50
-                    width: parent.width
+                    width: parent.parent.width
+
+                    color: filesModel.selected === index ? "lightgreen" : "white"
+
                     Row {
                         spacing: 10
-                        Text { text: name }
+                        Text { text: name}
                     }
 
                     MouseArea {
                         anchors.fill: parent
                         onDoubleClicked: {
-                            //console.log("Clicked " + name)
+                            console.log("DClicked " + name)
                             audio.resetBufer()
                             audio.loadFile("records/" + name)
                             audio.startPlayback()
+                        }
+                        onClicked: {
+                            console.log("Clicked " + name)
+                            filesModel.selected = index
+                            filesModel.filename = name
+                            filenameEdit.text = name
                         }
                     }
                 }

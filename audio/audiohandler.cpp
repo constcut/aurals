@@ -136,6 +136,7 @@ void AudioHandler::requestPermission() const {
     ::requestPermission();
 }
 
+
 QStringList AudioHandler::getRecords() const {
     QDir dir("records/");
     auto list = dir.entryList({"*"});
@@ -143,9 +144,20 @@ QStringList AudioHandler::getRecords() const {
     return list;
 }
 
+
 void AudioHandler::saveRecordTimstamp() {
     QDateTime dt = QDateTime::currentDateTime();
     auto str = dt.toString("yyyy-MM-dd_HH_mm_ss");
     qDebug() << str;
     saveFile("records/" + str + "_" + QString::number(commonFormat.sampleRate()));
+}
+
+
+void AudioHandler::deleteRecord(QString filename) const {
+    QFile::remove("records/" + filename);
+}
+
+
+void AudioHandler::renameRecord(QString filename, QString newFilename) const {
+    QFile::rename("records/" + filename, "records/" + newFilename);
 }

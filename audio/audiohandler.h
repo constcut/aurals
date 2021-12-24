@@ -38,9 +38,11 @@ public:
 
     Q_INVOKABLE void requestPermission() const;
 
+    //TODO возможно выделить отдельно
     Q_INVOKABLE QStringList getRecords() const;
-
     Q_INVOKABLE void saveRecordTimstamp();
+    Q_INVOKABLE void deleteRecord(QString filename) const;
+    Q_INVOKABLE void renameRecord(QString filename, QString newFilename) const;
 
     void requestStopRecord();
     void requestStopPlayback();
