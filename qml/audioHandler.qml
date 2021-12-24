@@ -107,9 +107,10 @@ Item {
 
         MessageDialog {
             id: confirmDialog
-            title: "Remove file"
-            text: "Confirm file deletion."
-            onAccepted: {
+            title: "Delete file"
+            text: "Do you really want to delete selected file?"
+            standardButtons: StandardButton.Yes | StandardButton.No
+            onYes: {
                 audio.deleteRecord(filesModel.filename)
                 audioHandlerItem.reload()
                 filesModel.selected = -1
@@ -125,6 +126,7 @@ Item {
         }
 
         Rectangle {
+            id: mainRect
             width: 500; height: 300
 
             Component {
@@ -132,7 +134,7 @@ Item {
 
                 Rectangle {
                     height: 50
-                    width: parent.parent.width
+                    width: mainRect.width
 
                     color: filesModel.selected === index ? "lightgreen" : "white"
 
@@ -144,13 +146,11 @@ Item {
                     MouseArea {
                         anchors.fill: parent
                         onDoubleClicked: {
-                            console.log("DClicked " + name)
                             audio.resetBufer()
                             audio.loadFile("records/" + name)
                             audio.startPlayback()
                         }
                         onClicked: {
-                            console.log("Clicked " + name)
                             filesModel.selected = index
                             filesModel.filename = name
                             filenameEdit.text = name
