@@ -86,6 +86,16 @@ Item {
                         spacing: 10
                         Text { text: name }
                     }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onDoubleClicked: {
+                            //console.log("Clicked " + name)
+                            audio.resetBufer()
+                            audio.loadFile("records/" + name)
+                            audio.startPlayback()
+                        }
+                    }
                 }
             }
 
