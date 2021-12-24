@@ -23,11 +23,6 @@ Item {
                     audio.setSampleRate(sr)
                 }
             }
-        }
-
-        RowLayout {
-            spacing: 10
-
             ToolButton {
                 text: "Start record"
                 onClicked: audio.startRecord()
@@ -60,11 +55,25 @@ Item {
             //    text: "Request permission"
             //    onClicked: audio.requestPermission()
             //}
+        }
+
+        RowLayout {
+            spacing: 10
+
             ToolButton {
-                text: "List record"
+                property bool recording: false
+                text: recording ? "Stop and save" : "Start record"
                 onClicked: {
-                    audio.saveRecordTimstamp()
-                    audioHandlerItem.reload()
+                    if (recording) {
+                        audio.stopRecord()
+                        audio.saveRecordTimstamp()
+                        audioHandlerItem.reload()
+                        recording = false
+                    }
+                    else {
+                       audio.startRecord()
+                       recording = true
+                    }
                 }
             }
 
@@ -111,7 +120,7 @@ Item {
     function reload() {
         var files = audio.getRecords();
         filesModel.clear()
-        for (var i = 0; i < files.length; ++i) {
+        for (var i = 2; i < files.length; ++i) {
             filesModel.append({"name": files[i]})
         }
     }
