@@ -6,13 +6,12 @@ import QtQuick.Dialogs 1.1
 Item {
     id: audioHandlerItem
 
-    ColumnLayout {
-        spacing:  10
-        y: 10
-        x: 10
 
+    Dialog {
+        id: settingsDialog
         RowLayout {
             spacing:  10
+            id: upperLayout
             Text {
                 text: "Sample rate:"
             }
@@ -57,6 +56,12 @@ Item {
             //    onClicked: audio.requestPermission()
             //}
         }
+    }
+
+    ColumnLayout {
+        spacing:  10
+        y: 10
+        x: 20
 
         RowLayout {
             spacing: 10
@@ -100,6 +105,12 @@ Item {
                     if (filesModel[filesModel.selected] === -1)
                         return
                     confirmDialog.visible = true
+                }
+            }
+            ToolButton {
+                text: "Show/Hide panel"
+                onClicked: {
+                    settingsDialog.visible = !settingsDialog.visible
                 }
             }
 
