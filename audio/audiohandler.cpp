@@ -8,10 +8,10 @@
 
 AudioHandler::AudioHandler() {
 
-    commonFormat.setSampleRate(16000);
+    commonFormat.setSampleRate(22050);
     commonFormat.setChannelCount(1);
-    commonFormat.setSampleSize(16);
-    commonFormat.setSampleType(QAudioFormat::SignedInt);
+    commonFormat.setSampleSize(32);
+    commonFormat.setSampleType(QAudioFormat::Float);
     commonFormat.setByteOrder(QAudioFormat::LittleEndian);
     commonFormat.setCodec("audio/pcm");
 
@@ -23,8 +23,9 @@ AudioHandler::AudioHandler() {
 void AudioHandler::startRecord() {
 
     #ifdef Q_OS_ANDROID
-
+    //TODO request? Why falls only on mine phone
     #endif
+    prevPosition = commonBufer.size();
 
     audioReceiver->start();
     audioInput->start(audioReceiver.get());
@@ -34,6 +35,9 @@ void AudioHandler::startRecord() {
 void AudioHandler::stopRecord() {
     audioReceiver->stop();
     audioInput->stop();
+    //TODO сохранить в wav, загрузить в DAW изучить, возможно вместо вырезания занулить
+    if (prevPosition == 0)
+        commonBufer.remove(0, 4*2205); //Щелчёк, однако дозаписывать в такую запись будет неудачным решением, вернее нужно будет сохранять позицию и вырезать из неё щелчёк так же
 }
 
 
@@ -74,6 +78,7 @@ void AudioHandler::initPlayer() {
 
 void AudioHandler::resetBufer() {
     commonBufer.clear();
+    prevPosition = 0;
 }
 
 
@@ -110,12 +115,6 @@ void AudioHandler::setSampleRate(int newSampleRate) {
     initRecorder();
     initPlayer();
     //TODO если уже есть заполненный буфер, возможно его стоит преобразовать
-}
-
-void AudioHandler::setBitRate(int newBitRate) {
-    commonFormat.setSampleSize(newBitRate);
-    initRecorder();
-    initPlayer();
 }
 
 

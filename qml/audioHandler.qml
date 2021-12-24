@@ -15,22 +15,11 @@ Item {
                 text: "Sample rate:"
             }
             ComboBox {
-                model: ["8000", "16000", "22050", "44100", "48000"]
-                currentIndex: 1
-                onCurrentIndexChanged: {
+                model: ["22050", "44100", "48000"]
+                currentIndex: 0
+                onCurrentTextChanged: {
                     var sr = parseInt(currentText)
                     audio.setSampleRate(sr)
-                }
-            }
-            Text {
-                text: "Bit rate:"
-            }
-            ComboBox {
-                model: ["8", "16", "24"]
-                currentIndex: 1
-                onCurrentIndexChanged: {
-                    var br = parseInt(currentIndex)
-                    audio.setBitRate(br)
                 }
             }
         }
