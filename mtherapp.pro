@@ -88,6 +88,8 @@ DISTFILES += \
     current \
     qml/ConsoleLog.qml \
     qml/PianoMap.qml \
+    qml/audioHandler.qml \
+    qml/consoleLog.qml \
     qml/main.qml
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
