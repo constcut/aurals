@@ -38,6 +38,10 @@ public:
 
     Q_INVOKABLE void requestPermission() const;
 
+    Q_INVOKABLE QStringList getRecords() const;
+
+    Q_INVOKABLE void saveRecordTimstamp();
+
     void requestStopRecord();
     void requestStopPlayback();
 

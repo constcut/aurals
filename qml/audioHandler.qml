@@ -3,6 +3,7 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 
 Item {
+    id: audioHandlerItem
 
     ColumnLayout {
         spacing:  10
@@ -59,10 +60,54 @@ Item {
             //    text: "Request permission"
             //    onClicked: audio.requestPermission()
             //}
+            ToolButton {
+                text: "List record"
+                onClicked: {
+                    audio.saveRecordTimstamp()
+                    audioHandlerItem.reload()
+                }
+            }
 
+        }
+
+        ListModel {
+            id: filesModel
+        }
+
+        Rectangle {
+            width: 200; height: 200
+
+            Component {
+                id: fileDeligate
+                Rectangle {
+                    height: 50
+                    width: parent.width
+                    Row {
+                        spacing: 10
+                        Text { text: name }
+                    }
+                }
+            }
+
+            ListView {
+                anchors.fill: parent
+                model: filesModel
+                delegate: fileDeligate
+            }
+        }
+
+    }
+
+    function reload() {
+        var files = audio.getRecords();
+        filesModel.clear()
+        for (var i = 0; i < files.length; ++i) {
+            filesModel.append({"name": files[i]})
         }
     }
 
-
+    Component.onCompleted: {
+        audioHandlerItem.reload()
+    }
 
 }
