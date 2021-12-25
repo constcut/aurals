@@ -11,6 +11,7 @@ SOURCES += \
     audio/audiohandler.cpp \
     audio/audioreceiver.cpp \
     audio/audiospeaker.cpp \
+    audio/featureextractor.cpp \
     audio/fft.cpp \
     audio/waveanalys.cpp \
     main.cpp \
@@ -48,6 +49,7 @@ HEADERS += \
     audio/audiohandler.h \
     audio/audioreceiver.h \
     audio/audiospeaker.h \
+    audio/featureextractor.h \
     audio/fft.h \
     audio/waveanalys.h \
     libs/stft/HannWindow.h \
