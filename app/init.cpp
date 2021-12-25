@@ -22,6 +22,7 @@
 
 #include "audio/audiohandler.h"
 #include "audio/waveshape.h"
+#include "audio/spectrograph.h"
 
 using namespace std;
 
@@ -48,7 +49,7 @@ int mainInit(int argc, char *argv[]) {
 
     qmlRegisterType<WaveshapeQML>("wavesplat.music.wave", 1, 0, "Waveshape");
     qmlRegisterType<WavePositionQML>("wavesplat.music.wave", 1, 0, "WavePosition");
-    //qmlRegisterType<SpectrographQML>("wavesplat.music.wave", 1, 0,"Spectrograph");
+    qmlRegisterType<SpectrographQML>("wavesplat.music.wave", 1, 0,"Spectrograph");
 
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("Windows-1251")); //Настройки //KOI8-R //ISO 8859-5 //UTF-8 //Windows-1251
     QQmlApplicationEngine engine;
@@ -61,8 +62,6 @@ int mainInit(int argc, char *argv[]) {
     QDir dir;
     if (dir.exists("records") == false)
         dir.mkdir("records");
-
-
 
 
     int res = app.exec();

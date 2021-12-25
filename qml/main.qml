@@ -27,6 +27,11 @@ ApplicationWindow {
                 onClicked: mainLoader.setSource("audioHandler.qml")
             }
             ToolButton {
+                text: "Wave"
+                onClicked: mainLoader.setSource("WaveshapeQML.qml")
+            }
+
+            ToolButton {
                 text: "                                "
                 //TODO spacing:
             }
