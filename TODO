@@ -1,78 +1,36 @@
 
 
-2) Переименование и удаление записей
+0) feature extractor -> RMS
 
-3) выделение записи + контекстое меню (найти код aim)
+1) WaveFile -> save\load in AudioHandler
 
-------
-Блокировки - воспроизведение\остановка, не давать перезапускать в "некрасивый момент"
+2) WaveShape -> заставить воспроизвестись старое, и попробовать перенести потом
 
-----------------------------------------------------------------------
+3) Yin в feature extractor
 
-1) Обработка - > RMS попробовать забрать часть libeXtract
+4) FFT View? Проверить работает ли оно на старом
 
-2) -> yin
+5) Отображение RMS + дистанций начало-конец
 
-3) f0 -> wavelet libeXtract
+6) Отображение Yin (Для начала вывод значений в консоль, потом QML компонент)
 
-4) FFT real
+7) Tap на экране, 2,4,6 кнопок, для начала piano, потом и ударные
 
-----------------------------------------------------------------------
+______________________________________________________________________
+Блокировки isPlaying, isRecording
 
-1) QML waveform
-
-2) yin (freqs + same length as waveform)
-
-3) f0 wavelet == yin (make same input)
+Разделение работы с файлами в отдельный класс
 
 
+------------------------------------------------------------
+------------------------------------------------------------
+Aim list
 
+------------------------------------------------------------
 
+1) Скорость воспроизведения и pitch
 
+2) EQ?
 
-
-
-
-
-
-
-
-
-
-
-!!!!
-
-
-Менять скорость воспроизведения на нужный коэффициент
-
-
-
-
-
-
-
-TODO
-
-1.5) Save to filename
-1.6) Load from filename
-{
-    QDir -> create records/
-    ListView for the records
-    default records name is date_time + hidden part SR_BR
-    rename feature
-}
-_ is playing\ is records + blocking
-
-
-
-2) Move SF generator (update lib and midi render)
-
-3) Generator from midi and play (select midi file open dialog)
-
-4) Tap control? 
-
-5) Yin
-
-6) RMS
-
+3) Chorus + other effects?
 

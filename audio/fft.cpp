@@ -377,7 +377,7 @@ FFT::~FFT()
 
 }
 
-bool FFT::transform(short int *place)
+bool FFT::transform(short int *place) //TODO new function for float
 {
     if (place!=0) {
         for (int i=0; i < N; ++i)
