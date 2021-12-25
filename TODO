@@ -1,12 +1,9 @@
 
 
-0) feature extractor -> RMS
 
 1) WaveFile -> save\load in AudioHandler
 
 2) WaveShape -> заставить воспроизвестись старое, и попробовать перенести потом
-
-3) Yin в feature extractor
 
 4) FFT View? Проверить работает ли оно на старом
 
