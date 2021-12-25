@@ -163,6 +163,7 @@ Item {
                             audio.loadWavFile("records/" + name)
                             audio.startPlayback()
                             //audioHandlerItem.parent.parent.parent
+                            thatWindow.requestWaveshape("records/" + name)
 
                         }
                         onClicked: {
@@ -170,7 +171,6 @@ Item {
                             filesModel.filename = name
                             filenameEdit.text = name
                             //TODO клавишу
-                            thatWindow.requestWaveshape("records/" + name)
                         }
                     }
                 }

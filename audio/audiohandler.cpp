@@ -14,8 +14,10 @@ AudioHandler::AudioHandler() {
 
     commonFormat.setSampleRate(44100);
     commonFormat.setChannelCount(1);
-    commonFormat.setSampleSize(32);
-    commonFormat.setSampleType(QAudioFormat::Float);
+    //commonFormat.setSampleSize(32);
+    //commonFormat.setSampleType(QAudioFormat::Float);
+    commonFormat.setSampleSize(16);
+    commonFormat.setSampleType(QAudioFormat::SignedInt);
     commonFormat.setByteOrder(QAudioFormat::LittleEndian);
     commonFormat.setCodec("audio/pcm");
 
@@ -68,6 +70,7 @@ void AudioHandler::initRecorder() {
     if (!info.isFormatSupported(commonFormat)) {
         qDebug() << "Default format not supported - trying to use nearest";
         commonFormat = info.nearestFormat(commonFormat);
+        qDebug() << commonFormat.sampleRate() << " " << commonFormat.sampleSize();
     }
     audioReceiver  = std::make_unique<AudioReceiver>(commonFormat, this, commonBufer); //    //connect(audioInfo, SIGNAL(update()), SLOT(refreshDisplay()));
     audioInput = std::make_unique<QAudioInput>(QAudioDeviceInfo::defaultInputDevice(), commonFormat, nullptr);
@@ -79,6 +82,7 @@ void AudioHandler::initPlayer() {
     if (!info.isFormatSupported(commonFormat)) {
         qDebug() << "Default format not supported - trying to use nearest";
         commonFormat = info.nearestFormat(commonFormat);
+        qDebug() << commonFormat.sampleRate() << " " << commonFormat.sampleSize();
     }
     audioPlayer = std::make_unique<AudioSpeaker>(commonFormat, this, commonBufer);
     audioOutput = std::make_unique<QAudioOutput>(QAudioDeviceInfo::defaultOutputDevice(), commonFormat, nullptr);
