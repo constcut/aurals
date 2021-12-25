@@ -53,10 +53,10 @@ void WaveshapeQML::paint(QPainter *painter)
 
 void WaveshapePainter::paintWaveShape(QPainter &painter)
 {
-    QList<ContourEl> zoom4 = waveContour.getZoom4();
-    QList<ContourEl> zoom16 = waveContour.getZoom16();
     QList<ContourEl> zoom64 = waveContour.getZoom64();
     QList<ContourEl> zoom256 = waveContour.getZoom256();
+
+
 
     //=======================Amplitudogramm========
     //thn we can make it symetric
@@ -65,128 +65,31 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
     for (int i = 0; i < zoom256.size(); ++i)
     {
         ContourEl conturEl = zoom256[i];
-        painter.drawLine(i, 100, i, 100 + conturEl.energy/40000.0);
-        painter.drawLine(i, 100, i, 100 - conturEl.energy/40000.0);
-    }
-    painter.setPen(QColor(10,255,20));
-    for (int i = 0; i < zoom64.size(); ++i)
-    {
-        ContourEl conturEl = zoom64[i];
-        painter.drawLine(i*4, 100, i*4, 100+ conturEl.energy/80000.0);
-        painter.drawLine(i*4, 100, i*4, 100 - conturEl.energy/80000.0);
-    }
-    painter.setPen(Qt::gray);
-    for (int i = 0; i < zoom16.size(); ++i)
-    {
-        ContourEl conturEl = zoom16[i];
-        painter.drawLine(i*16, 100, i*16, 100+ conturEl.energy/160000.0);
-        painter.drawLine(i*16, 100, i*16, 100- conturEl.energy/160000.0);
-    }
-    painter.setPen(Qt::lightGray);
-    for (int i = 0; i < zoom4.size(); ++i)
-    {
-        ContourEl conturEl = zoom4[i];
-        painter.drawLine(i*64, 100, i*64, 100+ conturEl.energy/320000.0);
-        painter.drawLine(i*64, 100, i*64, 100- conturEl.energy/320000.0);
-    }
-    //needed optimization - each step by one line
-
-    //=======================Amplitudogramm========
-
-
-    //=======================Oscialogramm==========
-
-
-    /*
-    ContourEl prevEl;
-    for (int i = 0; i < zoom256.size(); ++i)
-    {
-        ContourEl conturEl = zoom256[i];
-
-        qint32 heightOfEl = conturEl.max - conturEl.min;
-        heightOfEl /= 1024;
-
-        qint32 yOff = (conturEl.min + conturEl.max)/1024;
-
         painter.setPen(QColor(10,20,255));
-        painter.drawLine(i,300+yOff,i,300+yOff+heightOfEl);
-
-        qint32 yOffPrev = (prevEl.min + prevEl.max)/1024;
-        qint32 heightPrev = (conturEl.max - conturEl.min)/1024;
-
-        painter.setPen(QColor(10,255,20));
-        painter.drawLine(i, 300 +yOff, i-1,300+yOffPrev);
-        painter.drawLine(i, 300 +yOff + heightOfEl, i-1,300+yOffPrev + heightPrev);
-
-        prevEl = conturEl;
+        painter.drawLine(i, 100, i, 100 + 2*conturEl.energy/40000.0);
+        painter.drawLine(i, 100, i, 100 - 2*conturEl.energy/40000.0);
+        painter.setPen(QColor(10,255,255));
+        painter.drawLine(i, 100, i, 100 - conturEl.min / 1000);
+        painter.drawLine(i, 100, i, 100 + conturEl.max / 1000);
     }
-    */
-
-    /*
     painter.setPen(QColor(10,255,20));
+    int prevX1=0, prevX2=0, prevY1=0, prevY2=0;
     for (int i = 0; i < zoom64.size(); ++i)
     {
         ContourEl conturEl = zoom64[i];
-
-        qint32 heightOfEl = conturEl.max - conturEl.min;
-        heightOfEl /= 1024;
-
-        qint32 yOff = (conturEl.min + 32535)/1024;
-
-        painter.drawRect(i*4,200+yOff,4,heightOfEl);
+        //painter.drawLine(i*64, 100, i*64, 100+ conturEl.energy/80000.0);
+        //painter.drawLine(i*64, 100, i*64, 100 - conturEl.energy/80000.0);
+        painter.drawLine(i*64, 100 - 2*conturEl.energy/80000.0, prevX1, prevY1);
+        painter.drawLine(i*64, 100 + 2*conturEl.energy/80000.0, prevX2, prevY2);
+        prevX1 = prevX2 = i*64;
+        prevY1 = 100 - 2*conturEl.energy/80000.0;
+        prevY2 = 100 + 2*conturEl.energy/80000.0;
     }
-
-    painter.setPen(Qt::gray);
-    for (int i = 0; i < zoom16.size(); ++i)
-    {
-        ContourEl conturEl = zoom16[i];
-
-        qint32 heightOfEl = conturEl.max - conturEl.min;
-        heightOfEl /= 1024;
-
-        qint32 yOff = (conturEl.min + 32535)/1024;
-
-        painter.drawRect(i*16,200+yOff,16,heightOfEl);
-    }
-    painter.setPen(Qt::lightGray);
-    for (int i = 0; i < zoom4.size(); ++i)
-    {
-        ContourEl conturEl = zoom4[i];
-
-        qint32 heightOfEl = conturEl.max - conturEl.min;
-        heightOfEl /= 1024;
-
-        qint32 yOff = (conturEl.min + 32535)/1024;
-
-
-        painter.drawRect(i*64,200+yOff,64,heightOfEl);
-    }*/
-
-
-
-    if (windowPosition != -1)
-    {
+    if (windowPosition != -1)  {
         painter.setPen(Qt::darkMagenta);
         painter.drawRect(2*windowPosition/125,0,2*windowWidth/125,200);
-
-
        // qDebug() <<"WP "<<windowPosition<<" WW "<<windowWidth;
     }
-
-    /*
-    painter.setPen(Qt::black);
-    qint64 cursorPosition = audioPoistion/125;
-    cursorPosition *= 2;
-
-    const int verticalPosition = 200;
-
-    painter.drawEllipse(cursorPosition,verticalPosition,5,5); //make something better
-
-     painter.setPen(Qt::red);
-     painter.drawEllipse(cursorPosition+2,verticalPosition+2,2,2);
-    */
-
-    //=======================Oscialogramm==========
 
 }
 

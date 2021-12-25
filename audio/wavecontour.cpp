@@ -85,6 +85,18 @@ ContourEl WaveContour::summateElements(const ContourEl &e1,const  ContourEl &e2,
     return result;
 }
 
+
+ContourEl WaveContour::summate2Elements(const ContourEl &e1,const  ContourEl &e2)
+{
+    ContourEl result;
+
+    result.energy = e1.energy + e2.energy;
+    result.max = std::max(e1.max,e2.max);
+    result.min = std::min(e1.min,e2.min);
+
+    return result;
+}
+
 bool WaveContour::loadWavFile(QString filename)
 {
     WavFile wav;
@@ -109,7 +121,7 @@ bool WaveContour::loadWavFile(QString filename)
     //FOR making bpm splited 64 - need to make from formula
     //whole is 8000/bpm/120 :  sample rate/(bpm/120)
 
-    for (int step = 0; step < bigSteps; ++step)
+    for (size_t step = 0; step < bigSteps; ++step)
     {
         QList<qint16> x64samples = samples.mid(125*step,125);
 
@@ -125,14 +137,15 @@ bool WaveContour::loadWavFile(QString filename)
 
         ContourEl el64 = summateElements(el256x1,el256x2,el256x3,el256x4);
 
+        ContourEl el128_1 = summate2Elements(el256x1,el256x2);
+        ContourEl el128_2 = summate2Elements(el256x1,el256x2);
+
         zoom64 << el64;
         zoom256 << el256x1 << el256x2 <<  el256x3 <<  el256x4;
     }
 
     qDebug() << "Loaded "<<samples.size() <<" samples; "<< zoom64.size() << " z64 " <<zoom256.size() << " z256";
 
-    zoom16 = summ4Lists(zoom64);
-    zoom4 = summ4Lists(zoom16);
     //this function can be used to rewrite and make 1024th - the smallest measure
     //then 256 - 64 - 16 - 4 - and even maybe 1th (full takt)  from it
 

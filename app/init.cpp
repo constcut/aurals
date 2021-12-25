@@ -47,9 +47,9 @@ int mainInit(int argc, char *argv[]) {
     else
         qWarning() << "Failed to load font";
 
-    qmlRegisterType<WaveshapeQML>("wavesplat.music.wave", 1, 0, "Waveshape");
-    qmlRegisterType<WavePositionQML>("wavesplat.music.wave", 1, 0, "WavePosition");
-    qmlRegisterType<SpectrographQML>("wavesplat.music.wave", 1, 0,"Spectrograph");
+    qmlRegisterType<WaveshapeQML>("mther.app", 1, 0, "Waveshape");
+    qmlRegisterType<WavePositionQML>("mther.app", 1, 0, "WavePosition");
+    qmlRegisterType<SpectrographQML>("mther.app", 1, 0,"Spectrograph");
 
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("Windows-1251")); //Настройки //KOI8-R //ISO 8859-5 //UTF-8 //Windows-1251
     QQmlApplicationEngine engine;

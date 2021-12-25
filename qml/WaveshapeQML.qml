@@ -1,5 +1,5 @@
 import QtQuick 2.7
-import wavesplat.music.wave 1.0
+import mther.app 1.0
 import QtQuick.Controls 1.4
 
 Item {
