@@ -27,7 +27,7 @@ public:
 
 private:
 
-    float parabolicInterpolation(int tauEstimate);
+    double parabolicInterpolation();
     bool absoluteThresholdFound();
     void accMeanNormDifference();
     void halvesDifference(float* buffer);

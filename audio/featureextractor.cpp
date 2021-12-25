@@ -61,54 +61,33 @@ double Yin::getPitch(float* buffer) {
     halvesDifference(buffer);
     accMeanNormDifference();
     if (absoluteThresholdFound())
-        return sampleRate / parabolicInterpolation(currentTau);
-    return -1.0; //Not found
+        return sampleRate / parabolicInterpolation();
+    return -1.0; //Not found case
 }
 
 
-float Yin::parabolicInterpolation(int tauEstimate) {
-    float betterTau;
-    int x0;
-    int x2;
+double Yin::parabolicInterpolation() {
 
-    if (tauEstimate < 1) {
-        x0 = tauEstimate;
+    size_t start = currentTau ? currentTau - 1 : currentTau;
+    size_t finish = currentTau + 1 < halfBufferSize ? currentTau + 1 : currentTau;
+
+    if (start == currentTau) {
+        if (yinBuffer[currentTau] <= yinBuffer[finish])
+            return currentTau;
+        else
+            return finish;
     }
-    else {
-        x0 = tauEstimate - 1;
+    if (finish == currentTau) {
+        if (yinBuffer[currentTau] <= yinBuffer[start])
+            return currentTau;
+        else
+            return start;
     }
-    if (tauEstimate + 1 < halfBufferSize) {
-        x2 = tauEstimate + 1;
-    }
-    else {
-        x2 = tauEstimate;
-    }
-    if (x0 == tauEstimate) {
-        if (yinBuffer[tauEstimate] <= yinBuffer[x2]) {
-            betterTau = tauEstimate;
-        }
-        else {
-            betterTau = x2;
-        }
-    }
-    else if (x2 == tauEstimate) {
-        if (yinBuffer[tauEstimate] <= yinBuffer[x0]) {
-            betterTau = tauEstimate;
-        }
-        else {
-            betterTau = x0;
-        }
-    }
-    else {
-        float s0, s1, s2;
-        s0 = yinBuffer[x0];
-        s1 = yinBuffer[tauEstimate];
-        s2 = yinBuffer[x2];
-        // fixed AUBIO implementation, thanks to Karl Helgason:
-        // (2.0f * s1 - s2 - s0) was incorrectly multiplied with -1
-        betterTau = tauEstimate + (s2 - s0) / (2 * (2 * s1 - s2 - s0));
-    }
-    return betterTau;
+
+    double begin = yinBuffer[start];
+    double middle = yinBuffer[currentTau];
+    double end = yinBuffer[finish];
+    return currentTau + (end - begin) / (2 * (2 * middle - end - begin));
 }
 
 
