@@ -5,6 +5,13 @@ import QtQuick.Controls 1.4
 Item {
     id: item
 
+    property string filename: "last.wav"
+
+    function reloadFile() {
+        waveShape.loadFile(item.filename)
+        console.log("reload file of waveshape qml called ", filename)
+    }
+
     ScrollView
     {
         //Flickable
@@ -52,12 +59,8 @@ Item {
 
                 onClicked:
                 {
-
-                    //console.log("Click on waveshape "+mouseX +" " + mouseX*125.0/2.0)
-
                     waveShape.setWindowPosition(mouseX*125.0/2.0)
-                    //
-                    spectrum.loadSpectrum("last.wav",mouseX*125.0/2.0)
+                    spectrum.loadSpectrum(item.filename,mouseX*125.0/2.0)
                 }
             }
 
@@ -73,8 +76,8 @@ Item {
                     anchors.fill: parent
                     onClicked: {
                         flick.contentX = 0
-                        soundEngine.loadFile("last.wav")
-                        soundEngine.startPlayback()
+                        //soundEngine.loadFile(item.filename) //TODO
+                        //soundEngine.startPlayback()
                     }
                 }
 
@@ -89,7 +92,8 @@ Item {
                 y: 50  + wavPos.height
 
                 Component.onCompleted: {
-                    waveShape.loadFile("last.wav")
+                    waveShape.loadFile(item.filename)
+                    console.log("component competed waveshape ", item.filename)
                 }
             }
 
@@ -119,7 +123,8 @@ Item {
             if (sizeComboBox.currentIndex == 4) windowWidth = 16384
 
             waveShape.setWindowWidth(windowWidth)
-            spectrum.setSamplesAmount(windowWidth)
+            if (spectrum != null)
+                spectrum.setSamplesAmount(windowWidth)
         }
     }
 
@@ -131,11 +136,12 @@ Item {
 
         id:spectrum
         Component.onCompleted: {
-            spectrum.setSoundEngine(soundEngine)
+            //spectrum.setSoundEngine(soundEngine)
             spectrum.changeBarsCount(200)
         }
     }
 
+    /*
     Connections
     {
         target: soundEngine
@@ -156,5 +162,5 @@ Item {
                 positionConnection.counter -= 10
             }
         }
-    }
+    }*/
 }

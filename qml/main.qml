@@ -32,14 +32,16 @@ ApplicationWindow {
             }
 
             ToolButton {
-                text: "                                "
-                //TODO spacing:
-            }
-            ToolButton {
                 text: "Exit"
                 onClicked: Qt.exit(0)
             }
         }
+    }
+
+    function requestWaveshape(filename) {
+        console.log('Requested waveshape', filename)
+        mainLoader.setSource("qrc:/qml/WaveshapeQML.qml", {"filename": filename});
+        mainLoader.item.reloadFile()
     }
 
     Loader {

@@ -136,6 +136,8 @@ Item {
             property string filename: ""
         }
 
+
+
         Rectangle {
             id: mainRect
             width: 500; height: 300
@@ -160,11 +162,15 @@ Item {
                             audio.resetBufer()
                             audio.loadWavFile("records/" + name)
                             audio.startPlayback()
+                            //audioHandlerItem.parent.parent.parent
+
                         }
                         onClicked: {
                             filesModel.selected = index
                             filesModel.filename = name
                             filenameEdit.text = name
+                            //TODO клавишу
+                            thatWindow.requestWaveshape("records/" + name)
                         }
                     }
                 }
