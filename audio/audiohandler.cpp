@@ -149,10 +149,22 @@ QStringList AudioHandler::getRecords() const {
 void AudioHandler::saveRecordTimstamp() {
     auto timestamp = QDateTime::currentDateTime().toString("yyyy-MM-dd_HH_mm_ss");
     QString filename = "records/" + timestamp + "_" + QString::number(commonFormat.sampleRate()) + ".wav";
+    saveWavFile(filename);
+}
+
+void AudioHandler::saveWavFile(QString filename) const {
     WavFile wav;
     wav.open(filename, QIODevice::WriteOnly);
     wav.writeHeader(commonFormat.sampleRate(), commonFormat.sampleSize(), commonBufer.size(), false, true);
     wav.write(commonBufer);
+}
+
+void AudioHandler::loadWavFile(QString filename) {
+    WavFile wav;
+    wav.open(filename);
+    commonBufer = wav.readAll();
+    commonFormat = wav.audioFormat();
+    qDebug() << commonBufer.size() << " loaded bytes in bufer";
 }
 
 

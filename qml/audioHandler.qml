@@ -45,11 +45,11 @@ Item {
             }
             ToolButton {
                 text: "Save dump"
-                onClicked: audio.saveFile("rec.dump")
+                onClicked: audio.saveWavFile("rec.dump.wav")
             }
             ToolButton {
                 text: "Load dump"
-                onClicked: audio.loadFile("rec.dump")
+                onClicked: audio.loadWavFile("rec.dump.wav")
             }
             //ToolButton {
             //    text: "Request permission"
@@ -158,7 +158,7 @@ Item {
                         anchors.fill: parent
                         onDoubleClicked: {
                             audio.resetBufer()
-                            audio.loadFile("records/" + name)
+                            audio.loadWavFile("records/" + name)
                             audio.startPlayback()
                         }
                         onClicked: {

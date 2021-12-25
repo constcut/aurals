@@ -26,6 +26,9 @@ public:
 
     Q_INVOKABLE void loadFile(QString filename);
     Q_INVOKABLE void saveFile(QString filename) const;
+    Q_INVOKABLE void loadWavFile(QString filename);
+    Q_INVOKABLE void saveWavFile(QString filename) const;
+
 
     Q_INVOKABLE int getSampleRate() const {
         return commonFormat.sampleRate();
@@ -46,6 +49,7 @@ public:
 
     void requestStopRecord();
     void requestStopPlayback();
+
 
 private:
 
