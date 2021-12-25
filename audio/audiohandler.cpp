@@ -6,6 +6,7 @@
 #include <QDateTime>
 
 #include "app/androidtools.h"
+#include "wavfile.h"
 
 
 AudioHandler::AudioHandler() {
@@ -146,10 +147,12 @@ QStringList AudioHandler::getRecords() const {
 
 
 void AudioHandler::saveRecordTimstamp() {
-    QDateTime dt = QDateTime::currentDateTime();
-    auto str = dt.toString("yyyy-MM-dd_HH_mm_ss");
-    qDebug() << str;
-    saveFile("records/" + str + "_" + QString::number(commonFormat.sampleRate()));
+    auto timestamp = QDateTime::currentDateTime().toString("yyyy-MM-dd_HH_mm_ss");
+    QString filename = "records/" + timestamp + "_" + QString::number(commonFormat.sampleRate()) + ".wav";
+    WavFile wav;
+    wav.open(filename, QIODevice::WriteOnly);
+    wav.writeHeader(commonFormat.sampleRate(), commonFormat.sampleSize(), commonBufer.size(), false, true);
+    wav.write(commonBufer);
 }
 
 

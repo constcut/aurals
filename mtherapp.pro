@@ -14,6 +14,7 @@ SOURCES += \
     audio/featureextractor.cpp \
     audio/fft.cpp \
     audio/waveanalys.cpp \
+    audio/wavfile.cpp \
     audio/yin.cpp \
     main.cpp \
     app/loghandler.cpp \
@@ -53,6 +54,7 @@ HEADERS += \
     audio/featureextractor.h \
     audio/fft.h \
     audio/waveanalys.h \
+    audio/wavfile.h \
     audio/yin.h \
     libs/stft/HannWindow.h \
     libs/stft/Ooura_FFT.h \
