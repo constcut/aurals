@@ -17,7 +17,7 @@ Item {
             }
             ComboBox {
                 model: ["22050", "44100", "48000"]
-                currentIndex: 0
+                currentIndex: 1
                 onCurrentTextChanged: {
                     var sr = parseInt(currentText)
                     audio.setSampleRate(sr)
@@ -182,9 +182,8 @@ Item {
     function reload() {
         var files = audio.getRecords();
         filesModel.clear()
-        for (var i = 2; i < files.length; ++i) {
+        for (var i = 2; i < files.length; ++i)
             filesModel.append({"name": files[i]})
-        }
     }
 
     Component.onCompleted: {

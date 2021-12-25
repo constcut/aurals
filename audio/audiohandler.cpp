@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QDateTime>
+#include <QTimer>
 
 #include "app/androidtools.h"
 #include "wavfile.h"
@@ -11,7 +12,7 @@
 
 AudioHandler::AudioHandler() {
 
-    commonFormat.setSampleRate(22050);
+    commonFormat.setSampleRate(44100);
     commonFormat.setChannelCount(1);
     commonFormat.setSampleSize(32);
     commonFormat.setSampleType(QAudioFormat::Float);
@@ -40,13 +41,19 @@ void AudioHandler::stopRecord() {
     audioInput->stop();
     //TODO сохранить в wav, загрузить в DAW изучить, возможно вместо вырезания занулить
     if (prevPosition == 0)
-        commonBufer.remove(0, 4*2205); //Щелчёк, однако дозаписывать в такую запись будет неудачным решением, вернее нужно будет сохранять позицию и вырезать из неё щелчёк так же
+        commonBufer.remove(0, 4*2205);
 }
 
 
 void AudioHandler::startPlayback() {
+    const double sampleRate = commonFormat.sampleRate();
+    const double bitRate = commonFormat.sampleSize();
+    const double bytesPerSample = bitRate / 8.0;
+    const double msInSecond = 1000.0;
+    double ms = static_cast<double>(commonBufer.size()) / (bytesPerSample * sampleRate / msInSecond);
     audioPlayer->start();
     audioOutput->start(audioPlayer.get());
+    QTimer::singleShot(ms, this, &AudioHandler::requestStopPlayback);
 }
 
 
@@ -147,8 +154,8 @@ QStringList AudioHandler::getRecords() const {
 
 
 void AudioHandler::saveRecordTimstamp() {
-    auto timestamp = QDateTime::currentDateTime().toString("yyyy-MM-dd_HH_mm_ss");
-    QString filename = "records/" + timestamp + "_" + QString::number(commonFormat.sampleRate()) + ".wav";
+    auto timestamp = QDateTime::currentDateTime().toString("yyyy-MM-ddTHH.mm.ss");
+    QString filename = "records/" + timestamp + ".wav";
     saveWavFile(filename);
 }
 
@@ -163,8 +170,9 @@ void AudioHandler::loadWavFile(QString filename) {
     WavFile wav;
     wav.open(filename);
     commonBufer = wav.readAll();
-    commonFormat = wav.audioFormat();
     qDebug() << commonBufer.size() << " loaded bytes in bufer";
+    //commonFormat = wav.audioFormat();
+    //initPlayer(); //TODO
 }
 
 
