@@ -13,11 +13,16 @@ SOURCES += \
     audio/audiospeaker.cpp \
     audio/featureextractor.cpp \
     audio/fft.cpp \
+    audio/frequencyspectrum.cpp \
+    audio/spectrograph.cpp \
+    audio/spectrumanalyser.cpp \
+    audio/utils.cpp \
     audio/waveanalys.cpp \
     audio/wavecontour.cpp \
     audio/waveshape.cpp \
     audio/wavfile.cpp \
     audio/yin.cpp \
+    libs/fft/fftreal_wrapper.cpp \
     main.cpp \
     app/loghandler.cpp \
     midi/MidiFile.cpp \
@@ -55,11 +60,37 @@ HEADERS += \
     audio/audiospeaker.h \
     audio/featureextractor.h \
     audio/fft.h \
+    audio/frequencyspectrum.h \
+    audio/spectrograph.h \
+    audio/spectrum.h \
+    audio/spectrumanalyser.h \
+    audio/utils.h \
     audio/waveanalys.h \
     audio/wavecontour.h \
     audio/waveshape.h \
     audio/wavfile.h \
     audio/yin.h \
+    libs/fft/Array.h \
+    libs/fft/Array.hpp \
+    libs/fft/DynArray.h \
+    libs/fft/DynArray.hpp \
+    libs/fft/FFTReal.h \
+    libs/fft/FFTReal.hpp \
+    libs/fft/FFTRealFixLen.h \
+    libs/fft/FFTRealFixLen.hpp \
+    libs/fft/FFTRealFixLenParam.h \
+    libs/fft/FFTRealPassDirect.h \
+    libs/fft/FFTRealPassDirect.hpp \
+    libs/fft/FFTRealPassInverse.h \
+    libs/fft/FFTRealPassInverse.hpp \
+    libs/fft/FFTRealSelect.h \
+    libs/fft/FFTRealSelect.hpp \
+    libs/fft/FFTRealUseTrigo.h \
+    libs/fft/FFTRealUseTrigo.hpp \
+    libs/fft/OscSinCos.h \
+    libs/fft/OscSinCos.hpp \
+    libs/fft/def.h \
+    libs/fft/fftreal_wrapper.h \
     libs/stft/HannWindow.h \
     libs/stft/Ooura_FFT.h \
     libs/stft/PostProcessor.h \
@@ -93,6 +124,8 @@ DISTFILES += \
     android/gradlew \
     android/gradlew.bat \
     android/res/values/libs.xml \
+    libs/fft/license.txt \
+    libs/fft/readme.txt \
     main.qml \
     math/cutoffs \
     current \
