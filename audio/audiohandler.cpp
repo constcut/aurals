@@ -171,8 +171,8 @@ void AudioHandler::loadWavFile(QString filename) {
     wav.open(filename);
     commonBufer = wav.readAll();
     qDebug() << commonBufer.size() << " loaded bytes in bufer";
-    //commonFormat = wav.audioFormat();
-    //initPlayer(); //TODO
+    //commonFormat.setSampleRate(wav.audioFormat().sampleRate()); //TODO
+    //initPlayer();
 }
 
 

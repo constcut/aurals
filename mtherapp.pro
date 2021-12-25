@@ -14,6 +14,8 @@ SOURCES += \
     audio/featureextractor.cpp \
     audio/fft.cpp \
     audio/waveanalys.cpp \
+    audio/wavecontour.cpp \
+    audio/waveshape.cpp \
     audio/wavfile.cpp \
     audio/yin.cpp \
     main.cpp \
@@ -54,6 +56,8 @@ HEADERS += \
     audio/featureextractor.h \
     audio/fft.h \
     audio/waveanalys.h \
+    audio/wavecontour.h \
+    audio/waveshape.h \
     audio/wavfile.h \
     audio/yin.h \
     libs/stft/HannWindow.h \

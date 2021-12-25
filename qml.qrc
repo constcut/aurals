@@ -4,5 +4,6 @@
         <file>qml/main.qml</file>
         <file>qml/PianoMap.qml</file>
         <file>qml/audioHandler.qml</file>
+        <file>qml/WaveshapeQML.qml</file>
     </qresource>
 </RCC>
