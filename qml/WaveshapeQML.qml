@@ -16,7 +16,7 @@ Item {
     {
         //Flickable
         width: parent.width
-        height: 300
+        height: 2*parent.height/3
 
         horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOn
         verticalScrollBarPolicy:  Qt.ScrollBarAlwaysOff
@@ -24,13 +24,13 @@ Item {
         Flickable
         {
             id: flick
-            y: 50
+            y: 5
             x: 0
             width: parent.width
             height: parent.height-20
 
             contentWidth: 3000
-            contentHeight: 300
+            contentHeight:  parent.height/2
 
             //QML2.ScrollBar.horizontal:  QML2.ScrollBar { }
 
@@ -39,7 +39,7 @@ Item {
                 //anchors.fill: parent
 
                 x:0
-                y:70
+                y:20
 
                 width: parent.width
                 height: 250
@@ -68,8 +68,8 @@ Item {
             {
                 id:wavPos
                 height: 20
-                width: 7000 //actually must calculate it for each file
-                y:  50
+                width: 1000 //actually must calculate it for each file
+                y:  5
 
                 property int time : 0
                 MouseArea {
@@ -86,10 +86,10 @@ Item {
             Waveshape
             {
                 id: waveShape
-                height: 200
-                width: 7000
+                height:  parent.height
+                width: 1000
 
-                y: 50  + wavPos.height
+                y: wavPos.y  + wavPos.height
 
                 Component.onCompleted: {
                     waveShape.loadFile(item.filename)
@@ -133,9 +133,9 @@ Item {
 
     Spectrograph
     {
-        y: waveShape.height + waveShape.y + 35
+        y: waveShape.height + waveShape.y + 5
         width: parent.width
-        height: 200
+        height: parent.height / 6
 
         id:spectrum
         Component.onCompleted: {

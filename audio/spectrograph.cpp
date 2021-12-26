@@ -70,7 +70,7 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
    // qDebug() << "Num bars :"<<numBars;
 
     // Highlight region of selected bar
-    qDebug() << "BarW1 " << barWidth * 200 << " " << rect.width() ;
+    //qDebug() << "BarW1 " << barWidth * 200 << " " << rect.width() << " " << rect.height() ;
 
     //Removed static cast
     auto calcXPos = [&rect, &barWidth](int index) { return (rect.topLeft().x() + index * barWidth); };
@@ -295,7 +295,7 @@ void SpectrographQML::onPress(int xPress, int yPress, int width, int height)
            return false;
 
        //I JUST DON"T UNDERSTAND WHATS WRONG
-       qDebug() << "Spec pos " << position;
+       qDebug() << filename << " spectrum for position " << position;
 
         quint64 afterHeaderPosition = wav.pos();
         wav.seek(afterHeaderPosition + position);
@@ -307,9 +307,6 @@ void SpectrographQML::onPress(int xPress, int yPress, int width, int height)
 
         if (analyseData.size() != samplesAmount*2)
             return false;
-
-        qDebug() << "Push to analyser calculete "<<analyseData.size();
-
         analyser.calculate(analyseData,wav.audioFormat());
 
         return true;

@@ -129,11 +129,11 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
 
     // Calculate the FFT
 
-    qDebug() <<"Num samples before calculate FFT "<<m_numSamples;
+    //qDebug() <<"Num samples before calculate FFT "<<m_numSamples;
 
     m_fft->calculateFFT(m_output.data(), m_input.data());
 
-    qDebug() << "Calculation of fft done";
+    //qDebug() << "Calculation of fft done";
 
     // Analyze output to obtain amplitude and phase for each frequency
     for (int i=2; i<=m_numSamples/2; ++i) {
