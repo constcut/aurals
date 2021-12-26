@@ -54,10 +54,10 @@ SpectrumAnalyserThread::SpectrumAnalyserThread(QObject *parent)
 #endif
     ,   m_numSamples(SpectrumLengthSamples)
     ,   m_windowFunction(DefaultWindowFunction)
-    ,   m_window(16384, 0.0) //SpectrumLengthSamples
-    ,   m_input(16384, 0.0)
-    ,   m_output(16384, 0.0)
-    ,   m_spectrum(16384)
+    ,   m_window(4096*4, 0.0) //SpectrumLengthSamples
+    ,   m_input(4096*4, 0.0)
+    ,   m_output(4096*4, 0.0)
+    ,   m_spectrum(4096*4) //16 before
 #ifdef SPECTRUM_ANALYSER_SEPARATE_THREAD
     ,   m_thread(new QThread(this))
 #endif

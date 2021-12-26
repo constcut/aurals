@@ -117,7 +117,7 @@ Item {
                 text: "Play"
                 onClicked: {
                     audio.resetBufer()
-                    audio.loadWavFile("records/" + name)
+                    audio.loadWavFile("records/" + filenameEdit.text)
                     audio.startPlayback()
                 }
             }

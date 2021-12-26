@@ -295,6 +295,7 @@ void SpectrographQML::onPress(int xPress, int yPress, int width, int height)
            return false;
 
        //I JUST DON"T UNDERSTAND WHATS WRONG
+       qDebug() << "Spec pos " << position;
 
         quint64 afterHeaderPosition = wav.pos();
         wav.seek(afterHeaderPosition + position);

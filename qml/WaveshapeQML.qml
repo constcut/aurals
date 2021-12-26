@@ -107,8 +107,8 @@ Item {
     {
         id: sizeComboBox
 
-        y:  waveShape.height + waveShape.y + 35
-        x: 1600 + 50
+        y:  spectrum.y + spectrum.height + 10
+        x: parent.width / 2
 
         model: ["1024","2048","4096","8192","16384"]
 
