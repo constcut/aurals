@@ -65,16 +65,18 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
     painter.fillRect(rect, Qt::black);
 
     const int numBars = m_bars.count();
-    double barWidth = rect.width()/(numBars);
+    double barWidth = rect.width()/( static_cast<double>(numBars) );
 
    // qDebug() << "Num bars :"<<numBars;
 
     // Highlight region of selected bar
+    qDebug() << "BarW1 " << barWidth * 200 << " " << rect.width() ;
 
-    auto calcXPos = [&rect, &barWidth](int index) { return static_cast<int>(rect.topLeft().x() + index * barWidth); };
+    //Removed static cast
+    auto calcXPos = [&rect, &barWidth](int index) { return (rect.topLeft().x() + index * barWidth); };
 
     if (m_barSelected != NullIndex && numBars) {
-        QRect regionRect = rect;
+        QRectF regionRect = rect;
         regionRect.setLeft(calcXPos(m_barSelected));
         regionRect.setWidth(barWidth);
         QColor regionColor(202, 202, 64);
@@ -105,7 +107,7 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
         const int numHorizontalSections = numBars;
 
         for (int i= 0; i < numHorizontalSections; ++i) {
-            QLine line(rect.topLeft(), rect.bottomLeft()); //TODO создавать каждый раз новую
+            QLineF line(rect.topLeft(), rect.bottomLeft()); //TODO создавать каждый раз новую
             line.setP1({calcXPos(i), line.y1()});
             line.setP2({line.x2() + static_cast<int>(barWidth * i), line.y2()});
             painter.drawLine(line);
@@ -115,7 +117,7 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
     // Draw horizontal lines
     const int numVerticalSections = 10;
     QLine line(rect.topLeft(), rect.topRight());
-    for (int i = 1; i < numVerticalSections; ++i) {
+    for (int i = 0; i < numVerticalSections; ++i) {
         line.translate(0, rect.height()/(numVerticalSections));
         painter.drawLine(line);
     }
@@ -138,7 +140,7 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
         for (int i=0; i < numBars; ++i) {
             qreal value = m_bars[i].value;
             Q_ASSERT(value >= 0.0 && value <= 1.0);
-            QRect bar = rect;
+            QRectF bar = rect;
             bar.setLeft(calcXPos(i)); //rect.left() + leftPaddingWidth + (i * (gapWidth + barWidth)));
             bar.setWidth(barWidth);
 
@@ -280,9 +282,8 @@ void SpectrographQML::selectBar(int index) {
 void SpectrographQML::onPress(int xPress, int yPress, int width, int height)
 {
     QRect rect(0,0,width,height);
-    int barWidth = static_cast<double>(width) / m_bars.count();
-    const int index =  (static_cast<double>(xPress) / barWidth);
-    //m_bars.count() *
+    qreal barWidth = static_cast<double>(width) / m_bars.count();
+    const int index = (static_cast<double>(xPress) / barWidth);
     selectBar(index);
 }
 
