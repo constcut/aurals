@@ -17,6 +17,7 @@ public:
     WaveContour() {}
 
     QList<ContourEl> getZoom64() { return zoom64; }
+    QList<ContourEl> getZoom128() { return zoom128; }
     QList<ContourEl> getZoom256() { return zoom256; }
 
 public: //helpers for ContourEl
@@ -33,8 +34,9 @@ protected:
 
     QList<ContourEl> summ4Lists(QList<ContourEl> &source);
 
-    QList<ContourEl> zoom64; //125 samples on 8k
-    QList<ContourEl> zoom256; //31.25 samples on 8k
+    QList<ContourEl> zoom64;
+    QList<ContourEl> zoom128;
+    QList<ContourEl> zoom256;
 
     QList<ContourEl> bpm64; //formula calculated parts on folowing bpm
 

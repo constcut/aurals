@@ -54,36 +54,47 @@ void WaveshapeQML::paint(QPainter *painter)
 void WaveshapePainter::paintWaveShape(QPainter &painter)
 {
     QList<ContourEl> zoom64 = waveContour.getZoom64();
-    QList<ContourEl> zoom256 = waveContour.getZoom256();
-
-
-
+    QList<ContourEl> zoom256 = waveContour.getZoom128();
+    QList<ContourEl> zoom128 = waveContour.getZoom256();
     //=======================Amplitudogramm========
     //thn we can make it symetric
 
-    painter.setPen(QColor(10,20,255));
+    painter.setPen(QColor("green"));
     for (int i = 0; i < zoom256.size(); ++i)
     {
         ContourEl conturEl = zoom256[i];
-        painter.setPen(QColor(10,20,255));
         painter.drawLine(i, 100, i, 100 + 2*conturEl.energy/40000.0);
         painter.drawLine(i, 100, i, 100 - 2*conturEl.energy/40000.0);
-        painter.setPen(QColor(10,255,255));
-        painter.drawLine(i, 100, i, 100 - conturEl.min / 1000);
-        painter.drawLine(i, 100, i, 100 + conturEl.max / 1000);
+        //painter.setPen(QColor(10,255,255));
+        //painter.drawLine(i, 100, i, 100 - conturEl.min / 1000);
+        //painter.drawLine(i, 100, i, 100 + conturEl.max / 1000);
     }
-    painter.setPen(QColor(10,255,20));
+    painter.setPen(QColor("chartreuse"));
     int prevX1=0, prevX2=0, prevY1=0, prevY2=0;
     for (int i = 0; i < zoom64.size(); ++i)
     {
         ContourEl conturEl = zoom64[i];
-        //painter.drawLine(i*64, 100, i*64, 100+ conturEl.energy/80000.0);
-        //painter.drawLine(i*64, 100, i*64, 100 - conturEl.energy/80000.0);
-        painter.drawLine(i*64, 100 - 2*conturEl.energy/80000.0, prevX1, prevY1);
-        painter.drawLine(i*64, 100 + 2*conturEl.energy/80000.0, prevX2, prevY2);
-        prevX1 = prevX2 = i*64;
-        prevY1 = 100 - 2*conturEl.energy/80000.0;
-        prevY2 = 100 + 2*conturEl.energy/80000.0;
+        painter.drawLine(i*2, 100 - conturEl.energy/40000.0, prevX1, prevY1);
+        painter.drawLine(i*2, 100 + conturEl.energy/40000.0, prevX2, prevY2);
+        prevX1 = prevX2 = i*2;
+        prevY1 = 100 - conturEl.energy/40000.0;
+        prevY2 = 100 + conturEl.energy/40000.0;
+    }
+    prevX1=0;
+    prevX2=0;
+    prevY1=0;
+    prevY2=0;
+    painter.setPen(QColor("darkgreen"));
+    for (int i = 0; i < zoom128.size(); ++i)
+    {
+        ContourEl conturEl = zoom128[i];
+        painter.drawLine(i/2, 100, i/2, 100 + 2*conturEl.energy/40000.0);
+        painter.drawLine(i/2, 100, i/2, 100 - 2*conturEl.energy/40000.0);
+        painter.drawLine(i / 2, 100 - 2*conturEl.energy/40000.0, prevX1, prevY1);
+        painter.drawLine(i / 2, 100 + 2*conturEl.energy/40000.0, prevX2, prevY2);
+        prevX1 = prevX2 = i / 2;
+        prevY1 = 100 - 2*conturEl.energy/40000.0;
+        prevY2 = 100 + 2*conturEl.energy/40000.0;
     }
     if (windowPosition != -1)  {
         painter.setPen(Qt::darkMagenta);

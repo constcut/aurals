@@ -141,6 +141,7 @@ bool WaveContour::loadWavFile(QString filename)
         ContourEl el128_2 = summate2Elements(el256x1,el256x2);
 
         zoom64 << el64;
+        zoom128 << el128_1 << el128_2;
         zoom256 << el256x1 << el256x2 <<  el256x3 <<  el256x4;
     }
 

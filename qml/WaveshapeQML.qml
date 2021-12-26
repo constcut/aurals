@@ -93,6 +93,7 @@ Item {
 
                 Component.onCompleted: {
                     waveShape.loadFile(item.filename)
+
                     console.log("component competed waveshape ", item.filename)
                 }
             }
