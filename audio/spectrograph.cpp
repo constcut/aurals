@@ -280,7 +280,7 @@ void SpectrographQML::selectBar(int index) {
 void SpectrographQML::onPress(int xPress, int yPress, int width, int height)
 {
     QRect rect(0,0,width,height);
-    double barWidth = static_cast<double>(width) / m_bars.count();
+    int barWidth = static_cast<double>(width) / m_bars.count();
     const int index =  (static_cast<double>(xPress) / barWidth);
     //m_bars.count() *
     selectBar(index);
