@@ -106,10 +106,10 @@ bool WaveContour::loadWavFile(QString filename)
 
     QDataStream dataStream(samplesBytes);
 
-    QList<qint16> samples;
+    QList<qint16> samples; //TODO?
     qint16 sample;
 
-    for (int i = 0; i < samplesBytes.size()/2; ++i)
+    for (int i = 0; i < samplesBytes.size(); ++i)
     {        //maybe its rather slow and better to read from here - but yet simplest ways
 
         dataStream >> sample; //read one

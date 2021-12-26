@@ -166,7 +166,7 @@ void AudioHandler::saveRecordTimstamp() {
 void AudioHandler::saveWavFile(QString filename) const {
     WavFile wav;
     wav.open(filename, QIODevice::WriteOnly);
-    wav.writeHeader(commonFormat.sampleRate(), commonFormat.sampleSize(), commonBufer.size(), false, true);
+    wav.writeHeader(commonFormat.sampleRate(), commonFormat.sampleSize(), commonBufer.size(), false, false); //EH not float fuck stupid QT, not cute at all
     wav.write(commonBufer);
 }
 

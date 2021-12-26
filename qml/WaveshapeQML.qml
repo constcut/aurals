@@ -68,7 +68,7 @@ Item {
             {
                 id:wavPos
                 height: 20
-                width: 3000 //actually must calculate it for each file
+                width: 7000 //actually must calculate it for each file
                 y:  50
 
                 property int time : 0
@@ -87,13 +87,15 @@ Item {
             {
                 id: waveShape
                 height: 200
-                width: 3000
+                width: 7000
 
                 y: 50  + wavPos.height
 
                 Component.onCompleted: {
                     waveShape.loadFile(item.filename)
-
+                    flick.contentWidth = waveShape.getPixelsLength() + 10
+                    waveShape.width = flick.contentWidth
+                    wavPos.width = waveShape.width
                     console.log("component competed waveshape ", item.filename)
                 }
             }

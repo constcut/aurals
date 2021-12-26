@@ -60,6 +60,7 @@ public:
 //public slots:
     void audioPositionChanged(qint64 position);
 
+
 protected:
     WaveContour waveContour;
     qint64 audioPoistion;
@@ -75,6 +76,10 @@ class WaveshapeQML : public QQuickPaintedItem, public WaveshapePainter
 public:
     explicit WaveshapeQML(QQuickItem* parent = NULL) {}
     ~WaveshapeQML() {}
+
+    Q_INVOKABLE int getPixelsLength() {
+        return waveContour.getZoom64().size();
+    }
 
     void paint(QPainter* painter);
 
