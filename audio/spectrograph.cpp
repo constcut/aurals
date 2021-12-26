@@ -65,15 +65,18 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
     painter.fillRect(rect, Qt::black);
 
     const int numBars = m_bars.count();
+    double barWidth = rect.width()/(numBars);
 
    // qDebug() << "Num bars :"<<numBars;
 
     // Highlight region of selected bar
 
+    auto calcXPos = [&rect, &barWidth](int index) { return static_cast<int>(rect.topLeft().x() + index * barWidth); };
+
     if (m_barSelected != NullIndex && numBars) {
         QRect regionRect = rect;
-        regionRect.setLeft(m_barSelected * rect.width() / numBars);
-        regionRect.setWidth(rect.width() / numBars);
+        regionRect.setLeft(calcXPos(m_barSelected));
+        regionRect.setWidth(barWidth);
         QColor regionColor(202, 202, 64);
         painter.setBrush(Qt::DiagCrossPattern);
         painter.fillRect(regionRect, regionColor);
@@ -100,9 +103,11 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
     // Draw vertical lines between bars
     if (numBars) {
         const int numHorizontalSections = numBars;
-        QLine line(rect.topLeft(), rect.bottomLeft());
-        for (int i=1; i < numHorizontalSections; ++i) {
-            line.translate(rect.width()/(numHorizontalSections), 0); //TODO тут дробные значения - нужно считать иначе
+
+        for (int i= 0; i < numHorizontalSections; ++i) {
+            QLine line(rect.topLeft(), rect.bottomLeft()); //TODO создавать каждый раз новую
+            line.setP1({calcXPos(i), line.y1()});
+            line.setP2({line.x2() + static_cast<int>(barWidth * i), line.y2()});
             painter.drawLine(line);
         }
     }
@@ -130,12 +135,13 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
         const int leftPaddingWidth = 0;// (paddingWidth + gapWidth) / 2;
         const int barHeight = rect.height() - 2 * gapWidth;
 
-        for (int i=0; i<numBars; ++i) {
-            const qreal value = m_bars[i].value;
+        for (int i=0; i < numBars; ++i) {
+            qreal value = m_bars[i].value;
             Q_ASSERT(value >= 0.0 && value <= 1.0);
             QRect bar = rect;
-            bar.setLeft(rect.left() + leftPaddingWidth + (i * (gapWidth + barWidth)));
+            bar.setLeft(calcXPos(i)); //rect.left() + leftPaddingWidth + (i * (gapWidth + barWidth)));
             bar.setWidth(barWidth);
+
             bar.setTop(rect.top() + gapWidth + (1.0 - value) * barHeight);
             bar.setBottom(rect.bottom() - gapWidth);
 

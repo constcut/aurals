@@ -145,14 +145,15 @@ Item {
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                spectrum.onPress(mouseX,mouseY,spectrum.width, spectrum.height)
-                specInfo.text = spectrum.getFreq1() + " " + spectrum.getFreq2()
+                spectrum.onPress(mouseX, mouseY, spectrum.width, spectrum.height)
+                specInfo.text = spectrum.getFreq1() + "-" + spectrum.getFreq2() + " Hz"
             }
         }
     }
     Text {
         id: specInfo
         y : spectrum.y + spectrum.height + 10
+        x : 25
         text: "Spectrum info"
     }
 
