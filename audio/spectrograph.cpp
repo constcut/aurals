@@ -298,7 +298,7 @@ void SpectrographQML::onPress(int xPress, int yPress, int width, int height)
        qDebug() << filename << " spectrum for position " << position;
 
         quint64 afterHeaderPosition = wav.pos();
-        wav.seek(afterHeaderPosition + position);
+        wav.seek(afterHeaderPosition + position*2);
 
         QByteArray analyseData = wav.read(samplesAmount*2); //x2 of 4096 samples
 
