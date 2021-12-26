@@ -101,8 +101,8 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
     if (numBars) {
         const int numHorizontalSections = numBars;
         QLine line(rect.topLeft(), rect.bottomLeft());
-        for (int i=1; i<numHorizontalSections; ++i) {
-            line.translate(rect.width()/(numHorizontalSections), 0);
+        for (int i=1; i < numHorizontalSections; ++i) {
+            line.translate(rect.width()/(numHorizontalSections), 0); //TODO тут дробные значения - нужно считать иначе
             painter.drawLine(line);
         }
     }
@@ -110,7 +110,7 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
     // Draw horizontal lines
     const int numVerticalSections = 10;
     QLine line(rect.topLeft(), rect.topRight());
-    for (int i=1; i<numVerticalSections; ++i) {
+    for (int i = 1; i < numVerticalSections; ++i) {
         line.translate(0, rect.height()/(numVerticalSections));
         painter.drawLine(line);
     }
@@ -124,10 +124,10 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
         // Calculate width of bars and gaps
         const int widgetWidth = rect.width();
         const int barPlusGapWidth = widgetWidth / numBars;
-        const int barWidth = 0.8 * barPlusGapWidth;
-        const int gapWidth = barPlusGapWidth - barWidth;
+        const int barWidth = barPlusGapWidth;
+        const int gapWidth =  barPlusGapWidth - barWidth;
         const int paddingWidth = widgetWidth - numBars * (barWidth + gapWidth);
-        const int leftPaddingWidth = (paddingWidth + gapWidth) / 2;
+        const int leftPaddingWidth = 0;// (paddingWidth + gapWidth) / 2;
         const int barHeight = rect.height() - 2 * gapWidth;
 
         for (int i=0; i<numBars; ++i) {
@@ -264,18 +264,19 @@ void SpectrographQML::setSoundEngine(QObject *eng)
 
 
 void SpectrographQML::selectBar(int index) {
-    const QPair<qreal, qreal> frequencyRange = barRange(index);
-    const QString message = QString("%1 - %2 Hz")
-                                .arg(frequencyRange.first)
-                                .arg(frequencyRange.second);
+    Q_ASSERT(index >= 0 && index < m_bars.count());
+    const qreal bandWidth = (m_highFreq - m_lowFreq) / m_bars.count();
     m_barSelected = index;
+    qDebug() << "Selected index " << index;
     update();
 }
 
 void SpectrographQML::onPress(int xPress, int yPress, int width, int height)
 {
     QRect rect(0,0,width,height);
-    const int index = m_bars.count() * (xPress - rect.left()) / rect.width();
+    double barWidth = static_cast<double>(width) / m_bars.count();
+    const int index =  (static_cast<double>(xPress) / barWidth);
+    //m_bars.count() *
     selectBar(index);
 }
 

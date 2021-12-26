@@ -113,6 +113,14 @@ Item {
                     settingsDialog.visible = !settingsDialog.visible
                 }
             }
+            ToolButton {
+                text: "Play"
+                onClicked: {
+                    audio.resetBufer()
+                    audio.loadWavFile("records/" + name)
+                    audio.startPlayback()
+                }
+            }
 
         }
 
@@ -159,12 +167,7 @@ Item {
                     MouseArea {
                         anchors.fill: parent
                         onDoubleClicked: {
-                            audio.resetBufer()
-                            audio.loadWavFile("records/" + name)
-                            audio.startPlayback()
-                            //audioHandlerItem.parent.parent.parent
-                            thatWindow.requestWaveshape("records/" + name) //TODO клавишу отдельно
-
+                            thatWindow.requestWaveshape("records/" + filenameEdit.text)
                         }
                         onClicked: {
                             filesModel.selected = index

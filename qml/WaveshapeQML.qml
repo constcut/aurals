@@ -134,7 +134,7 @@ Item {
     Spectrograph
     {
         y: waveShape.height + waveShape.y + 35
-        width: 1600
+        width: parent.width
         height: 200
 
         id:spectrum
@@ -142,6 +142,18 @@ Item {
             //spectrum.setSoundEngine(soundEngine)
             spectrum.changeBarsCount(200)
         }
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                spectrum.onPress(mouseX,mouseY,spectrum.width, spectrum.height)
+                specInfo.text = spectrum.getFreq1() + " " + spectrum.getFreq2()
+            }
+        }
+    }
+    Text {
+        id: specInfo
+        y : spectrum.y + spectrum.height + 10
+        text: "Spectrum info"
     }
 
     /*
