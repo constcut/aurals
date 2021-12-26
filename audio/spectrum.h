@@ -61,7 +61,7 @@ const int    SpectrumNumBands       = 50;
 const qreal  SpectrumLowFreq        = 0.0; // Hz
 
 // Upper band of last band in the spectrum
-const qreal  SpectrumHighFreq       = 1000.0; // Hz
+const qreal  SpectrumHighFreq       = 2000.0; // Hz
 
 // Waveform window size in microseconds
 const qint64 WaveformWindowDuration = 500 * 1000;

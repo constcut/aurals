@@ -102,7 +102,7 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
     }
     if (windowPosition != -1)  {
         painter.setPen(Qt::darkMagenta);
-        painter.drawRect(2*windowPosition/125,0,2*windowWidth/125,200);
+        painter.drawRect(2*windowPosition/125,0,2*windowWidth/125,height);
        // qDebug() <<"WP "<<windowPosition<<" WW "<<windowWidth;
     }
 

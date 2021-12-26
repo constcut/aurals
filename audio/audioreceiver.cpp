@@ -72,7 +72,7 @@ void AudioReceiver::start(){
     open(QIODevice::WriteOnly);
     //int border = audioFormat.sampleRate() * (audioFormat.sampleSize() / 8) * 10 //TODO check is buffer already bit in handler
     AudioHandler* handler = dynamic_cast<AudioHandler*>(this->parent());
-    QTimer::singleShot(10000, handler, &AudioHandler::requestStopRecord);
+    QTimer::singleShot(30000, handler, &AudioHandler::requestStopRecord);
 }
 
 
