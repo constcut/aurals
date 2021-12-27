@@ -132,6 +132,7 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
 
     auto rms = calc_dB(m_input.data(), m_input.size());
     qDebug() << "RMS: " << rms;
+    m_spectrum.rms = rms;
 
     // Calculate the FFT
 

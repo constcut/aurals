@@ -130,6 +130,10 @@ public:
     Q_INVOKABLE qreal getFreq2() { const qreal bandWidth = (m_highFreq - m_lowFreq) / m_bars.count();
                                      return (m_barSelected + 1) * bandWidth; }
 
+    Q_INVOKABLE qreal getValue()  { return m_bars[m_barSelected].value; }
+    Q_INVOKABLE qreal getRMS() { return m_spectrum.rms; }
+    Q_INVOKABLE qreal getRMSNoWindow() { return m_spectrum.rmsNoWindow; }
+
 
     Q_INVOKABLE void onPress(int xPress, int yPress, int width, int height);
     Q_INVOKABLE bool loadSpectrum(QString filename, quint64 position);

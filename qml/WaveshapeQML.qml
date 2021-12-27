@@ -61,6 +61,7 @@ Item {
                 {
                     waveShape.setWindowPosition(mouseX*125.0/2.0)
                     spectrum.loadSpectrum(item.filename,mouseX*125.0/2.0)
+                    rmsYinIngo.text = "RMS = " + spectrum.getRMS()
                 }
             }
 
@@ -97,6 +98,7 @@ Item {
                     waveShape.width = flick.contentWidth
                     wavPos.width = waveShape.width
                     console.log("component competed waveshape ", item.filename)
+
                 }
             }
 
@@ -144,9 +146,14 @@ Item {
         }
         MouseArea {
             anchors.fill: parent
+            function log10(val) {
+              return Math.log(val) / Math.LN10;
+            }
             onClicked: {
                 spectrum.onPress(mouseX, mouseY, spectrum.width, spectrum.height)
                 specInfo.text = spectrum.getFreq1() + "-" + spectrum.getFreq2() + " Hz"
+                + " value " + spectrum.getValue() + " dB = " + 20 + log10(spectrum.getValue())
+               // https://stackoverflow.com/questions/3019278/how-can-i-specify-the-base-for-math-log-in-javascript
             }
         }
     }
@@ -155,6 +162,12 @@ Item {
         y : spectrum.y + spectrum.height + 10
         x : 25
         text: "Spectrum info"
+    }
+    Text {
+        id : rmsYinIngo
+        y : specInfo.y + specInfo.height + 5
+        x: 25
+        text: "rms yin info"
     }
 
     /*
