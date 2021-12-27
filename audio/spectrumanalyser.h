@@ -109,6 +109,7 @@ private:
     QVector<DataType>                           m_window;
 
     QVector<DataType>                           m_input;
+    QVector<DataType>                           m_noWindowInput;
     QVector<DataType>                           m_output;
 
     FrequencySpectrum                           m_spectrum;

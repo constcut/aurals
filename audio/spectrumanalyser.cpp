@@ -42,6 +42,8 @@
 #include "utils.h"
 #include "libs/fft/fftreal_wrapper.h"
 
+#include "featureextractor.h"
+
 #include <qmath.h>
 #include <qmetatype.h>
 #include <QAudioFormat>
@@ -56,6 +58,7 @@ SpectrumAnalyserThread::SpectrumAnalyserThread(QObject *parent)
     ,   m_windowFunction(DefaultWindowFunction)
     ,   m_window(4096*4, 0.0) //SpectrumLengthSamples
     ,   m_input(4096*4, 0.0)
+    ,   m_noWindowInput(4096*4, 0.0)
     ,   m_output(4096*4, 0.0)
     ,   m_spectrum(4096*4) //16 before
 #ifdef SPECTRUM_ANALYSER_SEPARATE_THREAD
@@ -126,6 +129,9 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
         m_input[i] = windowedSample;
         ptr += bytesPerSample;
     }
+
+    auto rms = calc_dB(m_input.data(), m_input.size());
+    qDebug() << "RMS: " << rms;
 
     // Calculate the FFT
 
