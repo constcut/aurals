@@ -49,6 +49,11 @@
  */
 class FrequencySpectrum {
 public:
+
+    double rms = 0.0;
+    double rmsNoWindow = 0.0;
+    double pitch = 0.0;
+
     FrequencySpectrum(int numPoints = 0);
 
     struct Element {
