@@ -133,9 +133,14 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
 
     auto rms = calc_dB(m_input.data(), m_input.size());
     auto rmsNoWin = calc_dB(m_noWindowInput.data(), m_input.size());
-    qDebug() << "RMS: " << rms << " rms no win " << rmsNoWin;
+
     m_spectrum.rms = rms;
     m_spectrum.rmsNoWindow = rmsNoWin;
+
+    //TOO BIG
+    auto pitch = calc_YinF0(m_input.data(), m_input.size());
+    qDebug() << "RMS: " << rms << " rms no win " << rmsNoWin << " pitch " << pitch;
+    m_spectrum.pitch = pitch;
 
     // Calculate the FFT
 

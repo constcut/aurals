@@ -133,6 +133,7 @@ public:
     Q_INVOKABLE qreal getValue()  { return m_bars[m_barSelected].value; }
     Q_INVOKABLE qreal getRMS() { return m_spectrum.rms; }
     Q_INVOKABLE qreal getRMSNoWindow() { return m_spectrum.rmsNoWindow; }
+    Q_INVOKABLE qreal getPitch() { return m_spectrum.pitch; }
 
 
     Q_INVOKABLE void onPress(int xPress, int yPress, int width, int height);
