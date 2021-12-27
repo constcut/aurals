@@ -13,7 +13,7 @@ double calc_RMS(const float* data, const size_t len) {
 
 
 double calc_dB(const float* data, const size_t len) {
-    return 20 * log10(calc_RMS(data, len));
+    return 10 * log10(calc_RMS(data, len));
 }
 
 

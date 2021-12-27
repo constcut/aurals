@@ -16,7 +16,7 @@ Item {
     {
         //Flickable
         width: parent.width
-        height: parent.height/2
+        height: 150
 
         horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOn
         verticalScrollBarPolicy:  Qt.ScrollBarAlwaysOff
@@ -62,7 +62,7 @@ Item {
                     waveShape.setWindowPosition(mouseX*125.0/2.0)
                     spectrum.loadSpectrum(item.filename,mouseX*125.0/2.0)
                     rmsYinIngo.text = "RMS = " + spectrum.getRMS() + ". RMS no win = " + spectrum.getRMSNoWindow()
-                    + "\n pitch = " + spectrum.getPitch();
+                    + "\n pitch = " + spectrum.getPitch() + ". midi = " + spectrum.freqToMidi(spectrum.getPitch());
                 }
             }
 
@@ -152,7 +152,7 @@ Item {
         y: spectrum.y + spectrum.height + 10
         x: yinLabel.x + yinLabel.width + 10
         currentIndex: 1
-        model: ["2048", "4096", "8192"] //TODO cuctom size
+        model: ["3000", "4096", "6000"] //TODO cuctom size
 
         onCurrentTextChanged: {
             if (spectrum)
@@ -191,7 +191,7 @@ Item {
         y : specInfo.y + specInfo.height + 5
         x: 25
         text: "rms yin info"
-    }
+    }//TODO different parameters for yin to be set!
 
     Spectrograph
     {
@@ -212,7 +212,7 @@ Item {
             onClicked: {
                 spectrum.onPress(mouseX, mouseY, spectrum.width, spectrum.height)
                 specInfo.text = spectrum.getFreq1() + "-" + spectrum.getFreq2() + " Hz"
-                + " value " + spectrum.getValue() + " dB = " + 20 + log10(spectrum.getValue())
+                + " value " + spectrum.getValue() + " dB = " + 10*log10(spectrum.getValue())
                // https://stackoverflow.com/questions/3019278/how-can-i-specify-the-base-for-math-log-in-javascript
             }
         }

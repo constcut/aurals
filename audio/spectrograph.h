@@ -45,6 +45,8 @@
 
 #include "frequencyspectrum.h"
 
+#include "featureextractor.h"
+
 #include <QQuickPaintedItem>
 #include <QPainter>
 /**
@@ -141,6 +143,10 @@ public:
 
     Q_INVOKABLE void setYinLimit(int limit) { analyser.yinLimit = limit; };
     Q_INVOKABLE void setFFTLimit(int limit) { analyser.fftLimit = limit; };
+
+    Q_INVOKABLE qreal freqToMidi(qreal freq) {
+        return calc_MidiCents(freq) / 100.0;
+    }
 
 
 public slots:
