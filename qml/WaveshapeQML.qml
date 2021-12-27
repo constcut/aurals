@@ -61,7 +61,7 @@ Item {
                 {
                     waveShape.setWindowPosition(mouseX*125.0/2.0)
                     spectrum.loadSpectrum(item.filename,mouseX*125.0/2.0)
-                    rmsYinIngo.text = "RMS = " + spectrum.getRMS()
+                    rmsYinIngo.text = "RMS = " + spectrum.getRMS() + ". RMS no win = " + spectrum.getRMSNoWindow()
                 }
             }
 

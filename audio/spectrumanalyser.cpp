@@ -127,12 +127,15 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
         const DataType realSample = pcmToReal(pcmSample);
         const DataType windowedSample = realSample * m_window[i];
         m_input[i] = windowedSample;
+        m_noWindowInput[i] = realSample;
         ptr += bytesPerSample;
     }
 
     auto rms = calc_dB(m_input.data(), m_input.size());
-    qDebug() << "RMS: " << rms;
+    auto rmsNoWin = calc_dB(m_noWindowInput.data(), m_input.size());
+    qDebug() << "RMS: " << rms << " rms no win " << rmsNoWin;
     m_spectrum.rms = rms;
+    m_spectrum.rmsNoWindow = rmsNoWin;
 
     // Calculate the FFT
 
