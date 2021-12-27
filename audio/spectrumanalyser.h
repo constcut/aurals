@@ -80,6 +80,11 @@ public:
     void setSamplesAmount(int newNumSamples) { m_numSamples = newNumSamples; }
     int getSamplesAmount() { return m_numSamples; }
 
+
+    int yinLimit=512;
+    int fftLimit=4096;
+
+
 public slots:
     void setWindowFunction(WindowFunction type);
     void calculateSpectrum(const QByteArray &buffer,
@@ -136,6 +141,9 @@ public:
 #endif
 
 public:
+
+    int yinLimit=512;
+    int fftLimit=4096;
 
 
     void setSamplesAmount(int newNumSamples)

@@ -106,13 +106,19 @@ Item {
         }
     }
 
+    Text{
+        y:  spectrum.y + spectrum.height + 10
+        x: parent.width / 3
+        id: specLabel
+        text: "Big Window size: "
+    }
+
     ComboBox
     {
         id: sizeComboBox
 
         y:  spectrum.y + spectrum.height + 10
-        x: parent.width / 2
-
+        x: specLabel.x + specLabel.width + 10
         model: ["1024","2048","4096","8192","16384"]
 
         currentIndex: 2
@@ -132,6 +138,59 @@ Item {
             if (spectrum != null)
                 spectrum.setSamplesAmount(windowWidth)
         }
+    }
+
+    Text{
+        y:  spectrum.y + spectrum.height + 10
+        x: sizeComboBox.x + sizeComboBox.width + 10
+        id: yinLabel
+        text: "Yin limit size: "
+    }
+    ComboBox {
+        id: yinLimitCombo
+
+        y: spectrum.y + spectrum.height + 10
+        x: yinLabel.x + yinLabel.width + 10
+        currentIndex: 1
+        model: ["2048", "4096", "8192"] //TODO cuctom size
+
+        onCurrentTextChanged: {
+            if (spectrum)
+                spectrum.setYinLimit(parseInt(currentText))
+        }
+    }
+    Text{
+        y:  spectrum.y + spectrum.height + 10
+        x: yinLimitCombo.x + yinLimitCombo.width + 10
+        id: windowLimitCombo
+        text: "Window limit: "
+    }
+
+    ComboBox {
+        id: windowCutCombo
+        y: spectrum.y + spectrum.height + 10
+        x: windowLimitCombo.x + windowLimitCombo.width + 10
+        currentIndex: 4
+        model: ["256","512","1024", "2048", "4096", "8192"] //TODO cuctom size
+
+        onCurrentIndexChanged: {
+            if (spectrum)
+                spectrum.setFFTLimit(parseInt(currentText))
+        }
+    }
+
+
+    Text {
+        id: specInfo
+        y : spectrum.y + spectrum.height + 10
+        x : 25
+        text: "Spectrum info"
+    }
+    Text {
+        id : rmsYinIngo
+        y : specInfo.y + specInfo.height + 5
+        x: 25
+        text: "rms yin info"
     }
 
     Spectrograph
@@ -158,18 +217,7 @@ Item {
             }
         }
     }
-    Text {
-        id: specInfo
-        y : spectrum.y + spectrum.height + 10
-        x : 25
-        text: "Spectrum info"
-    }
-    Text {
-        id : rmsYinIngo
-        y : specInfo.y + specInfo.height + 5
-        x: 25
-        text: "rms yin info"
-    }
+
 
     /*
     Connections

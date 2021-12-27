@@ -139,6 +139,9 @@ public:
     Q_INVOKABLE void onPress(int xPress, int yPress, int width, int height);
     Q_INVOKABLE bool loadSpectrum(QString filename, quint64 position);
 
+    Q_INVOKABLE void setYinLimit(int limit) { analyser.yinLimit = limit; };
+    Q_INVOKABLE void setFFTLimit(int limit) { analyser.fftLimit = limit; };
+
 
 public slots:
     void spectrumChanged(qint64 position, qint64 length,
@@ -149,12 +152,12 @@ public slots:
 protected:
 
     int samplesAmount;
-
     void selectBar(int index);
 
     Engine *soundEngine; //TODO собрать лучшее из ideas
-
     SpectrumAnalyser analyser;
+
+
 };
 
 

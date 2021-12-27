@@ -122,13 +122,21 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
     // Initialize data array
     const char *ptr = buffer.constData();
     for (int i=0; i<m_numSamples; ++i) {
-        const qint16 pcmSample = *reinterpret_cast<const qint16*>(ptr);
-        // Scale down to range [-1.0, 1.0]
-        const DataType realSample = pcmToReal(pcmSample);
-        const DataType windowedSample = realSample * m_window[i];
-        m_input[i] = windowedSample;
-        m_noWindowInput[i] = realSample;
+
+        if (i > fftLimit) {
+            m_input[i] = 0.f;
+            m_noWindowInput[i] = 0.f;
+        }
+        else {
+            const qint16 pcmSample = *reinterpret_cast<const qint16*>(ptr);
+            // Scale down to range [-1.0, 1.0]
+            const float realSample = pcmToReal(pcmSample);
+            const float windowedSample = realSample * m_window[i];
+            m_input[i] = windowedSample;
+            m_noWindowInput[i] = realSample;
+        }
         ptr += bytesPerSample;
+
     }
 
     auto rms = calc_dB(m_input.data(), m_input.size());
@@ -138,10 +146,16 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
     m_spectrum.rmsNoWindow = rmsNoWin;
 
     //TOO BIG
-    auto pitch = calc_YinF0(m_input.data(), m_input.size());
+
+    size_t realSize = m_input.size();
+    if (realSize > yinLimit)
+        realSize = yinLimit;
+
+    auto pitch = calc_YinF0(m_input.data(), realSize);
     qDebug() << "RMS: " << rms << " rms no win " << rmsNoWin << " pitch " << pitch;
     m_spectrum.pitch = pitch;
-
+    qDebug() << "Window " << m_numSamples << " yin limit " << yinLimit
+                    << " fft limit " << fftLimit;
     // Calculate the FFT
 
     //qDebug() <<"Num samples before calculate FFT "<<m_numSamples;
@@ -257,6 +271,10 @@ void SpectrumAnalyser::calculate(const QByteArray &buffer,
         // calculation will be done in the child thread.
         // Once the calculation is finished, a calculationChanged signal will be
         // emitted by m_thread.
+
+        m_thread->yinLimit = yinLimit;
+        m_thread->fftLimit = fftLimit;
+
         const bool b = QMetaObject::invokeMethod(m_thread, "calculateSpectrum",
                                   Qt::AutoConnection,
                                   Q_ARG(QByteArray, buffer),

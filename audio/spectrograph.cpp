@@ -288,14 +288,12 @@ void SpectrographQML::onPress(int xPress, int yPress, int width, int height)
 }
 
 
- bool SpectrographQML::loadSpectrum(QString filename, quint64 position)
+ bool SpectrographQML::loadSpectrum(QString filename, quint64 position) //TODO использовать уже загруженный буфер
  {
         WavFile wav;
        if ( wav.open(filename) == false)
            return false;
 
-       //I JUST DON"T UNDERSTAND WHATS WRONG
-       qDebug() << filename << " spectrum for position " << position;
 
         quint64 afterHeaderPosition = wav.pos();
         wav.seek(afterHeaderPosition + position*2);
