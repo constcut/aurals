@@ -148,12 +148,12 @@ bool WaveContour::loadWavFile(QString filename)
         if (noteStarted == false && db > startLimit) {
             noteStarted = true;
             startPosition = rmsSize*step;
-            qDebug() << "Starting note " << startPosition;
+            //qDebug() << "Starting note " << startPosition;
         }
         else if (noteStarted && db < fadeLimit) {
             auto endPosition = rmsSize*step;
             auto diff = endPosition - startPosition;
-            qDebug() << "Note stop, diff: " << diff << " start " << startPosition/44100.0 << " end " << endPosition/44100.0;
+            qDebug() << "Note stop, diff: " << diff/44100.0 << " start " << startPosition/44100.0 << " end " << endPosition/44100.0;
             noteStarted = false;
         }
     }

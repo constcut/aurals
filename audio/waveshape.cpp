@@ -44,6 +44,8 @@
 #include <QResizeEvent>
 #include <QDebug>
 
+#include <qglobal.h>
+
 void WaveshapeQML::paint(QPainter *painter)
 {
     setFillColor(Qt::darkGray);
@@ -55,7 +57,15 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
 {
     //int width = painter.device()->width();
     int height = painter.device()->height();
+
+    #ifdef Q_OS_ANDROID
+        height /= 2; //Android is a broke on Qt
+    #endif
+
+
     double heightCoef = height / 200.0;
+
+    qDebug() << "Draw height " << height;
 
     QVector<ContourEl> zoom64 = waveContour.getZoom64();
     QVector<ContourEl> zoom256 = waveContour.getZoom128();
@@ -107,10 +117,10 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
         painter.drawRect(2*windowPosition/125,0,2*windowWidth/125,height);
        // qDebug() <<"WP "<<windowPosition<<" WW "<<windowWidth;
     }
-    painter.setPen(QColor("red"));
+    painter.setPen(QColor("blue"));
     for (int i = 0; i < rms.size(); ++i) {
         auto localRms = rms[i];
-        painter.drawLine(i*2, 0, i*2,  (60.0 + localRms) /2.0);
+        painter.drawLine(i*2, 0, i*2,  (60.0 + localRms)*heightCoef);
     }
 
 }

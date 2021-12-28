@@ -16,7 +16,7 @@ Item {
     {
         //Flickable
         width: parent.width
-        height: 150
+        height: parent.height / 3
 
         horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOn
         verticalScrollBarPolicy:  Qt.ScrollBarAlwaysOff
