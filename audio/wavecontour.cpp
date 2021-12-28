@@ -108,31 +108,34 @@ bool WaveContour::loadWavFile(QString filename)
 
     QByteArray samplesBytes = wav.readAll(); //well some files can be to much - later protect it
 
-    //QDataStream dataStream(samplesBytes);
-
     QVector<qint16> samples; //TODO?
     QVector<float> forRms;
+    qint16 pcmSample;
+
+    QDataStream dataStream(samplesBytes);
+
+    for (int i = 0; i < samplesBytes.size(); ++i) {        //maybe its rather slow and better to read from here - but yet simplest ways
+        dataStream >> pcmSample; //read one
+        samples << pcmSample; //put it
+    }
 
     const char *ptr = samplesBytes.constData(); //TODO from preloaded
-
-    for (int i = 0; i < samplesBytes.size(); ++i)
+    for (int i = 0; i < samplesBytes.size()/2; ++i)
     {        //maybe its rather slow and better to read from here - but yet simplest ways
-        //dataStream >> sample; //read one
-        //samples << sample; //put it
-        const qint16 pcmSample = *reinterpret_cast<const qint16*>(ptr);
-        const float realSample = pcmToReal(pcmSample);
+        auto pcmSample2 = *reinterpret_cast<const qint16*>(ptr);
+        const float realSample = pcmToReal(pcmSample2);
         forRms.append(realSample);
-        samples.append(pcmSample);
-
         ptr += 2; //16 bit audio
     }
+
+    //TODO compare 2 ways
 
     bool noteStarted = false;
     size_t startPosition=0;
     const double startLimit = -30.0;
     const double fadeLimit = -36.0;
 
-    size_t rmsSize = 256;
+    size_t rmsSize = 125;
     size_t rmsFrames = samples.size()/rmsSize;
 
     for (size_t step = 0; step < rmsFrames; ++step) {
@@ -140,8 +143,7 @@ bool WaveContour::loadWavFile(QString filename)
         auto forRmsLocal = forRms.mid(rmsSize*step,rmsSize);
         auto db = calc_dB(forRmsLocal.data(), forRmsLocal.size());
 
-        //if (db != -120.0)
-            //qDebug() << "DB: " << db << " on " << step*rmsSize / 44100.0;
+        rmsLine.append(db);
 
         if (noteStarted == false && db > startLimit) {
             noteStarted = true;
@@ -158,14 +160,15 @@ bool WaveContour::loadWavFile(QString filename)
 
 
     //size_t
-     unsigned long frames = samples.size()/125;
+
+    const size_t counterFrameSize = 125;
+
+    unsigned long frames = samples.size()/counterFrameSize;
     for (size_t step = 0; step < frames; ++step)
     {
-        auto x64samples = samples.mid(125*step,125);
+        auto x64samples = samples.mid(counterFrameSize*step,counterFrameSize);
 
         //auto rms = calc_RMS(forRmsLocal.data(), forRmsLocal.size());
-
-
 
         auto x256samples1 = x64samples.mid(0,31);
         auto x256samples2 = x64samples.mid(31,31);

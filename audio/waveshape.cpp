@@ -60,8 +60,10 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
     QVector<ContourEl> zoom64 = waveContour.getZoom64();
     QVector<ContourEl> zoom256 = waveContour.getZoom128();
     QVector<ContourEl> zoom128 = waveContour.getZoom256();
-    //=======================Amplitudogramm========
-    //thn we can make it symetric
+
+    auto rms = waveContour.getRMS();
+
+    //TODO нужно хранить пропорцию сжатия
 
     painter.setPen(QColor("green"));
     for (int i = 0; i < zoom256.size(); ++i)
@@ -104,6 +106,11 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
         painter.setPen(Qt::darkMagenta);
         painter.drawRect(2*windowPosition/125,0,2*windowWidth/125,height);
        // qDebug() <<"WP "<<windowPosition<<" WW "<<windowWidth;
+    }
+    painter.setPen(QColor("red"));
+    for (int i = 0; i < rms.size(); ++i) {
+        auto localRms = rms[i];
+        painter.drawLine(i*2, 0, i*2,  (60.0 + localRms) /2.0);
     }
 
 }

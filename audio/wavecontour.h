@@ -20,6 +20,8 @@ public:
     QVector<ContourEl> getZoom128() { return zoom128; }
     QVector<ContourEl> getZoom256() { return zoom256; }
 
+    QVector<double> getRMS() { return rmsLine; }
+
 public: //helpers for ContourEl
 
     ContourEl calculateElement(QVector<qint16> &samples);
@@ -33,6 +35,8 @@ protected:
 
 
     QVector<ContourEl> summ4Lists(QVector<ContourEl> &source);
+
+    QVector<double> rmsLine;
 
     QVector<ContourEl> zoom64;
     QVector<ContourEl> zoom128;

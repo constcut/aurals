@@ -48,6 +48,8 @@
 #include <qmetatype.h>
 #include <QAudioFormat>
 #include <QThread>
+#include <QDataStream>
+
 
 SpectrumAnalyserThread::SpectrumAnalyserThread(QObject *parent)
     :   QObject(parent)
@@ -129,8 +131,7 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
         }
         else {
             const qint16 pcmSample = *reinterpret_cast<const qint16*>(ptr);
-            // Scale down to range [-1.0, 1.0]
-            const float realSample = pcmToReal(pcmSample);
+            const float realSample = pcmToReal(pcmSample); // Scale down to range [-1.0, 1.0]
             const float windowedSample = realSample * m_window[i];
             m_input[i] = windowedSample;
             m_noWindowInput[i] = realSample;
