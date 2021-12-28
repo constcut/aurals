@@ -120,7 +120,7 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
     Q_ASSERT(buffer.size() == m_numSamples * bytesPerSample);
 
     // Initialize data array
-    const char *ptr = buffer.constData();
+    const char *ptr = buffer.constData(); //TODO from preloaded
     for (int i=0; i<m_numSamples; ++i) {
 
         if (i > fftLimit) {

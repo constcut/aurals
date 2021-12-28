@@ -4,16 +4,24 @@
 
 #include "yin.h"
 
+#include <QDebug>
+
+
 double calc_RMS(const float* data, const size_t len) {
     double squareAmpSum = 0.0;
-    for (size_t i = 0; i < len; ++i)
+    for (size_t i = 0; i < len; ++i) {
         squareAmpSum += data[i] * data[i];
+    }
     return  std::sqrt(squareAmpSum / static_cast<double>(len));
 }
 
 
 double calc_dB(const float* data, const size_t len) {
-    return 10 * log10(calc_RMS(data, len));
+    auto rms = calc_RMS(data, len);
+    if (rms == 0.0)
+        return -120.0;
+    auto dbs = 20.0 * log10(rms);
+    return dbs;
 }
 
 

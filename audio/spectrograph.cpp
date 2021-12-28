@@ -305,7 +305,7 @@ void SpectrographQML::onPress(int xPress, int yPress, int width, int height)
 
         if (analyseData.size() != samplesAmount*2)
             return false;
-        analyser.calculate(analyseData,wav.audioFormat());
+        analyser.calculate(analyseData, wav.audioFormat());
 
         return true;
  }

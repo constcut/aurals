@@ -16,13 +16,13 @@ public:
     WaveContour(QString filename);
     WaveContour() {}
 
-    QList<ContourEl> getZoom64() { return zoom64; }
-    QList<ContourEl> getZoom128() { return zoom128; }
-    QList<ContourEl> getZoom256() { return zoom256; }
+    QVector<ContourEl> getZoom64() { return zoom64; }
+    QVector<ContourEl> getZoom128() { return zoom128; }
+    QVector<ContourEl> getZoom256() { return zoom256; }
 
 public: //helpers for ContourEl
 
-    ContourEl calculateElement(QList<qint16> &samples);
+    ContourEl calculateElement(QVector<qint16> &samples);
     qint32 max4(qint32 d1,qint32 d2,qint32 d3,qint32 d4);
     qint32 min4(qint32 d1,qint32 d2,qint32 d3,qint32 d4);
     ContourEl summateElements(const ContourEl &e1,const  ContourEl &e2,const  ContourEl &e3,const  ContourEl &e4);
@@ -32,13 +32,13 @@ protected:
     //TODO vector
 
 
-    QList<ContourEl> summ4Lists(QList<ContourEl> &source);
+    QVector<ContourEl> summ4Lists(QVector<ContourEl> &source);
 
-    QList<ContourEl> zoom64;
-    QList<ContourEl> zoom128;
-    QList<ContourEl> zoom256;
+    QVector<ContourEl> zoom64;
+    QVector<ContourEl> zoom128;
+    QVector<ContourEl> zoom256;
 
-    QList<ContourEl> bpm64; //formula calculated parts on folowing bpm
+    QVector<ContourEl> bpm64; //formula calculated parts on folowing bpm
 
     double totalBPM;
 

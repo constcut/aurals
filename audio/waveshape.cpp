@@ -57,9 +57,9 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
     int height = painter.device()->height();
     double heightCoef = height / 200.0;
 
-    QList<ContourEl> zoom64 = waveContour.getZoom64();
-    QList<ContourEl> zoom256 = waveContour.getZoom128();
-    QList<ContourEl> zoom128 = waveContour.getZoom256();
+    QVector<ContourEl> zoom64 = waveContour.getZoom64();
+    QVector<ContourEl> zoom256 = waveContour.getZoom128();
+    QVector<ContourEl> zoom128 = waveContour.getZoom256();
     //=======================Amplitudogramm========
     //thn we can make it symetric
 

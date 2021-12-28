@@ -119,20 +119,14 @@ Item {
 
         y:  spectrum.y + spectrum.height + 10
         x: specLabel.x + specLabel.width + 10
-        model: ["1024","2048","4096","8192","16384"]
+        model: ["125", "1024","2048","4096","8192","16384"]
 
-        currentIndex: 2
+        currentIndex: 3
 
-        onCurrentIndexChanged: {
+        onCurrentTextChanged: {
             console.log("Selected " + sizeComboBox.currentIndex + sizeComboBox.currentText )
 
-            var windowWidth = 4096
-
-            if (sizeComboBox.currentIndex == 0) windowWidth = 1024
-            if (sizeComboBox.currentIndex == 1) windowWidth = 2048
-            if (sizeComboBox.currentIndex == 2) windowWidth = 4096
-            if (sizeComboBox.currentIndex == 3) windowWidth = 8192
-            if (sizeComboBox.currentIndex == 4) windowWidth = 16384
+            var windowWidth = parseInt(currentText)
 
             waveShape.setWindowWidth(windowWidth)
             if (spectrum != null)

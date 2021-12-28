@@ -1,6 +1,10 @@
 #include "wavecontour.h"
 #include "wavfile.h"
 
+#include "featureextractor.h"
+
+#include "utils.h"
+
 #include <QDataStream>
 #include <QDebug>
 
@@ -10,7 +14,7 @@ WaveContour::WaveContour(QString filename)
         qDebug() << "Failed to load contour from file "<<filename;
 }
 
-ContourEl WaveContour::calculateElement(QList<qint16> &samples)
+ContourEl WaveContour::calculateElement(QVector<qint16> &samples)
 {
     ContourEl result;
     result.energy = 0.0;
@@ -104,31 +108,69 @@ bool WaveContour::loadWavFile(QString filename)
 
     QByteArray samplesBytes = wav.readAll(); //well some files can be to much - later protect it
 
-    QDataStream dataStream(samplesBytes);
+    //QDataStream dataStream(samplesBytes);
 
-    QList<qint16> samples; //TODO?
-    qint16 sample;
+    QVector<qint16> samples; //TODO?
+    QVector<float> forRms;
+
+    const char *ptr = samplesBytes.constData(); //TODO from preloaded
 
     for (int i = 0; i < samplesBytes.size(); ++i)
     {        //maybe its rather slow and better to read from here - but yet simplest ways
+        //dataStream >> sample; //read one
+        //samples << sample; //put it
+        const qint16 pcmSample = *reinterpret_cast<const qint16*>(ptr);
+        const float realSample = pcmToReal(pcmSample);
+        forRms.append(realSample);
+        samples.append(pcmSample);
 
-        dataStream >> sample; //read one
-        samples << sample; //put it
+        ptr += 2; //16 bit audio
     }
 
-    unsigned long bigSteps = samples.size()/125;
+    bool noteStarted = false;
+    size_t startPosition=0;
+    const double startLimit = -30.0;
+    const double fadeLimit = -36.0;
 
-    //FOR making bpm splited 64 - need to make from formula
-    //whole is 8000/bpm/120 :  sample rate/(bpm/120)
+    size_t rmsSize = 256;
+    size_t rmsFrames = samples.size()/rmsSize;
 
-    for (size_t step = 0; step < bigSteps; ++step)
+    for (size_t step = 0; step < rmsFrames; ++step) {
+
+        auto forRmsLocal = forRms.mid(rmsSize*step,rmsSize);
+        auto db = calc_dB(forRmsLocal.data(), forRmsLocal.size());
+
+        //if (db != -120.0)
+            //qDebug() << "DB: " << db << " on " << step*rmsSize / 44100.0;
+
+        if (noteStarted == false && db > startLimit) {
+            noteStarted = true;
+            startPosition = rmsSize*step;
+            qDebug() << "Starting note " << startPosition;
+        }
+        else if (noteStarted && db < fadeLimit) {
+            auto endPosition = rmsSize*step;
+            auto diff = endPosition - startPosition;
+            qDebug() << "Note stop, diff: " << diff << " start " << startPosition/44100.0 << " end " << endPosition/44100.0;
+            noteStarted = false;
+        }
+    }
+
+
+    //size_t
+     unsigned long frames = samples.size()/125;
+    for (size_t step = 0; step < frames; ++step)
     {
-        QList<qint16> x64samples = samples.mid(125*step,125);
+        auto x64samples = samples.mid(125*step,125);
 
-        QList<qint16> x256samples1 = x64samples.mid(0,31);
-        QList<qint16> x256samples2 = x64samples.mid(31,31);
-        QList<qint16> x256samples3 = x64samples.mid(62,31);
-        QList<qint16> x256samples4 = x64samples.mid(93,32);
+        //auto rms = calc_RMS(forRmsLocal.data(), forRmsLocal.size());
+
+
+
+        auto x256samples1 = x64samples.mid(0,31);
+        auto x256samples2 = x64samples.mid(31,31);
+        auto x256samples3 = x64samples.mid(62,31);
+        auto x256samples4 = x64samples.mid(93,32);
 
         ContourEl el256x1 = calculateElement(x256samples1);
         ContourEl el256x2 = calculateElement(x256samples2);
@@ -153,9 +195,9 @@ bool WaveContour::loadWavFile(QString filename)
     return zoom64.size() && zoom256.size();
 }
 
-QList<ContourEl> WaveContour::summ4Lists(QList<ContourEl> &source)
+QVector<ContourEl> WaveContour::summ4Lists(QVector<ContourEl> &source)
 {
-    QList<ContourEl> result;
+    QVector<ContourEl> result;
 
     for (int i = 0; i < source.size()/4; ++i)
     {
