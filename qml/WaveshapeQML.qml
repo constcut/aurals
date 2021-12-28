@@ -71,13 +71,51 @@ Item {
                 }
 
                 function outputRmsGroup(mouseX) {
-                    rmsGroup.text = "{ ";
+                    var min = 120.0
+                    var max = -120.0
                     for (var i = 0; i < 50; i+=2) {
-                        if (i && i % 10 == 0)
-                            rmsGroup.text += "\n  ";
-                        rmsGroup.text += waveShape.getRMS((mouseX + i) / 2.0).toFixed(2) + " ; "
+                        var rmsCheckValue = waveShape.getRMS((mouseX + i) / 2.0)
+
+                        if (rmsCheckValue > max)
+                            max = rmsCheckValue
+                        if (rmsCheckValue < min)
+                            min = rmsCheckValue
                     }
-                    rmsGroup.text += "}"
+
+                    rmsGroup.text = "<b>{ </b>";
+
+                    var prev = waveShape.getRMS(mouseX/ 2.0)
+
+                    for (i = 0; i < 25; ++i) {
+                        if (i && i % 5 == 0)
+                            rmsGroup.text += "<br>  ";
+
+                        var rmsValue = waveShape.getRMS(mouseX / 2.0 + i)
+
+
+                        if (rmsValue === min)
+                            rmsGroup.text += "<font color='blue'>";
+                        else if (rmsValue === max)
+                            rmsGroup.text += "<font color='red'>";
+
+                        var diff = Math.abs(prev - rmsValue)
+                        prev = rmsValue
+                        if (diff > 12)
+                            rmsGroup.text += "<b>"
+
+                        rmsGroup.text += rmsValue.toFixed(2)
+
+
+                        if (diff > 12)
+                            rmsGroup.text += "</b>"
+
+                        if (rmsValue === min || rmsValue === max)
+                            rmsGroup.text += "</font>"
+
+                        rmsGroup.text += " ; "
+                    }
+
+                    rmsGroup.text += "<b>}</b>"
                 }
             }
 
@@ -214,6 +252,9 @@ Item {
         id: rmsGroup
         y: specInfo.y
         x: parent.width / 2
+        text: "<font color='red'>RMS group</font>"
+
+        //textFormat: Text.RichText
     }
 
     Button {

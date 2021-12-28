@@ -66,7 +66,6 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
     double heightCoef = height / 200.0;
 
 
-
     if (noImage) {
 
         noImage = false;
