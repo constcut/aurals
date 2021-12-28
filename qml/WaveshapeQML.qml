@@ -1,6 +1,8 @@
-import QtQuick 2.7
+import QtQuick 2.15
 import mther.app 1.0
-import QtQuick.Controls 1.4
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+import QtQuick.Dialogs 1.1
 
 Item {
     id: item
@@ -12,14 +14,15 @@ Item {
         console.log("reload file of waveshape qml called ", filename)
     }
 
+
     ScrollView
     {
         //Flickable
         width: parent.width
         height: parent.height / 3
 
-        horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOn
-        verticalScrollBarPolicy:  Qt.ScrollBarAlwaysOff
+        //horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOn
+       //verticalScrollBarPolicy:  Qt.ScrollBarAlwaysOff
 
         Flickable
         {
@@ -61,9 +64,20 @@ Item {
                 {
                     waveShape.setWindowPosition(mouseX*125.0/2.0)
                     spectrum.loadSpectrum(item.filename,mouseX*125.0/2.0)
-                    rmsYinIngo.text = "RMS = " + spectrum.getRMSNoWindow()
-                    + "\nPitch = " + spectrum.getPitch() + "\nMIDI# = " + spectrum.freqToMidi(spectrum.getPitch())
-                    + "\nTime = " + (mouseX*125.0/2.0) / 44100.0 ;
+                    rmsYinIngo.text = "Window RMS = " + spectrum.getRMSNoWindow().toFixed(4)
+                    + "\nPitch = " + spectrum.getPitch().toFixed(4) + "\nMIDI# = " + spectrum.freqToMidi(spectrum.getPitch())
+                    + "\nTime = " + (mouseX*125.0/2.0) / 44100.0
+                    outputRmsGroup(mouseX)
+                }
+
+                function outputRmsGroup(mouseX) {
+                    rmsGroup.text = "{ ";
+                    for (var i = 0; i < 50; i+=2) {
+                        if (i && i % 10 == 0)
+                            rmsGroup.text += "\n  ";
+                        rmsGroup.text += waveShape.getRMS((mouseX + i) / 2.0).toFixed(2) + " ; "
+                    }
+                    rmsGroup.text += "}"
                 }
             }
 
@@ -107,72 +121,80 @@ Item {
         }
     }
 
-    Text{
-        y:  spectrum.y + spectrum.height + 10
-        x: parent.width / 3
-        id: specLabel
-        text: "Big Window size: "
-    }
+    Dialog {
+        id: settingsDialog
+        RowLayout {
+            spacing:  10
+            id: upperLayout
+            Text{
+                y:  spectrum.y + spectrum.height + 10
+                x: parent.width / 3
+                id: specLabel
+                text: "Big Window size: "
+            }
 
-    ComboBox
-    {
-        id: sizeComboBox
+            ComboBox
+            {
+                id: sizeComboBox
 
-        y:  spectrum.y + spectrum.height + 10
-        x: specLabel.x + specLabel.width + 10
-        model: ["125", "1024","2048","4096","8192","16384"]
+                y:  spectrum.y + spectrum.height + 10
+                x: specLabel.x + specLabel.width + 10
+                model: ["125", "1024","2048","4096","8192","16384"]
 
-        currentIndex: 3
+                currentIndex: 3
 
-        onCurrentTextChanged: {
-            console.log("Selected " + sizeComboBox.currentIndex + sizeComboBox.currentText )
+                onCurrentTextChanged: {
+                    console.log("Selected " + sizeComboBox.currentIndex + sizeComboBox.currentText )
 
-            var windowWidth = parseInt(currentText)
+                    var windowWidth = parseInt(currentText)
 
-            waveShape.setWindowWidth(windowWidth)
-            if (spectrum != null)
-                spectrum.setSamplesAmount(windowWidth)
+                    waveShape.setWindowWidth(windowWidth)
+                    if (spectrum != null)
+                        spectrum.setSamplesAmount(windowWidth)
+                }
+            }
+
+            Text{
+                y:  spectrum.y + spectrum.height + 10
+                x: sizeComboBox.x + sizeComboBox.width + 10
+                id: yinLabel
+                text: "Yin limit size: "
+            }
+            ComboBox {
+                id: yinLimitCombo
+
+                y: spectrum.y + spectrum.height + 10
+                x: yinLabel.x + yinLabel.width + 10
+                currentIndex: 1
+                model: ["3000", "4096", "6000"] //TODO cuctom size
+
+                onCurrentTextChanged: {
+                    if (spectrum)
+                        spectrum.setYinLimit(parseInt(currentText))
+                }
+            }
+            Text{
+                y:  spectrum.y + spectrum.height + 10
+                x: yinLimitCombo.x + yinLimitCombo.width + 10
+                id: windowLimitCombo
+                text: "Window limit: "
+            }
+
+            ComboBox {
+                id: windowCutCombo
+                y: spectrum.y + spectrum.height + 10
+                x: windowLimitCombo.x + windowLimitCombo.width + 10
+                currentIndex: 4
+                model: ["256","512","1024", "2048", "4096", "8192"] //TODO cuctom size
+
+                onCurrentIndexChanged: {
+                    if (spectrum)
+                        spectrum.setFFTLimit(parseInt(currentText))
+                }
+            }
         }
     }
 
-    Text{
-        y:  spectrum.y + spectrum.height + 10
-        x: sizeComboBox.x + sizeComboBox.width + 10
-        id: yinLabel
-        text: "Yin limit size: "
-    }
-    ComboBox {
-        id: yinLimitCombo
-
-        y: spectrum.y + spectrum.height + 10
-        x: yinLabel.x + yinLabel.width + 10
-        currentIndex: 1
-        model: ["3000", "4096", "6000"] //TODO cuctom size
-
-        onCurrentTextChanged: {
-            if (spectrum)
-                spectrum.setYinLimit(parseInt(currentText))
-        }
-    }
-    Text{
-        y:  spectrum.y + spectrum.height + 10
-        x: yinLimitCombo.x + yinLimitCombo.width + 10
-        id: windowLimitCombo
-        text: "Window limit: "
-    }
-
-    ComboBox {
-        id: windowCutCombo
-        y: spectrum.y + spectrum.height + 10
-        x: windowLimitCombo.x + windowLimitCombo.width + 10
-        currentIndex: 4
-        model: ["256","512","1024", "2048", "4096", "8192"] //TODO cuctom size
-
-        onCurrentIndexChanged: {
-            if (spectrum)
-                spectrum.setFFTLimit(parseInt(currentText))
-        }
-    }
 
 
     Text {
@@ -187,6 +209,21 @@ Item {
         x: 25
         text: "rms yin info"
     }//TODO different parameters for yin to be set!
+
+    Text {
+        id: rmsGroup
+        y: specInfo.y
+        x: parent.width / 2
+    }
+
+    Button {
+        y: specInfo.y
+        x: parent.width - width - 10
+        text: "Settings"
+        onClicked:  {
+            settingsDialog.visible = true;
+        }
+    }
 
     Spectrograph
     {
@@ -207,7 +244,7 @@ Item {
             onClicked: {
                 spectrum.onPress(mouseX, mouseY, spectrum.width, spectrum.height)
                 specInfo.text = spectrum.getFreq1() + "-" + spectrum.getFreq2() + " Hz"
-                +  " lvl = " + 20*log10(spectrum.getValue()) //" value " + spectrum.getValue() +
+                +  " lvl = " + 20*log10(spectrum.getValue()).toFixed(5) //" value " + spectrum.getValue() +
                // https://stackoverflow.com/questions/3019278/how-can-i-specify-the-base-for-math-log-in-javascript
             }
         }

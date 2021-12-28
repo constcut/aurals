@@ -153,10 +153,10 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
         realSize = yinLimit;
 
     auto pitch = calc_YinF0(m_input.data(), realSize);
-    qDebug() << "RMS: " << rms << " rms no win " << rmsNoWin << " pitch " << pitch;
+    //qDebug() << "RMS: " << rms << " rms no win " << rmsNoWin << " pitch " << pitch;
     m_spectrum.pitch = pitch;
-    qDebug() << "Window " << m_numSamples << " yin limit " << yinLimit
-                    << " fft limit " << fftLimit;
+    //qDebug() << "Window " << m_numSamples << " yin limit " << yinLimit
+     //               << " fft limit " << fftLimit;
     // Calculate the FFT
 
     //qDebug() <<"Num samples before calculate FFT "<<m_numSamples;

@@ -14,6 +14,7 @@ Item {
             id: upperLayout
             Text {
                 text: "Sample rate:"
+                visible: false //TODO better look on mobile
             }
             ComboBox {
                 model: ["22050", "44100", "48000"]

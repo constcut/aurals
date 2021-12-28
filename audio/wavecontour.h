@@ -16,11 +16,12 @@ public:
     WaveContour(QString filename);
     WaveContour() {}
 
-    QVector<ContourEl> getZoom64() { return zoom64; }
-    QVector<ContourEl> getZoom128() { return zoom128; }
-    QVector<ContourEl> getZoom256() { return zoom256; }
+    const QVector<double>& getRMS() const { return rmsLine; }
 
-    QVector<double> getRMS() { return rmsLine; }
+    const QVector<ContourEl>& getZoom64()  const { return zoom64; }
+    const QVector<ContourEl>& getZoom128() const { return zoom128; }
+    const QVector<ContourEl>& getZoom256() const { return zoom256; }
+
 
 public: //helpers for ContourEl
 

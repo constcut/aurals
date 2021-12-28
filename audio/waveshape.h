@@ -45,6 +45,7 @@
 //#include <QPixmap>
 //#include <QScopedPointer>
 #include <QQuickPaintedItem>
+#include <QImage>
 
 #include "wavecontour.h"
 
@@ -67,6 +68,9 @@ protected:
 
     quint64 windowPosition;
     quint16 windowWidth;
+
+    bool noImage = true;
+    QImage mainImage;
 };
 
 
@@ -81,11 +85,16 @@ public:
         return waveContour.getZoom64().size();
     }
 
+    Q_INVOKABLE qreal getRMS(int index) {
+        return waveContour.getRMS()[index];
+    }
+
     void paint(QPainter* painter);
 
     Q_INVOKABLE  void loadFile(QString filename) { loadContour(filename);}
 
     Q_INVOKABLE void setWindowPosition(quint64 newPosition) { windowPosition = newPosition; update(); }
+    Q_INVOKABLE quint64 getWindowPosition() { return windowPosition; }
     Q_INVOKABLE void setWindowWidth(quint64 newWidth) { windowWidth = newWidth; update(); }
 };
 

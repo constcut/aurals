@@ -44,6 +44,8 @@
 #include <QResizeEvent>
 #include <QDebug>
 
+#include <QPainterPath>
+
 
 #include <qglobal.h>
 
@@ -58,70 +60,77 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
 {
     //int width = painter.device()->width();
     int height = painter.device()->height();
-
     #ifdef Q_OS_ANDROID
         height /= 2; //Android is a broke on Qt
     #endif
-
-
     double heightCoef = height / 200.0;
 
-    qDebug() << "Draw height " << height;
 
-    QVector<ContourEl> zoom64 = waveContour.getZoom64();
-    QVector<ContourEl> zoom256 = waveContour.getZoom128();
-    QVector<ContourEl> zoom128 = waveContour.getZoom256();
 
-    auto rms = waveContour.getRMS();
+    if (noImage) {
 
-    //TODO нужно хранить пропорцию сжатия
+        noImage = false;
+        mainImage =  QImage(painter.device()->width(),painter.device()->height(), QImage::Format_ARGB32);
 
-    painter.setPen(QColor("green"));
-    for (int i = 0; i < zoom256.size(); ++i) {
-        ContourEl conturEl = zoom256[i];
-        const int h = 2*conturEl.energy/(65000.0/heightCoef);
-        painter.drawLine(i, height/2, i, height/2 + h);
-        painter.drawLine(i, height/2, i, height/2 - h);
+        QPainter imgPainter(&mainImage);
+
+        auto zoom64 = waveContour.getZoom64();
+        auto zoom256 = waveContour.getZoom128();
+        auto zoom128 = waveContour.getZoom256();
+        auto rms = waveContour.getRMS();
+
+        //TODO нужно хранить пропорцию сжатия 125 убрать константу
+
+        imgPainter.setPen(QColor("green"));
+        for (int i = 0; i < zoom256.size(); ++i) {
+            ContourEl conturEl = zoom256[i];
+            const int h = 2*conturEl.energy/(65000.0/heightCoef);
+            imgPainter.drawLine(i, height/2, i, height/2 + h);
+            imgPainter.drawLine(i, height/2, i, height/2 - h);
+        }
+
+        imgPainter.setPen(QColor("chartreuse"));
+        int prevX1=0, prevX2=0, prevY1=0, prevY2=0;
+        for (int i = 0; i < zoom64.size(); ++i)
+        {
+            ContourEl conturEl = zoom64[i];
+            imgPainter.drawLine(i*2, height/2 - conturEl.energy/(65000.0/heightCoef), prevX1, prevY1);
+            imgPainter.drawLine(i*2, height/2 + conturEl.energy/(65000.0/heightCoef), prevX2, prevY2);
+            prevX1 = prevX2 = i*2;
+            prevY1 = height/2 - conturEl.energy/(65000.0/heightCoef);
+            prevY2 = height/2 + conturEl.energy/(65000.0/heightCoef);
+        }
+        prevX1=0;
+        prevX2=0;
+        prevY1=0;
+        prevY2=0;
+        imgPainter.setPen(QColor("darkgreen"));
+        for (int i = 0; i < zoom128.size(); ++i)
+        {
+            ContourEl conturEl = zoom128[i];
+            imgPainter.drawLine(i/2, height/2, i/2, height/2 + 2*conturEl.energy/(65000.0/heightCoef));
+            imgPainter.drawLine(i/2, height/2, i/2, height/2 - 2*conturEl.energy/(65000.0/heightCoef));
+            imgPainter.drawLine(i / 2, height/2 - 2*conturEl.energy/(65000.0/heightCoef), prevX1, prevY1);
+            imgPainter.drawLine(i / 2, height/2 + 2*conturEl.energy/(65000.0/heightCoef), prevX2, prevY2);
+            prevX1 = prevX2 = i / 2;
+            prevY1 = height/2 - 2*conturEl.energy/(65000.0/heightCoef);
+            prevY2 = height/2 + 2*conturEl.energy/(65000.0/heightCoef);
+        }
+        imgPainter.setPen(QColor("blue"));
+        for (int i = 0; i < rms.size(); ++i) {
+            auto localRms = rms[i];
+            imgPainter.drawLine(i*2, 0, i*2,  (60.0 + localRms)*heightCoef);
+        }
     }
 
-    painter.setPen(QColor("chartreuse"));
-    int prevX1=0, prevX2=0, prevY1=0, prevY2=0;
-    for (int i = 0; i < zoom64.size(); ++i)
-    {
-        ContourEl conturEl = zoom64[i];
-        painter.drawLine(i*2, height/2 - conturEl.energy/(65000.0/heightCoef), prevX1, prevY1);
-        painter.drawLine(i*2, height/2 + conturEl.energy/(65000.0/heightCoef), prevX2, prevY2);
-        prevX1 = prevX2 = i*2;
-        prevY1 = height/2 - conturEl.energy/(65000.0/heightCoef);
-        prevY2 = height/2 + conturEl.energy/(65000.0/heightCoef);
-    }
-    prevX1=0;
-    prevX2=0;
-    prevY1=0;
-    prevY2=0;
-    painter.setPen(QColor("darkgreen"));
-    for (int i = 0; i < zoom128.size(); ++i)
-    {
-        ContourEl conturEl = zoom128[i];
-        painter.drawLine(i/2, height/2, i/2, height/2 + 2*conturEl.energy/(65000.0/heightCoef));
-        painter.drawLine(i/2, height/2, i/2, height/2 - 2*conturEl.energy/(65000.0/heightCoef));
-        painter.drawLine(i / 2, height/2 - 2*conturEl.energy/(65000.0/heightCoef), prevX1, prevY1);
-        painter.drawLine(i / 2, height/2 + 2*conturEl.energy/(65000.0/heightCoef), prevX2, prevY2);
-        prevX1 = prevX2 = i / 2;
-        prevY1 = height/2 - 2*conturEl.energy/(65000.0/heightCoef);
-        prevY2 = height/2 + 2*conturEl.energy/(65000.0/heightCoef);
-    }
+    painter.drawImage(QPoint{0,0}, mainImage);
+
+    //painter.restore();
     {
         painter.setPen(Qt::darkMagenta);
         painter.drawRect(2*windowPosition/125,0,2*windowWidth/125,height);
        // qDebug() <<"WP "<<windowPosition<<" WW "<<windowWidth;
     }
-    painter.setPen(QColor("blue"));
-    for (int i = 0; i < rms.size(); ++i) {
-        auto localRms = rms[i];
-        painter.drawLine(i*2, 0, i*2,  (60.0 + localRms)*heightCoef);
-    }
-
 }
 
 
