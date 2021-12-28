@@ -131,6 +131,7 @@ DISTFILES += \
     current \
     qml/ConsoleLog.qml \
     qml/PianoMap.qml \
+    qml/WaveshapeQML.qml \
     qml/audioHandler.qml \
     qml/consoleLog.qml \
     qml/main.qml

@@ -44,6 +44,7 @@
 #include <QResizeEvent>
 #include <QDebug>
 
+
 #include <qglobal.h>
 
 void WaveshapeQML::paint(QPainter *painter)
@@ -76,15 +77,13 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
     //TODO нужно хранить пропорцию сжатия
 
     painter.setPen(QColor("green"));
-    for (int i = 0; i < zoom256.size(); ++i)
-    {
+    for (int i = 0; i < zoom256.size(); ++i) {
         ContourEl conturEl = zoom256[i];
-        painter.drawLine(i, height/2, i, height/2 + 2*conturEl.energy/(65000.0/heightCoef));
-        painter.drawLine(i, height/2, i, height/2 - 2*conturEl.energy/(65000.0/heightCoef));
-        //painter.setPen(QColor(10,255,255));
-        //painter.drawLine(i, 100, i, 100 - conturEl.min / 1000);
-        //painter.drawLine(i, 100, i, 100 + conturEl.max / 1000);
+        const int h = 2*conturEl.energy/(65000.0/heightCoef);
+        painter.drawLine(i, height/2, i, height/2 + h);
+        painter.drawLine(i, height/2, i, height/2 - h);
     }
+
     painter.setPen(QColor("chartreuse"));
     int prevX1=0, prevX2=0, prevY1=0, prevY2=0;
     for (int i = 0; i < zoom64.size(); ++i)
@@ -112,7 +111,7 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
         prevY1 = height/2 - 2*conturEl.energy/(65000.0/heightCoef);
         prevY2 = height/2 + 2*conturEl.energy/(65000.0/heightCoef);
     }
-    if (windowPosition != -1)  {
+    {
         painter.setPen(Qt::darkMagenta);
         painter.drawRect(2*windowPosition/125,0,2*windowWidth/125,height);
        // qDebug() <<"WP "<<windowPosition<<" WW "<<windowWidth;
