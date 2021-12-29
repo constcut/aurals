@@ -76,7 +76,6 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
         auto zoom64 = waveContour.getZoom64();
         auto zoom256 = waveContour.getZoom128();
         auto zoom128 = waveContour.getZoom256();
-        auto rms = waveContour.getRMS();
 
         //TODO нужно хранить пропорцию сжатия 125 убрать константу
 
@@ -115,6 +114,7 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
             prevY1 = height/2 - 2*conturEl.energy/(65000.0/heightCoef);
             prevY2 = height/2 + 2*conturEl.energy/(65000.0/heightCoef);
         }
+        auto rms = waveContour.getRMS();
         imgPainter.setPen(QColor("blue"));
         for (int i = 0; i < rms.size(); ++i) {
             auto localRms = rms[i];
@@ -123,6 +123,17 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
     }
 
     painter.drawImage(QPoint{0,0}, mainImage);
+
+    //TODO optional
+    auto pitchLine = waveContour.getPitch();
+    painter.setPen(QColor("red"));
+    double prevPitch = -1;
+    double coef = (2048.0) / (125.0 / 2.0);
+    for (int i = 0; i < pitchLine.size(); ++i) {
+        auto pitch = pitchLine[i];
+        painter.drawLine((i-1)*coef, height - prevPitch / 4.0, i*coef, height - pitch / 4.0);
+        prevPitch = pitch;
+    }
 
     //painter.restore();
     {

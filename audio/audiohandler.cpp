@@ -124,7 +124,7 @@ void AudioHandler::saveFile(QString filename) const {
 
 
 void AudioHandler::setSampleRate(int newSampleRate) {
-    qDebug() << "New sample rate " << newSampleRate;
+    //qDebug() << "New sample rate " << newSampleRate;
     commonFormat.setSampleRate(newSampleRate);
     initRecorder();
     initPlayer();
@@ -152,7 +152,7 @@ void AudioHandler::requestPermission() const {
 QStringList AudioHandler::getRecords() const {
     QDir dir("records/");
     auto list = dir.entryList({"*"});
-    qDebug() << list;
+    //qDebug() << list;
     return list;
 }
 

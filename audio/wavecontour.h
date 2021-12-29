@@ -17,6 +17,7 @@ public:
     WaveContour() {}
 
     const QVector<double>& getRMS() const { return rmsLine; }
+    const QVector<double>& getPitch() const { return yinLine; }
 
     const QVector<ContourEl>& getZoom64()  const { return zoom64; }
     const QVector<ContourEl>& getZoom128() const { return zoom128; }
@@ -38,6 +39,7 @@ protected:
     QVector<ContourEl> summ4Lists(QVector<ContourEl> &source);
 
     QVector<double> rmsLine;
+    QVector<double> yinLine;
 
     QVector<ContourEl> zoom64;
     QVector<ContourEl> zoom128;

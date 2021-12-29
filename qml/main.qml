@@ -39,7 +39,7 @@ ApplicationWindow {
     }
 
     function requestWaveshape(filename) {
-        console.log('Requested waveshape', filename)
+        //console.log('Requested waveshape', filename)
         mainLoader.setSource("qrc:/qml/WaveshapeQML.qml", {"filename": filename});
         //mainLoader.item.reloadFile()
     }

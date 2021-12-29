@@ -86,6 +86,9 @@ Item {
 
                     var prev = waveShape.getRMS(mouseX/ 2.0)
 
+                    var dbLevelBorder = 9
+                    var dbLevelBorderSmall = 6
+
                     for (i = 0; i < 25; ++i) {
                         if (i && i % 5 == 0)
                             rmsGroup.text += "<br>  ";
@@ -100,13 +103,17 @@ Item {
 
                         var diff = Math.abs(prev - rmsValue)
                         prev = rmsValue
-                        if (diff > 12)
+
+                        if (diff > dbLevelBorderSmall)
                             rmsGroup.text += "<b>"
+                        if (diff > dbLevelBorder)
+                            rmsGroup.text += "<u>"
 
                         rmsGroup.text += rmsValue.toFixed(2)
 
-
-                        if (diff > 12)
+                        if (diff > dbLevelBorder)
+                            rmsGroup.text += "</u>"
+                        if (diff > dbLevelBorderSmall)
                             rmsGroup.text += "</b>"
 
                         if (rmsValue === min || rmsValue === max)
@@ -151,8 +158,7 @@ Item {
                     flick.contentWidth = waveShape.getPixelsLength() + 10
                     waveShape.width = flick.contentWidth
                     wavPos.width = waveShape.width
-                    console.log("component competed waveshape ", item.filename)
-
+                    //console.log("component competed waveshape ", item.filename)
                 }
             }
 
@@ -182,7 +188,7 @@ Item {
                 currentIndex: 3
 
                 onCurrentTextChanged: {
-                    console.log("Selected " + sizeComboBox.currentIndex + sizeComboBox.currentText )
+                    //console.log("Selected " + sizeComboBox.currentIndex + sizeComboBox.currentText )
 
                     var windowWidth = parseInt(currentText)
 
