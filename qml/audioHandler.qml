@@ -150,7 +150,6 @@ Item {
         Rectangle {
             id: mainRect
             width: 600;
-
             height: audioHandlerItem.height - y - 10
 
             Component {

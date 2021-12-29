@@ -168,8 +168,7 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
 
             painter.fillRect(bar, color);
         }
-
-        qDebug() << "Total peaks " << freqPeaks.size();
+        //qDebug() << "Total peaks " << freqPeaks.size();
     }
     else
         qDebug () << "No bars to draw for qml";

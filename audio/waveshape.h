@@ -61,6 +61,8 @@ public:
 //public slots:
     void audioPositionChanged(qint64 position);
 
+    void invertShowNotes() { showNotes = !showNotes;}
+
 
 protected:
     WaveContour waveContour;
@@ -71,6 +73,8 @@ protected:
 
     bool noImage = true;
     QImage mainImage;
+
+    bool showNotes = false;
 };
 
 
@@ -98,6 +102,8 @@ public:
     Q_INVOKABLE void setWindowWidth(quint64 newWidth) { windowWidth = newWidth; update(); }
 
     Q_INVOKABLE void calculateF0() { waveContour.calculateF0(); update(); }
+
+    Q_INVOKABLE void showNotes() { invertShowNotes(); update();}
 };
 
 

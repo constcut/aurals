@@ -135,6 +135,23 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
         prevPitch = pitch;
     }
 
+    if (showNotes) {
+        auto noteStarts = waveContour.getNoteStarts();
+        painter.setPen(QColor("yellow"));
+        for (int i = 0; i < noteStarts.size(); ++i) {
+            auto start = noteStarts[i];
+            const double pixelX = 2.0 * start / (125.0);
+            painter.drawEllipse(pixelX-5, height/2-5, 10, 10);
+        }
+        auto noteEnds = waveContour.getNoteEnds();
+        painter.setPen(QColor("orange"));
+        for (int i = 0; i < noteEnds.size(); ++i) {
+            auto start = noteEnds[i];
+            const double pixelX = 2.0 * start / (125.0);
+            painter.drawEllipse(pixelX-5, height/2-5, 10, 10);
+        }
+    }
+
     //painter.restore();
     {
         painter.setPen(Qt::darkMagenta);

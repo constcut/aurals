@@ -1,9 +1,11 @@
-#include "wavecontour.h"
+﻿#include "wavecontour.h"
 #include "wavfile.h"
 
 #include "featureextractor.h"
 
 #include "utils.h"
+
+#include <array>
 
 #include <QDataStream>
 #include <QDebug>
@@ -142,10 +144,104 @@ bool WaveContour::loadWavFile(QString filename)
     size_t rmsSize = 125;
     size_t rmsFrames = samples.size()/rmsSize;
 
+    QList<double> lastRms;
+
+    bool noteIsStarted = false;
+
     for (size_t step = 0; step < rmsFrames; ++step) {
         auto forRmsLocal = floatSamples.mid(rmsSize*step,rmsSize);
         auto db = calc_dB(forRmsLocal.data(), forRmsLocal.size());
         rmsLine.append(db);
+        lastRms.append(db);
+
+        const int checkLimit = 12;
+
+        if (lastRms.size() == checkLimit) { //TODO subfunction
+
+            double prev = lastRms[0];
+
+            std::array<int, checkLimit> states = {};
+
+            const double goodBorder = 6.0;
+            const double perfectBorder = 9.0; //12?
+
+            double max = -120.0;
+            int maxIdx = -1;
+            double min = 0.0;
+            int minIdx = -1;
+
+            for (int i = 1; i < lastRms.size(); ++i) {
+                double current = lastRms[i];
+                if (current - prev > goodBorder)
+                    states[i] = 1; //TODO enumerate states
+                if (current - prev > perfectBorder)
+                    states[i] = 2;
+
+                if (max < current) {
+                    max = current;
+                    maxIdx = i;
+                }
+                if (min > current) {
+                    min = current;
+                    minIdx = i;
+                }
+                prev = current;
+            }
+
+            const int foundPosition = rmsSize * step;
+
+            if (noteIsStarted)
+                if (minIdx == checkLimit - 1 & min < -36.0) {
+                    if (max - min > 12.0) {
+                        qDebug() << "Note end " << foundPosition / 44100.0;
+                        noteEnds.append(foundPosition);
+                        noteIsStarted = false;
+
+
+                    }
+                }
+
+            if (noteIsStarted == false)
+                if (maxIdx == checkLimit - 1 & max > -28.0) { //TODO configurable param (first set, then calculate)
+
+                    bool foundGood = false;
+                    int goodDist = -1;
+                    bool foundPerfect = false;
+                    int perfectDist = -1;
+
+                    for (int i = maxIdx; i != -1; --i) {
+                        if (states[i] == 2) {
+                            foundPerfect = true;
+                            perfectDist = maxIdx - i;
+                            break;
+                        }
+                        if (foundGood == false && states[i] == 1) {
+                            foundGood = true;
+                            goodDist = maxIdx - i;
+                        }
+                    }
+
+                    if (foundPerfect) {
+                        qDebug() << "+Note start " << foundPosition / 44100.0 << " dist " << perfectDist;
+                        noteStarts.append(foundPosition);
+                        noteIsStarted = true;
+                    }
+                    else if (foundPerfect) {
+                        qDebug() << "+Note start " << foundPosition / 44100.0 << " dist " << goodDist;
+                        noteStarts.append(foundPosition);
+                        noteIsStarted = true;
+                    }
+                    else {
+                        if (max - min > perfectBorder) {
+                            qDebug() << "MaxMin note " << foundPosition / 44100.0 << " " << (max - min);
+                            noteStarts.append(foundPosition);
+                            noteIsStarted = true;
+                        }
+                    }
+                }
+
+            lastRms.pop_front();
+        }
     }
 
     const size_t counterFrameSize = 125;

@@ -74,7 +74,7 @@ Item {
 
                     var prev = waveShape.getRMS(mouseX/ 2.0)
 
-                    var dbLevelBorder = 9
+                    var dbLevelBorder = 9 //TODO settable params
                     var dbLevelBorderSmall = 6
 
                     for (i = 0; i < 25; ++i) {
@@ -267,11 +267,22 @@ Item {
     }
 
     Button {
+        id: f0Button
         y: settingsButton.y + settingsButton.height + 5
         x: parent.width - width - 10
         text: "F0"
         onClicked:  {
             waveShape.calculateF0()
+        }
+    }
+
+    Button {
+        id: showNotesButton
+        y: f0Button.y + f0Button.height + 5
+        x: parent.width - width - 10
+        text: "Show notes"
+        onClicked:  {
+            waveShape.showNotes()
         }
     }
 
@@ -313,14 +324,14 @@ Item {
                     max = amps[i]
             }
 
-            var checkFreqsCount = freqs.length > 50 ? 50 : freqs.length
+            var checkFreqsCount = freqs.length > 49 ? 49 : freqs.length
 
             for (i = 0; i < checkFreqsCount; ++i) {
                 var freq = freqs[i]
                 var amp = amps[i]
                 var ratio = max / amp;
 
-                if (i && i % 10 == 0)
+                if (i && i % 7 == 0)
                     peaksGroup.text += "<br>  ";
 
                 if (ratio > 0.5)
