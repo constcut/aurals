@@ -67,6 +67,8 @@ private:
 
     size_t prevPosition;
 
+    bool isPlaying = false;
+    bool isRecording = false;
 };
 
 

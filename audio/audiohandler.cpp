@@ -28,6 +28,9 @@ AudioHandler::AudioHandler() {
 
 void AudioHandler::startRecord() {
 
+    if (isPlaying || isRecording)
+        return;
+
     #ifdef Q_OS_ANDROID
     //TODO request? Why falls only on mine phone
     #endif
@@ -44,10 +47,16 @@ void AudioHandler::stopRecord() {
     //TODO сохранить в wav, загрузить в DAW изучить, возможно вместо вырезания занулить
     if (prevPosition == 0)
         commonBufer.remove(0, 4*2205);
+
+    isRecording = false;
 }
 
 
 void AudioHandler::startPlayback() {
+
+    if (isPlaying || isRecording)
+        return;
+
     const double sampleRate = commonFormat.sampleRate();
     const double bitRate = commonFormat.sampleSize();
     const double bytesPerSample = bitRate / 8.0;
@@ -62,10 +71,16 @@ void AudioHandler::startPlayback() {
 void AudioHandler::stopPlayback() {
     audioPlayer->stop();
     audioOutput->stop();
+
+    isPlaying = false;
 }
 
 
 void AudioHandler::initRecorder() {
+
+    if (isPlaying || isRecording)
+        return;
+
     QAudioDeviceInfo info(QAudioDeviceInfo::defaultInputDevice());
     if (!info.isFormatSupported(commonFormat)) {
         qDebug() << "Default format not supported - trying to use nearest";
@@ -78,6 +93,10 @@ void AudioHandler::initRecorder() {
 
 
 void AudioHandler::initPlayer() {
+
+    if (isPlaying || isRecording)
+        return;
+
     QAudioDeviceInfo info(QAudioDeviceInfo::defaultInputDevice());
     if (!info.isFormatSupported(commonFormat)) {
         qDebug() << "Default format not supported - trying to use nearest";
@@ -91,12 +110,20 @@ void AudioHandler::initPlayer() {
 
 
 void AudioHandler::resetBufer() {
+
+    if (isPlaying || isRecording)
+        return;
+
     commonBufer.clear();
     prevPosition = 0;
 }
 
 
 void AudioHandler::loadFile(QString filename) {
+
+    if (isPlaying || isRecording)
+        return;
+
     QFile audioFile;
     audioFile.setFileName(filename);
 
@@ -124,6 +151,10 @@ void AudioHandler::saveFile(QString filename) const {
 
 
 void AudioHandler::setSampleRate(int newSampleRate) {
+
+    if (isPlaying || isRecording)
+        return;
+
     //qDebug() << "New sample rate " << newSampleRate;
     commonFormat.setSampleRate(newSampleRate);
     initRecorder();
@@ -173,6 +204,10 @@ void AudioHandler::saveWavFile(QString filename) const {
 
 
 void AudioHandler::loadWavFile(QString filename) {
+
+    if (isPlaying || isRecording)
+        return;
+
     WavFile wav;
     wav.open(filename);
     commonBufer = wav.readAll();

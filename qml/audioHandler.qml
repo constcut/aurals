@@ -149,7 +149,9 @@ Item {
 
         Rectangle {
             id: mainRect
-            width: 500; height: 300
+            width: 600;
+
+            height: audioHandlerItem.height - y - 10
 
             Component {
                 id: fileDeligate
