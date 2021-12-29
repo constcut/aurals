@@ -10,8 +10,6 @@ ApplicationWindow {
 
     id: thatWindow
     visible: true
-    //width: 1280
-    //height: 800
     visibility: "FullScreen" //TODO only if android
     title: "Mtherapp"
 
