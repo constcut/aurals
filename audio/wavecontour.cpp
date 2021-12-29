@@ -16,20 +16,6 @@ WaveContour::WaveContour(QString filename)
         qDebug() << "Failed to load contour from file "<<filename;
 }
 
-void WaveContour::calculateF0() {
-    yinLine.clear();
-    size_t yinSize = 2048;
-    size_t yinFrames = floatSamples.size() / yinSize;
-
-    for (size_t step = 0; step < yinFrames; ++step) {
-        auto forLocalYin = floatSamples.mid(yinSize * step, yinSize);
-        if (forLocalYin.empty())
-            break;
-        auto pitch = calc_YinF0(forLocalYin.data(), forLocalYin.size());
-        //qDebug() << step << " Yin tracking " << pitch;
-        yinLine.append(pitch);
-    }
-}
 
 ContourEl WaveContour::calculateElement(QVector<qint16> &samples)
 {
@@ -118,6 +104,23 @@ ContourEl WaveContour::summate2Elements(const ContourEl &e1,const  ContourEl &e2
     return result;
 }
 
+
+void WaveContour::calculateF0() {
+    yinLine.clear();
+    size_t yinSize = 2048;
+    size_t yinFrames = floatSamples.size() / yinSize;
+
+    for (size_t step = 0; step < yinFrames; ++step) {
+        auto forLocalYin = floatSamples.mid(yinSize * step, yinSize);
+        if (forLocalYin.empty())
+            break;
+        auto pitch = calc_YinF0(forLocalYin.data(), forLocalYin.size());
+        //qDebug() << step << " Yin tracking " << pitch;
+        yinLine.append(pitch);
+    }
+}
+
+
 bool WaveContour::loadWavFile(QString filename)
 {
     WavFile wav;
@@ -197,7 +200,12 @@ bool WaveContour::loadWavFile(QString filename)
                         noteEnds.append(foundPosition);
                         noteIsStarted = false;
 
-
+                        //TODO sepparate into f() + windowed mode (2048 per window)
+                        const int noteStart = noteStarts.back();
+                        auto pitch = calc_YinF0(&floatSamples[noteStart],
+                                                foundPosition - noteStart);
+                        qDebug() << "Pitch on note " << pitch << " size is "
+                                 << foundPosition - noteStart;
                     }
                 }
 
