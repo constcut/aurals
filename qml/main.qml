@@ -1,6 +1,8 @@
 import QtQuick 2.15
 import QtQuick.Window 2.15
 
+import QtQml 2.15
+
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 
@@ -10,8 +12,16 @@ ApplicationWindow {
     visible: true
     //width: 1280
     //height: 800
-    visibility: "FullScreen"
+    visibility: "FullScreen" //TODO only if android
     title: "Mtherapp"
+
+    onClosing: {
+        if (Qt.platform.os == "android")
+            close.accepted = false
+        else
+            close.accepted = true
+    }
+
 
     header: ToolBar {
 
@@ -33,10 +43,15 @@ ApplicationWindow {
 
             ToolButton {
                 text: "Exit"
-                onClicked: Qt.exit(0)
+                onClicked:  {
+                    if (Qt.platform.os !== "android")
+                        Qt.exit(0)
+                }
+                visible: Qt.platform.os !== "android"
             }
         }
     }
+
 
     function requestWaveshape(filename) {
         //console.log('Requested waveshape', filename)

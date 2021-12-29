@@ -64,7 +64,6 @@ int mainInit(int argc, char *argv[]) {
         dir.mkdir("records");
 
     int res = 0;
-
     try {
         res = app.exec();
     }
