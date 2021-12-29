@@ -143,8 +143,6 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
 
         const qreal bandWidth = (m_highFreq - m_lowFreq) / m_bars.count();
 
-        std::vector<std::pair<double, double>> peaks; //TODO 2 QVector? Для доступа из QML
-
         for (int i=0; i < numBars; ++i) {
             qreal value = m_bars[i].value;
             Q_ASSERT(value >= 0.0 && value <= 1.0);
@@ -221,14 +219,27 @@ void SpectrographPainter::updateBars()
     m_bars.fill(Bar());
     FrequencySpectrum::const_iterator i = m_spectrum.begin();
     const FrequencySpectrum::const_iterator end = m_spectrum.end();
+
+    size_t count = 0; //skipped in calculation
+    double prevFreq = 0;
+    double diffFreq = 0;
+
     for ( ; i != end; ++i) {
         const FrequencySpectrum::Element e = *i;
-        if (e.frequency >= m_lowFreq && e.frequency < m_highFreq) {
-            Bar &bar = m_bars[barIndex(e.frequency)];
+        if (e.frequency >= m_lowFreq && e.frequency < m_highFreq && count < m_bars.size()) {
+            //auto idx = barIndex(e.frequency); //Точный размер
+            Bar &bar = m_bars[count];
             bar.value = qMax(bar.value, e.amplitude);
             bar.clipped |= e.clipped;
+
+            diffFreq = e.frequency - prevFreq;
+            prevFreq = e.frequency; //TODO сделать адекватней
         }
+        ++count;
     }
+
+    freqStep = diffFreq;
+
     //update();
 }
 
@@ -291,7 +302,7 @@ void SpectrographQML::setSoundEngine(QObject *eng)
 void SpectrographQML::selectBar(int index) {
     Q_ASSERT(index >= 0 && index < m_bars.count());
     m_barSelected = index;
-    qDebug() << "Selected index " << index;
+    //qDebug() << "Selected index " << index;
     update();
 }
 

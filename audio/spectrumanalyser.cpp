@@ -146,26 +146,15 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
     m_spectrum.rms = rms;
     m_spectrum.rmsNoWindow = rmsNoWin;
 
-    //TOO BIG
-
     size_t realSize = m_input.size();
     if (realSize > yinLimit)
         realSize = yinLimit;
 
     auto pitch = calc_YinF0(m_input.data(), realSize);
-    //qDebug() << "RMS: " << rms << " rms no win " << rmsNoWin << " pitch " << pitch;
     m_spectrum.pitch = pitch;
-    //qDebug() << "Window " << m_numSamples << " yin limit " << yinLimit
-     //               << " fft limit " << fftLimit;
-    // Calculate the FFT
 
-    //qDebug() <<"Num samples before calculate FFT "<<m_numSamples;
+    m_fft->calculateFFT(m_output.data(), m_noWindowInput.data()); //m_noWindowInput m_input
 
-    m_fft->calculateFFT(m_output.data(), m_input.data());
-
-    //qDebug() << "Calculation of fft done";
-
-    // Analyze output to obtain amplitude and phase for each frequency
     for (int i=2; i<=m_numSamples/2; ++i) {
         // Calculate frequency of this complex sample
 
@@ -176,6 +165,7 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
         if (i>0 && i<m_numSamples/2)
             imag = m_output[m_numSamples/2 + i];
 
+        //
         const qreal magnitude = qSqrt(real*real + imag*imag);
         qreal amplitude = SpectrumAnalyserMultiplier * qLn(magnitude);
 

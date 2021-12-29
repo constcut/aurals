@@ -90,6 +90,8 @@ protected:
     qreal               m_highFreq;
     FrequencySpectrum   m_spectrum;
 
+    double freqStep;
+
     QVector<qreal> freqPeaks;
     QVector<qreal> ampPeaks;
 };
@@ -129,11 +131,9 @@ public:
         updateBars();
     }
 
-    Q_INVOKABLE qreal getFreq1() { const qreal bandWidth = (m_highFreq - m_lowFreq) / m_bars.count();
-                                     return m_barSelected * bandWidth; }
+    Q_INVOKABLE qreal getFreq1() { return m_barSelected * freqStep; }
 
-    Q_INVOKABLE qreal getFreq2() { const qreal bandWidth = (m_highFreq - m_lowFreq) / m_bars.count();
-                                     return (m_barSelected + 1) * bandWidth; }
+    Q_INVOKABLE qreal getFreq2() { return (m_barSelected + 1) * freqStep; }
 
     Q_INVOKABLE qreal getValue()  { return m_bars[m_barSelected].value; }
     Q_INVOKABLE qreal getRMS() { return m_spectrum.rms; }
