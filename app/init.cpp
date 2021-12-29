@@ -63,7 +63,15 @@ int mainInit(int argc, char *argv[]) {
     if (dir.exists("records") == false)
         dir.mkdir("records");
 
+    int res = 0;
 
-    int res = app.exec();
+    try {
+        res = app.exec();
+    }
+    catch(std::exception& e) {
+        qDebug() << "Catched exception " << e.what();
+        res = -1;
+    }
+
     return res;
 }

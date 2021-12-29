@@ -201,11 +201,11 @@ bool WaveContour::loadWavFile(QString filename)
                         noteIsStarted = false;
 
                         //TODO sepparate into f() + windowed mode (2048 per window)
-                        const int noteStart = noteStarts.back();
+                        /*const int noteStart = noteStarts.back();
                         auto pitch = calc_YinF0(&floatSamples[noteStart],
                                                 foundPosition - noteStart);
                         qDebug() << "Pitch on note " << pitch << " size is "
-                                 << foundPosition - noteStart;
+                                 << foundPosition - noteStart;*/
                     }
                 }
 
