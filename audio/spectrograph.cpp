@@ -46,6 +46,8 @@
 
 #include "wavfile.h"
 
+#include <cmath>
+
 //#include "soundengine.h" //TODO review for Audio handler (ideas)
 
 const int NullTimerId = -1;
@@ -133,9 +135,11 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
         const int barPlusGapWidth = widgetWidth / numBars;
         const int barWidth = barPlusGapWidth;
         const int gapWidth =  barPlusGapWidth - barWidth;
-        const int paddingWidth = widgetWidth - numBars * (barWidth + gapWidth);
-        const int leftPaddingWidth = 0;// (paddingWidth + gapWidth) / 2;
         const int barHeight = rect.height() - 2 * gapWidth;
+
+        const qreal bandWidth = (m_highFreq - m_lowFreq) / m_bars.count();
+
+        std::vector<std::pair<double, double>> peaks; //TODO 2 QVector? Для доступа из QML
 
         for (int i=0; i < numBars; ++i) {
             qreal value = m_bars[i].value;
@@ -143,6 +147,13 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
             QRectF bar = rect;
             bar.setLeft(calcXPos(i)); //rect.left() + leftPaddingWidth + (i * (gapWidth + barWidth)));
             bar.setWidth(barWidth);
+
+            double volume = 20.0 * log10(value);
+            if (volume > -30.0) {
+                //qDebug() << bandWidth*i << "-" << bandWidth*(i+1) << " " << volume;
+                double freq = bandWidth * (i + 0.5);
+                peaks.push_back({freq, volume});
+            }
 
             bar.setTop(rect.top() + gapWidth + (1.0 - value) * barHeight);
             bar.setBottom(rect.bottom() - gapWidth);
@@ -153,6 +164,8 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
 
             painter.fillRect(bar, color);
         }
+
+        qDebug() << "Total peaks " << peaks.size();
     }
     else
         qDebug () << "No bars to draw for qml";
@@ -273,7 +286,6 @@ void SpectrographQML::setSoundEngine(QObject *eng)
 
 void SpectrographQML::selectBar(int index) {
     Q_ASSERT(index >= 0 && index < m_bars.count());
-    const qreal bandWidth = (m_highFreq - m_lowFreq) / m_bars.count();
     m_barSelected = index;
     qDebug() << "Selected index " << index;
     update();
