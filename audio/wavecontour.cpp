@@ -14,6 +14,21 @@ WaveContour::WaveContour(QString filename)
         qDebug() << "Failed to load contour from file "<<filename;
 }
 
+void WaveContour::calculateF0() {
+    yinLine.clear();
+    size_t yinSize = 2048;
+    size_t yinFrames = floatSamples.size() / yinSize;
+
+    for (size_t step = 0; step < yinFrames; ++step) {
+        auto forLocalYin = floatSamples.mid(yinSize * step, yinSize);
+        if (forLocalYin.empty())
+            break;
+        auto pitch = calc_YinF0(forLocalYin.data(), forLocalYin.size());
+        //qDebug() << step << " Yin tracking " << pitch;
+        yinLine.append(pitch);
+    }
+}
+
 ContourEl WaveContour::calculateElement(QVector<qint16> &samples)
 {
     ContourEl result;
@@ -106,19 +121,16 @@ bool WaveContour::loadWavFile(QString filename)
     WavFile wav;
     wav.open(filename);
 
-    QByteArray samplesBytes = wav.readAll(); //well some files can be to much - later protect it
-
-    QVector<qint16> samples; //TODO?
-    QVector<float> floatSamples;
+    QByteArray samplesBytes = wav.readAll();
+    QVector<qint16> samples;
     qint16 pcmSample;
-
     QDataStream dataStream(samplesBytes);
-
     for (int i = 0; i < samplesBytes.size(); ++i) {
         dataStream >> pcmSample;
         samples << pcmSample;
     }
 
+    floatSamples.clear();
     const char *ptr = samplesBytes.constData();
     for (int i = 0; i < samplesBytes.size()/2; ++i) {
         auto pcmSample2 = *reinterpret_cast<const qint16*>(ptr);
@@ -135,19 +147,6 @@ bool WaveContour::loadWavFile(QString filename)
         auto db = calc_dB(forRmsLocal.data(), forRmsLocal.size());
         rmsLine.append(db);
     }
-
-    size_t yinSize = 2048;
-    size_t yinFrames = samples.size() / yinSize;
-
-    for (size_t step = 0; step < yinFrames; ++step) {
-        auto forLocalYin = floatSamples.mid(yinSize * step, yinSize);
-        if (forLocalYin.empty())
-            break;
-        auto pitch = calc_YinF0(forLocalYin.data(), forLocalYin.size());
-        //qDebug() << step << " Yin tracking " << pitch;
-        yinLine.append(pitch);
-    }
-
 
     const size_t counterFrameSize = 125;
     unsigned long frames = samples.size()/counterFrameSize;

@@ -96,6 +96,8 @@ public:
     Q_INVOKABLE void setWindowPosition(quint64 newPosition) { windowPosition = newPosition; update(); }
     Q_INVOKABLE quint64 getWindowPosition() { return windowPosition; }
     Q_INVOKABLE void setWindowWidth(quint64 newWidth) { windowWidth = newWidth; update(); }
+
+    Q_INVOKABLE void calculateF0() { waveContour.calculateF0(); update(); }
 };
 
 

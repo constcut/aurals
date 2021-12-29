@@ -257,11 +257,21 @@ Item {
     }
 
     Button {
+        id: settingsButton
         y: specInfo.y
         x: parent.width - width - 10
         text: "Settings"
         onClicked:  {
             settingsDialog.visible = true;
+        }
+    }
+
+    Button {
+        y: settingsButton.y + settingsButton.height + 5
+        x: parent.width - width - 10
+        text: "F0"
+        onClicked:  {
+            waveShape.calculateF0()
         }
     }
 

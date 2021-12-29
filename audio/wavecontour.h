@@ -23,6 +23,7 @@ public:
     const QVector<ContourEl>& getZoom128() const { return zoom128; }
     const QVector<ContourEl>& getZoom256() const { return zoom256; }
 
+    void calculateF0();
 
 public: //helpers for ContourEl
 
@@ -37,6 +38,8 @@ protected:
 
 
     QVector<ContourEl> summ4Lists(QVector<ContourEl> &source);
+
+    QVector<float> floatSamples;
 
     QVector<double> rmsLine;
     QVector<double> yinLine;
