@@ -15,43 +15,30 @@ Item {
     }
 
 
-    ScrollView
-    {
-        //Flickable
+    ScrollView {
         width: parent.width
         height: parent.height / 3
 
-        //horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOn
-       //verticalScrollBarPolicy:  Qt.ScrollBarAlwaysOff
-
-        Flickable
-        {
+        Flickable {
             id: flick
             y: 5
             x: 0
             width: parent.width
             height: parent.height-20
-
             contentWidth: 3000
             contentHeight:  parent.height
 
-            //QML2.ScrollBar.horizontal:  QML2.ScrollBar { }
-
             property int pressedX : 0
             MouseArea {
-                //anchors.fill: parent
-
                 x:0
                 y:20
-
                 width: parent.width
                 height: 250
 
                 onPressed: {
                     flick.pressedX = mouseX
                 }
-                onReleased:
-                {
+                onReleased: {
                     var diff =  flick.pressedX - mouseX
                     flick.contentX += diff
                     if (flick.contentX < 0)
@@ -59,15 +46,18 @@ Item {
                     if (flick.contentX >wavPos.width)
                         flick.contentX = wavPos.width
                 }
-
-                onClicked:
-                {
+                onClicked:{
                     waveShape.setWindowPosition(mouseX*125.0/2.0)
                     spectrum.loadSpectrum(item.filename,mouseX*125.0/2.0)
                     rmsYinIngo.text = "Window RMS = " + spectrum.getRMSNoWindow().toFixed(4)
                     + "\nPitch = " + spectrum.getPitch().toFixed(4) + "\nMIDI# = " + spectrum.freqToMidi(spectrum.getPitch())
-                    + "\nTime = " + (mouseX*125.0/2.0) / 44100.0
+                    + "\nTime = " + ((mouseX*125.0/2.0) / 44100.0).toFixed(4)
+                    + "\nTotal peaks = " + spectrum.peaksCount()
                     outputRmsGroup(mouseX)
+                }
+
+                function outputPeaksGroup() {
+
                 }
 
                 function outputRmsGroup(mouseX) {
@@ -257,10 +247,15 @@ Item {
     Text {
         id: rmsGroup
         y: specInfo.y
-        x: parent.width / 2
+        x: parent.width / 4
         text: "<font color='red'>RMS group</font>"
+    }
 
-        //textFormat: Text.RichText
+    Text {
+        id: peaksGroup
+        y: specInfo.y
+        x: 2 * parent.width / 4 + 30
+        text: "<font color='green'>Peaks group</font>"
     }
 
     Button {

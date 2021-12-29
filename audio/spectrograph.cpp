@@ -130,6 +130,10 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
 
     // Draw the bars
     if (numBars) {
+
+        freqPeaks.clear();
+        ampPeaks.clear();
+
         // Calculate width of bars and gaps
         const int widgetWidth = rect.width();
         const int barPlusGapWidth = widgetWidth / numBars;
@@ -150,9 +154,9 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
 
             double volume = 20.0 * log10(value);
             if (volume > -30.0) {
-                //qDebug() << bandWidth*i << "-" << bandWidth*(i+1) << " " << volume;
                 double freq = bandWidth * (i + 0.5);
-                peaks.push_back({freq, volume});
+                freqPeaks.append(freq);
+                ampPeaks.append(volume);
             }
 
             bar.setTop(rect.top() + gapWidth + (1.0 - value) * barHeight);
@@ -165,7 +169,7 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
             painter.fillRect(bar, color);
         }
 
-        qDebug() << "Total peaks " << peaks.size();
+        qDebug() << "Total peaks " << freqPeaks.size();
     }
     else
         qDebug () << "No bars to draw for qml";

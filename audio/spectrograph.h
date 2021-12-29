@@ -89,6 +89,9 @@ protected:
     qreal               m_lowFreq;
     qreal               m_highFreq;
     FrequencySpectrum   m_spectrum;
+
+    QVector<qreal> freqPeaks;
+    QVector<qreal> ampPeaks;
 };
 
 
@@ -148,6 +151,9 @@ public:
         return calc_MidiCents(freq) / 100.0;
     }
 
+    Q_INVOKABLE int peaksCount() { return freqPeaks.size(); }
+    Q_INVOKABLE QVector<qreal> getFreqPeaks() { return freqPeaks; }
+    Q_INVOKABLE QVector<qreal> getAmpPeaks() { return ampPeaks; }
 
 public slots:
     void spectrumChanged(qint64 position, qint64 length,
@@ -162,8 +168,6 @@ protected:
 
     Engine *soundEngine; //TODO собрать лучшее из ideas
     SpectrumAnalyser analyser;
-
-
 };
 
 
