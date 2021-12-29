@@ -255,6 +255,7 @@ void SpectrographQML::paint(QPainter* painter)
 
    paintSpectr(*painter,rect);
 
+   emit spectrumCalculated();
 }
 
 void SpectrographQML::updateBars()

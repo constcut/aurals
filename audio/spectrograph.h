@@ -161,6 +161,11 @@ public slots:
 
     void spectrumChanged(const FrequencySpectrum &spectrum);
 
+
+signals:
+
+    void spectrumCalculated();
+
 protected:
 
     int samplesAmount;

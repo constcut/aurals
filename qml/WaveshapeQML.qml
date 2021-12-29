@@ -56,9 +56,7 @@ Item {
                     outputRmsGroup(mouseX)
                 }
 
-                function outputPeaksGroup() {
 
-                }
 
                 function outputRmsGroup(mouseX) {
                     var min = 120.0
@@ -72,7 +70,7 @@ Item {
                             min = rmsCheckValue
                     }
 
-                    rmsGroup.text = "<b>{ </b>";
+                    rmsGroup.text = "<b>{</b>";
 
                     var prev = waveShape.getRMS(mouseX/ 2.0)
 
@@ -81,7 +79,7 @@ Item {
 
                     for (i = 0; i < 25; ++i) {
                         if (i && i % 5 == 0)
-                            rmsGroup.text += "<br>  ";
+                            rmsGroup.text += "<br> ";
 
                         var rmsValue = waveShape.getRMS(mouseX / 2.0 + i)
 
@@ -290,6 +288,52 @@ Item {
                // https://stackoverflow.com/questions/3019278/how-can-i-specify-the-base-for-math-log-in-javascript
             }
         }
+        onSpectrumCalculated: {
+            outputPeaksGroup()
+        }
+        function outputPeaksGroup() {
+            peaksGroup.text = "{ ";
+
+            var freqs = spectrum.getFreqPeaks();
+            var amps = spectrum.getAmpPeaks();
+            var max = -120;
+
+            for (var i = 0; i < amps.length; ++i) {
+                if (amps[i] > max)
+                    max = amps[i]
+            }
+
+            var checkFreqsCount = freqs.length > 50 ? 50 : freqs.length
+
+            for (i = 0; i < checkFreqsCount; ++i) {
+                var freq = freqs[i]
+                var amp = amps[i]
+                var ratio = max / amp;
+
+                if (i && i % 10 == 0)
+                    peaksGroup.text += "<br>  ";
+
+                if (ratio > 0.5)
+                    peaksGroup.text += "<b>"
+                if (ratio > 0.75)
+                    peaksGroup.text += "<u>"
+
+                if (i && freq < 100)
+                    peaksGroup.text += "_"
+
+                peaksGroup.text += freq.toFixed(0)
+
+                if (ratio > 0.75)
+                    peaksGroup.text += "</u>"
+                if (ratio > 0.5)
+                    peaksGroup.text += "</b>"
+
+                peaksGroup.text += " ; "
+            }
+
+            peaksGroup.text += " }";
+        }
+
     }
 
 
