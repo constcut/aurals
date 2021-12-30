@@ -220,11 +220,12 @@ void SpectrographPainter::updateBars()
     FrequencySpectrum::const_iterator i = m_spectrum.begin();
     const FrequencySpectrum::const_iterator end = m_spectrum.end();
 
-    size_t count = 0; //skipped in calculation
+    size_t count = 0;
     double prevFreq = 0;
-    double diffFreq = 0;
+    double diffFreq = 0; //TODO сделать адекватней
 
     gotClipping = false;
+    spectrumGap = false;
 
     for ( ; i != end; ++i) {
         const FrequencySpectrum::Element e = *i;
@@ -234,6 +235,12 @@ void SpectrographPainter::updateBars()
             bar.value = qMax(bar.value, e.amplitude);
             bar.clipped |= e.clipped;
             gotClipping |= e.clipped;
+
+            if (spectrumGap == false && count >= 5) {
+                double level = 20 * log10(bar.value);
+                if (level < -28.0) //TODO configurable
+                        spectrumGap = true;
+            }
 
             diffFreq = e.frequency - prevFreq;
             prevFreq = e.frequency; //TODO сделать адекватней
@@ -249,7 +256,7 @@ void SpectrographPainter::updateBars()
 
 //========================================================
 
-SpectrographQML::SpectrographQML(QQuickItem* parent):soundEngine(0),samplesAmount(4096)
+SpectrographQML::SpectrographQML(QQuickItem* parent) : soundEngine(0), samplesAmount(4096)
 {
     setParams(SpectrumNumBands, SpectrumLowFreq, SpectrumHighFreq);
     //defaults
