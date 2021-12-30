@@ -189,14 +189,23 @@ Item {
 
     }
 
+    property bool useHotFixFirstRecord: true
+
     function reload() {
+        if (useHotFixFirstRecord)
+            audio.startRecord() //Hotfix of first record, before records or playback
         var files = audio.getRecords();
         filesModel.clear()
         for (var i = 2; i < files.length; ++i)
             filesModel.append({"name": files[i]})
+        if (useHotFixFirstRecord) {
+            audio.stopRecord()
+            audio.resetBufer()
+        }
     }
 
     Component.onCompleted: {
+
         audioHandlerItem.reload()
     }
 

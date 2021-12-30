@@ -45,8 +45,8 @@ void AudioHandler::stopRecord() {
     audioReceiver->stop();
     audioInput->stop();
     //TODO сохранить в wav, загрузить в DAW изучить, возможно вместо вырезания занулить
-    if (prevPosition == 0)
-        commonBufer.remove(0, 4*2205);
+    //if (prevPosition == 0)
+        //commonBufer.remove(0, 4*2205);
 
     isRecording = false;
 }
