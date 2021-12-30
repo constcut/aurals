@@ -141,7 +141,7 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
         const int gapWidth =  barPlusGapWidth - barWidth;
         const int barHeight = rect.height() - 2 * gapWidth;
 
-        const qreal bandWidth = (m_highFreq - m_lowFreq) / m_bars.count();
+        const qreal bandWidth = freqStep; //(m_highFreq - m_lowFreq) / m_bars.count();
 
         for (int i=0; i < numBars; ++i) {
             qreal value = m_bars[i].value;
