@@ -64,6 +64,7 @@ public:
 
     void setParams(int numBars, qreal lowFreq, qreal highFreq);
 
+    void findPeaks();
     /*
 signals:
     void infoMessage(const QString &message, int intervalMs);
@@ -95,6 +96,8 @@ protected:
     bool spectrumGap = false;
     double _gapLevel = 0.0;
 
+    QVector<qreal> idxPeaksAmp;
+    QVector<int> idxPeaks;
     QVector<qreal> freqPeaks;
     QVector<qreal> ampPeaks;
 };
@@ -134,11 +137,12 @@ public:
         updateBars();
     }
 
-    Q_INVOKABLE qreal getFreq1() { return m_barSelected * freqStep; }
+    Q_INVOKABLE qreal getFreq1() { return m_barSelected * freqStep; } //TODO barRange
     Q_INVOKABLE qreal getFreq2() { return (m_barSelected + 1) * freqStep; }
     Q_INVOKABLE qreal getPitch() { return m_spectrum.pitch; }
     Q_INVOKABLE qreal freqToMidi(qreal freq) { return calc_MidiCents(freq) / 100.0; }
     Q_INVOKABLE qreal getValue()  { return m_bars[m_barSelected].value; }
+    Q_INVOKABLE int getIndex() { return m_barSelected; }
 
     Q_INVOKABLE qreal getRMS() { return m_spectrum.rms; }
     Q_INVOKABLE qreal getRMSNoWindow() { return m_spectrum.rmsNoWindow; }

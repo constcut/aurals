@@ -65,16 +65,8 @@ SpectrographPainter::SpectrographPainter()    :   m_barSelected(NullIndex)
 void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
 {
     painter.fillRect(rect, Qt::black);
-
     const int numBars = m_bars.count();
     double barWidth = rect.width()/( static_cast<double>(numBars) );
-
-   // qDebug() << "Num bars :"<<numBars;
-
-    // Highlight region of selected bar
-    //qDebug() << "BarW1 " << barWidth * 200 << " " << rect.width() << " " << rect.height() ;
-
-    //Removed static cast
     auto calcXPos = [&rect, &barWidth](int index) { return (rect.topLeft().x() + index * barWidth); };
 
     if (m_barSelected != NullIndex && numBars) {
@@ -89,8 +81,6 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
 
     QColor barColor(51, 204, 102);
     QColor clipColor(255, 255, 0);
-
-    // Draw the outline
     const QColor gridColor = barColor.darker();
     QPen gridPen(gridColor);
     painter.setPen(gridPen);
@@ -104,7 +94,6 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
     gridPen.setDashPattern(dashes);
     painter.setPen(gridPen);
 
-    // Draw vertical lines between bars
     if (numBars) {
         const int numHorizontalSections = numBars;
 
@@ -116,7 +105,6 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
         }
     }
 
-    // Draw horizontal lines
     const int numVerticalSections = 10;
     QLine line(rect.topLeft(), rect.topRight());
     for (int i = 0; i < numVerticalSections; ++i) {
@@ -128,13 +116,11 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
     barColor.setAlphaF(0.75);
     clipColor.setAlphaF(0.75);
 
-    // Draw the bars
+    //TODO prepaint as wave
+
     if (numBars) {
-
-        freqPeaks.clear();
+        freqPeaks.clear(); //TODO отделить этот процесс
         ampPeaks.clear();
-
-        // Calculate width of bars and gaps
         const int widgetWidth = rect.width();
         const int barPlusGapWidth = widgetWidth / numBars;
         const int barWidth = barPlusGapWidth;
@@ -157,6 +143,8 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
                 ampPeaks.append(volume);
             }
 
+            idxPeaksAmp.append(volume);
+
             bar.setTop(rect.top() + gapWidth + (1.0 - value) * barHeight);
             bar.setBottom(rect.bottom() - gapWidth);
 
@@ -166,10 +154,16 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
 
             painter.fillRect(bar, color);
         }
-        //qDebug() << "Total peaks " << freqPeaks.size();
+
+        findPeaks();
     }
     else
         qDebug () << "No bars to draw for qml";
+}
+
+void SpectrographPainter::findPeaks() {
+    //1. find max amplidute
+    //
 }
 
 
