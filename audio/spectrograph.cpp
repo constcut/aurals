@@ -219,14 +219,15 @@ void SpectrographPainter::updateBars()
     m_bars.fill(Bar());
     FrequencySpectrum::const_iterator i = m_spectrum.begin();
     const FrequencySpectrum::const_iterator end = m_spectrum.end();
-
     size_t count = 0;
-    double prevFreq = 0;
-    double diffFreq = 0; //TODO сделать адекватней
-
+    double emptyBins = 0.0;
+    {
+        auto j = i + 11;
+        auto k = i + 12;//TODO c конца
+        freqStep = k->frequency - j->frequency;
+    }
     gotClipping = false;
     spectrumGap = false;
-
     for ( ; i != end; ++i) {
         const FrequencySpectrum::Element e = *i;
         if (e.frequency >= m_lowFreq && e.frequency < m_highFreq && count < m_bars.size()) {
@@ -236,21 +237,16 @@ void SpectrographPainter::updateBars()
             bar.clipped |= e.clipped;
             gotClipping |= e.clipped;
 
-            if (spectrumGap == false && count >= 5) {
-                double level = 20 * log10(bar.value);
-                if (level < -28.0) //TODO configurable
-                        spectrumGap = true;
+            double level = 20 * log10(bar.value);
+            if (level < -28.0) {//TODO configurable
+                if (count >= 5)
+                    spectrumGap = true;
+                emptyBins += 1.0;
             }
-
-            diffFreq = e.frequency - prevFreq;
-            prevFreq = e.frequency; //TODO сделать адекватней
         }
         ++count;
     }
-
-    freqStep = diffFreq;
-
-    //update();
+    _gapLevel = emptyBins / m_bars.size();
 }
 
 

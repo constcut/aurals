@@ -27,7 +27,6 @@ Item {
             height: parent.height-20
             contentWidth: 3000
             contentHeight:  parent.height
-
             property int pressedX : 0
             MouseArea {
                 x:0
@@ -62,6 +61,8 @@ Item {
                         windowInfo.text += "Spectrum clipped! "
                     if (spectrum.gotGap() === false)
                         windowInfo.text += "Noisy spectrum! "
+
+                    windowInfo.text += "Gaps: " + spectrum.gapLevel()
                 }
                 onDoubleClicked: {
                     audio.loadOnlyWindow(item.filename, mouseX*125.0/2.0, parseInt(sizeComboBox.currentText))
@@ -71,14 +72,11 @@ Item {
                 property bool tooLoudRms: false
 
                 function outputRmsGroup(mouseX) {
-
                     tooLoudRms = false
-
                     var min = 120.0
                     var max = -120.0
                     for (var i = 0; i < 50; i+=2) {
                         var rmsCheckValue = waveShape.getRMS((mouseX + i) / 2.0)
-
                         if (rmsCheckValue > max)
                             max = rmsCheckValue
                         if (rmsCheckValue < min)
@@ -87,9 +85,7 @@ Item {
 
                     if (max > -1.0)
                         tooLoudRms = true
-
                     rmsGroup.text = "<b>{</b>";
-
                     var prev = waveShape.getRMS(mouseX/ 2.0)
 
                     var dbLevelBorder = 9 //TODO settable params
@@ -98,25 +94,19 @@ Item {
                     for (i = 0; i < 25; ++i) {
                         if (i && i % 5 == 0)
                             rmsGroup.text += "<br> ";
-
                         var rmsValue = waveShape.getRMS(mouseX / 2.0 + i)
-
-
                         if (rmsValue === min)
                             rmsGroup.text += "<font color='blue'>";
                         else if (rmsValue === max)
                             rmsGroup.text += "<font color='red'>";
-
                         var diff = Math.abs(prev - rmsValue)
                         prev = rmsValue
-
                         if (diff > dbLevelBorderSmall)
                             rmsGroup.text += "<b>"
                         if (diff > dbLevelBorder)
                             rmsGroup.text += "<u>"
 
                         rmsGroup.text += rmsValue.toFixed(2)
-
                         if (diff > dbLevelBorder)
                             rmsGroup.text += "</u>"
                         if (diff > dbLevelBorderSmall)
@@ -124,10 +114,8 @@ Item {
 
                         if (rmsValue === min || rmsValue === max)
                             rmsGroup.text += "</font>"
-
                         rmsGroup.text += " ; "
                     }
-
                     rmsGroup.text += "<b>}</b>"
                 }
             }

@@ -93,6 +93,7 @@ protected:
     double freqStep;
     bool gotClipping = false;
     bool spectrumGap = false;
+    double _gapLevel = 0.0;
 
     QVector<qreal> freqPeaks;
     QVector<qreal> ampPeaks;
@@ -143,6 +144,7 @@ public:
     Q_INVOKABLE qreal getRMSNoWindow() { return m_spectrum.rmsNoWindow; }
     Q_INVOKABLE bool clipped() { return gotClipping; }
     Q_INVOKABLE bool gotGap() { return spectrumGap; }
+    Q_INVOKABLE qreal gapLevel() { return _gapLevel;  }
 
     Q_INVOKABLE void onPress(int xPress, int yPress, int width, int height);
     Q_INVOKABLE bool loadSpectrum(QString filename, quint64 position);
