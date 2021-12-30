@@ -224,6 +224,8 @@ void SpectrographPainter::updateBars()
     double prevFreq = 0;
     double diffFreq = 0;
 
+    gotClipping = false;
+
     for ( ; i != end; ++i) {
         const FrequencySpectrum::Element e = *i;
         if (e.frequency >= m_lowFreq && e.frequency < m_highFreq && count < m_bars.size()) {
@@ -231,6 +233,7 @@ void SpectrographPainter::updateBars()
             Bar &bar = m_bars[count];
             bar.value = qMax(bar.value, e.amplitude);
             bar.clipped |= e.clipped;
+            gotClipping |= e.clipped;
 
             diffFreq = e.frequency - prevFreq;
             prevFreq = e.frequency; //TODO сделать адекватней

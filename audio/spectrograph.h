@@ -91,6 +91,7 @@ protected:
     FrequencySpectrum   m_spectrum;
 
     double freqStep;
+    bool gotClipping;
 
     QVector<qreal> freqPeaks;
     QVector<qreal> ampPeaks;
@@ -132,24 +133,20 @@ public:
     }
 
     Q_INVOKABLE qreal getFreq1() { return m_barSelected * freqStep; }
-
     Q_INVOKABLE qreal getFreq2() { return (m_barSelected + 1) * freqStep; }
-
+    Q_INVOKABLE qreal getPitch() { return m_spectrum.pitch; }
+    Q_INVOKABLE qreal freqToMidi(qreal freq) { return calc_MidiCents(freq) / 100.0; }
     Q_INVOKABLE qreal getValue()  { return m_bars[m_barSelected].value; }
+
     Q_INVOKABLE qreal getRMS() { return m_spectrum.rms; }
     Q_INVOKABLE qreal getRMSNoWindow() { return m_spectrum.rmsNoWindow; }
-    Q_INVOKABLE qreal getPitch() { return m_spectrum.pitch; }
-
+    Q_INVOKABLE bool clipped() { return gotClipping; }
 
     Q_INVOKABLE void onPress(int xPress, int yPress, int width, int height);
     Q_INVOKABLE bool loadSpectrum(QString filename, quint64 position);
 
     Q_INVOKABLE void setYinLimit(int limit) { analyser.yinLimit = limit; };
     Q_INVOKABLE void setFFTLimit(int limit) { analyser.fftLimit = limit; };
-
-    Q_INVOKABLE qreal freqToMidi(qreal freq) {
-        return calc_MidiCents(freq) / 100.0;
-    }
 
     Q_INVOKABLE int peaksCount() { return freqPeaks.size(); }
     Q_INVOKABLE QVector<qreal> getFreqPeaks() { return freqPeaks; }

@@ -49,11 +49,17 @@ Item {
                 onClicked:{
                     waveShape.setWindowPosition(mouseX*125.0/2.0)
                     spectrum.loadSpectrum(item.filename,mouseX*125.0/2.0)
-                    rmsYinIngo.text = "Window RMS = " + spectrum.getRMSNoWindow().toFixed(4)
+                    windowInfo.text = "Window RMS = " + spectrum.getRMSNoWindow().toFixed(4)
                     + "\nPitch = " + spectrum.getPitch().toFixed(4) + "\nMIDI# = " + spectrum.freqToMidi(spectrum.getPitch())
                     + "\nTime = " + ((mouseX*125.0/2.0) / 44100.0).toFixed(4)
                     + "\nTotal peaks = " + spectrum.peaksCount()
                     outputRmsGroup(mouseX)
+
+                    windowInfo.text += "\n" //TODO rename component
+                    if (tooLoudRms)
+                        windowInfo.text += "RMS clipped!  "
+                    if (spectrum.clipped())
+                        windowInfo.text += "Spectrum clipped! "
 
                     //TODO also stop repeat
                 }
@@ -62,9 +68,12 @@ Item {
                     audio.startPlayback() //TODO with repeat
                 }
 
-
+                property bool tooLoudRms: false
 
                 function outputRmsGroup(mouseX) {
+
+                    tooLoudRms = false
+
                     var min = 120.0
                     var max = -120.0
                     for (var i = 0; i < 50; i+=2) {
@@ -75,6 +84,9 @@ Item {
                         if (rmsCheckValue < min)
                             min = rmsCheckValue
                     }
+
+                    if (max > -1.0)
+                        tooLoudRms = true
 
                     rmsGroup.text = "<b>{</b>";
 
@@ -242,7 +254,7 @@ Item {
         text: "Spectrum info"
     }
     Text {
-        id : rmsYinIngo
+        id : windowInfo
         y : specInfo.y + specInfo.height + 5
         x: 25
         text: "rms yin info"
