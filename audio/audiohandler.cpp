@@ -118,6 +118,15 @@ void AudioHandler::resetBufer() {
     prevPosition = 0;
 }
 
+void AudioHandler::loadOnlyWindow(QString filename, quint64 position, quint64 window) {
+    WavFile wav;
+    if ( wav.open(filename) == false)
+       return;
+    quint64 afterHeaderPosition = wav.pos();
+    wav.seek(afterHeaderPosition + position*2);
+    commonBufer = wav.read(window*2);
+}
+
 
 void AudioHandler::loadFile(QString filename) {
 

@@ -54,6 +54,12 @@ Item {
                     + "\nTime = " + ((mouseX*125.0/2.0) / 44100.0).toFixed(4)
                     + "\nTotal peaks = " + spectrum.peaksCount()
                     outputRmsGroup(mouseX)
+
+                    //TODO also stop repeat
+                }
+                onDoubleClicked: {
+                    audio.loadOnlyWindow(item.filename, mouseX*125.0/2.0, parseInt(sizeComboBox.currentText))
+                    audio.startPlayback() //TODO with repeat
                 }
 
 

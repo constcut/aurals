@@ -317,22 +317,14 @@ void SpectrographQML::onPress(int xPress, int yPress, int width, int height)
 
  bool SpectrographQML::loadSpectrum(QString filename, quint64 position) //TODO использовать уже загруженный буфер
  {
-        WavFile wav;
-       if ( wav.open(filename) == false)
-           return false;
-
-
-        quint64 afterHeaderPosition = wav.pos();
-        wav.seek(afterHeaderPosition + position*2);
-
-        QByteArray analyseData = wav.read(samplesAmount*2); //x2 of 4096 samples
-
-        //qDebug() << "Loading spectrum "<<analyseData.size()
-                 //<< " for position "<<position<<afterHeaderPosition;
-
-        if (analyseData.size() != samplesAmount*2)
-            return false;
-        analyser.calculate(analyseData, wav.audioFormat());
-
-        return true;
+    WavFile wav;
+    if ( wav.open(filename) == false)
+       return false;
+    quint64 afterHeaderPosition = wav.pos();
+    wav.seek(afterHeaderPosition + position*2);
+    QByteArray analyseData = wav.read(samplesAmount*2);
+    if (analyseData.size() != samplesAmount*2)
+        return false;
+    analyser.calculate(analyseData, wav.audioFormat());
+    return true;
  }
