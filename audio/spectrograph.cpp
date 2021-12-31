@@ -183,30 +183,23 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
             double x1 = calcXPos(maxIdx);
             double x2 = calcXPos(lastIdx);
 
+            //Another algorithm
+            double diffY = y2 - y1;
+            double diffX = x2 - x1;
+            auto radian = atan(diffY/diffX);
+            auto degree = radian * 180.0 / 3.141592653;
 
-            double a1 = 1;
-            double a2 = x1 + x2; // Sum of xi
-            double b1 = x1 + x2; // Sum of xi
-            double b2 = x1*x1 + x2*x2; // Sum of xi^2
-            double c1 = y1 + y2;
-            double c2 = x1*y1 + x2*y2; //Sum of xi*yi
+            auto k2 = tan(radian);
 
-            double det = a1 * b2 - a2 * b1;
-            double detB = c1 * b2 - c2 * b1;
-            double detK = a1 * c2 - a2 * c1;
-
-            double b = detB / det;
-            double k = detK / det;
-
-            qDebug() << "Slope aproximation b = " << b << " k = " << k;
+            qDebug() << "Degree " << degree << " radian " << radian << " k2 " << k2 << " " << diffY/diffX;
 
         }
-
         findPeaks();
     }
     else
         qDebug () << "No bars to draw for qml";
 }
+
 
 void SpectrographPainter::findPeaks() { //Нужно перенести эту формулу на этап заполнения m_bars
 
@@ -231,11 +224,11 @@ void SpectrographPainter::findPeaks() { //Нужно перенести эту �
     std::vector<std::pair<int,double>> sortedTable(table.begin(), table.end());
     std::sort(sortedTable.begin(), sortedTable.end(), [](auto lhs, auto rhs){ return lhs.second > rhs.second;});
 
-    qDebug() << "New list";
+    //qDebug() << "New list";
     //check only few
     size_t count = 0;
     for (auto& [n, summ]: sortedTable) {
-        qDebug() << "Spectral summ " << n << " " << summ << " " << n*freqStep;
+        //qDebug() << "Spectral summ " << n << " " << summ << " " << n*freqStep;
         if (++count > 10)
             break;
     }
@@ -265,7 +258,7 @@ void SpectrographPainter::findPeaks() { //Нужно перенести эту �
 
     int mod = highBin % lowBin;
     if (mod == 0 || mod == 1 || mod == lowBin - 1) {
-        qDebug() << "First 2 are harmonics";
+        //qDebug() << "First 2 are harmonics";
         //_specPitchAprox = ((lowBin + highBin + 1.0) / 3.0) * freqStep;
         //Вместо этого элемента использовать глобальный поиск, нужен ещё 1 контейнер для хранения череды
         //MAP[n] = {n*2, n*3 - 1, n*4 +1};
