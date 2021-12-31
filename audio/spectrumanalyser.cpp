@@ -143,15 +143,15 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
     auto rms = calc_dB(m_input.data(), m_input.size());
     auto rmsNoWin = calc_dB(m_noWindowInput.data(), m_input.size());
 
-    m_spectrum.rms = rms;
-    m_spectrum.rmsNoWindow = rmsNoWin;
+    m_spectrum._rms = rms;
+    m_spectrum._rmsNoWindow = rmsNoWin;
 
     size_t realSize = m_input.size();
     if (realSize > yinLimit)
         realSize = yinLimit;
 
     auto pitch = calc_YinF0(m_input.data(), realSize);
-    m_spectrum.pitch = pitch;
+    m_spectrum._pitchYin = pitch;
 
     m_fft->calculateFFT(m_output.data(), m_noWindowInput.data()); //m_noWindowInput m_input
 

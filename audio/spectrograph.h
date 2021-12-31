@@ -142,15 +142,15 @@ public:
 
     Q_INVOKABLE qreal getFreq1() { return m_barSelected * freqStep; } //TODO barRange
     Q_INVOKABLE qreal getFreq2() { return (m_barSelected + 1) * freqStep; }
-    Q_INVOKABLE qreal getPitch() { return m_spectrum.pitch; }
+    Q_INVOKABLE qreal getPitch() { return m_spectrum._pitchYin; }
     Q_INVOKABLE qreal freqToMidi(qreal freq) { return calc_MidiCents(freq) / 100.0; }
     Q_INVOKABLE qreal getValue()  { return m_bars[m_barSelected].value; }
     Q_INVOKABLE int getIndex() { return m_barSelected; }
     Q_INVOKABLE qreal getSpectrumF0() { return _spectrumPitch; }
     Q_INVOKABLE qreal getSpectrumAproxF0() { return _specPitchAprox; }
 
-    Q_INVOKABLE qreal getRMS() { return m_spectrum.rms; }
-    Q_INVOKABLE qreal getRMSNoWindow() { return m_spectrum.rmsNoWindow; }
+    Q_INVOKABLE qreal getRMS() { return m_spectrum._rms; }
+    Q_INVOKABLE qreal getRMSNoWindow() { return m_spectrum._rmsNoWindow; }
     Q_INVOKABLE bool clipped() { return gotClipping; }
     Q_INVOKABLE bool gotGap() { return spectrumGap; }
     Q_INVOKABLE qreal gapLevel() { return _gapLevel;  }
