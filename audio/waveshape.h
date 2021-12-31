@@ -49,61 +49,53 @@
 
 #include "wavecontour.h"
 
-class WaveshapePainter //: QObject
-{
-    //Q_OBJECT
+class WaveshapePainter  {
+
 public:
-    WaveshapePainter():windowPosition(0),windowWidth(4096){}
+    WaveshapePainter():_windowPosition(0),_windowWidth(4096){}
 
     void loadContour(QString filename);
-    void paintWaveShape(QPainter &painter);
+    void paintWaveShape(QPainter& painter);
 
-//public slots:
     void audioPositionChanged(qint64 position);
-
-    void invertShowNotes() { showNotes = !showNotes;}
-
+    void invertShowNotes() { _showNotes = !_showNotes;}
 
 protected:
-    WaveContour waveContour;
-    qint64 audioPoistion;
+    WaveContour _waveContour;
+    qint64 _audioPoistion;
 
-    quint64 windowPosition;
-    quint16 windowWidth;
+    quint64 _windowPosition;
+    quint16 _windowWidth;
 
-    bool noImage = true;
-    QImage mainImage;
+    bool _noImage = true;
+    QImage _mainImage;
 
-    bool showNotes = false;
+    bool _showNotes = false;
 };
 
 
-class WaveshapeQML : public QQuickPaintedItem, public WaveshapePainter
-{
+class WaveshapeQML : public QQuickPaintedItem, public WaveshapePainter {
     Q_OBJECT
 public:
-    explicit WaveshapeQML(QQuickItem* parent = NULL) {}
-    ~WaveshapeQML() {}
+    explicit WaveshapeQML([[maybe_unused]] QQuickItem* parent = NULL) {}
+    ~WaveshapeQML() = default;
 
     Q_INVOKABLE int getPixelsLength() {
-        return waveContour.getZoom64().size();
+        return _waveContour.getZoom64().size();
     }
-
-    Q_INVOKABLE qreal getRMS(int index) {
-        return waveContour.getRMS()[index];
+    Q_INVOKABLE qreal getRMS(int index) const {
+        return _waveContour.getRMS()[index];
     }
 
     void paint(QPainter* painter);
 
     Q_INVOKABLE  void loadFile(QString filename) { loadContour(filename);}
 
-    Q_INVOKABLE void setWindowPosition(quint64 newPosition) { windowPosition = newPosition; update(); }
-    Q_INVOKABLE quint64 getWindowPosition() { return windowPosition; }
-    Q_INVOKABLE void setWindowWidth(quint64 newWidth) { windowWidth = newWidth; update(); }
-
-    Q_INVOKABLE void calculateF0() { waveContour.calculateF0(); update(); }
-
-    Q_INVOKABLE void showNotes() { invertShowNotes(); update();}
+    Q_INVOKABLE void setWindowPosition(quint64 newPosition) { _windowPosition = newPosition; update(); }
+    Q_INVOKABLE quint64 getWindowPosition() const { return _windowPosition; }
+    Q_INVOKABLE void setWindowWidth(quint64 newWidth) { _windowWidth = newWidth; update(); }
+    Q_INVOKABLE void calculateF0() { _waveContour.calculateF0(); update(); }
+    Q_INVOKABLE void _showNotes() { invertShowNotes(); update();}
 };
 
 
@@ -113,18 +105,17 @@ class WavePositionQML : public QQuickPaintedItem
     Q_OBJECT
 
 public:
-    explicit WavePositionQML(QQuickItem* parent = NULL){}
-    ~WavePositionQML(){}
+    explicit WavePositionQML([[maybe_unused]] QQuickItem* parent = NULL) {}
+    ~WavePositionQML() = default;
 
     void paint(QPainter* painter);
-
     Q_INVOKABLE void changePosition(qint64 position);
 
 public slots:
     void audioPositionChanged(qint64 position);
 
 private:
-    qint64 audioPoistion;
+    qint64 _audioPoistion;
 };
 
 #endif // Waveshape_H

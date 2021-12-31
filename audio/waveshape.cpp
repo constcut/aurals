@@ -44,13 +44,11 @@
 #include <QResizeEvent>
 #include <QDebug>
 
-#include <QPainterPath>
-
 
 #include <qglobal.h>
 
-void WaveshapeQML::paint(QPainter *painter)
-{
+
+void WaveshapeQML::paint(QPainter *painter) {
     setFillColor(Qt::darkGray);
     paintWaveShape(*painter);
 }
@@ -66,16 +64,16 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
     double heightCoef = height / 200.0;
 
 
-    if (noImage) {
+    if (_noImage) {
 
-        noImage = false;
-        mainImage =  QImage(painter.device()->width(),painter.device()->height(), QImage::Format_ARGB32);
+        _noImage = false;
+        _mainImage =  QImage(painter.device()->width(),painter.device()->height(), QImage::Format_ARGB32);
 
-        QPainter imgPainter(&mainImage);
+        QPainter imgPainter(&_mainImage);
 
-        auto zoom64 = waveContour.getZoom64();
-        auto zoom256 = waveContour.getZoom128();
-        auto zoom128 = waveContour.getZoom256();
+        auto zoom64 = _waveContour.getZoom64();
+        auto zoom256 = _waveContour.getZoom128();
+        auto zoom128 = _waveContour.getZoom256();
 
         //TODO нужно хранить пропорцию сжатия 125 убрать константу
 
@@ -114,7 +112,7 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
             prevY1 = height/2 - 2*conturEl.energy/(65000.0/heightCoef);
             prevY2 = height/2 + 2*conturEl.energy/(65000.0/heightCoef);
         }
-        auto rms = waveContour.getRMS();
+        auto rms = _waveContour.getRMS();
         imgPainter.setPen(QColor("blue"));
         for (int i = 0; i < rms.size(); ++i) {
             auto localRms = rms[i];
@@ -122,10 +120,10 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
         }
     }
 
-    painter.drawImage(QPoint{0,0}, mainImage);
+    painter.drawImage(QPoint{0,0}, _mainImage);
 
     //TODO optional
-    auto pitchLine = waveContour.getPitch();
+    auto pitchLine = _waveContour.getPitch();
     painter.setPen(QColor("red"));
     double prevPitch = -1;
     double coef = (2048.0) / (125.0 / 2.0);
@@ -135,15 +133,15 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
         prevPitch = pitch;
     }
 
-    if (showNotes) {
-        auto noteStarts = waveContour.getNoteStarts();
+    if (_showNotes) {
+        auto noteStarts = _waveContour.getNoteStarts();
         painter.setPen(QColor("yellow"));
         for (int i = 0; i < noteStarts.size(); ++i) {
             auto start = noteStarts[i];
             const double pixelX = 2.0 * start / (125.0);
             painter.drawEllipse(pixelX-5, height/2-5, 10, 10);
         }
-        auto noteEnds = waveContour.getNoteEnds();
+        auto noteEnds = _waveContour.getNoteEnds();
         painter.setPen(QColor("orange"));
         for (int i = 0; i < noteEnds.size(); ++i) {
             auto start = noteEnds[i];
@@ -155,50 +153,43 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
     //painter.restore();
     {
         painter.setPen(Qt::darkMagenta);
-        painter.drawRect(2*windowPosition/125,0,2*windowWidth/125,height);
+        painter.drawRect(2*_windowPosition/125,0,2*_windowWidth/125,height);
        // qDebug() <<"WP "<<windowPosition<<" WW "<<windowWidth;
     }
 }
 
 
-void WaveshapePainter::audioPositionChanged(qint64 position)
-{
-    audioPoistion = position;
-
+void WaveshapePainter::audioPositionChanged(qint64 position) {
+    _audioPoistion = position;
     //maybe check how ofte we are updated
     //emit update();
 }
 
 
-void WaveshapePainter::loadContour(QString filename)
-{
-    waveContour = WaveContour(filename);
+void WaveshapePainter::loadContour(QString filename) {
+    _waveContour = WaveContour(filename);
     //emit update();
 }
 
 
-void WavePositionQML::audioPositionChanged(qint64 position)
-{
-    audioPoistion = position;
+void WavePositionQML::audioPositionChanged(qint64 position) {
+    _audioPoistion = position;
     update();
 }
 
-void WavePositionQML::changePosition(qint64 position)
-{
-    audioPoistion = position;
+void WavePositionQML::changePosition(qint64 position) {
+    _audioPoistion = position;
     update();
 }
 
 
-
-void WavePositionQML::paint(QPainter *painter)
-{
+void WavePositionQML::paint(QPainter *painter)  {
     setFillColor(Qt::lightGray);
     const int verticalPosition = 10;
 
     painter->setPen(Qt::black);
 
-    qint64 cursorPosition = audioPoistion/125;
+    qint64 cursorPosition = _audioPoistion/125;
     cursorPosition *= 2;
 
     painter->drawEllipse(cursorPosition,verticalPosition,5,5); //make something better
