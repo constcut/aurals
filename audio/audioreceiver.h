@@ -17,17 +17,20 @@ public:
     void start();
     void stop();
 
-    qreal normLevel() const { return level; }
+    qreal normLevel() const { return _level; }
 
     qint64 readData(char *data, qint64 maxlen);
     qint64 writeData(const char *data, qint64 len);
 
 
 private:
-    const QAudioFormat audioFormat;
-    QByteArray& bufer;
-    quint32 maxAmplitude;
-    qreal level; // 0.0 <= m_level <= 1.0
+
+    const QAudioFormat _audioFormat;
+    QByteArray& _bufer;
+    quint32 _maxAmplitude;
+    qreal _level; // 0.0 <= m_level <= 1.0
+
+    const quint32 msToStopRecord = 30000;
 
 signals:
     void update();
