@@ -177,6 +177,29 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
             painter.drawLine(calcXPos(maxIdx), rect.top() + gapWidth + (1.0 - maxValue) * barHeight,
                              calcXPos(lastIdx), rect.top() + gapWidth + (1.0 - lastValue) * barHeight);
             //Все значения спектрограммы должны быть ниже этой линии
+
+            double y1 = rect.top() + gapWidth + (1.0 - maxValue) * barHeight;
+            double y2 = rect.top() + gapWidth + (1.0 - lastValue) * barHeight;
+            double x1 = calcXPos(maxIdx);
+            double x2 = calcXPos(lastIdx);
+
+
+            double a1 = 1;
+            double a2 = x1 + x2; // Sum of xi
+            double b1 = x1 + x2; // Sum of xi
+            double b2 = x1*x1 + x2*x2; // Sum of xi^2
+            double c1 = y1 + y2;
+            double c2 = x1*y1 + x2*y2; //Sum of xi*yi
+
+            double det = a1 * b2 - a2 * b1;
+            double detB = c1 * b2 - c2 * b1;
+            double detK = a1 * c2 - a2 * c1;
+
+            double b = detB / det;
+            double k = detK / det;
+
+            qDebug() << "Slope aproximation b = " << b << " k = " << k;
+
         }
 
         findPeaks();
@@ -186,15 +209,10 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
 }
 
 void SpectrographPainter::findPeaks() { //Нужно перенести эту формулу на этап заполнения m_bars
-    //Покрывает спектр гитары, однако требуется так же расширить количество корзин, их не обязательно отображать, но важно чтобы их можно было считать, тк ноты первой струны могут страдать
 
     bool usePlusMinusMode = true;
-
     std::unordered_map<int, double> table;
     for (int i = 6; i < 100; ++i) { //On 4096, 6 is lowest note
-
-        //Есть шанс что выгоднее делать рассчёт именно от пиковых значений
-
         double summ = 0.0;
         for (int n = 1; n < 13; ++n) {
             int currentPosition = i * n;
@@ -222,6 +240,9 @@ void SpectrographPainter::findPeaks() { //Нужно перенести эту �
             break;
     }
 
+    //Нужно сохранять дополнительную информацию - какой пик из +- был максимальным
+    //Нужно сохранять процент не пустых пиков, так как например если субгармоника содержит все гармоники, но и пропуски - её рейтинг должен падать
+
     _spectrumPitch = (sortedTable[0].first + 0.5) * freqStep;
 
      //Нужно использовать максимальный пик из + - тогда получится повысить точность
@@ -229,7 +250,6 @@ void SpectrographPainter::findPeaks() { //Нужно перенести эту �
             (sortedTable[0].first * 2 + 0.5) * freqStep +
             (sortedTable[0].first * 3 + 0.5) * freqStep;
     _specPitchAprox /= 6.0;
-    //TODO spectrum pitch aproximated
 
 
     int lowBin = 0;
@@ -244,8 +264,11 @@ void SpectrographPainter::findPeaks() { //Нужно перенести эту �
     }
 
     int mod = highBin % lowBin;
-    if (mod == 0 || mod == 1 || mod == lowBin - 1) { // + -
+    if (mod == 0 || mod == 1 || mod == lowBin - 1) {
         qDebug() << "First 2 are harmonics";
+        //_specPitchAprox = ((lowBin + highBin + 1.0) / 3.0) * freqStep;
+        //Вместо этого элемента использовать глобальный поиск, нужен ещё 1 контейнер для хранения череды
+        //MAP[n] = {n*2, n*3 - 1, n*4 +1};
     }
     //Другой случай если первые 2 очеь рядом
     if (highBin - lowBin == 1) {
