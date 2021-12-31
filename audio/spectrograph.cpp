@@ -183,15 +183,25 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
             double x1 = calcXPos(maxIdx);
             double x2 = calcXPos(lastIdx);
 
+            //search as triangle
+            double vK = y2 - y1;
+            double hK = x2 - x1;
+            double angle1 = atan(vK/hK)  * 180.0 / 3.141592653;
+            double angle2 = atan(hK/vK)  * 180.0 / 3.141592653;
+            qDebug() << vK << " " << hK << " katets " << angle1 << " " << angle2;
+
             //Another algorithm
             double diffY = y2 - y1;
             double diffX = x2 - x1;
             auto radian = atan(diffY/diffX);
             auto degree = radian * 180.0 / 3.141592653;
-
             auto k2 = tan(radian);
-
             qDebug() << "Degree " << degree << " radian " << radian << " k2 " << k2 << " " << diffY/diffX;
+
+            //TODO возможно сделать расчёт по всем корзинам, и наблюдать как меняется угол
+            //THIS is fine, but need to use -k
+
+            //Вначале больше похоже на розовый шум, потом на белый
 
         }
         findPeaks();
