@@ -96,6 +96,9 @@ protected:
     bool spectrumGap = false;
     double _gapLevel = 0.0;
 
+    double _spectrumPitch = 0.0;
+    double _specPitchAprox = 0.0;
+
     QVector<qreal> idxPeaksAmp;
     QVector<int> idxPeaks;
     QVector<qreal> freqPeaks;
@@ -143,6 +146,8 @@ public:
     Q_INVOKABLE qreal freqToMidi(qreal freq) { return calc_MidiCents(freq) / 100.0; }
     Q_INVOKABLE qreal getValue()  { return m_bars[m_barSelected].value; }
     Q_INVOKABLE int getIndex() { return m_barSelected; }
+    Q_INVOKABLE qreal getSpectrumF0() { return _spectrumPitch; }
+    Q_INVOKABLE qreal getSpectrumAproxF0() { return _specPitchAprox; }
 
     Q_INVOKABLE qreal getRMS() { return m_spectrum.rms; }
     Q_INVOKABLE qreal getRMSNoWindow() { return m_spectrum.rmsNoWindow; }

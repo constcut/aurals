@@ -187,8 +187,63 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
 
 void SpectrographPainter::findPeaks() { //Нужно перенести эту формулу на этап заполнения m_bars
     //Покрывает спектр гитары, однако требуется так же расширить количество корзин, их не обязательно отображать, но важно чтобы их можно было считать, тк ноты первой струны могут страдать
-    for (int i = 3; i < 100; ++i) {
 
+    bool usePlusMinusMode = true;
+
+    std::unordered_map<int, double> table;
+    for (int i = 6; i < 100; ++i) { //On 4096, 6 is lowest note
+
+        //Есть шанс что выгоднее делать рассчёт именно от пиковых значений
+
+        double summ = 0.0;
+        for (int n = 1; n < 13; ++n) {
+            int currentPosition = i * n;
+            if (currentPosition >= m_bars.size())
+                break;
+            summ += m_bars[currentPosition].value;
+            if (usePlusMinusMode && n > 1) {
+                summ += m_bars[currentPosition - 1].value;
+                summ += m_bars[currentPosition + 1].value;
+            }
+            //Возможно полезно так же сохранять профиль спектра, но сейчас это опустим
+        }
+        table[i] = summ;
+    }
+
+    std::vector<std::pair<int,double>> sortedTable(table.begin(), table.end());
+    std::sort(sortedTable.begin(), sortedTable.end(), [](auto lhs, auto rhs){ return lhs.second > rhs.second;});
+
+    qDebug() << "New list";
+    //check only few
+    size_t count = 0;
+    for (auto& [n, summ]: sortedTable) {
+        qDebug() << "Spectral summ " << n << " " << summ << " " << n*freqStep;
+        if (++count > 10)
+            break;
+    }
+
+    _spectrumPitch = (sortedTable[0].first + 0.5) * freqStep;
+    _specPitchAprox = (sortedTable[0].first + 0.5) * freqStep + //В идеале использовать максимальный пик из + - тогда получится повысить точность
+            (sortedTable[0].first * 2 + 0.5) * freqStep +
+            (sortedTable[0].first * 3 + 0.5) * freqStep;
+    _specPitchAprox /= 6.0;
+    //TODO spectrum pitch aproximated
+
+
+    int lowBin = 0;
+    int highBin = 0;
+    if (sortedTable[0].first < sortedTable[1].first) {
+        lowBin = sortedTable[0].first;
+        highBin = sortedTable[1].first;
+    }
+    else {
+        highBin = sortedTable[1].first;
+        lowBin = sortedTable[0].first;
+    }
+
+    int mod = highBin % lowBin;
+    if (mod == 0 || mod == 1 || mod == lowBin - 1) { // + -
+        qDebug() << "First 2 are harmonics";
     }
 }
 
