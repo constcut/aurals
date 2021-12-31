@@ -53,7 +53,6 @@ Item {
                     + "\nMIDI# = " + spectrum.freqToMidi(spectrum.getPitch())
                     + "\nSpecPitch= " + spectrum.getSpectrumF0().toFixed(3) + "; PitchAprox = " + spectrum.getSpectrumAproxF0().toFixed(3)
                     + "\nTime = " + ((mouseX*125.0/2.0) / 44100.0).toFixed(4)
-                    + "\nTotal peaks = " + spectrum.peaksCount()
                     outputRmsGroup(mouseX)
 
                     windowInfo.text += "\n" //TODO rename component
@@ -122,27 +121,21 @@ Item {
                 }
             }
 
-            WavePosition
-            {
+            WavePosition { //Необходим только для воспроизведения в реальном времени из ideas
                 id:wavPos
                 height: 20
                 width: 1000 //actually must calculate it for each file
                 y:  5
-
                 property int time : 0
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
                         flick.contentX = 0
-                        //soundEngine.loadFile(item.filename) //TODO
-                        //soundEngine.startPlayback()
                     }
                 }
-
             } //try to make transparent and put on the waveshape
 
-            Waveshape
-            {
+            Waveshape {
                 id: waveShape
                 height:  parent.height
                 width: 1000
@@ -294,8 +287,7 @@ Item {
         }
     }
 
-    Spectrograph
-    {
+    Spectrograph {
         y: waveShape.height + waveShape.y + 5
         width: parent.width
         height: parent.height / 6
@@ -319,9 +311,9 @@ Item {
             }
         }
         onSpectrumCalculated: {
-            outputPeaksGroup()
+            //outputPeaksGroup()
         }
-        function outputPeaksGroup() {
+        function outputPeaksGroup() { //TODO rewrite for vouted peaks
             peaksGroup.text = "{ ";
 
             var freqs = spectrum.getFreqPeaks();
@@ -365,28 +357,4 @@ Item {
         }
 
     }
-
-
-    /*
-    Connections
-    {
-        target: soundEngine
-
-        id: positionConnection
-
-        property int counter : 0
-        onPlayPositionChanged:
-        {
-            //console.log("Play change position " + position);
-
-            wavPos.changePosition(position)
-            positionConnection.counter += 1
-            //console.log(positionConnection.counter)
-            if (positionConnection.counter >= 10)
-            {
-                flick.contentX += 100;
-                positionConnection.counter -= 10
-            }
-        }
-    }*/
 }

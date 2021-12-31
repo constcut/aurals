@@ -96,8 +96,6 @@ protected:
 
     QVector<qreal> _idxPeaksAmp;
     QVector<int> _idxPeaks;
-    QVector<qreal> _freqPeaks;
-    QVector<qreal> _ampPeaks;
 
     double maxValue = -120;
     int maxIdx = -1;
@@ -157,10 +155,6 @@ public:
 
     Q_INVOKABLE void setYinLimit(int limit) { _analyser.yinLimit = limit; };
     Q_INVOKABLE void setFFTLimit(int limit) { _analyser.fftLimit = limit; };
-
-    Q_INVOKABLE int peaksCount() { return _freqPeaks.size(); }
-    Q_INVOKABLE QVector<qreal> getFreqPeaks() { return _freqPeaks; }
-    Q_INVOKABLE QVector<qreal> getAmpPeaks() { return _ampPeaks; }
 
 public slots:
     void spectrumChanged(qint64 position, qint64 length,
