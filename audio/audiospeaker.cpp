@@ -4,44 +4,39 @@
 #include <QFile>
 #include <QTimer>
 
+#include <cstring>
+
 #include "audiohandler.h"
 
 
 AudioSpeaker::AudioSpeaker(const QAudioFormat &format, QObject *parent, QByteArray& commonBufer)
     :   QIODevice(parent)
-    ,   position(0)
-    ,   audioFormat(format)
-    ,   buffer(commonBufer)
+    ,   _position(0)
+    ,   _audioFormat(format)
+    ,   _buffer(commonBufer)
 {
 }
 
 
-AudioSpeaker::~AudioSpeaker()
-{
-}
-
-
-void AudioSpeaker::start()
-{
+void AudioSpeaker::start() {
     open(QIODevice::ReadOnly);
 }
 
 
-void AudioSpeaker::stop()
-{
-    position = 0;
+void AudioSpeaker::stop() {
+    _position = 0;
     close();
 }
 
 
-qint64 AudioSpeaker::readData(char *data, qint64 len)
+qint64 AudioSpeaker::readData(char *data, const qint64 len)
 {
     qint64 total = 0;
-    if (!buffer.isEmpty()) {
+    if (!_buffer.isEmpty()) {
         while (len - total > 0) {
-            const qint64 chunk = qMin((buffer.size() - position), len - total);
-            memcpy(data + total, buffer.constData() + position, chunk); //TODO std
-            position = (position + chunk) % buffer.size();
+            const qint64 chunk = qMin((_buffer.size() - _position), len - total);
+            std::memcpy(data + total, _buffer.constData() + _position, chunk);
+            _position = (_position + chunk) % _buffer.size();
             total += chunk;
         }
     }
@@ -58,11 +53,8 @@ qint64 AudioSpeaker::writeData(const char *data, qint64 len)
 }
 
 
-qint64 AudioSpeaker::bytesAvailable() const
-{
-    return buffer.size() + QIODevice::bytesAvailable();
+qint64 AudioSpeaker::bytesAvailable() const {
+    return _buffer.size() + QIODevice::bytesAvailable();
 }
-
-
 
 
