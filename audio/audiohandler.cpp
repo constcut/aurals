@@ -11,135 +11,107 @@
 
 
 AudioHandler::AudioHandler() {
-
-    commonFormat.setSampleRate(44100);
-    commonFormat.setChannelCount(1);
-    //commonFormat.setSampleSize(32);
-    //commonFormat.setSampleType(QAudioFormat::Float);
-    commonFormat.setSampleSize(16);
-    commonFormat.setSampleType(QAudioFormat::SignedInt);
-    commonFormat.setByteOrder(QAudioFormat::LittleEndian);
-    commonFormat.setCodec("audio/pcm");
-
+    _commonFormat.setSampleRate(44100);
+    _commonFormat.setChannelCount(1);
+    _commonFormat.setSampleSize(16); //The only format old Qt accepts on android :(
+    _commonFormat.setSampleType(QAudioFormat::SignedInt);
+    _commonFormat.setByteOrder(QAudioFormat::LittleEndian);
+    _commonFormat.setCodec("audio/pcm");
     initRecorder();
     initPlayer();
 }
 
 
 void AudioHandler::startRecord() {
-
-    if (isPlaying || isRecording)
+    if (_isPlaying || _isRecording)
         return;
-
-    #ifdef Q_OS_ANDROID
-    //TODO request? Why falls only on mine phone
-    #endif
-    prevPosition = commonBufer.size();
-
-    audioReceiver->start();
-    audioInput->start(audioReceiver.get());
+    _prevBufferSize = _commonBufer.size();
+    _audioReceiver->start();
+    _audioInput->start(_audioReceiver.get());
 }
 
 
 void AudioHandler::stopRecord() {
-    audioReceiver->stop();
-    audioInput->stop();
-    //TODO сохранить в wav, загрузить в DAW изучить, возможно вместо вырезания занулить
-    //if (prevPosition == 0)
-        //commonBufer.remove(0, 4*2205);
-
-    isRecording = false;
+    _audioReceiver->stop();
+    _audioInput->stop();
+    _isRecording = false;
 }
 
 
 void AudioHandler::startPlayback() {
-
-    if (isPlaying || isRecording)
+    if (_isPlaying || _isRecording)
         return;
-
-    const double sampleRate = commonFormat.sampleRate();
-    const double bitRate = commonFormat.sampleSize();
+    const double sampleRate = _commonFormat.sampleRate();
+    const double bitRate = _commonFormat.sampleSize();
     const double bytesPerSample = bitRate / 8.0;
     const double msInSecond = 1000.0;
-    double ms = static_cast<double>(commonBufer.size()) / (bytesPerSample * sampleRate / msInSecond);
-    audioPlayer->start();
-    audioOutput->start(audioPlayer.get());
+    const double ms = static_cast<double>(_commonBufer.size()) / (bytesPerSample * sampleRate / msInSecond);
+    _audioPlayer->start();
+    _audioOutput->start(_audioPlayer.get());
     QTimer::singleShot(ms, this, &AudioHandler::requestStopPlayback);
 }
 
 
 void AudioHandler::stopPlayback() {
-    audioPlayer->stop();
-    audioOutput->stop();
-
-    isPlaying = false;
+    _audioPlayer->stop();
+    _audioOutput->stop();
+    _isPlaying = false;
 }
 
 
 void AudioHandler::initRecorder() {
-
-    if (isPlaying || isRecording)
+    if (_isPlaying || _isRecording)
         return;
-
     QAudioDeviceInfo info(QAudioDeviceInfo::defaultInputDevice());
-    if (!info.isFormatSupported(commonFormat)) {
+    if (!info.isFormatSupported(_commonFormat)) {
         qDebug() << "Default format not supported - trying to use nearest";
-        commonFormat = info.nearestFormat(commonFormat);
-        qDebug() << commonFormat.sampleRate() << " " << commonFormat.sampleSize();
+        _commonFormat = info.nearestFormat(_commonFormat);
+        qDebug() << _commonFormat.sampleRate() << " " << _commonFormat.sampleSize();
     }
-    audioReceiver  = std::make_unique<AudioReceiver>(commonFormat, this, commonBufer); //    //connect(audioInfo, SIGNAL(update()), SLOT(refreshDisplay()));
-    audioInput = std::make_unique<QAudioInput>(QAudioDeviceInfo::defaultInputDevice(), commonFormat, nullptr);
+    _audioReceiver  = std::make_unique<AudioReceiver>(_commonFormat, this, _commonBufer); //    //connect(audioInfo, SIGNAL(update()), SLOT(refreshDisplay()));
+    _audioInput = std::make_unique<QAudioInput>(QAudioDeviceInfo::defaultInputDevice(), _commonFormat, nullptr);
 }
 
 
 void AudioHandler::initPlayer() {
-
-    if (isPlaying || isRecording)
+    if (_isPlaying || _isRecording)
         return;
-
     QAudioDeviceInfo info(QAudioDeviceInfo::defaultInputDevice());
-    if (!info.isFormatSupported(commonFormat)) {
+    if (!info.isFormatSupported(_commonFormat)) {
         qDebug() << "Default format not supported - trying to use nearest";
-        commonFormat = info.nearestFormat(commonFormat);
-        qDebug() << commonFormat.sampleRate() << " " << commonFormat.sampleSize();
+        _commonFormat = info.nearestFormat(_commonFormat);
+        qDebug() << _commonFormat.sampleRate() << " " << _commonFormat.sampleSize();
     }
-    audioPlayer = std::make_unique<AudioSpeaker>(commonFormat, this, commonBufer);
-    audioOutput = std::make_unique<QAudioOutput>(QAudioDeviceInfo::defaultOutputDevice(), commonFormat, nullptr);
-
+    _audioPlayer = std::make_unique<AudioSpeaker>(_commonFormat, this, _commonBufer);
+    _audioOutput = std::make_unique<QAudioOutput>(QAudioDeviceInfo::defaultOutputDevice(), _commonFormat, nullptr);
 }
 
 
 void AudioHandler::resetBufer() {
-
-    if (isPlaying || isRecording)
+    if (_isPlaying || _isRecording)
         return;
-
-    commonBufer.clear();
-    prevPosition = 0;
+    _commonBufer.clear();
+    _prevBufferSize = 0;
 }
 
 void AudioHandler::loadOnlyWindow(QString filename, quint64 position, quint64 window) {
     WavFile wav;
     if ( wav.open(filename) == false)
        return;
-    quint64 afterHeaderPosition = wav.pos();
+    const quint64 afterHeaderPosition = wav.pos();
     wav.seek(afterHeaderPosition + position*2);
-    commonBufer = wav.read(window*2);
+    _commonBufer = wav.read(window*2);
 }
 
 
 void AudioHandler::loadFile(QString filename) {
-
-    if (isPlaying || isRecording)
+    if (_isPlaying || _isRecording)
         return;
-
     QFile audioFile;
     audioFile.setFileName(filename);
-
     if (audioFile.open(QIODevice::ReadOnly) == false)
         qDebug() << "Failed to open audio for output";
-
-    commonBufer = audioFile.readAll();
+    _commonBufer = audioFile.readAll();
     audioFile.close();
 }
 
@@ -147,9 +119,8 @@ void AudioHandler::loadFile(QString filename) {
 void AudioHandler::saveFile(QString filename) const {
     QFile f;
     f.setFileName(filename);
-    if (f.open(QIODevice::WriteOnly))
-    {
-        f.write(commonBufer);
+    if (f.open(QIODevice::WriteOnly)) {
+        f.write(_commonBufer);
         f.flush();
         f.close();
     }
@@ -158,28 +129,21 @@ void AudioHandler::saveFile(QString filename) const {
 }
 
 
-
-void AudioHandler::setSampleRate(int newSampleRate) {
-
-    if (isPlaying || isRecording)
+void AudioHandler::setSampleRate(int newSampleRate) { //?TODO resampling
+    if (_isPlaying || _isRecording)
         return;
-
-    //qDebug() << "New sample rate " << newSampleRate;
-    commonFormat.setSampleRate(newSampleRate);
+    _commonFormat.setSampleRate(newSampleRate);
     initRecorder();
     initPlayer();
-    //TODO если уже есть заполненный буфер, возможно его стоит преобразовать
 }
 
 
 void AudioHandler::requestStopRecord(){
-    //TODO more?
     stopRecord();
 }
 
 
 void AudioHandler::requestStopPlayback() {
-    //TODO more?
     stopPlayback();
 }
 
@@ -192,37 +156,31 @@ void AudioHandler::requestPermission() const {
 QStringList AudioHandler::getRecords() const {
     QDir dir("records/");
     auto list = dir.entryList({"*"});
-    //qDebug() << list;
     return list;
 }
 
 
-void AudioHandler::saveRecordTimstamp() {
+void AudioHandler::saveRecordTimstamp() const {
     auto timestamp = QDateTime::currentDateTime().toString("yyyy-MM-ddTHH.mm.ss");
     QString filename = "records/" + timestamp + ".wav";
     saveWavFile(filename);
 }
 
+
 void AudioHandler::saveWavFile(QString filename) const {
     WavFile wav;
     wav.open(filename, QIODevice::WriteOnly);
-    wav.writeHeader(commonFormat.sampleRate(), commonFormat.sampleSize(), commonBufer.size(), false, false); //EH not float fuck stupid QT, not cute at all
-    wav.write(commonBufer);
+    wav.writeHeader(_commonFormat.sampleRate(), _commonFormat.sampleSize(), _commonBufer.size(), false, false); //EH not float fuck stupid QT, not cute at all
+    wav.write(_commonBufer);
 }
 
 
-
 void AudioHandler::loadWavFile(QString filename) {
-
-    if (isPlaying || isRecording)
+    if (_isPlaying || _isRecording)
         return;
-
     WavFile wav;
     wav.open(filename);
-    commonBufer = wav.readAll();
-    qDebug() << commonBufer.size() << " loaded bytes in bufer";
-    //commonFormat.setSampleRate(wav.audioFormat().sampleRate()); //TODO
-    //initPlayer();
+    _commonBufer = wav.readAll();
 }
 
 
