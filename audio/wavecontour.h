@@ -3,7 +3,6 @@
 #include <QList>
 
 
-
 struct ContourEl{
     qint32 max;
     qint32 min;
@@ -11,53 +10,51 @@ struct ContourEl{
 };
 
 
+class WaveContour {
 
-class WaveContour
-{
 public:
     WaveContour(QString filename);
     WaveContour() {}
 
-    const QVector<double>& getRMS() const { return rmsLine; }
-    const QVector<double>& getPitch() const { return yinLine; }
+    const QVector<double>& getRMS() const { return _rmsLine; }
+    const QVector<double>& getPitch() const { return _yinLine; }
 
-    const QVector<int>& getNoteStarts() const { return noteStarts; }
-    const QVector<int>& getNoteEnds() const { return noteEnds; }
+    const QVector<int>& getNoteStarts() const { return _noteStarts; }
+    const QVector<int>& getNoteEnds() const { return _noteEnds; }
 
-    const QVector<ContourEl>& getZoom64()  const { return zoom64; }
-    const QVector<ContourEl>& getZoom128() const { return zoom128; }
-    const QVector<ContourEl>& getZoom256() const { return zoom256; }
+    const QVector<ContourEl>& getZoom64()  const { return _zoom64; }
+    const QVector<ContourEl>& getZoom128() const { return _zoom128; }
+    const QVector<ContourEl>& getZoom256() const { return _zoom256; }
 
     void calculateF0();
 
-public:
-
-    ContourEl calculateElement(QVector<qint16> &samples); //TODO static?
-    qint32 max4(qint32 d1,qint32 d2,qint32 d3,qint32 d4);
-    qint32 min4(qint32 d1,qint32 d2,qint32 d3,qint32 d4);
-    ContourEl summateElements(const ContourEl &e1,const  ContourEl &e2,const  ContourEl &e3,const  ContourEl &e4);
-    ContourEl summate2Elements(const ContourEl &e1,const  ContourEl &e2);
+    ContourEl calculateElement(QVector<qint16> &samples) const; //TODO static?
+    qint32 max4(qint32 d1,qint32 d2,qint32 d3,qint32 d4) const;
+    qint32 min4(qint32 d1,qint32 d2,qint32 d3,qint32 d4) const;
+    ContourEl summateElements(const ContourEl &e1,const  ContourEl &e2,
+                              const  ContourEl &e3,const  ContourEl &e4) const;
+    ContourEl summate2Elements(const ContourEl &e1,const  ContourEl &e2) const;
 
 protected:
-    QVector<ContourEl> summ4Lists(QVector<ContourEl> &source);
+    QVector<ContourEl> summ4Lists(QVector<ContourEl> &source) const;
 
-    QVector<float> floatSamples;
-    QVector<double> rmsLine;
-    QVector<double> yinLine;
+    QVector<float> _floatSamples;
+    QVector<double> _rmsLine;
+    QVector<double> _yinLine;
 
-    QVector<int> noteStarts;
-    QVector<int> noteEnds;
+    QVector<int> _noteStarts;
+    QVector<int> _noteEnds;
 
-    QVector<ContourEl> zoom64;
-    QVector<ContourEl> zoom128;
-    QVector<ContourEl> zoom256;
-    QVector<ContourEl> bpm64; //TODO
+    QVector<ContourEl> _zoom64;
+    QVector<ContourEl> _zoom128;
+    QVector<ContourEl> _zoom256;
 
-    double totalBPM;
+    QVector<ContourEl> _bpm64; //TODO
+    double _totalBPM;
 
 private:
-    double findBPM(); //automation
 
+    double findBPM(); //TODO
     bool loadWavFile(QString filename);
 };
 
