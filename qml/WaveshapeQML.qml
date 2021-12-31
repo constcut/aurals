@@ -311,7 +311,8 @@ Item {
             onClicked: {
                 spectrum.onPress(mouseX, mouseY, spectrum.width, spectrum.height)
                 specInfo.text = spectrum.getFreq1().toFixed(2) + "-" + spectrum.getFreq2().toFixed(2) + " Hz"
-                +  " lvl = " + (20*log10(spectrum.getValue())).toFixed(4) + " idx " + spectrum.getIndex() //" value " + spectrum.getValue() +
+                +  " lvl = " + (20*log10(spectrum.getValue())).toFixed(1) + " idx " + spectrum.getIndex()
+                        + " val " + spectrum.getValue().toFixed(4)
                // https://stackoverflow.com/questions/3019278/how-can-i-specify-the-base-for-math-log-in-javascript
             }
         }

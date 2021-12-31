@@ -129,6 +129,12 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
 
         const qreal bandWidth = freqStep; //(m_highFreq - m_lowFreq) / m_bars.count();
 
+        double maxValue = -120;
+        int maxIdx = -1;
+
+        int lastIdx = m_bars.size() - 1;
+        auto lastValue = m_bars[lastIdx].value;
+
         for (int i=0; i < numBars; ++i) {
             qreal value = m_bars[i].value;
             Q_ASSERT(value >= 0.0 && value <= 1.0);
@@ -137,10 +143,20 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
             bar.setWidth(barWidth);
 
             double volume = 20.0 * log10(value);
-            if (volume > -30.0) {
+            if (volume > -30.0) { //TODO просто убрать
                 double freq = bandWidth * (i + 0.5);
                 freqPeaks.append(freq);
                 ampPeaks.append(volume);
+            }
+
+            if (value > maxValue) {
+                maxValue = value;
+                maxIdx = i;
+            }
+
+            if (value > 0.0) {
+                lastIdx = i;
+                lastValue = value;
             }
 
             idxPeaksAmp.append(volume);
@@ -155,15 +171,25 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect)
             painter.fillRect(bar, color);
         }
 
+        if (_gapLevel < 0.1) {
+            //Здесь можно попробовать интерполировать функцию, и получить коэффициент наклона
+            painter.setPen(QColor("orange"));
+            painter.drawLine(calcXPos(maxIdx), rect.top() + gapWidth + (1.0 - maxValue) * barHeight,
+                             calcXPos(lastIdx), rect.top() + gapWidth + (1.0 - lastValue) * barHeight);
+            //Все значения спектрограммы должны быть ниже этой линии
+        }
+
         findPeaks();
     }
     else
         qDebug () << "No bars to draw for qml";
 }
 
-void SpectrographPainter::findPeaks() {
-    //1. find max amplidute
-    //
+void SpectrographPainter::findPeaks() { //Нужно перенести эту формулу на этап заполнения m_bars
+    //Покрывает спектр гитары, однако требуется так же расширить количество корзин, их не обязательно отображать, но важно чтобы их можно было считать, тк ноты первой струны могут страдать
+    for (int i = 3; i < 100; ++i) {
+
+    }
 }
 
 
@@ -232,7 +258,7 @@ void SpectrographPainter::updateBars()
             gotClipping |= e.clipped;
 
             double level = 20 * log10(bar.value);
-            if (level < -28.0) {//TODO configurable
+            if (level < -36.0) {//TODO configurable
                 if (count >= 5)
                     spectrumGap = true;
                 emptyBins += 1.0;
