@@ -223,7 +223,9 @@ void SpectrographPainter::findPeaks() { //Нужно перенести эту �
     }
 
     _spectrumPitch = (sortedTable[0].first + 0.5) * freqStep;
-    _specPitchAprox = (sortedTable[0].first + 0.5) * freqStep + //В идеале использовать максимальный пик из + - тогда получится повысить точность
+
+     //Нужно использовать максимальный пик из + - тогда получится повысить точность
+    _specPitchAprox = (sortedTable[0].first + 0.5) * freqStep +
             (sortedTable[0].first * 2 + 0.5) * freqStep +
             (sortedTable[0].first * 3 + 0.5) * freqStep;
     _specPitchAprox /= 6.0;
@@ -244,6 +246,10 @@ void SpectrographPainter::findPeaks() { //Нужно перенести эту �
     int mod = highBin % lowBin;
     if (mod == 0 || mod == 1 || mod == lowBin - 1) { // + -
         qDebug() << "First 2 are harmonics";
+    }
+    //Другой случай если первые 2 очеь рядом
+    if (highBin - lowBin == 1) {
+        _specPitchAprox = ((lowBin + highBin + 1.0) / 2.0) * freqStep;
     }
 }
 
