@@ -44,22 +44,19 @@
 #include "wavfile.h"
 
 
-struct chunk
-{
+struct chunk {
     char        id[4];
     quint32     size;
 };
 
 
-struct RIFFHeader
-{
+struct RIFFHeader {
     chunk       descriptor;     // "RIFF"
     char        type[4];        // "WAVE"
 };
 
 
-struct WAVEHeader
-{
+struct WAVEHeader {
     chunk       descriptor;
     quint16     audioFormat;
     quint16     numChannels;
@@ -70,21 +67,18 @@ struct WAVEHeader
 };
 
 
-struct DATAHeader
-{
+struct DATAHeader {
     chunk       descriptor;
 };
 
 
-struct FACTHeader
-{
+struct FACTHeader {
     chunk       descriptor;
     quint32 dwSampleLength; //maybe nice to look into specification and name after them everything
 };
 
 
-struct CombinedHeader
-{
+struct CombinedHeader {
     RIFFHeader  riff;
     WAVEHeader  wave;
 };
@@ -92,9 +86,8 @@ struct CombinedHeader
 
 WavFile::WavFile(QObject *parent)
     : QFile(parent)
-    , m_headerLength(0)
+    , _headerLength(0)
 {
-
 }
 
 
@@ -104,21 +97,17 @@ bool WavFile::open(const QString &fileName, OpenModeFlag openMode) {
     if (openMode == QIODevice::ReadOnly)
         return QFile::open(openMode) && readHeader();
     else
-    {
         return QFile::open(openMode);
-    }
 }
 
 
-const QAudioFormat &WavFile::audioFormat() const
-{
-    return m_fileFormat;
+const QAudioFormat &WavFile::audioFormat() const {
+    return _fileFormat;
 }
 
 
-qint64 WavFile::headerLength() const
-{
-    return m_headerLength;
+qint64 WavFile::headerLength() const {
+    return _headerLength;
 }
 
 
@@ -143,12 +132,11 @@ void WavFile::writeHeader(unsigned int sampleRate, unsigned int bitRate, unsigne
     header.wave.descriptor.size = 16;
 
     header.wave.audioFormat = floatFormat ? 3 : 1; //1-pcm 3-float wave
-    header.wave.numChannels = stereo ? 2 : 1;
-    header.wave.sampleRate = sampleRate; //or other
+    header.wave.numChannels = stereo ? 2 : 1; //mono stereo
+    header.wave.sampleRate = sampleRate;
     header.wave.bitsPerSample = bitRate; //16 //or 32 if float
     header.wave.byteRate = header.wave.numChannels*header.wave.sampleRate*header.wave.bitsPerSample/8;
     header.wave.blockAlign = header.wave.numChannels*header.wave.bitsPerSample/8;
-    //IN FILE ITS HERE: //header.wave.bitsPerSample = 16; //or 24
 
     DATAHeader dataHeader;
     dataHeader.descriptor.id[0] = 'd';
@@ -157,38 +145,30 @@ void WavFile::writeHeader(unsigned int sampleRate, unsigned int bitRate, unsigne
     dataHeader.descriptor.id[3] = 'a';
 
     dataHeader.descriptor.size = dataSize;
-    //ch2 size == NumSamples * NumChannels * BitsPerSample/8
 
     header.riff.descriptor.size = dataHeader.descriptor.size + 36;
     if (floatFormat)
         header.riff.descriptor.size += 12;
-    /// 4 + (8 + SubChunk1Size) + (8 + SubChunk2Size)
 
     bool result = write(reinterpret_cast<char*>(&header),sizeof(CombinedHeader));
 
-    ///IF THERE IS A FLOAT FORMAT THEN fact 4 dwSampleLength	4	Number of samples (per channel)
     if (floatFormat) {
         FACTHeader fact;
         fact.descriptor.id[0] = 'f';
         fact.descriptor.id[0] = 'a';
         fact.descriptor.id[0] = 'c';
         fact.descriptor.id[0] = 't';
-        fact.descriptor.size = 4; //next bytes
-        fact.dwSampleLength = dataSize/(4); //4 bytes per float
-
+        fact.descriptor.size = 4;
+        fact.dwSampleLength = dataSize/(4);
         if (stereo)
             fact.dwSampleLength /= 2;
-
-        result &= write(reinterpret_cast<char*>(&fact),sizeof(FACTHeader));
-
+        result &= write(reinterpret_cast<char*>(&fact), sizeof(FACTHeader));
     }
-
-    result &= write(reinterpret_cast<char*>(&dataHeader),sizeof(DATAHeader));
-
+    result &= write(reinterpret_cast<char*>(&dataHeader), sizeof(DATAHeader));
 }
 
-bool WavFile::readHeader() //this function looks too complicated rewrite in our own manner
-{
+
+bool WavFile::readHeader() {
     seek(0);
     CombinedHeader header;
     bool result = read(reinterpret_cast<char *>(&header), sizeof(CombinedHeader)) == sizeof(CombinedHeader);
@@ -199,11 +179,9 @@ bool WavFile::readHeader() //this function looks too complicated rewrite in our 
             && memcmp(&header.wave.descriptor.id, "fmt ", 4) == 0
             && (header.wave.audioFormat == 1 || header.wave.audioFormat == 0)) {
 
-            // Read off remaining header information
             DATAHeader dataHeader;
 
             if (qFromLittleEndian<quint32>(header.wave.descriptor.size) > sizeof(WAVEHeader)) {
-                // Extended data available
                 quint16 extraFormatBytes;
                 if (peek((char*)&extraFormatBytes, sizeof(quint16)) != sizeof(quint16))
                     return false;
@@ -215,28 +193,25 @@ bool WavFile::readHeader() //this function looks too complicated rewrite in our 
             if (read((char*)&dataHeader, sizeof(DATAHeader)) != sizeof(DATAHeader))
                 return false;
 
-            while (memcmp(&dataHeader.descriptor.id,"data",4) != 0)
-            {
+            while (memcmp(&dataHeader.descriptor.id, "data",4) != 0) //TODO 'data'
                 if (read((char*)&dataHeader, sizeof(DATAHeader)) != sizeof(DATAHeader))
                     return false;
-            }
 
-            // Establish format
             if (memcmp(&header.riff.descriptor.id, "RIFF", 4) == 0)
-                m_fileFormat.setByteOrder(QAudioFormat::LittleEndian);
+                _fileFormat.setByteOrder(QAudioFormat::LittleEndian);
             else
-                m_fileFormat.setByteOrder(QAudioFormat::BigEndian);
+                _fileFormat.setByteOrder(QAudioFormat::BigEndian);
 
             int bps = qFromLittleEndian<quint16>(header.wave.bitsPerSample);
-            m_fileFormat.setChannelCount(qFromLittleEndian<quint16>(header.wave.numChannels));
-            m_fileFormat.setCodec("audio/pcm");
-            m_fileFormat.setSampleRate(qFromLittleEndian<quint32>(header.wave.sampleRate));
-            m_fileFormat.setSampleSize(qFromLittleEndian<quint16>(header.wave.bitsPerSample));
-            m_fileFormat.setSampleType(bps == 8 ? QAudioFormat::UnSignedInt : QAudioFormat::SignedInt);
-        } else {
-            result = false;
+            _fileFormat.setChannelCount(qFromLittleEndian<quint16>(header.wave.numChannels));
+            _fileFormat.setCodec("audio/pcm");
+            _fileFormat.setSampleRate(qFromLittleEndian<quint32>(header.wave.sampleRate));
+            _fileFormat.setSampleSize(qFromLittleEndian<quint16>(header.wave.bitsPerSample));
+            _fileFormat.setSampleType(bps == 8 ? QAudioFormat::UnSignedInt : QAudioFormat::SignedInt);
         }
+        else
+            result = false;
     }
-    m_headerLength = pos();
+    _headerLength = pos();
     return result;
 }

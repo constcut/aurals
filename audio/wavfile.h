@@ -45,8 +45,8 @@
 #include <QFile>
 #include <QAudioFormat>
 
-class WavFile : public QFile
-{
+
+class WavFile : public QFile {
 public:
     WavFile(QObject *parent = 0);
 
@@ -55,14 +55,14 @@ public:
     const QAudioFormat &audioFormat() const;
     qint64 headerLength() const;
 
-    void writeHeader(unsigned int sampleRate, unsigned int bitRate, unsigned long dataSize, bool stereo=false, bool floatFormat=false);
+    void writeHeader(unsigned int sampleRate, unsigned int bitRate,
+                     unsigned long dataSize, bool stereo=false, bool floatFormat=false);
 
 private:
     bool readHeader();
 
-private:
-    QAudioFormat m_fileFormat;
-    qint64 m_headerLength;
+    QAudioFormat _fileFormat;
+    qint64 _headerLength;
 };
 
 #endif // WAVFILE_H
