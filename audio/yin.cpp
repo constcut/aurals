@@ -1,34 +1,34 @@
 #include "yin.h"
 
 Yin::Yin() {
-    threshold = 0.15;
-    probability = 0.0;
+    _threshold = 0.15; //TODO play with + check funny place
+    _probability = 0.0;
 }
 
 double Yin::getProbability() const {
-    return probability;
+    return _probability;
 }
 
 double Yin::getThreshold() const {
-    return threshold;
+    return _threshold;
 }
 
 void Yin::setProbability(double newProb) {
-    probability = newProb;
+    _probability = newProb;
 }
 
 void Yin::setThreshold(double newThresh) {
-    threshold = newThresh;
+    _threshold = newThresh;
 }
 
 void Yin::init(double yinSampleRate, size_t yinBufferSize) {
-    if (yinSampleRate != sampleRate)
-        sampleRate = yinSampleRate;
-    if (bufferSize == yinBufferSize)
+    if (yinSampleRate != _sampleRate)
+        _sampleRate = yinSampleRate;
+    if (_bufferSize == yinBufferSize)
         return;
-    bufferSize = yinBufferSize;
-    halfBufferSize = bufferSize / 2;
-    yinBuffer = std::vector<float>(halfBufferSize, 0.f);
+    _bufferSize = yinBufferSize;
+    _halfBufferSize = _bufferSize / 2;
+    _yinBuffer = std::vector<float>(_halfBufferSize, 0.f);
 }
 
 
@@ -36,68 +36,68 @@ double Yin::getPitch(const float *buffer) {
     halvesDifference(buffer);
     accMeanNormDifference();
     if (absoluteThresholdFound())
-        return sampleRate / parabolicInterpolation();
+        return _sampleRate / parabolicInterpolation();
     return -1.0; //Not found case
 }
 
 
 double Yin::parabolicInterpolation() const {
 
-    size_t start = currentTau ? currentTau - 1 : currentTau;
-    size_t finish = currentTau + 1 < halfBufferSize ? currentTau + 1 : currentTau;
+    size_t start = _currentTau ? _currentTau - 1 : _currentTau;
+    size_t finish = _currentTau + 1 < _halfBufferSize ? _currentTau + 1 : _currentTau;
 
-    if (start == currentTau) {
-        if (yinBuffer[currentTau] <= yinBuffer[finish])
-            return currentTau;
+    if (start == _currentTau) {
+        if (_yinBuffer[_currentTau] <= _yinBuffer[finish])
+            return _currentTau;
         else
             return finish;
     }
 
-    if (finish == currentTau) {
-        if (yinBuffer[currentTau] <= yinBuffer[start])
-            return currentTau;
+    if (finish == _currentTau) {
+        if (_yinBuffer[_currentTau] <= _yinBuffer[start])
+            return _currentTau;
         else
             return start;
     }
 
-    double begin = yinBuffer[start];
-    double middle = yinBuffer[currentTau];
-    double end = yinBuffer[finish];
-    return currentTau + (end - begin) / (2 * (2 * middle - end - begin));
+    double begin = _yinBuffer[start];
+    double middle = _yinBuffer[_currentTau];
+    double end = _yinBuffer[finish];
+    return _currentTau + (end - begin) / (2 * (2 * middle - end - begin));
 }
 
 
 
 void Yin::accMeanNormDifference(){
-    yinBuffer[0] = 1;
+    _yinBuffer[0] = 1;
     float runningSum = 0;
-    for (size_t tau = 1; tau < halfBufferSize; tau++) {
-        runningSum += yinBuffer[tau];
-        yinBuffer[tau] *= tau / runningSum;
+    for (size_t tau = 1; tau < _halfBufferSize; tau++) {
+        runningSum += _yinBuffer[tau];
+        _yinBuffer[tau] *= tau / runningSum;
     }
 }
 
 
 void Yin::halvesDifference(const float* buffer) {
     float delta = 0.f;
-    for(size_t tau = 0 ; tau < halfBufferSize; tau++)
-        for(size_t index = 0; index < halfBufferSize; index++){
+    for(size_t tau = 0 ; tau < _halfBufferSize; tau++)
+        for(size_t index = 0; index < _halfBufferSize; index++){
             delta = buffer[index] - buffer[index + tau];
-            yinBuffer[tau] += delta * delta;
+            _yinBuffer[tau] += delta * delta;
         }
 }
 
 
 bool Yin::absoluteThresholdFound(){
-    for (currentTau = 2; currentTau < halfBufferSize ; currentTau++)
-        if (yinBuffer[currentTau] < threshold) {
-            while (currentTau + 1 < halfBufferSize &&
-                   yinBuffer[currentTau + 1] < yinBuffer[currentTau])
-                ++currentTau;
+    for (_currentTau = 2; _currentTau < _halfBufferSize ; _currentTau++)
+        if (_yinBuffer[_currentTau] < _threshold) {
+            while (_currentTau + 1 < _halfBufferSize &&
+                   _yinBuffer[_currentTau + 1] < _yinBuffer[_currentTau])
+                ++_currentTau;
             break;
         }
-    if (currentTau == halfBufferSize || yinBuffer[currentTau] >= threshold) {
-        probability = 0;
+    if (_currentTau == _halfBufferSize || _yinBuffer[_currentTau] >= _threshold) {
+        _probability = 0;
         return false;
     }
     return true;

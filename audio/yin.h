@@ -11,8 +11,8 @@ public:
     void init(double sampleRate, size_t bufferSize);
     double getPitch(const float* buffer);
 
-    double getProbability() const;
-    double getThreshold() const;
+    double getProbability() const; //TODO look for funny place
+    double getThreshold() const;    //TODO play with configurable parameter
 
     void setProbability(double newProb);
     void setThreshold(double newThresh);
@@ -24,13 +24,13 @@ private:
     void accMeanNormDifference();
     void halvesDifference(const float *buffer);
 
-    double threshold;
-    size_t bufferSize;
-    size_t halfBufferSize;
-    double sampleRate;
-    std::vector<float> yinBuffer;
-    double probability;
+    double _threshold;
+    size_t _bufferSize;
+    size_t _halfBufferSize;
+    double _sampleRate;
+    std::vector<float> _yinBuffer;
+    double _probability;
 
-    size_t currentTau;
+    size_t _currentTau;
 };
 #endif // YIN_H
