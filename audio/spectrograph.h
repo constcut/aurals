@@ -68,7 +68,9 @@ protected:
     void prepareBackground(QPainter &painter, QRect &rect);
     void paintBars(QPainter &painter, QRect &rect);
     void paintSlope(QPainter &painter, QRect &rect);
+
     void findPeaks();
+    void classifySlope();
 
 protected:
 

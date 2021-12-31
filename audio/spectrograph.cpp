@@ -50,12 +50,10 @@
 #include <cmath>
 
 
-
 SpectrographPainter::SpectrographPainter() : _barSelected(-1),
     _lowFreq(0.0), _highFreq(0.0)
 {
 }
-
 
 
 void SpectrographPainter::prepareBackground(QPainter &painter, QRect &rect) {
@@ -118,39 +116,13 @@ void SpectrographPainter::paintBars(QPainter &painter, QRect &rect) {
     barColor.setAlphaF(0.75);
     clipColor.setAlphaF(0.75);
 
-    _freqPeaks.clear(); //TODO отделить этот процесс
-    _ampPeaks.clear();
-    const qreal bandWidth = _freqStep; //(m_highFreq - m_lowFreq) / m_bars.count();
-
-    maxValue = -120;
-    maxIdx = -1;
-    lastIdx = _bars.size() - 1;
-    lastValue = 0.0;
-
     for (int i = 0; i < numBars; ++i) {
         qreal value = _bars[i].value;
         Q_ASSERT(value >= 0.0 && value <= 1.0);
         QRectF bar = rect;
         bar.setLeft(calcXPos(i)); //rect.left() + leftPaddingWidth + (i * (gapWidth + barWidth)));
         bar.setWidth(barWidth);
-
-        double volume = 20.0 * log10(value);
-        if (volume > -30.0) { //TODO просто убрать
-            double freq = bandWidth * (i + 0.5);
-            _freqPeaks.append(freq);
-            _ampPeaks.append(volume);
-        }
-        if (value > maxValue) {
-            maxValue = value;
-            maxIdx = i;
-        }
-        if (value > 0.0) {
-            lastIdx = i;
-            lastValue = value;
-        }
-        _idxPeaksAmp.append(volume);
-
-        bar.setTop(rect.top() + (1.0 - value) * rect.height());
+        bar.setTop((1.0 - value) * rect.height());
         bar.setBottom(rect.bottom());
         QColor color = barColor;
         if (_bars[i].clipped)
@@ -163,44 +135,13 @@ void SpectrographPainter::paintBars(QPainter &painter, QRect &rect) {
 void SpectrographPainter::paintSlope(QPainter &painter, QRect &rect) {
 
     const int numBars = _bars.count();
-    const int gapWidth =  0;
-    const int barHeight = rect.height() - 2 * gapWidth;
     const double barWidth = rect.width()/( static_cast<double>(numBars) );
     auto calcXPos = [&rect, &barWidth](int index) { return (rect.topLeft().x() + index * barWidth); };
 
     //Здесь можно попробовать интерполировать функцию, и получить коэффициент наклона
     painter.setPen(QColor("orange"));
-    painter.drawLine(calcXPos(maxIdx), rect.top() + gapWidth + (1.0 - maxValue) * barHeight,
-                     calcXPos(lastIdx), rect.top() + gapWidth + (1.0 - lastValue) * barHeight);
-    //Все значения спектрограммы должны быть ниже этой линии
-
-    //Позже отделить классификатор, его можно найти по значениям что мы спрятали в класс
-    double y1 = rect.top() + gapWidth + (1.0 - maxValue) * barHeight;
-    double y2 = rect.top() + gapWidth + (1.0 - lastValue) * barHeight;
-    double x1 = calcXPos(maxIdx);
-    double x2 = calcXPos(lastIdx);
-
-    //search as triangle
-    double vK = y2 - y1;
-    double hK = x2 - x1;
-    double angle1 = atan(vK/hK)  * 180.0 / 3.141592653;
-    double angle2 = atan(hK/vK)  * 180.0 / 3.141592653;
-    //qDebug() << vK << " " << hK << " katets " << angle1 << " " << angle2;
-
-    //Another algorithm
-    double diffY = y2 - y1;
-    double diffX = x2 - x1;
-    auto radian = atan(diffY/diffX);
-    auto degree = radian * 180.0 / 3.141592653;
-    auto k2 = tan(radian);
-    //qDebug() << "Degree " << degree << " radian " << radian << " k2 " << k2 << " " << diffY/diffX;
-
-    //использовать -k чтобы получить ту же картинку, т.е. одна из осей перевернута
-    //TODO возможно сделать расчёт по всем корзинам, и наблюдать как меняется угол
-    //THIS is fine, but need to use -k
-    //Вначале больше похоже на розовый шум, потом на белый
-    // Другой способ анализа это проверка как меняется сигнал по окатвам, если идёт падение на 3 дБ - это розовый шум
-    // В белом шуме этот наклон фактически отсутствует
+    painter.drawLine(calcXPos(maxIdx), rect.top() + (1.0 - maxValue) * rect.height(),
+                     calcXPos(lastIdx), rect.top() + (1.0 - lastValue) * rect.height());
 }
 
 
@@ -211,15 +152,96 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect) {
         paintBars(painter, rect);
         if (_gapLevel < 0.1)
             paintSlope(painter, rect);
-        findPeaks();
     }
     else
         qDebug () << "No bars to draw for qml";
 }
 
 
+void SpectrographPainter::setParams(int numBars, qreal lowFreq, qreal highFreq) {
+    Q_ASSERT(numBars > 0);
+    Q_ASSERT(highFreq > lowFreq);
+    _bars.resize(numBars);
+    _lowFreq = lowFreq;
+    _highFreq = highFreq;
+    updateBars();
+}
+
+
+int SpectrographPainter::barIndex(qreal frequency) const {
+    Q_ASSERT(frequency >= _lowFreq && frequency < _highFreq);
+    const qreal bandWidth = (_highFreq - _lowFreq) / _bars.count();
+    const int index = (frequency - _lowFreq) / bandWidth;
+    if (index <0 || index >= _bars.count())
+        Q_ASSERT(false);
+    return index;
+}
+
+
+QPair<qreal, qreal> SpectrographPainter::barRange(int index) const {
+    Q_ASSERT(index >= 0 && index < _bars.count());
+    const qreal bandWidth = (_highFreq - _lowFreq) / _bars.count();
+    return QPair<qreal, qreal>(index * bandWidth, (index+1) * bandWidth);
+}
+
+
+void SpectrographPainter::updateBars()
+{
+    _bars.fill(Bar());
+    FrequencySpectrum::const_iterator i = _spectrum.begin();
+    const FrequencySpectrum::const_iterator end = _spectrum.end();
+    size_t count = 0;
+    double emptyBins = 0.0;
+    {
+        auto j = i + 11;
+        auto k = i + 12;//TODO c конца
+        _freqStep = k->frequency - j->frequency;
+    }
+    _gotClipping = false;
+    _spectrumGap = false;
+    maxValue = -120;
+    maxIdx = -1;
+    lastIdx = 0;
+    lastValue = 0.0;
+
+    for ( ; i != end; ++i) {
+        const FrequencySpectrum::Element e = *i;
+        if (e.frequency >= _lowFreq && e.frequency < _highFreq && count < _bars.size()) {
+            //auto idx = barIndex(e.frequency); //Точный размер
+            Bar &bar = _bars[count];
+            bar.value = qMax(bar.value, e.amplitude);
+            bar.clipped |= e.clipped;
+            _gotClipping |= e.clipped;
+
+            double level = 20 * log10(bar.value);
+            if (level < -36.0) {
+                if (count >= 5)
+                    _spectrumGap = true;
+                emptyBins += 1.0;
+            }
+            if (level > maxValue) {
+                maxValue = level;
+                maxIdx = count;
+            }
+            if (level > 0.0) {
+                lastIdx = count;
+                lastValue = level;
+            }
+            _idxPeaksAmp.append(level);
+        }
+        ++count;
+    }
+    _gapLevel = emptyBins / _bars.size();
+    if (_gapLevel < 0.1)
+        classifySlope(); //TODO и ниже - возможно лучше считать не по барам, а по всему посчитанному спектру!
+    findPeaks();
+}
+
+
 
 void SpectrographPainter::findPeaks() { //Нужно перенести эту формулу на этап заполнения m_bars
+    if (_bars.size() < 100)
+        return;
 
     bool usePlusMinusMode = true;
     std::unordered_map<int, double> table;
@@ -281,85 +303,36 @@ void SpectrographPainter::findPeaks() { //Нужно перенести эту �
     }
 }
 
+void SpectrographPainter::classifySlope() {
+    //Все значения спектрограммы должны быть ниже линии slope
+    //TODO возможно придётся сохранять данные отрисовки, и использовать их, но в идеале уйти от них
+    double y1 = (1.0 - maxValue); //* barHeight
+    double y2 = (1.0 - lastValue); //* barHeight;
+    double x1 = maxIdx; //calcXPos
+    double x2 = lastIdx; //calcXPos
 
+    //search as triangle
+    double vK = y2 - y1;
+    double hK = x2 - x1;
+    double angle1 = atan(vK/hK)  * 180.0 / 3.141592653;
+    double angle2 = atan(hK/vK)  * 180.0 / 3.141592653;
+    //qDebug() << vK << " " << hK << " katets " << angle1 << " " << angle2;
 
-void SpectrographPainter::setParams(int numBars, qreal lowFreq, qreal highFreq)
-{
-    Q_ASSERT(numBars > 0);
-    Q_ASSERT(highFreq > lowFreq);
-    _bars.resize(numBars);
-    _lowFreq = lowFreq;
-    _highFreq = highFreq;
-    updateBars();
+    //Another algorithm
+    double diffY = y2 - y1;
+    double diffX = x2 - x1;
+    auto radian = atan(diffY/diffX);
+    auto degree = radian * 180.0 / 3.141592653;
+    auto k2 = tan(radian);
+    //qDebug() << "Degree " << degree << " radian " << radian << " k2 " << k2 << " " << diffY/diffX;
+    //использовать -k чтобы получить ту же картинку, т.е. одна из осей перевернута
+    //TODO возможно сделать расчёт по всем корзинам, и наблюдать как меняется угол
+    //THIS is fine, but need to use -k
+    //Вначале больше похоже на розовый шум, потом на белый
+    // Другой способ анализа это проверка как меняется сигнал по окатвам, если идёт падение на 3 дБ - это розовый шум
+    // В белом шуме этот наклон фактически отсутствует
 }
 
-/*void Spectrograph::timerEvent(QTimerEvent *event)
-{
-    Q_ASSERT(event->timerId() == m_timerId);
-    Q_UNUSED(event) // suppress warnings in release builds
-    killTimer(m_timerId);
-    m_timerId = NullTimerId;
-    m_barSelected = NullIndex;
-    update();
-    //may be one more update fade
-}*/
-
-//=============================
-
-
-int SpectrographPainter::barIndex(qreal frequency) const
-{
-    Q_ASSERT(frequency >= _lowFreq && frequency < _highFreq);
-    const qreal bandWidth = (_highFreq - _lowFreq) / _bars.count();
-    const int index = (frequency - _lowFreq) / bandWidth;
-    if (index <0 || index >= _bars.count())
-        Q_ASSERT(false);
-    return index;
-}
-
-
-QPair<qreal, qreal> SpectrographPainter::barRange(int index) const
-{
-    Q_ASSERT(index >= 0 && index < _bars.count());
-    const qreal bandWidth = (_highFreq - _lowFreq) / _bars.count();
-    return QPair<qreal, qreal>(index * bandWidth, (index+1) * bandWidth);
-}
-
-
-void SpectrographPainter::updateBars()
-{
-    _bars.fill(Bar());
-    FrequencySpectrum::const_iterator i = _spectrum.begin();
-    const FrequencySpectrum::const_iterator end = _spectrum.end();
-    size_t count = 0;
-    double emptyBins = 0.0;
-    {
-        auto j = i + 11;
-        auto k = i + 12;//TODO c конца
-        _freqStep = k->frequency - j->frequency;
-    }
-    _gotClipping = false;
-    _spectrumGap = false;
-    for ( ; i != end; ++i) {
-        const FrequencySpectrum::Element e = *i;
-        if (e.frequency >= _lowFreq && e.frequency < _highFreq && count < _bars.size()) {
-            //auto idx = barIndex(e.frequency); //Точный размер
-            Bar &bar = _bars[count];
-            bar.value = qMax(bar.value, e.amplitude);
-            bar.clipped |= e.clipped;
-            _gotClipping |= e.clipped;
-
-            double level = 20 * log10(bar.value);
-            if (level < -36.0) {//TODO configurable
-                if (count >= 5)
-                    _spectrumGap = true;
-                emptyBins += 1.0;
-            }
-        }
-        ++count;
-    }
-    _gapLevel = emptyBins / _bars.size();
-}
 
 
 //========================================================
@@ -393,11 +366,11 @@ void SpectrographQML::spectrumChanged([[maybe_unused]] qint64 position, [[maybe_
     SpectrographQML::updateBars();
 }
 
+
 void SpectrographQML::spectrumChanged(const FrequencySpectrum &spectrum) {
     _spectrum = spectrum;
     SpectrographQML::updateBars();
 }
-
 
 
 void SpectrographQML::selectBar(int index) {
@@ -405,6 +378,7 @@ void SpectrographQML::selectBar(int index) {
     _barSelected = index;
     update();
 }
+
 
 void SpectrographQML::onPress(int xPress, [[maybe_unused]] int yPress, int width, int height) {
     QRect rect(0,0,width,height);
