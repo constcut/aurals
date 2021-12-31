@@ -1,16 +1,11 @@
 #include "audioreceiver.h"
 
-#include "audiospeaker.h"
-#include "audio/fft.h"
-#include "audio/waveanalys.h"
-
 #include <QDebug>
 #include <QFile>
 #include <QTimer>
 
-#include "audiohandler.h" //TODO interface
+#include "audiohandler.h"
 
-//const int BufferSize = 4096;
 
 AudioReceiver::AudioReceiver(const QAudioFormat& format, QObject *parent, QByteArray& commonBufer)
     :   QIODevice(parent)
@@ -71,7 +66,7 @@ AudioReceiver::AudioReceiver(const QAudioFormat& format, QObject *parent, QByteA
 void AudioReceiver::start(){
     open(QIODevice::WriteOnly);
     AudioHandler* handler = dynamic_cast<AudioHandler*>(this->parent());
-    QTimer::singleShot(_msToStopRecord, handler, &AudioHandler::requestStopRecord);
+    QTimer::singleShot(msToStopRecord, handler, &AudioHandler::requestStopRecord);
 }
 
 
@@ -92,32 +87,6 @@ qint64 AudioReceiver::writeData(const char *data, qint64 len)
     _bufer += QByteArray(data,len);
     static int lastSize = 0;
     lastSize = _bufer.size();
-
     //TODO here maybe realtime FFT\YIN\RMS
-
-    if (_bufer.size() - lastSize > 4100) {
-
-        lastSize = _bufer.size();
-        short *sourceData = (short*)_bufer.data();
-
-        int fullSize = _bufer.size()/2;
-        int minusLastFrame = fullSize-2049;
-
-        FFT fft(2048);
-        fft.transform(&sourceData[minusLastFrame]);
-        fft.countAmplitude();
-        fft.findPeaks(7.8125/2.0);
-        std::vector<Peak> *peaks = &fft.getPeaks();
-
-        LocalFreqTable localFreq;
-        localFreq.addPeaks(peaks);
-        localFreq.sortPeaks();
-        localFreq.voteNewWay();
-
-        std::vector<LocalFreqTable::LFTvote> *votes = localFreq.getRezultVotes();
-
-        double freq = (*votes)[0].rFreq;
-    }
-
     return len;
 }

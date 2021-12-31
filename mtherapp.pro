@@ -12,12 +12,10 @@ SOURCES += \
     audio/audioreceiver.cpp \
     audio/audiospeaker.cpp \
     audio/featureextractor.cpp \
-    audio/fft.cpp \
     audio/frequencyspectrum.cpp \
     audio/spectrograph.cpp \
     audio/spectrumanalyser.cpp \
     audio/utils.cpp \
-    audio/waveanalys.cpp \
     audio/wavecontour.cpp \
     audio/waveshape.cpp \
     audio/wavfile.cpp \
@@ -59,13 +57,11 @@ HEADERS += \
     audio/audioreceiver.h \
     audio/audiospeaker.h \
     audio/featureextractor.h \
-    audio/fft.h \
     audio/frequencyspectrum.h \
     audio/spectrograph.h \
     audio/spectrum.h \
     audio/spectrumanalyser.h \
     audio/utils.h \
-    audio/waveanalys.h \
     audio/wavecontour.h \
     audio/waveshape.h \
     audio/wavfile.h \
