@@ -64,33 +64,6 @@ enum WindowFunction {
 const WindowFunction DefaultWindowFunction = HannWindow;
 
 
-struct Tone {
-    Tone(qreal freq = 0.0, qreal amp = 0.0):frequency(freq), amplitude(amp)
-    {}
-    qreal   frequency; // Start and end frequencies for swept tone generation
-    qreal   amplitude; // Amplitude in range [0.0, 1.0]
-};
-
-
-struct SweptTone
-{
-    SweptTone(qreal start = 0.0, qreal end = 0.0, qreal amp = 0.0)
-    :   startFreq(start), endFreq(end), amplitude(amp)
-    { Q_ASSERT(end >= start); }
-
-    SweptTone(const Tone &tone)
-    :   startFreq(tone.frequency), endFreq(tone.frequency), amplitude(tone.amplitude)
-    { }
-
-    // Start and end frequencies for swept tone generation
-    qreal   startFreq;
-    qreal   endFreq;
-
-    // Amplitude in range [0.0, 1.0]
-    qreal   amplitude;
-};
-
-
 #define CHECKED_CONNECT(source, signal, receiver, slot) \
     if (!connect(source, signal, receiver, slot)) \
         qt_assert_x(Q_FUNC_INFO, "CHECKED_CONNECT failed", __FILE__, __LINE__);

@@ -54,36 +54,27 @@
 #include "frequencyspectrum.h"
 #include "spectrum.h"
 
-#ifndef DISABLE_FFT
 #include "libs/fft/FFTRealFixLenParam.h"
-#endif
 
 QT_FORWARD_DECLARE_CLASS(QAudioFormat)
 QT_FORWARD_DECLARE_CLASS(QThread)
 
 class FFTRealWrapper;
-
 class SpectrumAnalyserThreadPrivate;
 
-/**
- * Implementation of the spectrum analysis which can be run in a
- * separate thread.
- */
-class SpectrumAnalyserThread : public QObject
-{
+
+class SpectrumAnalyserThread : public QObject {
     Q_OBJECT
 
 public:
     SpectrumAnalyserThread(QObject *parent);
     ~SpectrumAnalyserThread();
 
-    void setSamplesAmount(int newNumSamples) { m_numSamples = newNumSamples; }
-    int getSamplesAmount() { return m_numSamples; }
+    void setSamplesAmount(int newNumSamples) { _numSamples = newNumSamples; }
+    int getSamplesAmount() { return _numSamples; }
 
-
-    int yinLimit=512;
-    int fftLimit=4096;
-
+    int yinLimit = 512; //TODO set\get
+    int fftLimit = 4096;
 
 public slots:
     void setWindowFunction(WindowFunction type);
@@ -98,43 +89,33 @@ private:
     void calculateWindow();
 
 private:
-#ifndef DISABLE_FFT
-    FFTRealWrapper*                             m_fft;
-#endif
 
-    int                                   m_numSamples;
+    FFTRealWrapper* _fft;
+    int _numSamples;
+    WindowFunction _windowFunction;
 
-    WindowFunction                              m_windowFunction;
+    typedef ffft::FFTRealFixLenParam::DataType DataType;
 
-#ifdef DISABLE_FFT
-    typedef qreal                               DataType;
-#else
-    typedef ffft::FFTRealFixLenParam::DataType        DataType;
-#endif
-    QVector<DataType>                           m_window;
+    QVector<DataType> _window;
+    QVector<DataType> _input;
+    QVector<DataType> _noWindowInput;
+    QVector<DataType> _output;
 
-    QVector<DataType>                           m_input;
-    QVector<DataType>                           m_noWindowInput;
-    QVector<DataType>                           m_output;
-
-    FrequencySpectrum                           m_spectrum;
+    FrequencySpectrum _spectrum;
 
 #ifdef SPECTRUM_ANALYSER_SEPARATE_THREAD
     QThread*                                    m_thread;
 #endif
 };
 
-/**
- * Class which performs frequency spectrum analysis on a window of
- * audio samples, provided to it by the Engine.
- */
-class SpectrumAnalyser : public QObject
-{
+
+
+class SpectrumAnalyser : public QObject {
     Q_OBJECT
 
 public:
     SpectrumAnalyser(QObject *parent = 0);
-    ~SpectrumAnalyser();
+    ~SpectrumAnalyser() = default;
 
 #ifdef DUMP_SPECTRUMANALYSER
     void setOutputPath(const QString &outputPath);
@@ -142,51 +123,23 @@ public:
 
 public:
 
-    int yinLimit=512;
+    int yinLimit=512; //TODO as above so below (right here)
     int fftLimit=4096;
 
-
-    void setSamplesAmount(int newNumSamples)
-    {
-        if (m_thread)
-            m_thread->setSamplesAmount(newNumSamples);
+    void setSamplesAmount(int newNumSamples) {
+        if (_thread)
+            _thread->setSamplesAmount(newNumSamples);
     }
 
     int getSamplesAmount() {
-        if (m_thread)
-            return m_thread->getSamplesAmount();
+        if (_thread)
+            return _thread->getSamplesAmount();
         return 0;
     }
 
-    /*
-     * Set the windowing function which is applied before calculating the FFT
-     */
     void setWindowFunction(WindowFunction type);
-
-    /*
-     * Calculate a frequency spectrum
-     *
-     * \param buffer       Audio data
-     * \param format       Format of audio data
-     *
-     * Frequency spectrum is calculated asynchronously.  The result is returned
-     * via the spectrumChanged signal.
-     *
-     * An ongoing calculation can be cancelled by calling cancelCalculation().
-     *
-     */
     void calculate(const QByteArray &buffer, const QAudioFormat &format);
-
-    /*
-     * Check whether the object is ready to perform another calculation
-     */
     bool isReady() const;
-
-    /*
-     * Cancel an ongoing calculation
-     *
-     * Note that cancelling is asynchronous.
-     */
     void cancelCalculation();
 
 signals:
@@ -198,17 +151,13 @@ private slots:
 private:
     void calculateWindow();
 
-private:
-
-    SpectrumAnalyserThread*    m_thread;
+    SpectrumAnalyserThread*    _thread;
 
     enum State {
         Idle,
         Busy,
         Cancelled
-    };
-
-    State              m_state;
+    } _state;
 
 #ifdef DUMP_SPECTRUMANALYSER
     QDir                m_outputDir;

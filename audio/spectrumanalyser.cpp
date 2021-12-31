@@ -53,16 +53,14 @@
 
 SpectrumAnalyserThread::SpectrumAnalyserThread(QObject *parent)
     :   QObject(parent)
-#ifndef DISABLE_FFT
-    ,   m_fft(new FFTRealWrapper)
-#endif
-    ,   m_numSamples(SpectrumLengthSamples)
-    ,   m_windowFunction(DefaultWindowFunction)
-    ,   m_window(4096*4, 0.0) //SpectrumLengthSamples
-    ,   m_input(4096*4, 0.0)
-    ,   m_noWindowInput(4096*4, 0.0)
-    ,   m_output(4096*4, 0.0)
-    ,   m_spectrum(4096*4) //16 before
+    ,   _fft(new FFTRealWrapper)
+    ,   _numSamples(SpectrumLengthSamples)
+    ,   _windowFunction(DefaultWindowFunction)
+    ,   _window(4096*4, 0.0) //SpectrumLengthSamples
+    ,   _input(4096*4, 0.0)
+    ,   _noWindowInput(4096*4, 0.0)
+    ,   _output(4096*4, 0.0)
+    ,   _spectrum(4096*4) //16 before
 #ifdef SPECTRUM_ANALYSER_SEPARATE_THREAD
     ,   m_thread(new QThread(this))
 #endif
@@ -77,107 +75,83 @@ SpectrumAnalyserThread::SpectrumAnalyserThread(QObject *parent)
     //SpectrumLengthSamples = 2048;
 }
 
-SpectrumAnalyserThread::~SpectrumAnalyserThread()
-{
-#ifndef DISABLE_FFT
-    delete m_fft;
-#endif
+SpectrumAnalyserThread::~SpectrumAnalyserThread() {
+    delete _fft; //TODO unique
 }
 
-void SpectrumAnalyserThread::setWindowFunction(WindowFunction type)
-{
-    m_windowFunction = type;
+void SpectrumAnalyserThread::setWindowFunction(WindowFunction type) {
+    _windowFunction = type;
     calculateWindow();
 }
 
-void SpectrumAnalyserThread::calculateWindow()
-{
-    for (int i=0; i<m_numSamples; ++i) {
+void SpectrumAnalyserThread::calculateWindow() {
+    for (int i=0; i<_numSamples; ++i) {
         DataType x = 0.0;
-
-        switch (m_windowFunction) {
+        switch (_windowFunction) {
         case NoWindow:
             x = 1.0;
             break;
         case HannWindow:
-            x = 0.5 * (1 - qCos((2 * M_PI * i) / (m_numSamples - 1)));
+            x = 0.5 * (1 - qCos((2 * M_PI * i) / (_numSamples - 1)));
             break;
         default:
             Q_ASSERT(false);
         }
-
-        m_window[i] = x;
+        _window[i] = x;
     }
 }
 
 void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
                                                 int inputFrequency,
-                                                int bytesPerSample)
-{
-#ifndef DISABLE_FFT
+                                                int bytesPerSample) {
 
-   // qDebug() << "SPEC A T "<<buffer.size()  <<  m_numSamples * bytesPerSample
-             //<<m_numSamples << bytesPerSample << (buffer.size() == m_numSamples * bytesPerSample);
-
-    Q_ASSERT(buffer.size() == m_numSamples * bytesPerSample);
-
-    // Initialize data array
+    Q_ASSERT(buffer.size() == _numSamples * bytesPerSample);
     const char *ptr = buffer.constData(); //TODO from preloaded
-    for (int i=0; i<m_numSamples; ++i) {
+    for (int i=0; i<_numSamples; ++i) {
 
         if (i > fftLimit) {
-            m_input[i] = 0.f;
-            m_noWindowInput[i] = 0.f;
+            _input[i] = 0.f;
+            _noWindowInput[i] = 0.f;
         }
         else {
             const qint16 pcmSample = *reinterpret_cast<const qint16*>(ptr);
             const float realSample = pcmToReal(pcmSample); // Scale down to range [-1.0, 1.0]
-            const float windowedSample = realSample * m_window[i];
-            m_input[i] = windowedSample;
-            m_noWindowInput[i] = realSample;
+            const float windowedSample = realSample * _window[i];
+            _input[i] = windowedSample;
+            _noWindowInput[i] = realSample;
         }
         ptr += bytesPerSample;
-
     }
 
-    auto rms = calc_dB(m_input.data(), m_input.size());
-    auto rmsNoWin = calc_dB(m_noWindowInput.data(), m_input.size());
+    auto rms = calc_dB(_input.data(), _input.size());
+    auto rmsNoWin = calc_dB(_noWindowInput.data(), _input.size());
 
-    m_spectrum._rms = rms;
-    m_spectrum._rmsNoWindow = rmsNoWin;
+    _spectrum._rms = rms;
+    _spectrum._rmsNoWindow = rmsNoWin;
 
-    size_t realSize = m_input.size();
+    size_t realSize = _input.size();
     if (realSize > yinLimit)
         realSize = yinLimit;
+    auto pitch = calc_YinF0(_input.data(), realSize);
+    _spectrum._pitchYin = pitch;
 
-    auto pitch = calc_YinF0(m_input.data(), realSize);
-    m_spectrum._pitchYin = pitch;
+    _fft->calculateFFT(_output.data(), _noWindowInput.data()); //m_noWindowInput m_input
 
-    m_fft->calculateFFT(m_output.data(), m_noWindowInput.data()); //m_noWindowInput m_input
-
-    for (int i=2; i<=m_numSamples/2; ++i) {
-        // Calculate frequency of this complex sample
-
-        m_spectrum[i].frequency = qreal(i * inputFrequency) / (m_numSamples);
-
-        const qreal real = m_output[i];
+    for (int i=2; i<=_numSamples/2; ++i) {
+        _spectrum[i].frequency = qreal(i * inputFrequency) / (_numSamples);
+        const qreal real = _output[i];
         qreal imag = 0.0;
-        if (i>0 && i<m_numSamples/2)
-            imag = m_output[m_numSamples/2 + i];
-
-        //
+        if (i>0 && i<_numSamples/2)
+            imag = _output[_numSamples/2 + i];
         const qreal magnitude = qSqrt(real*real + imag*imag);
         qreal amplitude = SpectrumAnalyserMultiplier * qLn(magnitude);
 
-        // Bound amplitude to [0.0, 1.0]
-        m_spectrum[i].clipped = (amplitude > 1.0);
+        _spectrum[i].clipped = (amplitude > 1.0); // Bound amplitude to [0.0, 1.0]
         amplitude = qMax(qreal(0.0), amplitude);
         amplitude = qMin(qreal(1.0), amplitude);
-        m_spectrum[i].amplitude = amplitude;
+        _spectrum[i].amplitude = amplitude;
     }
-#endif
-
-    emit calculationComplete(m_spectrum);
+    emit calculationComplete(_spectrum);
 }
 
 
@@ -187,20 +161,16 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
 
 SpectrumAnalyser::SpectrumAnalyser(QObject *parent)
     :   QObject(parent)
-    ,   m_thread(new SpectrumAnalyserThread(this))
-    ,   m_state(Idle)
+    ,   _thread(new SpectrumAnalyserThread(this))
+    ,   _state(Idle)
 #ifdef DUMP_SPECTRUMANALYSER
     ,   m_count(0)
 #endif
 {
-    CHECKED_CONNECT(m_thread, SIGNAL(calculationComplete(FrequencySpectrum)),
+    CHECKED_CONNECT(_thread, SIGNAL(calculationComplete(FrequencySpectrum)),
                     this, SLOT(calculationComplete(FrequencySpectrum)));
 }
 
-SpectrumAnalyser::~SpectrumAnalyser()
-{
-
-}
 
 #ifdef DUMP_SPECTRUMANALYSER
 void SpectrumAnalyser::setOutputPath(const QString &outputDir)
@@ -216,9 +186,8 @@ void SpectrumAnalyser::setOutputPath(const QString &outputDir)
 // Public functions
 //-----------------------------------------------------------------------------
 
-void SpectrumAnalyser::setWindowFunction(WindowFunction type)
-{
-    const bool b = QMetaObject::invokeMethod(m_thread, "setWindowFunction",
+void SpectrumAnalyser::setWindowFunction(WindowFunction type) {
+    const bool b = QMetaObject::invokeMethod(_thread, "setWindowFunction",
                               Qt::AutoConnection,
                               Q_ARG(WindowFunction, type));
     Q_ASSERT(b);
@@ -226,17 +195,12 @@ void SpectrumAnalyser::setWindowFunction(WindowFunction type)
 }
 
 void SpectrumAnalyser::calculate(const QByteArray &buffer,
-                         const QAudioFormat &format)
-{
-    // QThread::currentThread is marked 'for internal use only', but
-    // we're only using it for debug output here, so it's probably OK :)
+                         const QAudioFormat &format) {
     SPECTRUMANALYSER_DEBUG << "SpectrumAnalyser::calculate"
                            << QThread::currentThread()
-                           << "state" << m_state;
-
+                           << "state" << _state;
     if (isReady()) {
         Q_ASSERT(isPCMS16LE(format));
-
         const int bytesPerSample = format.sampleSize() * format.channelCount() / 8;
 
 #ifdef DUMP_SPECTRUMANALYSER
@@ -255,18 +219,11 @@ void SpectrumAnalyser::calculate(const QByteArray &buffer,
         }
 #endif
 
-        m_state = Busy;
+        _state = Busy;
+        _thread->yinLimit = yinLimit;
+        _thread->fftLimit = fftLimit;
 
-        // Invoke SpectrumAnalyserThread::calculateSpectrum using QMetaObject.  If
-        // m_thread is in a different thread from the current thread, the
-        // calculation will be done in the child thread.
-        // Once the calculation is finished, a calculationChanged signal will be
-        // emitted by m_thread.
-
-        m_thread->yinLimit = yinLimit;
-        m_thread->fftLimit = fftLimit;
-
-        const bool b = QMetaObject::invokeMethod(m_thread, "calculateSpectrum",
+        const bool b = QMetaObject::invokeMethod(_thread, "calculateSpectrum",
                                   Qt::AutoConnection,
                                   Q_ARG(QByteArray, buffer),
                                   Q_ARG(int, format.sampleRate()),
@@ -286,26 +243,22 @@ void SpectrumAnalyser::calculate(const QByteArray &buffer,
     }
 }
 
-bool SpectrumAnalyser::isReady() const
-{
-    return (Idle == m_state);
-}
 
-void SpectrumAnalyser::cancelCalculation()
-{
-    if (Busy == m_state)
-        m_state = Cancelled;
+bool SpectrumAnalyser::isReady() const {
+    return (Idle == _state);
 }
 
 
-//-----------------------------------------------------------------------------
-// Private slots
-//-----------------------------------------------------------------------------
+void SpectrumAnalyser::cancelCalculation() {
+    if (Busy == _state)
+        _state = Cancelled;
+}
+
 
 void SpectrumAnalyser::calculationComplete(const FrequencySpectrum &spectrum)
 {
-    Q_ASSERT(Idle != m_state);
-    if (Busy == m_state)
+    Q_ASSERT(Idle != _state);
+    if (Busy == _state)
         emit spectrumChanged(spectrum);
-    m_state = Idle;
+    _state = Idle;
 }
