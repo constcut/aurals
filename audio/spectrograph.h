@@ -53,11 +53,10 @@ class SpectrographPainter {
 
 public:
     SpectrographPainter();
-    ~SpectrographPainter() {}
+    ~SpectrographPainter() = default;
 
-    void paintSpectr(QPainter &painter, QRect &rect);
+    void paintSpectr(QPainter &painter, QRect &rect) const;
     void setParams(int numBars, qreal lowFreq, qreal highFreq);
-
 
 protected:
     int barIndex(qreal frequency) const;
@@ -65,9 +64,9 @@ protected:
 
     virtual void updateBars();
 
-    void prepareBackground(QPainter &painter, QRect &rect);
-    void paintBars(QPainter &painter, QRect &rect);
-    void paintSlope(QPainter &painter, QRect &rect);
+    void prepareBackground(QPainter &painter, QRect &rect) const;
+    void paintBars(QPainter &painter, QRect &rect) const;
+    void paintSlope(QPainter &painter, QRect &rect) const;
 
     void findPeaks();
     void classifySlope();
@@ -87,7 +86,7 @@ protected:
     FrequencySpectrum   _spectrum;
 
     double _freqStep;
-    bool _gotClipping = false;
+    bool _gotClipping = false; //TODO group them all
     bool _spectrumGap = false;
     double _gapLevel = 0.0;
 
@@ -97,10 +96,10 @@ protected:
     QVector<qreal> _idxPeaksAmp;
     QVector<int> _idxPeaks;
 
-    double maxValue = -120;
-    int maxIdx = -1;
-    int lastIdx = - 1;
-    double lastValue = 0.0;
+    double _maxValue = -120;
+    int _maxIdx = -1;
+    int _lastIdx = - 1;
+    double _lastValue = 0.0;
 };
 
 
@@ -125,30 +124,30 @@ public:
         return _analyser.getSamplesAmount();
     }
 
-    Q_INVOKABLE void setParamsFromQML(int numBars, qreal lowFreq, qreal highFreq)
-    { setParams(numBars,lowFreq,highFreq);}
+    Q_INVOKABLE void setParamsFromQML(int numBars, qreal lowFreq, qreal highFreq) {
+        setParams(numBars,lowFreq,highFreq);
+    }
 
-    Q_INVOKABLE void changeBarsCount(int barsCount)
-    {
+    Q_INVOKABLE void changeBarsCount(int barsCount){
         Q_ASSERT(barsCount > 0);
         _bars.resize(barsCount);
         updateBars();
     }
 
-    Q_INVOKABLE qreal getFreq1() { return _barSelected * _freqStep; } //TODO barRange
-    Q_INVOKABLE qreal getFreq2() { return (_barSelected + 1) * _freqStep; }
-    Q_INVOKABLE qreal getPitch() { return _spectrum._pitchYin; }
-    Q_INVOKABLE qreal freqToMidi(qreal freq) { return calc_MidiCents(freq) / 100.0; }
-    Q_INVOKABLE qreal getValue()  { return _bars[_barSelected].value; }
-    Q_INVOKABLE int getIndex() { return _barSelected; }
-    Q_INVOKABLE qreal getSpectrumF0() { return _spectrumPitch; }
-    Q_INVOKABLE qreal getSpectrumAproxF0() { return _specPitchAprox; }
+    Q_INVOKABLE qreal getFreq1() const { return _barSelected * _freqStep; } //TODO barRange
+    Q_INVOKABLE qreal getFreq2() const { return (_barSelected + 1) * _freqStep; }
+    Q_INVOKABLE qreal getPitch() const { return _spectrum._pitchYin; }
+    Q_INVOKABLE qreal freqToMidi(qreal freq) const { return calc_MidiCents(freq) / 100.0; }
+    Q_INVOKABLE qreal getValue() const { return _bars[_barSelected].value; }
+    Q_INVOKABLE int getIndex() const { return _barSelected; }
+    Q_INVOKABLE qreal getSpectrumF0() const { return _spectrumPitch; }
+    Q_INVOKABLE qreal getSpectrumAproxF0() const { return _specPitchAprox; }
 
-    Q_INVOKABLE qreal getRMS() { return _spectrum._rms; }
-    Q_INVOKABLE qreal getRMSNoWindow() { return _spectrum._rmsNoWindow; }
-    Q_INVOKABLE bool clipped() { return _gotClipping; }
-    Q_INVOKABLE bool gotGap() { return _spectrumGap; }
-    Q_INVOKABLE qreal gapLevel() { return _gapLevel;  }
+    Q_INVOKABLE qreal getRMS() const { return _spectrum._rms; }
+    Q_INVOKABLE qreal getRMSNoWindow() const { return _spectrum._rmsNoWindow; }
+    Q_INVOKABLE bool clipped() const { return _gotClipping; }
+    Q_INVOKABLE bool gotGap() const { return _spectrumGap; }
+    Q_INVOKABLE qreal gapLevel() const { return _gapLevel;  }
 
     Q_INVOKABLE void onPress(int xPress, int yPress, int width, int height);
     Q_INVOKABLE bool loadSpectrum(QString filename, quint64 position);

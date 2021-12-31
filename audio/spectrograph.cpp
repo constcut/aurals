@@ -56,7 +56,7 @@ SpectrographPainter::SpectrographPainter() : _barSelected(-1),
 }
 
 
-void SpectrographPainter::prepareBackground(QPainter &painter, QRect &rect) {
+void SpectrographPainter::prepareBackground(QPainter &painter, QRect &rect) const {
     painter.fillRect(rect, Qt::black);
     const int numBars = _bars.count();
     const double barWidth = rect.width()/( static_cast<double>(numBars) );
@@ -105,7 +105,7 @@ void SpectrographPainter::prepareBackground(QPainter &painter, QRect &rect) {
 }
 
 
-void SpectrographPainter::paintBars(QPainter &painter, QRect &rect) {
+void SpectrographPainter::paintBars(QPainter &painter, QRect &rect) const {
 
     const int numBars = _bars.count();
     const double barWidth = rect.width()/( static_cast<double>(numBars) );
@@ -132,7 +132,7 @@ void SpectrographPainter::paintBars(QPainter &painter, QRect &rect) {
 }
 
 
-void SpectrographPainter::paintSlope(QPainter &painter, QRect &rect) {
+void SpectrographPainter::paintSlope(QPainter &painter, QRect &rect) const {
 
     const int numBars = _bars.count();
     const double barWidth = rect.width()/( static_cast<double>(numBars) );
@@ -140,12 +140,12 @@ void SpectrographPainter::paintSlope(QPainter &painter, QRect &rect) {
 
     //Здесь можно попробовать интерполировать функцию, и получить коэффициент наклона
     painter.setPen(QColor("orange"));
-    painter.drawLine(calcXPos(maxIdx), rect.top() + (1.0 - maxValue) * rect.height(),
-                     calcXPos(lastIdx), rect.top() + (1.0 - lastValue) * rect.height());
+    painter.drawLine(calcXPos(_maxIdx), rect.top() + (1.0 - _maxValue) * rect.height(),
+                     calcXPos(_lastIdx), rect.top() + (1.0 - _lastValue) * rect.height());
 }
 
 
-void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect) {
+void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect) const {
     prepareBackground(painter, rect);
 
     if (_bars.count()) {
@@ -199,10 +199,10 @@ void SpectrographPainter::updateBars()
     }
     _gotClipping = false;
     _spectrumGap = false;
-    maxValue = -120;
-    maxIdx = -1;
-    lastIdx = 0;
-    lastValue = 0.0;
+    _maxValue = -120;
+    _maxIdx = -1;
+    _lastIdx = 0;
+    _lastValue = 0.0;
 
     for ( ; i != end; ++i) {
         const FrequencySpectrum::Element e = *i;
@@ -219,13 +219,13 @@ void SpectrographPainter::updateBars()
                     _spectrumGap = true;
                 emptyBins += 1.0;
             }
-            if (level > maxValue) {
-                maxValue = level;
-                maxIdx = count;
+            if (level > _maxValue) {
+                _maxValue = level;
+                _maxIdx = count;
             }
             if (level > 0.0) {
-                lastIdx = count;
-                lastValue = level;
+                _lastIdx = count;
+                _lastValue = level;
             }
             _idxPeaksAmp.append(level);
         }
@@ -306,10 +306,10 @@ void SpectrographPainter::findPeaks() { //Нужно перенести эту �
 void SpectrographPainter::classifySlope() {
     //Все значения спектрограммы должны быть ниже линии slope
     //TODO возможно придётся сохранять данные отрисовки, и использовать их, но в идеале уйти от них
-    double y1 = (1.0 - maxValue); //* barHeight
-    double y2 = (1.0 - lastValue); //* barHeight;
-    double x1 = maxIdx; //calcXPos
-    double x2 = lastIdx; //calcXPos
+    double y1 = (1.0 - _maxValue); //* barHeight
+    double y2 = (1.0 - _lastValue); //* barHeight;
+    double x1 = _maxIdx; //calcXPos
+    double x2 = _lastIdx; //calcXPos
 
     //search as triangle
     double vK = y2 - y1;
