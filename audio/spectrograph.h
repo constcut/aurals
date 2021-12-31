@@ -57,13 +57,18 @@ public:
 
     void paintSpectr(QPainter &painter, QRect &rect);
     void setParams(int numBars, qreal lowFreq, qreal highFreq);
-    void findPeaks();
+
 
 protected:
     int barIndex(qreal frequency) const;
     QPair<qreal, qreal> barRange(int barIndex) const;
 
     virtual void updateBars();
+
+    void prepareBackground(QPainter &painter, QRect &rect);
+    void paintBars(QPainter &painter, QRect &rect);
+    void paintSlope(QPainter &painter, QRect &rect);
+    void findPeaks();
 
 protected:
 
@@ -91,6 +96,11 @@ protected:
     QVector<int> _idxPeaks;
     QVector<qreal> _freqPeaks;
     QVector<qreal> _ampPeaks;
+
+    double maxValue = -120;
+    int maxIdx = -1;
+    int lastIdx = - 1;
+    double lastValue = 0.0;
 };
 
 
