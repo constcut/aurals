@@ -45,12 +45,6 @@
 #include <QObject>
 #include <QVector>
 
-#ifdef DUMP_SPECTRUMANALYSER
-#include <QDir>
-#include <QFile>
-#include <QTextStream>
-#endif
-
 #include "frequencyspectrum.h"
 #include "spectrum.h"
 
@@ -117,10 +111,6 @@ public:
     SpectrumAnalyser(QObject *parent = 0);
     ~SpectrumAnalyser() = default;
 
-#ifdef DUMP_SPECTRUMANALYSER
-    void setOutputPath(const QString &outputPath);
-#endif
-
 public:
 
     int yinLimit=512; //TODO as above so below (right here)
@@ -158,13 +148,6 @@ private:
         Busy,
         Cancelled
     } _state;
-
-#ifdef DUMP_SPECTRUMANALYSER
-    QDir                m_outputDir;
-    int                 m_count;
-    QFile               m_textFile;
-    QTextStream         m_textStream;
-#endif
 };
 
 #endif // SPECTRUMANALYSER_H

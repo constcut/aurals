@@ -163,24 +163,12 @@ SpectrumAnalyser::SpectrumAnalyser(QObject *parent)
     :   QObject(parent)
     ,   _thread(new SpectrumAnalyserThread(this))
     ,   _state(Idle)
-#ifdef DUMP_SPECTRUMANALYSER
-    ,   m_count(0)
-#endif
 {
     CHECKED_CONNECT(_thread, SIGNAL(calculationComplete(FrequencySpectrum)),
                     this, SLOT(calculationComplete(FrequencySpectrum)));
 }
 
 
-#ifdef DUMP_SPECTRUMANALYSER
-void SpectrumAnalyser::setOutputPath(const QString &outputDir)
-{
-    m_outputDir.setPath(outputDir);
-    m_textFile.setFileName(m_outputDir.filePath("spectrum.txt"));
-    m_textFile.open(QIODevice::WriteOnly | QIODevice::Text);
-    m_textStream.setDevice(&m_textFile);
-}
-#endif
 
 //-----------------------------------------------------------------------------
 // Public functions
@@ -203,22 +191,6 @@ void SpectrumAnalyser::calculate(const QByteArray &buffer,
         Q_ASSERT(isPCMS16LE(format));
         const int bytesPerSample = format.sampleSize() * format.channelCount() / 8;
 
-#ifdef DUMP_SPECTRUMANALYSER
-        m_count++;
-        const QString pcmFileName = m_outputDir.filePath(QString("spectrum_%1.pcm").arg(m_count, 4, 10, QChar('0')));
-        QFile pcmFile(pcmFileName);
-        pcmFile.open(QIODevice::WriteOnly);
-        const int bufferLength = m_numSamples * bytesPerSample;
-        pcmFile.write(buffer, bufferLength);
-
-        m_textStream << "TimeDomain " << m_count << "\n";
-        const qint16* input = reinterpret_cast<const qint16*>(buffer);
-        for (int i=0; i<m_numSamples; ++i) {
-            m_textStream << i << "\t" << *input << "\n";
-            input += format.channels();
-        }
-#endif
-
         _state = Busy;
         _thread->yinLimit = yinLimit;
         _thread->fftLimit = fftLimit;
@@ -230,16 +202,6 @@ void SpectrumAnalyser::calculate(const QByteArray &buffer,
                                   Q_ARG(int, bytesPerSample));
         Q_ASSERT(b);
         Q_UNUSED(b) // suppress warnings in release builds
-
-#ifdef DUMP_SPECTRUMANALYSER
-        m_textStream << "FrequencySpectrum " << m_count << "\n";
-        FrequencySpectrum::const_iterator x = m_spectrum.begin();
-        for (int i=0; i<m_numSamples; ++i, ++x)
-            m_textStream << i << "\t"
-                         << x->frequency << "\t"
-                         << x->amplitude<< "\t"
-                         << x->phase << "\n";
-#endif
     }
 }
 
