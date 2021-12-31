@@ -42,38 +42,26 @@
 #define SPECTROGRAPH_H
 
 #include "spectrumanalyser.h"
-
 #include "frequencyspectrum.h"
-
 #include "featureextractor.h"
 
 #include <QQuickPaintedItem>
 #include <QPainter>
-/**
- * Widget which displays a spectrograph showing the frequency spectrum
- * of the window of audio samples most recently analyzed by the Engine.
- */
 
-class SpectrographPainter
-{
+
+class SpectrographPainter {
+
 public:
     SpectrographPainter();
     ~SpectrographPainter() {}
 
     void paintSpectr(QPainter &painter, QRect &rect);
-
     void setParams(int numBars, qreal lowFreq, qreal highFreq);
-
     void findPeaks();
-    /*
-signals:
-    void infoMessage(const QString &message, int intervalMs);
-    */
 
 protected:
     int barIndex(qreal frequency) const;
     QPair<qreal, qreal> barRange(int barIndex) const;
-
 
     virtual void updateBars();
 
@@ -85,28 +73,27 @@ protected:
         bool    clipped;
     };
 
-    int m_barSelected;
-    QVector<Bar>        m_bars;
-    qreal               m_lowFreq;
-    qreal               m_highFreq;
-    FrequencySpectrum   m_spectrum;
+    int _barSelected;
+    QVector<Bar>        _bars;
+    qreal               _lowFreq;
+    qreal               _highFreq;
+    FrequencySpectrum   _spectrum;
 
-    double freqStep;
-    bool gotClipping = false;
-    bool spectrumGap = false;
+    double _freqStep;
+    bool _gotClipping = false;
+    bool _spectrumGap = false;
     double _gapLevel = 0.0;
 
     double _spectrumPitch = 0.0;
     double _specPitchAprox = 0.0;
 
-    QVector<qreal> idxPeaksAmp;
-    QVector<int> idxPeaks;
-    QVector<qreal> freqPeaks;
-    QVector<qreal> ampPeaks;
+    QVector<qreal> _idxPeaksAmp;
+    QVector<int> _idxPeaks;
+    QVector<qreal> _freqPeaks;
+    QVector<qreal> _ampPeaks;
 };
 
 
-class Engine;
 
 class SpectrographQML : public QQuickPaintedItem, public SpectrographPainter
 {
@@ -120,15 +107,13 @@ public:
     virtual void updateBars();
 
     Q_INVOKABLE void setSamplesAmount(int newNumSamples){
-        analyser.setSamplesAmount(newNumSamples);
-        samplesAmount = newNumSamples;
+        _analyser.setSamplesAmount(newNumSamples);
+        _samplesAmount = newNumSamples;
     }
 
     Q_INVOKABLE int getSamplesAmount() {
-        return analyser.getSamplesAmount();
+        return _analyser.getSamplesAmount();
     }
-
-    Q_INVOKABLE void setSoundEngine(QObject *eng);
 
     Q_INVOKABLE void setParamsFromQML(int numBars, qreal lowFreq, qreal highFreq)
     { setParams(numBars,lowFreq,highFreq);}
@@ -136,34 +121,34 @@ public:
     Q_INVOKABLE void changeBarsCount(int barsCount)
     {
         Q_ASSERT(barsCount > 0);
-        m_bars.resize(barsCount);
+        _bars.resize(barsCount);
         updateBars();
     }
 
-    Q_INVOKABLE qreal getFreq1() { return m_barSelected * freqStep; } //TODO barRange
-    Q_INVOKABLE qreal getFreq2() { return (m_barSelected + 1) * freqStep; }
-    Q_INVOKABLE qreal getPitch() { return m_spectrum._pitchYin; }
+    Q_INVOKABLE qreal getFreq1() { return _barSelected * _freqStep; } //TODO barRange
+    Q_INVOKABLE qreal getFreq2() { return (_barSelected + 1) * _freqStep; }
+    Q_INVOKABLE qreal getPitch() { return _spectrum._pitchYin; }
     Q_INVOKABLE qreal freqToMidi(qreal freq) { return calc_MidiCents(freq) / 100.0; }
-    Q_INVOKABLE qreal getValue()  { return m_bars[m_barSelected].value; }
-    Q_INVOKABLE int getIndex() { return m_barSelected; }
+    Q_INVOKABLE qreal getValue()  { return _bars[_barSelected].value; }
+    Q_INVOKABLE int getIndex() { return _barSelected; }
     Q_INVOKABLE qreal getSpectrumF0() { return _spectrumPitch; }
     Q_INVOKABLE qreal getSpectrumAproxF0() { return _specPitchAprox; }
 
-    Q_INVOKABLE qreal getRMS() { return m_spectrum._rms; }
-    Q_INVOKABLE qreal getRMSNoWindow() { return m_spectrum._rmsNoWindow; }
-    Q_INVOKABLE bool clipped() { return gotClipping; }
-    Q_INVOKABLE bool gotGap() { return spectrumGap; }
+    Q_INVOKABLE qreal getRMS() { return _spectrum._rms; }
+    Q_INVOKABLE qreal getRMSNoWindow() { return _spectrum._rmsNoWindow; }
+    Q_INVOKABLE bool clipped() { return _gotClipping; }
+    Q_INVOKABLE bool gotGap() { return _spectrumGap; }
     Q_INVOKABLE qreal gapLevel() { return _gapLevel;  }
 
     Q_INVOKABLE void onPress(int xPress, int yPress, int width, int height);
     Q_INVOKABLE bool loadSpectrum(QString filename, quint64 position);
 
-    Q_INVOKABLE void setYinLimit(int limit) { analyser.yinLimit = limit; };
-    Q_INVOKABLE void setFFTLimit(int limit) { analyser.fftLimit = limit; };
+    Q_INVOKABLE void setYinLimit(int limit) { _analyser.yinLimit = limit; };
+    Q_INVOKABLE void setFFTLimit(int limit) { _analyser.fftLimit = limit; };
 
-    Q_INVOKABLE int peaksCount() { return freqPeaks.size(); }
-    Q_INVOKABLE QVector<qreal> getFreqPeaks() { return freqPeaks; }
-    Q_INVOKABLE QVector<qreal> getAmpPeaks() { return ampPeaks; }
+    Q_INVOKABLE int peaksCount() { return _freqPeaks.size(); }
+    Q_INVOKABLE QVector<qreal> getFreqPeaks() { return _freqPeaks; }
+    Q_INVOKABLE QVector<qreal> getAmpPeaks() { return _ampPeaks; }
 
 public slots:
     void spectrumChanged(qint64 position, qint64 length,
@@ -173,16 +158,14 @@ public slots:
 
 
 signals:
-
     void spectrumCalculated();
 
 protected:
 
-    int samplesAmount;
+    int _samplesAmount;
     void selectBar(int index);
 
-    Engine *soundEngine; //TODO собрать лучшее из ideas
-    SpectrumAnalyser analyser;
+    SpectrumAnalyser _analyser;
 };
 
 
