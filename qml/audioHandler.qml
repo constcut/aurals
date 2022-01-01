@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
-import QtQuick.Dialogs 1.1
+import QtQuick.Dialogs 1.3
 
 Item {
     id: audioHandlerItem
@@ -122,7 +122,25 @@ Item {
                     audio.startPlayback()
                 }
             }
+            ToolButton {
+                text: "Open file"
+                onClicked:  {
+                    fileDialog.visible = true
+                }
+            }
+        }
 
+        FileDialog {
+            id: fileDialog
+            title: "Please choose a wav file (16 bit, 44100 sr)"
+            folder: shortcuts.home
+            onAccepted: {
+                thatWindow.requestWaveshape(fileDialog.fileUrls[0].substring(7))
+                fileDialog.visible = false
+            }
+            onRejected: {
+                fileDialog.visible = false
+            }
         }
 
         MessageDialog {

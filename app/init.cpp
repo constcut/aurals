@@ -37,6 +37,11 @@ int mainInit(int argc, char *argv[]) {
     //qmlRegisterType<PianoQML>("mther.app",1,0,"Piano");
 
     QGuiApplication app(argc, argv);
+
+    app.setApplicationName("mtherapp");
+    app.setOrganizationName("accumerite");
+    app.setOrganizationDomain("acc.u.merite");
+
     Q_INIT_RESOURCE(fonts);
     qDebug() << "Current working path "<<QDir::currentPath();
     int fontId = QFontDatabase::addApplicationFont(":/fonts/prefont.ttf");
