@@ -5,14 +5,11 @@
 #include <iostream>
 #include <algorithm>
 #include <cmath>
-#include "FindPeaks.hpp"
+#include "findpeaks.hpp"
 
 #include <list>
 #include <algorithm>
 
-#include "../log/maeLog.hpp"
-
-namespace MAE {
 
 
 using std::vector;
@@ -27,11 +24,11 @@ typedef vector<float>::iterator it;
 vector<float> diffsInRange(cit begin, cit end){
     
     auto len = std::distance(begin, end);
-    assert(begin < end);
+    //assert(begin < end);
     vector<float> diff;
     
     if (len == 0) {
-        LOG << "Met 0 len in diffsInRange";
+        //LOG << "Met 0 len in diffsInRange";
         return diff;
     }
     
@@ -89,7 +86,7 @@ vector<size_t> peakIndexesInData(const vector<float>& signal, float sensitivity)
     
     vector<size_t> peakIndexes;
     if (signal.size() < 2) {
-        LOG << "Attention! signal in peakIndexesInData is too small " << signal.size();
+        //LOG << "Attention! signal in peakIndexesInData is too small " << signal.size();
         return peakIndexes;
     }
     
@@ -208,11 +205,10 @@ vector<size_t> peakIndexesInData(const vector<float>& signal, float sensitivity)
         peakIndexes = selectElements(indexes, peakLoc);
     }
     
-    for (auto p : peakIndexes)
-        assert(p < signal.size());
+    //for (auto p : peakIndexes)
+        //assert(p < signal.size());
     
     return peakIndexes;
 }
     
     
-}
