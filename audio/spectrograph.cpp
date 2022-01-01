@@ -245,7 +245,7 @@ void SpectrographPainter::updateBars()
 }
 
 
-void SpectrographPainter::findF0() {
+void SpectrographPainter::findF0() { //Возможно проверять уже найденные пики findPeaks
     if (_bars.size() < 100)
         return;
 
@@ -295,8 +295,8 @@ void SpectrographPainter::findF0() {
     std::vector<std::pair<int,double>> sortedTable(table.begin(), table.end());
     std::sort(sortedTable.begin(), sortedTable.end(), [](auto lhs, auto rhs){ return lhs.second > rhs.second;});
 
-    _binTable.clear();
-    _binSumm.clear();
+    //_binTable.clear();
+    //_binSumm.clear();
 
     size_t count = 0;
     for (auto& [n, summ]: sortedTable) {
@@ -306,8 +306,8 @@ void SpectrographPainter::findF0() {
         }
         if (++count > 20)
             break;
-        _binTable.push_back(n);
-        _binSumm.push_back(summ);
+        //_binTable.push_back(n);
+        //_binSumm.push_back(summ);
     }
     //Нужно сохранять дополнительную информацию - какой пик из +- был максимальным
     //Нужно сохранять процент не пустых пиков, так как например если субгармоника содержит все гармоники, но и пропуски - её рейтинг должен падать
@@ -408,16 +408,17 @@ void SpectrographPainter::findPeaks() {
             double midBin = (static_cast<double>(mainBin) + subBin ) / 2.0; //TODO ? +.05 в каждую
             double addition = 0.5 - 0.5 / countCoef;
             midBin += addition;
-
             //qDebug() << "Main " << mainBin << " new " << midBin
                      //<< " FM " << _spectrumPitch << " FN " << _freqStep * midBin;
             _spectrumPitch = _freqStep * midBin;
         }
     }
 
-    //qDebug() << "_Diffs";
+    _binTable.clear();
+    _binCount.clear();
     for (auto& [diff, count]: sorted) {
-        //qDebug() << "Diff " << diff << " count " << count;
+        _binTable.append(diff);
+        _binCount.append(count);
     }
 }
 

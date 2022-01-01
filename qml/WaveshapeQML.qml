@@ -316,7 +316,7 @@ Item {
         function outputPeaksGroup() { //TODO rewrite for vouted peaks
             peaksGroup.text = "";
             var bins = spectrum.getBinTable()
-            var summs = spectrum.getBinSumm()
+            var summs = spectrum.getBinCount()
             var checkCount = bins.length < 20 ? bins.length : 20
 
             for (var i = 0; i < checkCount; ++i) {
@@ -324,10 +324,9 @@ Item {
                 var sum = summs[i]
                 if (i && i % 5 == 0)
                     peaksGroup.text += "<br>";
-                peaksGroup.text += "<b>" + bin + "</b> : " + sum.toFixed(4)
+                peaksGroup.text += "<b>" + bin + "</b> : " + sum
                 peaksGroup.text += " ; "
             }
-            peaksGroup.text += " }";
         }
     }
 

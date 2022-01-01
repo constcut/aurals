@@ -100,7 +100,7 @@ protected:
     QVector<int> _idxPeaks;
 
     QVector<int> _binTable;
-    QVector<qreal> _binSumm;
+    QVector<int> _binCount;
 
     std::unordered_set<int> peaksIdx;
 
@@ -152,7 +152,7 @@ public:
     Q_INVOKABLE qreal getSpectrumF0() const { return _spectrumPitch; }
     Q_INVOKABLE qreal getSpectrumAproxF0() const { return _specPitchAprox; }
     Q_INVOKABLE QVector<int> getBinTable() const { return _binTable; }
-    Q_INVOKABLE QVector<qreal> getBinSumm() const { return _binSumm; }
+    Q_INVOKABLE QVector<int> getBinCount() const { return _binCount; }
 
     Q_INVOKABLE qreal getRMS() const { return _spectrum._rms; }
     Q_INVOKABLE qreal getRMSNoWindow() const { return _spectrum._rmsNoWindow; }
