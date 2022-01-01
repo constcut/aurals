@@ -209,20 +209,38 @@ Item {
             Text{
                 y:  spectrum.y + spectrum.height + 10
                 x: yinLimitCombo.x + yinLimitCombo.width + 10
-                id: windowLimitCombo
+                id: windowLimitText
                 text: "Window limit: "
             }
 
             ComboBox {
                 id: windowCutCombo
                 y: spectrum.y + spectrum.height + 10
-                x: windowLimitCombo.x + windowLimitCombo.width + 10
+                x: windowLimitText.x + windowLimitText.width + 10
                 currentIndex: 4
                 model: ["256","512","1024", "2048", "4096", "8192"] //TODO cuctom size
 
                 onCurrentIndexChanged: {
                     if (spectrum)
                         spectrum.setFFTLimit(parseInt(currentText))
+                }
+            }
+
+            Text{
+                y:  spectrum.y + spectrum.height + 10
+                x: windowCutCombo.x + windowCutCombo.width + 10
+                id: binsText
+                text: "Spectrum bins: "
+            }
+
+            ComboBox {
+                id: specBinsCombo
+                x: binsText.x + binsText.width + 10
+                y: spectrum.y + spectrum.height + 10
+                model : [100, 200, 400, 600, 800]
+                currentIndex: 2
+                onCurrentTextChanged: {
+                    spectrum.changeBarsCount(parseInt(currentText))
                 }
             }
         }
