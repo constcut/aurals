@@ -121,10 +121,10 @@ Item {
                 }
             }
 
-            WavePosition { //Необходим только для воспроизведения в реальном времени из ideas
+            WavePosition { //TODO убрать?
                 id:wavPos
                 height: 20
-                width: 1000 //actually must calculate it for each file
+                width: 1000
                 y:  5
                 property int time : 0
                 MouseArea {
@@ -147,7 +147,6 @@ Item {
                     flick.contentWidth = waveShape.getPixelsLength() + 10
                     waveShape.width = flick.contentWidth
                     wavPos.width = waveShape.width
-                    //console.log("component competed waveshape ", item.filename)
                 }
             }
 
@@ -160,16 +159,9 @@ Item {
             spacing:  10
             id: upperLayout
             Text{
-                y:  spectrum.y + spectrum.height + 10
-                x: parent.width / 3
-                id: specLabel
                 text: "Window size: "
             }
-
             ComboBox {
-                id: sizeComboBox
-                y:  spectrum.y + spectrum.height + 10
-                x: specLabel.x + specLabel.width + 10
                 model: ["256", "1024","2048","4096","8192","16384"]
                 currentIndex: 3
                 onCurrentTextChanged: {
@@ -184,37 +176,21 @@ Item {
             }
             /*
             Text{
-                y:  spectrum.y + spectrum.height + 10
-                x: sizeComboBox.x + sizeComboBox.width + 10
-                id: yinLabel
                 text: "Yin limit size: "
             }
             ComboBox {
-                id: yinLimitCombo
-
-                y: spectrum.y + spectrum.height + 10
-                x: yinLabel.x + yinLabel.width + 10
-                currentIndex: 1
                 model: ["3000", "4096", "6000"] //TODO cuctom size
-
                 onCurrentTextChanged: {
                     if (spectrum)
                         spectrum.setYinLimit(parseInt(currentText))
                 }
             }
             Text{
-                y:  spectrum.y + spectrum.height + 10
-                x: yinLimitCombo.x + yinLimitCombo.width + 10
-                id: windowLimitText
                 text: "Window limit: "
             }
             ComboBox {
-                id: windowCutCombo
-                y: spectrum.y + spectrum.height + 10
-                x: windowLimitText.x + windowLimitText.width + 10
                 currentIndex: 4
                 model: ["256","512","1024", "2048", "4096", "8192"] //TODO cuctom size
-
                 onCurrentIndexChanged: {
                     if (spectrum)
                         spectrum.setFFTLimit(parseInt(currentText))
@@ -222,15 +198,9 @@ Item {
             }*/
 
             Text{
-                y:  spectrum.y + spectrum.height + 10
-                x: sizeComboBox.x + sizeComboBox.width + 10
-                id: binsText
                 text: "Spectrum bins: "
             }
             ComboBox {
-                id: specBinsCombo
-                x: binsText.x + binsText.width + 10
-                y: spectrum.y + spectrum.height + 10
                 model : [100, 200, 400, 600, 800]
                 currentIndex: 2
                 onCurrentTextChanged: {
@@ -238,8 +208,6 @@ Item {
                 }
             }
             Text{
-                y:  spectrum.y + spectrum.height + 10
-                x: specBinsCombo.x + specBinsCombo.width + 10
                 id: highFreqText
                 text: "High freq: "
             }
@@ -266,7 +234,7 @@ Item {
         y : specInfo.y + specInfo.height + 5
         x: 25
         text: "rms yin info"
-    }//TODO different parameters for yin to be set!
+    }
 
     Text {
         id: rmsGroup
@@ -316,12 +284,8 @@ Item {
         y: waveShape.height + waveShape.y + 5
         width: parent.width
         height: parent.height / 6
-
         id:spectrum
-        Component.onCompleted: {
-            //spectrum.setSoundEngine(soundEngine)
-            //spectrum.changeBarsCount(200)
-        }
+
         MouseArea {
             anchors.fill: parent
             function log10(val) {
@@ -332,13 +296,12 @@ Item {
                 specInfo.text = spectrum.getFreq1().toFixed(2) + "-" + spectrum.getFreq2().toFixed(2) + " Hz"
                 +  " lvl = " + (20*log10(spectrum.getValue())).toFixed(1) + " idx " + spectrum.getIndex()
                         + " val " + spectrum.getValue().toFixed(4)
-               // https://stackoverflow.com/questions/3019278/how-can-i-specify-the-base-for-math-log-in-javascript
             }
         }
         onSpectrumCalculated: {
             outputPeaksGroup()
         }
-        function outputPeaksGroup() { //TODO rewrite for vouted peaks
+        function outputPeaksGroup() {
             peaksGroup.text = "";
             var bins = spectrum.getBinTable()
             var summs = spectrum.getBinCount()
