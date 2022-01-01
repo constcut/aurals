@@ -163,30 +163,26 @@ Item {
                 y:  spectrum.y + spectrum.height + 10
                 x: parent.width / 3
                 id: specLabel
-                text: "Big Window size: "
+                text: "Window size: "
             }
 
-            ComboBox
-            {
+            ComboBox {
                 id: sizeComboBox
-
                 y:  spectrum.y + spectrum.height + 10
                 x: specLabel.x + specLabel.width + 10
-                model: ["125", "1024","2048","4096","8192","16384"]
-
+                model: ["256", "1024","2048","4096","8192","16384"]
                 currentIndex: 3
-
                 onCurrentTextChanged: {
-                    //console.log("Selected " + sizeComboBox.currentIndex + sizeComboBox.currentText )
-
                     var windowWidth = parseInt(currentText)
-
                     waveShape.setWindowWidth(windowWidth)
-                    if (spectrum != null)
+                    if (spectrum != null) {
                         spectrum.setSamplesAmount(windowWidth)
+                        spectrum.setYinLimit(windowWidth)
+                        spectrum.setFFTLimit((windowWidth))
+                    }
                 }
             }
-
+            /*
             Text{
                 y:  spectrum.y + spectrum.height + 10
                 x: sizeComboBox.x + sizeComboBox.width + 10
@@ -212,7 +208,6 @@ Item {
                 id: windowLimitText
                 text: "Window limit: "
             }
-
             ComboBox {
                 id: windowCutCombo
                 y: spectrum.y + spectrum.height + 10
@@ -224,15 +219,14 @@ Item {
                     if (spectrum)
                         spectrum.setFFTLimit(parseInt(currentText))
                 }
-            }
+            }*/
 
             Text{
                 y:  spectrum.y + spectrum.height + 10
-                x: windowCutCombo.x + windowCutCombo.width + 10
+                x: sizeComboBox.x + sizeComboBox.width + 10
                 id: binsText
                 text: "Spectrum bins: "
             }
-
             ComboBox {
                 id: specBinsCombo
                 x: binsText.x + binsText.width + 10
@@ -241,6 +235,19 @@ Item {
                 currentIndex: 2
                 onCurrentTextChanged: {
                     spectrum.changeBarsCount(parseInt(currentText))
+                }
+            }
+            Text{
+                y:  spectrum.y + spectrum.height + 10
+                x: specBinsCombo.x + specBinsCombo.width + 10
+                id: highFreqText
+                text: "High freq: "
+            }
+            ComboBox {
+                model: ["1000", "2000", "3000", "4000", "5000", "6000", "7000"]
+                currentIndex: 3
+                onCurrentTextChanged: {
+                    spectrum.changeHighFreq(parseInt(currentText))
                 }
             }
         }

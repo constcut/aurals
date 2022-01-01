@@ -142,6 +142,13 @@ public:
         updateBars();
     }
 
+    Q_INVOKABLE void changeHighFreq(qreal newFreq) {
+        _highFreq = newFreq;
+        updateBars();
+    }
+
+
+
     Q_INVOKABLE qreal getFreq1() const { return _barSelected * _freqStep; } //TODO barRange
     Q_INVOKABLE qreal getFreq2() const { return (_barSelected + 1) * _freqStep; }
     Q_INVOKABLE qreal getPitch() const { return _spectrum._pitchYin; }

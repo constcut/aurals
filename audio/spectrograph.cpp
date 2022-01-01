@@ -479,7 +479,6 @@ void SpectrographQML::updateBars() {
     update();
 }
 
-
 void SpectrographQML::spectrumChanged([[maybe_unused]] qint64 position, [[maybe_unused]] qint64 length,
                                       const FrequencySpectrum &spectrum) {
     _spectrum = spectrum;
