@@ -49,6 +49,7 @@
 #include "findpeaks.hpp"
 
 #include <cmath>
+#include <unordered_map>
 
 
 SpectrographPainter::SpectrographPainter() : _barSelected(-1),

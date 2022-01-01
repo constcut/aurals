@@ -51,7 +51,7 @@ Item {
                     windowInfo.text = "Window RMS = " + spectrum.getRMSNoWindow().toFixed(4)
                     + "\nPitch = " + spectrum.getPitch().toFixed(3)
                     + "\nMIDI# = " + spectrum.freqToMidi(spectrum.getPitch())
-                    + "\nSpecPitch= " + spectrum.getSpectrumF0().toFixed(3) + "; PitchAprox = " + spectrum.getSpectrumAproxF0().toFixed(3)
+                    + "\nSpecPitch= " + spectrum.getSpectrumF0().toFixed(3)
                     + "\nTime = " + ((mouseX*125.0/2.0) / 44100.0).toFixed(4)
                     outputRmsGroup(mouseX)
 
