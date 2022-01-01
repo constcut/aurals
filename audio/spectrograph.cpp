@@ -225,13 +225,13 @@ void SpectrographPainter::updateBars()
                     _spectrumGap = true;
                 emptyBins += 1.0;
             }
-            if (level > _maxValue) {
-                _maxValue = level;
+            if (bar.value > _maxValue) {
+                _maxValue = bar.value;
                 _maxIdx = count;
             }
-            if (level > 0.0) {
+            if (bar.value > 0.0) {
                 _lastIdx = count;
-                _lastValue = level;
+                _lastValue = bar.value;
             }
             _idxPeaksAmp.append(level);
         }
