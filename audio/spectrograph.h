@@ -96,6 +96,9 @@ protected:
     QVector<qreal> _idxPeaksAmp;
     QVector<int> _idxPeaks;
 
+    QVector<int> _binTable;
+    QVector<qreal> _binSumm;
+
     double _maxValue = -120;
     int _maxIdx = -1;
     int _lastIdx = - 1;
@@ -140,8 +143,11 @@ public:
     Q_INVOKABLE qreal freqToMidi(qreal freq) const { return calc_MidiCents(freq) / 100.0; }
     Q_INVOKABLE qreal getValue() const { return _bars[_barSelected].value; }
     Q_INVOKABLE int getIndex() const { return _barSelected; }
+
     Q_INVOKABLE qreal getSpectrumF0() const { return _spectrumPitch; }
     Q_INVOKABLE qreal getSpectrumAproxF0() const { return _specPitchAprox; }
+    Q_INVOKABLE QVector<int> getBinTable() const { return _binTable; }
+    Q_INVOKABLE QVector<qreal> getBinSumm() const { return _binSumm; }
 
     Q_INVOKABLE qreal getRMS() const { return _spectrum._rms; }
     Q_INVOKABLE qreal getRMSNoWindow() const { return _spectrum._rmsNoWindow; }

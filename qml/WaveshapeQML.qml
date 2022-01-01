@@ -311,50 +311,24 @@ Item {
             }
         }
         onSpectrumCalculated: {
-            //outputPeaksGroup()
+            outputPeaksGroup()
         }
         function outputPeaksGroup() { //TODO rewrite for vouted peaks
-            peaksGroup.text = "{ ";
+            peaksGroup.text = "";
+            var bins = spectrum.getBinTable()
+            var summs = spectrum.getBinSumm()
+            var checkCount = bins.length < 20 ? bins.length : 20
 
-            var freqs = spectrum.getFreqPeaks();
-            var amps = spectrum.getAmpPeaks();
-            var max = -120;
-
-            for (var i = 0; i < amps.length; ++i) {
-                if (amps[i] > max)
-                    max = amps[i]
-            }
-
-            var checkFreqsCount = freqs.length > 49 ? 49 : freqs.length
-
-            for (i = 0; i < checkFreqsCount; ++i) {
-                var freq = freqs[i]
-                var amp = amps[i]
-                var ratio = max / amp;
-
-                if (i && i % 7 == 0)
-                    peaksGroup.text += "<br>  ";
-
-                if (ratio > 0.5)
-                    peaksGroup.text += "<b>"
-                if (ratio > 0.75)
-                    peaksGroup.text += "<u>"
-
-                if (i && freq < 100)
-                    peaksGroup.text += "_"
-
-                peaksGroup.text += freq.toFixed(0)
-
-                if (ratio > 0.75)
-                    peaksGroup.text += "</u>"
-                if (ratio > 0.5)
-                    peaksGroup.text += "</b>"
-
+            for (var i = 0; i < checkCount; ++i) {
+                var bin = bins[i]
+                var sum = summs[i]
+                if (i && i % 5 == 0)
+                    peaksGroup.text += "<br>";
+                peaksGroup.text += "<b>" + bin + "</b> : " + sum.toFixed(4)
                 peaksGroup.text += " ; "
             }
-
             peaksGroup.text += " }";
         }
-
     }
+
 }

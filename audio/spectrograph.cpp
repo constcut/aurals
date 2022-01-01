@@ -264,11 +264,16 @@ void SpectrographPainter::findPeaks() { //Нужно перенести эту �
     std::vector<std::pair<int,double>> sortedTable(table.begin(), table.end());
     std::sort(sortedTable.begin(), sortedTable.end(), [](auto lhs, auto rhs){ return lhs.second > rhs.second;});
 
+    _binTable.clear();
+    _binSumm.clear();
+
     size_t count = 0;
     for (auto& [n, summ]: sortedTable) {
-        //qDebug() << "Spectral summ " << n << " " << summ << " " << n*freqStep;
-        if (++count > 10)
+        qDebug() << "Spectral summ " << n << " " << summ << " " << n*_freqStep;
+        if (++count > 20)
             break;
+        _binTable.push_back(n);
+        _binSumm.push_back(summ);
     }
     //Нужно сохранять дополнительную информацию - какой пик из +- был максимальным
     //Нужно сохранять процент не пустых пиков, так как например если субгармоника содержит все гармоники, но и пропуски - её рейтинг должен падать
