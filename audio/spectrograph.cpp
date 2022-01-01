@@ -352,6 +352,29 @@ void SpectrographPainter::findPeaks() {
 
     auto peaks = peakIndexesInData(amps, 6.0);
 
+    bool searchTinyPeaks = true;
+
+    if (searchTinyPeaks) {
+        for (size_t i = 120; i < _bars.size() - 6; ++i) {
+            size_t emptyCount = 0;
+            size_t maxIdx = 0;
+            double maxValue = 0.0;
+            for (size_t j = 0; j < 12; ++j) {
+                if (_bars[i - 5 + j].value > maxValue) {
+                    maxValue = _bars[i - 5 + j].value;
+                    maxIdx = j;
+                }
+                if (_bars[i - 5 + j].value <= 0.0)
+                    emptyCount += 1;
+            }
+            if (maxIdx == 5 && emptyCount >= 6)
+                peaks.push_back(i);
+        }
+        std::sort(peaks.begin(), peaks.end());
+        auto removeIt = std::unique(peaks.begin(), peaks.end());
+        peaks.erase(removeIt, peaks.end());
+    }
+
     peaksIdx.clear();
     std::map<int, int> diffCount;
     int prev = -1;
@@ -369,6 +392,10 @@ void SpectrographPainter::findPeaks() {
 
     std::vector<std::pair<int,int>> sorted(diffCount.begin(), diffCount.end());
     std::sort(sorted.begin(), sorted.end(), [](auto& lhs, auto& rhs){ return lhs.second > rhs.second; });
+
+    if (sorted.empty() == false)
+        _spectrumPitch = sorted[0].first * _freqStep;
+    //TODO если есть + - 1 найти их пропорцию и посчитать нужную частоту
 
     qDebug() << "_Diffs";
     for (auto& [diff, count]: sorted) {
