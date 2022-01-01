@@ -349,11 +349,9 @@ void SpectrographPainter::findPeaks() {
     std::vector<float> amps;
     for (auto& bar: _bars)
         amps.push_back(bar.value);
-
     auto peaks = peakIndexesInData(amps, 6.0);
 
     bool searchTinyPeaks = true;
-
     if (searchTinyPeaks) {
         for (size_t i = 120; i < _bars.size() - 6; ++i) {
             size_t emptyCount = 0;
@@ -393,13 +391,33 @@ void SpectrographPainter::findPeaks() {
     std::vector<std::pair<int,int>> sorted(diffCount.begin(), diffCount.end());
     std::sort(sorted.begin(), sorted.end(), [](auto& lhs, auto& rhs){ return lhs.second > rhs.second; });
 
-    if (sorted.empty() == false)
-        _spectrumPitch = sorted[0].first * _freqStep;
-    //TODO если есть + - 1 найти их пропорцию и посчитать нужную частоту
+    if (sorted.empty() == false) {
+        int mainBin = sorted[0].first;
+        _spectrumPitch = (mainBin) * _freqStep;
 
-    qDebug() << "_Diffs";
+        int subBin = -1;
+        int subCount = 0;
+        for (size_t i = 1; i < sorted.size(); ++i)
+            if (std::abs(sorted[i].first - mainBin) == 1) {
+                subBin = sorted[i].first;
+                subCount = sorted[i].second;
+                break;
+            }//Можно искать не только +-1, но и x2 +-1, x3 +-1 итд
+        if (subBin != -1) {
+            double countCoef = static_cast<double>(sorted[0].second) / subCount;
+            double midBin = (static_cast<double>(mainBin) + subBin ) / 2.0; //TODO ? +.05 в каждую
+            double addition = 0.5 - 0.5 / countCoef;
+            midBin += addition;
+
+            //qDebug() << "Main " << mainBin << " new " << midBin
+                     //<< " FM " << _spectrumPitch << " FN " << _freqStep * midBin;
+            _spectrumPitch = _freqStep * midBin;
+        }
+    }
+
+    //qDebug() << "_Diffs";
     for (auto& [diff, count]: sorted) {
-        qDebug() << "Diff " << diff << " count " << count;
+        //qDebug() << "Diff " << diff << " count " << count;
     }
 }
 
