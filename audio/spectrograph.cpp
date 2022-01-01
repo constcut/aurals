@@ -46,6 +46,7 @@
 #include <QTimerEvent>
 
 #include "wavfile.h"
+#include "findpeaks.hpp"
 
 #include <cmath>
 
@@ -344,36 +345,32 @@ void SpectrographPainter::findF0() {
 void SpectrographPainter::findPeaks() {
     //TODO использовать не корзины для отрисовки, а изначальный спектр
 
-    double maxValue = 0.0;
+    std::vector<float> amps;
     for (auto& bar: _bars)
-        if (bar.value > maxValue)
-            maxValue = bar.value;
+        amps.push_back(bar.value);
+
+    auto peaks = peakIndexesInData(amps, 6.0);
 
     peaksIdx.clear();
     std::map<int, int> diffCount;
-    /*
-     * _bars[i].value > _bars[i-1].value
-                && _bars[i].value > _bars[i+1].value)*/
-
-    int prevPeak = -1;
-    for (int i = 1; i < _bars.size() - 1; ++i) {
-        if (_bars[i].value  > maxValue * 0.5) {
-            peaksIdx.insert(i);
-            if (prevPeak != -1) {
-                int diff = i - prevPeak;
-                if (diffCount.count(diff))
-                    diffCount[diff] += 1;
-                else
-                    diffCount[diff] = 1;
-            }
-            prevPeak = i;
+    int prev = -1;
+    for (auto p: peaks) {
+        peaksIdx.insert(p);
+        if (prev != -1) {
+            int diff = p - prev;
+            if (diffCount.count(diff))
+                diffCount[diff] += 1;
+            else
+                diffCount[diff] = 1;
         }
+        prev = p;
     }
+
 
     std::vector<std::pair<int,int>> sorted(diffCount.begin(), diffCount.end());
     std::sort(sorted.begin(), sorted.end(), [](auto& lhs, auto& rhs){ return lhs.second > rhs.second; });
 
-    qDebug() << "DIFFS!";
+    qDebug() << "_Diffs";
     for (auto& [diff, count]: sorted) {
         qDebug() << "Diff " << diff << " count " << count;
     }
