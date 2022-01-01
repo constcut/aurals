@@ -243,22 +243,47 @@ void SpectrographPainter::findPeaks() { //Нужно перенести эту �
     if (_bars.size() < 100)
         return;
 
-    bool usePlusMinusMode = true;
+    //bool usePlusMinusMode = true;
     std::unordered_map<int, double> table;
-    for (int i = 6; i < 100; ++i) { //On 4096, 6 is lowest note
+    std::unordered_map<int, std::vector<int>> sequences;
+
+    for (int i = 6; i < 100; ++i) { //On 4096, 6 is lowest note TODO calculation
         double summ = 0.0;
+        std::vector<int> sequence;
+
         for (int n = 1; n < 13; ++n) {
             int currentPosition = i * n;
             if (currentPosition >= _bars.size())
                 break;
-            summ += _bars[currentPosition].value;
-            if (usePlusMinusMode && n > 1) {
-                summ += _bars[currentPosition - 1].value;
-                summ += _bars[currentPosition + 1].value;
+
+            if (n > 1) { //usePlusMinusMode &&
+
+                double localMax = _bars[currentPosition].value;
+                int index = currentPosition;
+
+                if (_bars[currentPosition - 1].value > localMax) {
+                    localMax = _bars[currentPosition - 1].value;
+                    index = currentPosition - 1;
+                }
+                if (_bars.size() > currentPosition + 1 && _bars[currentPosition + 1].value > localMax) {
+                    localMax = _bars[currentPosition + 1].value;
+                    index = currentPosition + 1;
+                }
+                if (_bars[currentPosition - 2].value > localMax) {
+                    localMax = _bars[currentPosition - 2].value;
+                    index = currentPosition - 2;
+                }
+                if (_bars.size() > currentPosition + 2 && _bars[currentPosition + 2].value > localMax) {
+                    localMax = _bars[currentPosition + 2].value;
+                    index = currentPosition + 2;
+                }
+                summ += _bars[index].value;
+                sequence.push_back(index);
             }
-            //Возможно полезно так же сохранять профиль спектра, но сейчас это опустим
         }
+
         table[i] = summ;
+        sequences[i] = sequence;
     }
 
     std::vector<std::pair<int,double>> sortedTable(table.begin(), table.end());
@@ -269,7 +294,10 @@ void SpectrographPainter::findPeaks() { //Нужно перенести эту �
 
     size_t count = 0;
     for (auto& [n, summ]: sortedTable) {
-        qDebug() << "Spectral summ " << n << " " << summ << " " << n*_freqStep;
+        if (count < 2) {
+            qDebug() << "Spectral summ " << n << " " << summ << " " << n*_freqStep;
+            qDebug() << "Seq: " << sequences[n];
+        }
         if (++count > 20)
             break;
         _binTable.push_back(n);
