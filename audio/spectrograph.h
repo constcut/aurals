@@ -48,6 +48,8 @@
 #include <QQuickPaintedItem>
 #include <QPainter>
 
+#include <unordered_set>
+
 
 class SpectrographPainter {
 
@@ -69,6 +71,7 @@ protected:
     void paintSlope(QPainter &painter, QRect &rect) const;
 
     void findPeaks();
+    void findF0();
     void classifySlope();
 
 protected:
@@ -98,6 +101,8 @@ protected:
 
     QVector<int> _binTable;
     QVector<qreal> _binSumm;
+
+    std::unordered_set<int> peaksIdx;
 
     double _maxValue = -120;
     int _maxIdx = -1;

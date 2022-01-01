@@ -124,9 +124,14 @@ void SpectrographPainter::paintBars(QPainter &painter, QRect &rect) const {
         bar.setWidth(barWidth);
         bar.setTop((1.0 - value) * rect.height());
         bar.setBottom(rect.bottom());
+
         QColor color = barColor;
         if (_bars[i].clipped)
             color = clipColor;
+        else {
+            if (peaksIdx.count(i))
+                color = QColor("orange");
+        }
         painter.fillRect(bar, color);
     }
 }
@@ -238,8 +243,7 @@ void SpectrographPainter::updateBars()
 }
 
 
-
-void SpectrographPainter::findPeaks() { //Нужно перенести эту формулу на этап заполнения m_bars
+void SpectrographPainter::findF0() {
     if (_bars.size() < 100)
         return;
 
@@ -335,6 +339,46 @@ void SpectrographPainter::findPeaks() { //Нужно перенести эту �
         _specPitchAprox = ((lowBin + highBin + 1.0) / 2.0) * _freqStep;
     }
 }
+
+
+void SpectrographPainter::findPeaks() {
+    //TODO использовать не корзины для отрисовки, а изначальный спектр
+
+    double maxValue = 0.0;
+    for (auto& bar: _bars)
+        if (bar.value > maxValue)
+            maxValue = bar.value;
+
+    peaksIdx.clear();
+    std::map<int, int> diffCount;
+    /*
+     * _bars[i].value > _bars[i-1].value
+                && _bars[i].value > _bars[i+1].value)*/
+
+    int prevPeak = -1;
+    for (int i = 1; i < _bars.size() - 1; ++i) {
+        if (_bars[i].value  > maxValue * 0.5) {
+            peaksIdx.insert(i);
+            if (prevPeak != -1) {
+                int diff = i - prevPeak;
+                if (diffCount.count(diff))
+                    diffCount[diff] += 1;
+                else
+                    diffCount[diff] = 1;
+            }
+            prevPeak = i;
+        }
+    }
+
+    std::vector<std::pair<int,int>> sorted(diffCount.begin(), diffCount.end());
+    std::sort(sorted.begin(), sorted.end(), [](auto& lhs, auto& rhs){ return lhs.second > rhs.second; });
+
+    qDebug() << "DIFFS!";
+    for (auto& [diff, count]: sorted) {
+        qDebug() << "Diff " << diff << " count " << count;
+    }
+}
+
 
 void SpectrographPainter::classifySlope() {
     //Все значения спектрограммы должны быть ниже линии slope
