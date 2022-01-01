@@ -295,7 +295,7 @@ Item {
         id:spectrum
         Component.onCompleted: {
             //spectrum.setSoundEngine(soundEngine)
-            spectrum.changeBarsCount(200)
+            //spectrum.changeBarsCount(200)
         }
         MouseArea {
             anchors.fill: parent

@@ -366,7 +366,6 @@ void SpectrographPainter::findPeaks() {
         prev = p;
     }
 
-
     std::vector<std::pair<int,int>> sorted(diffCount.begin(), diffCount.end());
     std::sort(sorted.begin(), sorted.end(), [](auto& lhs, auto& rhs){ return lhs.second > rhs.second; });
 
