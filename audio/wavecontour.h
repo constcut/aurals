@@ -29,7 +29,11 @@ public:
     const std::vector<size_t> rmsHigh() const { return _rmsHigh; }
     const std::vector<size_t> rmsLow() const { return _rmsLow; }
 
-    size_t getRmsStep() const { return _rmsSize; }
+    size_t getRmsStep() const { return _rmsStep; }
+    void setRmsStep(size_t newRmsStep) {
+        _rmsStep = newRmsStep;
+        calculateRms();
+    }
 
     void calculateF0();
 
@@ -50,7 +54,7 @@ protected:
 
     QVector<float> _floatSamples;
 
-    size_t _rmsSize = 125 * 4;
+    size_t _rmsStep = 125 * 4;
     QVector<double> _rmsLine;
 
     double _peakSensetivity = 4.0;

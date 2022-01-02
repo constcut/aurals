@@ -41,9 +41,6 @@
 #ifndef Waveshape_H
 #define Waveshape_H
 
-//#include <QAudioFormat>
-//#include <QPixmap>
-//#include <QScopedPointer>
 #include <QQuickPaintedItem>
 #include <QImage>
 
@@ -56,14 +53,7 @@ public:
 
     void loadContour(QString filename);
     void paintWaveShape(QPainter& painter);
-
     void audioPositionChanged(qint64 position);
-    void invertShowNotes() { _showNotes = !_showNotes;}
-
-    void changePeakSence(double newSence) {
-        _waveContour.changePeakSence(newSence);
-        _noImage = true;
-    }
 
 protected:
     WaveContour _waveContour;
@@ -80,6 +70,23 @@ protected:
     void makeBackgroungImage(QPainter &painter, int height, double heightCoef);
     void drawPitch(QPainter &painter, int height);
     void drawNoteStartEnd(QPainter &painter, int height);
+
+    void invertShowNotes() { _showNotes = !_showNotes;}
+
+    void changePeakSence(double newSence) {
+        _waveContour.changePeakSence(newSence);
+        resetImage();
+    }
+
+    void changeRmsStep(size_t newStep) {
+        _waveContour.setRmsStep(newStep);
+        resetImage();
+    }
+
+    void resetImage() {
+        _mainImage = QImage();
+        _noImage = true;
+    }
 };
 
 
@@ -109,9 +116,13 @@ public:
     Q_INVOKABLE void setWindowPosition(quint64 newPosition) { _windowPosition = newPosition; update(); }
     Q_INVOKABLE quint64 getWindowPosition() const { return _windowPosition; }
     Q_INVOKABLE void setWindowWidth(quint64 newWidth) { _windowWidth = newWidth; update(); }
+
     Q_INVOKABLE void calculateF0() { _waveContour.calculateF0(); update(); }
     Q_INVOKABLE void showNotes() { invertShowNotes(); update();}
+
     Q_INVOKABLE void setPeakSence(double newSence) { changePeakSence(newSence); update();}
+    Q_INVOKABLE void setRmsStep(int newStep) { changeRmsStep(newStep); update(); }
+
 };
 
 

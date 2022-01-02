@@ -185,7 +185,7 @@ void WaveContour::markNotesStartEnd(QList<double>& lastRms,
             prev = current;
         }
 
-        const int foundPosition = _rmsSize * step;
+        const int foundPosition = _rmsStep * step;
 
         if (noteIsStarted)
             if (minIdx == checkLimit - 1 & min < -36.0) {
@@ -248,13 +248,13 @@ void WaveContour::markNotesStartEnd(QList<double>& lastRms,
 
 void WaveContour::calculateRms() {
 
-    size_t rmsFrames = _floatSamples.size()/_rmsSize;
+    size_t rmsFrames = _floatSamples.size()/_rmsStep;
     //QList<double> lastRms;
     //bool noteIsStarted = false;
     _rmsLine.clear();
 
     for (size_t step = 0; step < rmsFrames; ++step) {
-        auto forRmsLocal = _floatSamples.mid(_rmsSize*step, _rmsSize);
+        auto forRmsLocal = _floatSamples.mid(_rmsStep*step, _rmsStep);
         auto db = calc_dB(forRmsLocal.data(), forRmsLocal.size());
         _rmsLine.append(db);
         //lastRms.append(db);

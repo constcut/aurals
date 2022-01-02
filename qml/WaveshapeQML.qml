@@ -180,39 +180,16 @@ Item {
                     waveShape.setWindowWidth(windowWidth)
                     if (spectrum != null) {
                         spectrum.setSamplesAmount(windowWidth)
-                        spectrum.setYinLimit(windowWidth)
+                        spectrum.setYinLimit(windowWidth) //Earlier was sepparated
                         spectrum.setFFTLimit((windowWidth))
                     }
                 }
             }
-            /*
-            Text{
-                text: "Yin limit size: "
-            }
-            ComboBox {
-                model: ["3000", "4096", "6000"] //TODO cuctom size
-                onCurrentTextChanged: {
-                    if (spectrum)
-                        spectrum.setYinLimit(parseInt(currentText))
-                }
-            }
-            Text{
-                text: "Window limit: "
-            }
-            ComboBox {
-                currentIndex: 4
-                model: ["256","512","1024", "2048", "4096", "8192"] //TODO cuctom size
-                onCurrentIndexChanged: {
-                    if (spectrum)
-                        spectrum.setFFTLimit(parseInt(currentText))
-                }
-            }*/
-
             Text{
                 text: "Spectrum bins: "
             }
             ComboBox {
-                model : [100, 200, 400, 600, 800]
+                model : [100, 200, 400, 600, 800, 1000]
                 currentIndex: 2
                 onCurrentTextChanged: {
                     spectrum.changeBarsCount(parseInt(currentText))
@@ -230,13 +207,23 @@ Item {
                 }
             }
             Text {
-                text: "Rms Peak sence: "
+                text: "RMS Peak sence: "
             }
             ComboBox {
                 model : ["2.0", "3.0", "4.0", "5.0", "6.0", "7.0"]
                 currentIndex: 2
                 onCurrentTextChanged: {
                     waveShape.setPeakSence(parseFloat(currentText))
+                }
+            }
+            Text {
+                text: "RMS step"
+            }
+            ComboBox {
+                model : ["125", "250", "500", "1000", "1500", "2000", "4000"]
+                currentIndex: 2
+                onCurrentTextChanged: {
+                    waveShape.setRmsStep(parseFloat(currentText))
                 }
             }
         }
