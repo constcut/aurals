@@ -97,12 +97,7 @@ void WaveContour::calculateF0() {
 }
 
 
-
-bool WaveContour::loadWavFile(QString filename) { //TODO sepparate into sub-functions
-    WavFile wav;
-    wav.open(filename);
-
-    QByteArray samplesBytes = wav.readAll();
+void WaveContour::createCountour(QByteArray& samplesBytes) {
     QVector<qint16> samples;
     qint16 pcmSample;
     QDataStream dataStream(samplesBytes);
@@ -110,130 +105,6 @@ bool WaveContour::loadWavFile(QString filename) { //TODO sepparate into sub-func
         dataStream >> pcmSample;
         samples << pcmSample;
     }
-
-    _floatSamples.clear();
-    const char *ptr = samplesBytes.constData();
-    for (int i = 0; i < samplesBytes.size()/2; ++i) {
-        auto pcmSample2 = *reinterpret_cast<const qint16*>(ptr);
-        const float realSample = pcmToReal(pcmSample2);
-        _floatSamples.append(realSample);
-        ptr += 2; //16 bit audio
-    }
-
-    size_t rmsSize = 125;
-    size_t rmsFrames = samples.size()/rmsSize;
-    QList<double> lastRms;
-    bool noteIsStarted = false;
-
-    std::vector<double> rmsRaw;
-
-    for (size_t step = 0; step < rmsFrames; ++step) {
-        auto forRmsLocal = _floatSamples.mid(rmsSize*step,rmsSize);
-        auto db = calc_dB(forRmsLocal.data(), forRmsLocal.size());
-        _rmsLine.append(db);
-        lastRms.append(db);
-
-        auto rms = calc_RMS(forRmsLocal.data(), forRmsLocal.size());
-        rmsRaw.push_back(rms);
-
-        const int checkLimit = 12;
-
-        if (lastRms.size() == checkLimit) { //TODO subfunction
-
-            double prev = lastRms[0];
-            std::array<int, checkLimit> states = {};
-            const double goodBorder = 6.0;
-            const double perfectBorder = 9.0; //12?
-
-            double max = -120.0;
-            int maxIdx = -1;
-            double min = 0.0;
-            int minIdx = -1;
-
-            for (int i = 1; i < lastRms.size(); ++i) {
-                double current = lastRms[i];
-                if (current - prev > goodBorder)
-                    states[i] = 1; //TODO enumerate states
-                if (current - prev > perfectBorder)
-                    states[i] = 2;
-                if (max < current) {
-                    max = current;
-                    maxIdx = i;
-                }
-                if (min > current) {
-                    min = current;
-                    minIdx = i;
-                }
-                prev = current;
-            }
-
-            const int foundPosition = rmsSize * step;
-
-            if (noteIsStarted)
-                if (minIdx == checkLimit - 1 & min < -36.0) {
-                    if (max - min > 12.0) {
-                        //qDebug() << "Note end " << foundPosition / 44100.0;
-                        _noteEnds.append(foundPosition);
-                        noteIsStarted = false;
-                        //TODO sepparate into f() + windowed mode (2048 per window)
-                        /*const int noteStart = noteStarts.back();
-                        auto pitch = calc_YinF0(&floatSamples[noteStart],
-                                                foundPosition - noteStart);
-                        qDebug() << "Pitch on note " << pitch << " size is "
-                                 << foundPosition - noteStart;*/
-                    }
-                }
-
-            if (noteIsStarted == false)
-                if (maxIdx == checkLimit - 1 & max > -28.0) { //TODO configurable param (first set, then calculate)
-
-                    bool foundGood = false;
-                    int goodDist = -1;
-                    bool foundPerfect = false;
-                    int perfectDist = -1;
-
-                    for (int i = maxIdx; i != -1; --i) {
-                        if (states[i] == 2) {
-                            foundPerfect = true;
-                            perfectDist = maxIdx - i;
-                            break;
-                        }
-                        if (foundGood == false && states[i] == 1) {
-                            foundGood = true;
-                            goodDist = maxIdx - i;
-                        }
-                    }
-
-                    if (foundPerfect) {
-                        //qDebug() << "+Note start " << foundPosition / 44100.0 << " dist " << perfectDist;
-                        _noteStarts.append(foundPosition);
-                        noteIsStarted = true;
-                    }
-                    else if (foundPerfect) {
-                        //qDebug() << "+Note start " << foundPosition / 44100.0 << " dist " << goodDist;
-                        _noteStarts.append(foundPosition);
-                        noteIsStarted = true;
-                    }
-                    else {
-                        if (max - min > perfectBorder) {
-                            //qDebug() << "MaxMin note " << foundPosition / 44100.0 << " " << (max - min);
-                            _noteStarts.append(foundPosition);
-                            noteIsStarted = true;
-                        }
-                    }
-                }
-
-            lastRms.pop_front();
-        }
-    }
-
-    //_rawRmsEnv = env; //TODO найти другой способ
-
-    /*
-    qDebug() << "Envelop size " << env.size();
-    qDebug() << "Whole envelope " << env;
-    qDebug() << rmsRaw.size() << "rms raw size";*/
-
 
     const size_t counterFrameSize = 125;
     unsigned long frames = samples.size()/counterFrameSize;
@@ -254,11 +125,151 @@ bool WaveContour::loadWavFile(QString filename) { //TODO sepparate into sub-func
         _zoom128 << el128_1 << el128_2;
         _zoom256 << el256x1 << el256x2 <<  el256x3 <<  el256x4;
     }
-
     qDebug() << "Loaded "<<samples.size() <<" samples; "<< _zoom64.size() << " z64 " <<_zoom256.size() << " z256";
+}
+
+
+bool WaveContour::loadWavFile(QString filename) { //TODO sepparate into sub-functions
+    WavFile wav;
+    wav.open(filename);
+    QByteArray samplesBytes = wav.readAll();
+    createCountour(samplesBytes);
+
+    _floatSamples.clear();
+    const char *ptr = samplesBytes.constData();
+    for (int i = 0; i < samplesBytes.size()/2; ++i) {
+        auto pcmSample2 = *reinterpret_cast<const qint16*>(ptr);
+        const float realSample = pcmToReal(pcmSample2);
+        _floatSamples.append(realSample);
+        ptr += 2; //16 bit audio
+    }
+
+    calculateRms();
+    //_rawRmsEnv = env; //TODO найти другой способ
+
+    /*
+    qDebug() << "Envelop size " << env.size();
+    qDebug() << "Whole envelope " << env;
+    qDebug() << rmsRaw.size() << "rms raw size";*/
 
     return _zoom64.size() && _zoom256.size();
 }
+
+
+void WaveContour::markNotesStartEnd(QList<double>& lastRms,
+                                    bool& noteIsStarted, size_t step) {
+    const int checkLimit = 12;
+    if (lastRms.size() == checkLimit) {
+
+        double prev = lastRms[0];
+
+        std::array<int, checkLimit> states = {};
+        const double goodBorder = 6.0;
+        const double perfectBorder = 9.0; //12?
+
+        double max = -120.0;
+        int maxIdx = -1;
+        double min = 0.0;
+        int minIdx = -1;
+
+        for (int i = 1; i < lastRms.size(); ++i) {
+            double current = lastRms[i];
+            if (current - prev > goodBorder)
+                states[i] = 1; //TODO enumerate states
+            if (current - prev > perfectBorder)
+                states[i] = 2;
+            if (max < current) {
+                max = current;
+                maxIdx = i;
+            }
+            if (min > current) {
+                min = current;
+                minIdx = i;
+            }
+            prev = current;
+        }
+
+        const size_t rmsSize = 125;
+        const int foundPosition = rmsSize * step;
+
+        if (noteIsStarted)
+            if (minIdx == checkLimit - 1 & min < -36.0) {
+                if (max - min > 12.0) {
+                    //qDebug() << "Note end " << foundPosition / 44100.0;
+                    _noteEnds.append(foundPosition);
+                    noteIsStarted = false;
+                    //TODO sepparate into f() + windowed mode (2048 per window)
+                    /*const int noteStart = noteStarts.back();
+                    auto pitch = calc_YinF0(&floatSamples[noteStart],
+                                            foundPosition - noteStart);
+                    qDebug() << "Pitch on note " << pitch << " size is "
+                             << foundPosition - noteStart;*/
+                }
+            }
+
+        if (noteIsStarted == false)
+            if (maxIdx == checkLimit - 1 & max > -28.0) { //TODO configurable param (first set, then calculate)
+
+                bool foundGood = false;
+                int goodDist = -1;
+                bool foundPerfect = false;
+                int perfectDist = -1;
+
+                for (int i = maxIdx; i != -1; --i) {
+                    if (states[i] == 2) {
+                        foundPerfect = true;
+                        perfectDist = maxIdx - i;
+                        break;
+                    }
+                    if (foundGood == false && states[i] == 1) {
+                        foundGood = true;
+                        goodDist = maxIdx - i;
+                    }
+                }
+
+                if (foundPerfect) {
+                    //qDebug() << "+Note start " << foundPosition / 44100.0 << " dist " << perfectDist;
+                    _noteStarts.append(foundPosition);
+                    noteIsStarted = true;
+                }
+                else if (foundPerfect) {
+                    //qDebug() << "+Note start " << foundPosition / 44100.0 << " dist " << goodDist;
+                    _noteStarts.append(foundPosition);
+                    noteIsStarted = true;
+                }
+                else {
+                    if (max - min > perfectBorder) {
+                        //qDebug() << "MaxMin note " << foundPosition / 44100.0 << " " << (max - min);
+                        _noteStarts.append(foundPosition);
+                        noteIsStarted = true;
+                    }
+                }
+            }
+
+        lastRms.pop_front();
+    }
+}
+
+
+void WaveContour::calculateRms() {
+
+    const size_t rmsSize = 125;
+    size_t rmsFrames = _floatSamples.size()/rmsSize;
+    QList<double> lastRms;
+    bool noteIsStarted = false;
+
+    for (size_t step = 0; step < rmsFrames; ++step) {
+        auto forRmsLocal = _floatSamples.mid(rmsSize*step,rmsSize);
+        auto db = calc_dB(forRmsLocal.data(), forRmsLocal.size());
+        _rmsLine.append(db);
+        lastRms.append(db);
+
+
+            markNotesStartEnd(lastRms, noteIsStarted, step);
+    }
+}
+
+
 
 
 QVector<ContourEl> WaveContour::summ4Lists(QVector<ContourEl> &source) const {

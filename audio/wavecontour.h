@@ -41,6 +41,9 @@ protected:
     QVector<ContourEl> summ4Lists(QVector<ContourEl> &source) const;
 
     QVector<float> _floatSamples;
+
+
+
     QVector<double> _rmsLine;
     QVector<double> _yinLine;
 
@@ -60,6 +63,14 @@ private:
 
     double findBPM(); //TODO
     bool loadWavFile(QString filename);
+
+    void calculateRms();
+
+    void createCountour(QByteArray& samplesBytes);
+
+    void markNotesStartEnd(QList<double>& lastRms, bool& noteIsStarted, size_t step);
+
+
 };
 
 #endif // WAVECONTOUR_H
