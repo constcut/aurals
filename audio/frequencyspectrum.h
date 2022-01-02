@@ -51,6 +51,7 @@ public:
     double _rms = 0.0;
     double _rmsNoWindow = 0.0;
     double _pitchYin = 0.0;
+    double _pitchYin2 = 0.0;
 
     FrequencySpectrum(int numPoints = 0);
 

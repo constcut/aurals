@@ -132,8 +132,12 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
     size_t realSize = _input.size();
     if (realSize > yinLimit)
         realSize = yinLimit;
+
     auto pitch = calc_YinF0(_input.data(), realSize);
     _spectrum._pitchYin = pitch;
+
+    auto pitch2 = calc_YinF0_v2(_input.data(), realSize);
+    _spectrum._pitchYin2 = pitch2;
 
     _fft->calculateFFT(_output.data(), _noWindowInput.data()); //m_noWindowInput m_input
 

@@ -1,5 +1,8 @@
 #include "yin.h"
 
+#include <cmath>
+
+
 Yin::Yin() {
     _threshold = 0.15; //TODO play with + check funny place
     _probability = 0.0;
@@ -102,3 +105,137 @@ bool Yin::absoluteThresholdFound(){
     }
     return true;
 }
+
+
+// Experiment with simmiliar implementation
+
+
+using namespace std;
+
+Yin2::Yin2() {
+    setThreshold(0.4f);
+    _tau = 0.f;
+    _freq = 0.f;
+}
+
+void Yin2::setThreshold(float t) { _threshold = t; }
+
+float Yin2::getThreshold() const { return _threshold; }
+
+float Yin2::getTau() const { return _tau; }
+
+float Yin2::getFreq() const { return _freq; }
+
+const std::vector<float>& Yin2::getData() const { return _yinData; }
+
+
+float Yin2::getFundamentalFrequency(const vector<float>& audio, float sampleRate) {
+    if (audio.size() < 2)
+        return 0.f;
+
+    _yinData = buildYinData(audio);
+    const auto tau = absoluteThreshold(_yinData);
+
+    if (tau == 0)
+        return 0;
+
+    _tau = parabolicInterpolation(_yinData, tau);
+    _freq = indexToFreq(_tau, sampleRate);
+
+    //assert(_freq >= 0.f);
+    return _freq;
+}
+
+
+vector<float> Yin2::buildYinData(const vector<float>& audio) const {
+    auto yinData = sumOfDeltas(audio);
+    cumulativeDifference(yinData);
+    return yinData;
+}
+
+
+vector<float> Yin2::sumOfDeltas(const vector<float>& audio) const {
+    size_t sz = audio.size() / 2;
+    vector<float> deltas(sz, 0.f);
+
+    for (size_t s = 0; s != sz; ++s)
+        for (size_t i = 0; i != sz; ++i) {
+            auto d = audio[i] - audio[i+s];
+            deltas[s] += d * d;
+        }
+
+    return deltas;
+}
+
+
+void Yin2::cumulativeDifference(vector<float>& yin) const {
+    yin[0] = 1;
+    float runningSum = 0.f;
+
+    for (size_t tau = 1; tau != yin.size(); ++tau) {
+        runningSum += yin[tau];
+        if (runningSum == 0)
+            yin[tau] = 1;
+        else
+            yin[tau] *= (tau) / runningSum;
+    }
+}
+
+
+int Yin2::absoluteThreshold(const vector<float>& yin) const {
+    int tau = 2;
+    int minTau = 0;
+    float minVal = 1000.f;
+
+    while (tau < yin.size()) {
+        if (yin[tau] < _threshold) {
+            while ((tau + 1) < yin.size() && yin[tau + 1] < yin[tau])
+                ++tau;
+            return tau;
+        }
+        else if (yin[tau] < minVal) {
+            minVal = yin[tau];
+            minTau = tau;
+        }
+        ++tau;
+    }
+
+    return -minTau;
+}
+
+
+float Yin2::parabolicInterpolation(const vector<float>& yin, int tau) const {
+    if (tau == yin.size())
+        return (float) tau;
+
+    float betterTau = 0.f;
+
+    if (tau > 0 && tau < yin.size() - 1) {
+        float s0 = yin[tau - 1];
+        float s1 = yin[tau];
+        float s2 = yin[tau + 1];
+
+        float adjustment = (s2 - s0) / (2.f * (2.f * s1 - s2 - s0));
+
+        if (abs(adjustment) > 1.f)
+            adjustment = 0.f;
+
+        betterTau = (float) tau + adjustment;
+    }
+    else
+        betterTau = (float) tau;
+
+    return abs(betterTau);
+}
+
+
+float Yin2::indexToFreq(float i, float sampleRate) const {
+    //assert(i > 0.f);
+    //assert(sampleRate > 0.f);
+    return sampleRate / i;
+}
+
+size_t Yin2::freqToIndex(float f, float sampleRate) const {
+    return sampleRate / f;
+}
+

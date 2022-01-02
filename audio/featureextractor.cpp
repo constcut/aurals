@@ -36,3 +36,10 @@ double calc_YinF0(const float* data, const size_t len, double sampleRate) {
     yin.init(sampleRate, len);
     return yin.getPitch(data);
 }
+
+
+double calc_YinF0_v2(const float* data, const size_t len, double sampleRate) {
+    std::vector<float> audio(data, data + len);
+    static Yin2 yin;
+    return yin.getFundamentalFrequency(audio, sampleRate);
+}
