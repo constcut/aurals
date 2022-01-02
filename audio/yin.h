@@ -3,6 +3,8 @@
 
 #include <vector>
 
+// YIN monophonic pitch detection algorithm (http://audition.ens.fr/adc/pdf/2002_JASA_YIN.pdf).
+
 class Yin {
 
 public:
