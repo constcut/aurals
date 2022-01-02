@@ -122,7 +122,7 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
         for (int i = 0; i < rms.size(); ++i) {
             auto localRms = rms[i];
 
-            if (pos.count(i))
+            if (pos.count(i * 2))
                 imgPainter.setPen(QColor("green"));
             else
                 imgPainter.setPen(QColor("blue"));
@@ -136,7 +136,7 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
         double prev = 0.0;
         double prevIdx = 0.0;
         for (size_t i = 0; i < env.size(); ++i) {
-            size_t rmsIdx = env[i]; // / 2;
+            size_t rmsIdx = env[i] / 2;
             auto localRms = rms[rmsIdx];
 
             imgPainter.drawLine(prevIdx*2, prev, rmsIdx*2,  (60.0 + localRms)*heightCoef);
