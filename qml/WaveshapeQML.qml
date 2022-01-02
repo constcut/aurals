@@ -184,7 +184,6 @@ Item {
                         waveShape.setWindowWidth(windowWidth)
                         if (spectrum != null) {
                             spectrum.setSamplesAmount(windowWidth)
-                            spectrum.setYinLimit(windowWidth) //Earlier was sepparated
                             spectrum.setFFTLimit((windowWidth))
                         }
                     }
@@ -233,6 +232,10 @@ Item {
                         waveShape.setRmsStep(parseInt(currentText))
                     }
                 }
+
+            }
+            RowLayout {
+                spacing:  10
                 Text {
                     text: "Yin threshold"
                 }
@@ -243,6 +246,17 @@ Item {
                         var threshold = parseFloat(currentText)
                         waveShape.setYinThreshold(threshold)
                         spectrum.setYinThreshold(threshold)
+                    }
+                }
+                Text{
+                    text: "Yin limit size: "
+                }
+                ComboBox {
+                    model: ["2048", "4096", "6000", "8192"]
+                    currentIndex: 1
+                    onCurrentTextChanged: {
+                        if (spectrum)
+                            spectrum.setYinLimit(parseInt(currentText))
                     }
                 }
             }
