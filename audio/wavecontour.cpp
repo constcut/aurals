@@ -227,23 +227,12 @@ bool WaveContour::loadWavFile(QString filename) { //TODO sepparate into sub-func
         }
     }
 
-    std::vector<double> dSamples;
-    //for (float s: _floatSamples)
-        //dSamples.push_back(s);
+    //_rawRmsEnv = env; //TODO найти другой способ
 
-    for (double s: rmsRaw) {
-        dSamples.push_back(s);
-        dSamples.push_back(-s);
-    }
-
-    auto env = compute_raw_envelope(dSamples.data(), dSamples.size(), 1); //mode envelop = 1, frontier = 0
-    //auto env = compute_raw_envelope(rmsRaw.data(), rmsRaw.size(), 1); //mode envelop = 1, frontier = 0
-    //auto front = get_frontier(rmsRaw)
-    _rawRmsEnv = env;
-
+    /*
     qDebug() << "Envelop size " << env.size();
     qDebug() << "Whole envelope " << env;
-    qDebug() << rmsRaw.size() << "rms raw size";
+    qDebug() << rmsRaw.size() << "rms raw size";*/
 
 
     const size_t counterFrameSize = 125;
