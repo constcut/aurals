@@ -44,6 +44,7 @@
 #include <QResizeEvent>
 #include <QDebug>
 
+#include <set>
 
 #include <qglobal.h>
 
@@ -112,11 +113,35 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
             prevY1 = height/2 - 2*conturEl.energy/(65000.0/heightCoef);
             prevY2 = height/2 + 2*conturEl.energy/(65000.0/heightCoef);
         }
+
+        auto env = _waveContour.rawEnv();
+        std::set<size_t> pos(env.begin(), env.end());
+
         auto rms = _waveContour.getRMS();
         imgPainter.setPen(QColor("blue"));
         for (int i = 0; i < rms.size(); ++i) {
             auto localRms = rms[i];
+
+            if (pos.count(i))
+                imgPainter.setPen(QColor("green"));
+            else
+                imgPainter.setPen(QColor("blue"));
+
             imgPainter.drawLine(i*2, 0, i*2,  (60.0 + localRms)*heightCoef);
+        }
+
+
+
+        imgPainter.setPen(QColor("green"));
+        double prev = 0.0;
+        double prevIdx = 0.0;
+        for (size_t i = 0; i < env.size(); ++i) {
+            size_t rmsIdx = env[i]; // / 2;
+            auto localRms = rms[rmsIdx];
+
+            imgPainter.drawLine(prevIdx*2, prev, rmsIdx*2,  (60.0 + localRms)*heightCoef);
+            prevIdx = rmsIdx;
+            prev = (60.0 + localRms)*heightCoef;
         }
     }
 
