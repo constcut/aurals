@@ -3,13 +3,6 @@
 #include <QList>
 
 
-struct ContourEl{
-    qint32 max;
-    qint32 min;
-    double energy; //TODO альтернативные варианты
-};
-
-
 class WaveContour {
 
 public:
@@ -67,13 +60,8 @@ protected:
     QVector<int> _noteStarts;
     QVector<int> _noteEnds;
 
-    QVector<ContourEl> _bpm64; //TODO
-    double _totalBPM;
-
 
 private:
-
-    double findBPM(); //TODO
     bool loadWavFile(QString filename);
 
     void calculateRms();

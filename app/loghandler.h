@@ -31,6 +31,7 @@ protected:
 
 };
 
+
 class ConsoleLogQML : public QQuickPaintedItem
 {
     Q_OBJECT
@@ -39,8 +40,6 @@ class ConsoleLogQML : public QQuickPaintedItem
     ~ConsoleLogQML() {}
 
     void paint(QPainter* painter);
-
-    //must be autoupdated
 };
 
 #endif // LOGHANDLER_H

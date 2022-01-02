@@ -46,6 +46,7 @@
 
 #include "wavecontour.h"
 
+
 class WaveshapePainter  {
 
 public:
@@ -92,6 +93,7 @@ protected:
         _noImage = true;
     }
 };
+
 
 
 class WaveshapeQML : public QQuickPaintedItem, public WaveshapePainter {

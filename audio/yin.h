@@ -33,4 +33,5 @@ private:
 
     size_t _currentTau;
 };
+
 #endif // YIN_H

@@ -69,7 +69,7 @@ void WaveshapePainter::makeBackgroungImage(QPainter &painter, int height, double
     double xCoef = rmsStep / (125 * 4.0);
     double prevValue = 0.0;
 
-    for (int i = 0; i < rms_8.size(); ++i) {
+    for (int i = 0; i < rms_8.size(); ++i) { //TODO lambda or function
         auto localRms = rms_8[i];
         double currentValue = (60.0 + localRms)*heightCoef * 1.5;
         imgPainter.setPen(QColor("darkgreen"));
@@ -201,14 +201,11 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
 
 void WaveshapePainter::audioPositionChanged(qint64 position) {
     _audioPoistion = position;
-    //maybe check how ofte we are updated
-    //emit update();
 }
 
 
 void WaveshapePainter::loadContour(QString filename) {
     _waveContour = WaveContour(filename);
-    //emit update();
 }
 
 

@@ -75,7 +75,7 @@ void WaveContour::calculateRms() {
 
 
 void WaveContour::createSubRms() {
-    {
+    { //TODO lambda or function
         _halfRmsLine.clear();
         double localStep = _rmsStep / 2.0;
         size_t rmsFrames = _floatSamples.size() / (localStep);
@@ -108,6 +108,3 @@ void WaveContour::createSubRms() {
 }
 
 
-double WaveContour::findBPM() {
-    return 0.0;
-}
