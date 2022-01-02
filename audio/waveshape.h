@@ -135,23 +135,4 @@ public:
 };
 
 
-
-class WavePositionQML : public QQuickPaintedItem
-{
-    Q_OBJECT
-
-public:
-    explicit WavePositionQML([[maybe_unused]] QQuickItem* parent = NULL) {}
-    ~WavePositionQML() = default;
-
-    void paint(QPainter* painter);
-    Q_INVOKABLE void changePosition(qint64 position);
-
-public slots:
-    void audioPositionChanged(qint64 position);
-
-private:
-    qint64 _audioPoistion;
-};
-
 #endif // Waveshape_H

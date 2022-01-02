@@ -132,26 +132,12 @@ Item {
                 }
             }
 
-            WavePosition { //TODO убрать?
-                id:wavPos
-                height: 20
-                width: 1000
-                y:  5
-                property int time : 0
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        flick.contentX = 0
-                    }
-                }
-            } //try to make transparent and put on the waveshape
-
             Waveshape {
                 id: waveShape
                 height:  parent.height
                 width: 1000
 
-                y: wavPos.y  + wavPos.height
+                y: 5
 
                 Component.onCompleted: {
                     waveShape.loadFile(item.filename)

@@ -165,28 +165,3 @@ void WaveshapePainter::audioPositionChanged(qint64 position) {
 void WaveshapePainter::loadContour(QString filename) {
     _waveContour = WaveContour(filename);
 }
-
-
-//TODO -vvv- get rid of this old thing -vvv-
-
-void WavePositionQML::audioPositionChanged(qint64 position) {
-    _audioPoistion = position;
-    update();
-}
-
-
-void WavePositionQML::changePosition(qint64 position) {
-    _audioPoistion = position;
-    update();
-}
-
-
-void WavePositionQML::paint(QPainter *painter)  {
-    setFillColor(Qt::lightGray);
-    painter->setPen(Qt::black);
-    const qint64 cursorPosition = 2.0 * _audioPoistion / 125.0 ;
-    const int verticalPosition = 10;
-    painter->drawEllipse(cursorPosition, verticalPosition, 5,5); //make something better
-    for (int i = 0; i < 11; ++i)
-        painter->drawLine(i*256,0,i*256,40);
- }
