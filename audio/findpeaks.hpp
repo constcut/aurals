@@ -7,6 +7,6 @@
 
 #include <vector>
 
-std::vector<size_t> peakIndexesInData(const std::vector<float>& signal, float sensitivity = 2.f);
+std::vector<size_t> peakIndexesInData(const std::vector<double>& signal, float sensitivity = 2.f);
 
 #endif

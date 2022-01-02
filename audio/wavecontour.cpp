@@ -10,6 +10,8 @@
 #include <QDataStream>
 #include <QDebug>
 
+#include "findpeaks.hpp"
+
 
 WaveContour::WaveContour(QString filename) {
     if (loadWavFile(filename)==false)

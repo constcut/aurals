@@ -17,15 +17,15 @@ using std::distance;
 
 const double EPS(2.2204e-16);
 
-typedef vector<float>::const_iterator cit;
-typedef vector<float>::iterator it;
+typedef vector<double>::const_iterator cit;
+typedef vector<double>::iterator it;
 
 
-vector<float> diffsInRange(cit begin, cit end){
+vector<double> diffsInRange(cit begin, cit end){
     
     auto len = std::distance(begin, end);
     //assert(begin < end);
-    vector<float> diff;
+    vector<double> diff;
     
     if (len == 0) {
         //LOG << "Met 0 len in diffsInRange";
@@ -39,8 +39,8 @@ vector<float> diffsInRange(cit begin, cit end){
 }
 
 
-vector<float> vectorProduct(it a, it b, size_t len){
-    vector<float> product;
+vector<double> vectorProduct(it a, it b, size_t len){
+    vector<double> product;
     product.reserve(len);
     for (size_t i = 0; i < len; ++i, ++a, ++b)
         product.emplace_back((*a) * (*b));
@@ -48,7 +48,7 @@ vector<float> vectorProduct(it a, it b, size_t len){
 }
 
 
-vector<size_t> indexesOfDataLessThan(const vector<float>& data, float threshold){
+vector<size_t> indexesOfDataLessThan(const vector<double>& data, float threshold){
     vector<size_t> ids;
     for (size_t i = 0; i < data.size(); ++i)
         if (data[i] < threshold)
@@ -67,7 +67,7 @@ vector<D> selectElements(const vector<D>& data, const vector<size_t>& ids){
 }
 
 
-vector<int> signVector(const vector<float>& data){
+vector<int> signVector(const vector<double>& data){
     vector<int> signs;
     signs.reserve(data.size());
     for (auto& d : data)
@@ -82,7 +82,7 @@ vector<int> signVector(const vector<float>& data){
 }
 
 
-vector<size_t> peakIndexesInData(const vector<float>& signal, float sensitivity){
+vector<size_t> peakIndexesInData(const vector<double>& signal, float sensitivity){
     
     vector<size_t> peakIndexes;
     if (signal.size() < 2) {
@@ -98,7 +98,7 @@ vector<size_t> peakIndexesInData(const vector<float>& signal, float sensitivity)
     cit beginIt = signal.begin();
     cit endIt = signal.end();
     
-    vector<float> dx = diffsInRange(beginIt, endIt);
+    vector<double> dx = diffsInRange(beginIt, endIt);
     replace(dx.begin(), dx.end(), 0.0, -EPS);
     
     auto dx2 = vectorProduct(dx.begin(), dx.begin() + 1, dx.size() - 1);
@@ -125,7 +125,7 @@ vector<size_t> peakIndexesInData(const vector<float>& signal, float sensitivity)
     // Deal with first point a little differently since tacked it on
     // Calculate the sign of the derivative since we tacked the first
     // point on it does not neccessarily alternate like the rest.
-    vector<float> xDiff = diffsInRange(x.begin(), x.begin() + 3); // tener cuidado subvector
+    vector<double> xDiff = diffsInRange(x.begin(), x.begin() + 3); // tener cuidado subvector
     vector<int> signDx = signVector(xDiff);
     
     if (signDx[0] == signDx[1]){ // Want alternating signs

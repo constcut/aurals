@@ -346,14 +346,14 @@ void SpectrographPainter::findF0() { //Возможно проверять уж�
 void SpectrographPainter::findPeaks() {
     //TODO использовать не корзины для отрисовки, а изначальный спектр
 
-    std::vector<float> amps;
+    std::vector<double> amps;
     for (auto& bar: _bars)
         amps.push_back(bar.value);
     auto peaks = peakIndexesInData(amps, 6.0);
 
     bool searchTinyPeaks = true;
     if (searchTinyPeaks) {
-        for (size_t i = 120; i < _bars.size() - 6; ++i) {
+        for (size_t i = 80; i < _bars.size() - 6; ++i) {
             size_t emptyCount = 0;
             size_t maxIdx = 0;
             double maxValue = 0.0;
