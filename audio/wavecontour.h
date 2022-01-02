@@ -49,6 +49,10 @@ public:
         calculateRms();
     }
 
+    void changeYinTheshold(double threshold) {
+        _yinTheshold = threshold;
+    }
+
 protected:
     QVector<ContourEl> summ4Lists(QVector<ContourEl> &source) const;
 
@@ -61,6 +65,7 @@ protected:
     std::vector<size_t> _rmsHigh;
     std::vector<size_t> _rmsLow;
 
+    double _yinTheshold = 0.15;
     QVector<double> _yinLine;
 
     QVector<int> _noteStarts;

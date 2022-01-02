@@ -83,6 +83,10 @@ protected:
         resetImage();
     }
 
+    void changeYinTheshold(double threshold) {
+        _waveContour.changeYinTheshold(threshold);
+    }
+
     void resetImage() {
         _mainImage = QImage();
         _noImage = true;
@@ -123,6 +127,7 @@ public:
     Q_INVOKABLE void setPeakSence(double newSence) { changePeakSence(newSence); update();}
     Q_INVOKABLE void setRmsStep(int newStep) { changeRmsStep(newStep); update(); }
 
+    Q_INVOKABLE void setYinThreshold(double threshold) { changeYinTheshold(threshold); update(); }
 };
 
 

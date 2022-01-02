@@ -30,9 +30,10 @@ double calc_MidiCents(double f0) {
     return floor( 0.5f + note * 100 );
 }
 
-
-double calc_YinF0(const float* data, const size_t len, double sampleRate) {
+//TODO float vector?
+double calc_YinF0(const float* data,  const size_t len, double threshold, double sampleRate) {
     static Yin yin;
     yin.init(sampleRate, len);
+    yin.setThreshold(threshold);
     return yin.getPitch(data);
 }

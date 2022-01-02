@@ -92,7 +92,7 @@ void WaveContour::calculateF0() {
         auto forLocalYin = _floatSamples.mid(yinSize * step, yinSize);
         if (forLocalYin.empty())
             break;
-        auto pitch = calc_YinF0(forLocalYin.data(), forLocalYin.size());
+        auto pitch = calc_YinF0(forLocalYin.data(), forLocalYin.size(), _yinTheshold);
         //qDebug() << step << " Yin tracking " << pitch;
         _yinLine.append(pitch);
     }
