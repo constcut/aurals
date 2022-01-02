@@ -76,8 +76,12 @@ Item {
                     tooLoudRms = false
                     var min = 120.0
                     var max = -120.0
+
+                    var rmsStep = waveShape.getRmsStep();
+                    var rmsCoef = rmsStep / (125 / 2.0)
+
                     for (var i = 0; i < 50; i+=2) {
-                        var rmsCheckValue = waveShape.getRMS((mouseX + i) / 2.0)
+                        var rmsCheckValue = waveShape.getRMS((mouseX + i) / rmsCoef)
                         if (rmsCheckValue > max)
                             max = rmsCheckValue
                         if (rmsCheckValue < min)
@@ -87,15 +91,22 @@ Item {
                     if (max > -1.0)
                         tooLoudRms = true
                     rmsGroup.text = "<b>{</b>";
-                    var prev = waveShape.getRMS(mouseX/ 2.0)
+                    var prev = waveShape.getRMS(mouseX/ rmsCoef)
 
                     var dbLevelBorder = 9 //TODO settable params
                     var dbLevelBorderSmall = 6
 
+                    var totalSize = waveShape.getRmsSize();
+
                     for (i = 0; i < 25; ++i) {
                         if (i && i % 5 == 0)
                             rmsGroup.text += "<br> ";
-                        var rmsValue = waveShape.getRMS(mouseX / 2.0 + i)
+
+                        var idx = mouseX / rmsCoef + i
+                        if (idx >= totalSize)
+                            break;
+
+                        var rmsValue = waveShape.getRMS(mouseX / rmsCoef + i)
                         if (rmsValue === min)
                             rmsGroup.text += "<font color='blue'>";
                         else if (rmsValue === max)

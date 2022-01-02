@@ -27,6 +27,7 @@ public:
     const QVector<ContourEl>& getZoom256() const { return _zoom256; }
 
     const std::vector<size_t> rawEnv() const { return _rawRmsEnv; }
+    size_t getRmsStep() const { return _rmsSize; }
 
     void calculateF0();
 
@@ -42,8 +43,7 @@ protected:
 
     QVector<float> _floatSamples;
 
-
-
+    size_t _rmsSize = 125 * 4;
     QVector<double> _rmsLine;
     QVector<double> _yinLine;
 

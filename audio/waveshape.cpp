@@ -76,8 +76,6 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
         auto zoom256 = _waveContour.getZoom128();
         auto zoom128 = _waveContour.getZoom256();
 
-        //TODO нужно хранить пропорцию сжатия 125 убрать константу
-
         imgPainter.setPen(QColor("green"));
         for (int i = 0; i < zoom256.size(); ++i) {
             ContourEl conturEl = zoom256[i];
@@ -118,20 +116,18 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
         std::set<size_t> pos(env.begin(), env.end());
 
         auto rms = _waveContour.getRMS();
+        auto rmsStep = _waveContour.getRmsStep();
+
         imgPainter.setPen(QColor("blue"));
+        double prevValue = 0.0;
         for (int i = 0; i < rms.size(); ++i) {
             auto localRms = rms[i];
-
-            if (pos.count(i * 2))
-                imgPainter.setPen(QColor("green"));
-            else
-                imgPainter.setPen(QColor("blue"));
-
-            imgPainter.drawLine(i*2, 0, i*2,  (60.0 + localRms)*heightCoef);
+            const double xCoef = rmsStep / (125 / 2.0);
+            imgPainter.drawLine(i*xCoef, 0, i*xCoef,  (60.0 + localRms)*heightCoef);
+            imgPainter.drawLine((i-1)*xCoef, prevValue, i*xCoef,  (60.0 + localRms)*heightCoef);
+            prevValue = (60.0 + localRms)*heightCoef;
         }
-
-
-
+        /*
         imgPainter.setPen(QColor("green"));
         double prev = 0.0;
         double prevIdx = 0.0;
@@ -142,7 +138,7 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
             imgPainter.drawLine(prevIdx*2, prev, rmsIdx*2,  (60.0 + localRms)*heightCoef);
             prevIdx = rmsIdx;
             prev = (60.0 + localRms)*heightCoef;
-        }
+        }*/
     }
 
     painter.drawImage(QPoint{0,0}, _mainImage);
