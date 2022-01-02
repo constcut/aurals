@@ -39,22 +39,19 @@
 ****************************************************************************/
 
 #include "waveshape.h"
-//#include "utils.h"
-#include <QPainter>
-#include <QPainterPath>
-#include <QResizeEvent>
-#include <QDebug>
-
-#include <set>
 
 #include <qglobal.h>
+#include <QPainter>
+#include <QPainterPath>
+#include <QDebug>
+
+#include <unordered_set>
 
 
 void WaveshapeQML::paint(QPainter *painter) {
     setFillColor(Qt::darkGray);
     paintWaveShape(*painter);
 }
-
 
 
 void WaveshapePainter::makeBackgroungImage(QPainter &painter, int height, double heightCoef) {
@@ -90,9 +87,9 @@ void WaveshapePainter::makeBackgroungImage(QPainter &painter, int height, double
 
 void WaveshapePainter::paintMainRms(QPainter &imgPainter, int height, double heightCoef) {
     auto highs = _waveContour.rmsHigh();
-    std::set<size_t> positionsHigh(highs.begin(), highs.end());
+    std::unordered_set<size_t> positionsHigh(highs.begin(), highs.end());
     auto lows = _waveContour.rmsLow();
-    std::set<size_t> positionsLow(lows.begin(), lows.end());
+    std::unordered_set<size_t> positionsLow(lows.begin(), lows.end());
     auto rms = _waveContour.getRMS();
 
     auto rmsStep = _waveContour.getRmsStep();
@@ -124,7 +121,8 @@ void WaveshapePainter::drawPitch(QPainter &painter, int height) {
     auto pitchLine = _waveContour.getPitch();
     painter.setPen(QColor("red"));
     double prevPitch = -1;
-    double coef = (2048.0) / (125.0 / 2.0);
+    auto rmsStep = _waveContour.getRmsStep();
+    double coef = (2048.0) / (rmsStep / 2.0);
     for (int i = 0; i < pitchLine.size(); ++i) {
         auto pitch = pitchLine[i];
         painter.drawLine((i-1)*coef, height - prevPitch / 4.0, i*coef, height - pitch / 4.0);
@@ -149,14 +147,13 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
     if (_noImage)
         makeBackgroungImage(painter, height, heightCoef);
     painter.drawImage(QPoint{0,0}, _mainImage);
-
     drawPitch(painter, height);
-
     if (_showNotes)
         drawNoteStartEnd(painter, height);
 
     painter.setPen(Qt::darkMagenta);
-    painter.drawRect(2*_windowPosition/125,0,2*_windowWidth/125,height);
+    auto x = 2.0 * _windowPosition / _waveContour.getRmsStep();
+    painter.drawRect(x, 0, x, height);
 }
 
 
@@ -170,10 +167,13 @@ void WaveshapePainter::loadContour(QString filename) {
 }
 
 
+//TODO -vvv- get rid of this old thing -vvv-
+
 void WavePositionQML::audioPositionChanged(qint64 position) {
     _audioPoistion = position;
     update();
 }
+
 
 void WavePositionQML::changePosition(qint64 position) {
     _audioPoistion = position;
@@ -183,15 +183,10 @@ void WavePositionQML::changePosition(qint64 position) {
 
 void WavePositionQML::paint(QPainter *painter)  {
     setFillColor(Qt::lightGray);
-    const int verticalPosition = 10;
-
     painter->setPen(Qt::black);
-
-    qint64 cursorPosition = _audioPoistion/125;
-    cursorPosition *= 2;
-
-    painter->drawEllipse(cursorPosition,verticalPosition,5,5); //make something better
-
+    const qint64 cursorPosition = 2.0 * _audioPoistion / 125.0 ;
+    const int verticalPosition = 10;
+    painter->drawEllipse(cursorPosition, verticalPosition, 5,5); //make something better
     for (int i = 0; i < 11; ++i)
         painter->drawLine(i*256,0,i*256,40);
  }
