@@ -14,7 +14,6 @@ Item {
         console.log("reload file of waveshape qml called ", filename)
     }
 
-
     ScrollView {
         width: parent.width
         height: parent.height / 3
@@ -136,14 +135,11 @@ Item {
                 id: waveShape
                 height:  parent.height
                 width: 1000
-
                 y: 5
-
                 Component.onCompleted: {
                     waveShape.loadFile(item.filename)
                     flick.contentWidth = waveShape.getPixelsLength() + 10
                     waveShape.width = flick.contentWidth
-                    wavPos.width = waveShape.width
                 }
             }
 
@@ -248,8 +244,6 @@ Item {
             }
         }
     }
-
-
 
     Text {
         id: specInfo
