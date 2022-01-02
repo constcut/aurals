@@ -62,45 +62,9 @@ void WaveshapePainter::makeBackgroungImage(QPainter &painter, int height, double
 
     QPainter imgPainter(&_mainImage);
 
-    auto zoom64 = _waveContour.getZoom64();
-    auto zoom256 = _waveContour.getZoom128();
-    auto zoom128 = _waveContour.getZoom256();
-
-    imgPainter.setPen(QColor("green"));
-    for (int i = 0; i < zoom256.size(); ++i) {
-        ContourEl conturEl = zoom256[i];
-        const int h = 2*conturEl.energy/(65000.0/heightCoef);
-        imgPainter.drawLine(i, height/2, i, height/2 + h);
-        imgPainter.drawLine(i, height/2, i, height/2 - h);
-    }
-
-    imgPainter.setPen(QColor("chartreuse"));
-    int prevX1=0, prevX2=0, prevY1=0, prevY2=0;
-    for (int i = 0; i < zoom64.size(); ++i)
-    {
-        ContourEl conturEl = zoom64[i];
-        imgPainter.drawLine(i*2, height/2 - conturEl.energy/(65000.0/heightCoef), prevX1, prevY1);
-        imgPainter.drawLine(i*2, height/2 + conturEl.energy/(65000.0/heightCoef), prevX2, prevY2);
-        prevX1 = prevX2 = i*2;
-        prevY1 = height/2 - conturEl.energy/(65000.0/heightCoef);
-        prevY2 = height/2 + conturEl.energy/(65000.0/heightCoef);
-    }
-    prevX1=0;
-    prevX2=0;
-    prevY1=0;
-    prevY2=0;
-    imgPainter.setPen(QColor("darkgreen"));
-    for (int i = 0; i < zoom128.size(); ++i)
-    {
-        ContourEl conturEl = zoom128[i];
-        imgPainter.drawLine(i/2, height/2, i/2, height/2 + 2*conturEl.energy/(65000.0/heightCoef));
-        imgPainter.drawLine(i/2, height/2, i/2, height/2 - 2*conturEl.energy/(65000.0/heightCoef));
-        imgPainter.drawLine(i / 2, height/2 - 2*conturEl.energy/(65000.0/heightCoef), prevX1, prevY1);
-        imgPainter.drawLine(i / 2, height/2 + 2*conturEl.energy/(65000.0/heightCoef), prevX2, prevY2);
-        prevX1 = prevX2 = i / 2;
-        prevY1 = height/2 - 2*conturEl.energy/(65000.0/heightCoef);
-        prevY2 = height/2 + 2*conturEl.energy/(65000.0/heightCoef);
-    }
+    //imgPainter.setPen(QColor("green"));
+    //imgPainter.setPen(QColor("chartreuse"));
+    //imgPainter.setPen(QColor("darkgreen"));
 
     auto highs = _waveContour.rmsHigh();
     std::set<size_t> positionsHigh(highs.begin(), highs.end());
@@ -110,6 +74,7 @@ void WaveshapePainter::makeBackgroungImage(QPainter &painter, int height, double
     auto rms = _waveContour.getRMS();
     auto rmsStep = _waveContour.getRmsStep();
 
+    const double xCoef = rmsStep / (125 / 2.0);
     double prevValue = 0.0;
     for (int i = 0; i < rms.size(); ++i) {
         if (positionsHigh.count(i))
@@ -119,23 +84,14 @@ void WaveshapePainter::makeBackgroungImage(QPainter &painter, int height, double
         else
             imgPainter.setPen(QColor("blue"));
         auto localRms = rms[i];
-        const double xCoef = rmsStep / (125 / 2.0);
-        imgPainter.drawLine(i*xCoef, 0, i*xCoef,  (60.0 + localRms)*heightCoef);
-        imgPainter.drawLine((i-1)*xCoef, prevValue, i*xCoef,  (60.0 + localRms)*heightCoef);
-        prevValue = (60.0 + localRms)*heightCoef;
-    }
-    /*
-    imgPainter.setPen(QColor("green"));
-    double prev = 0.0;
-    double prevIdx = 0.0;
-    for (size_t i = 0; i < env.size(); ++i) {
-        size_t rmsIdx = env[i] / 2;
-        auto localRms = rms[rmsIdx];
 
-        imgPainter.drawLine(prevIdx*2, prev, rmsIdx*2,  (60.0 + localRms)*heightCoef);
-        prevIdx = rmsIdx;
-        prev = (60.0 + localRms)*heightCoef;
-    }*/
+        double currentValue = (60.0 + localRms)*heightCoef;
+        imgPainter.drawLine(i*xCoef, height/2, i*xCoef, height/2 - currentValue);
+        imgPainter.drawLine((i-1)*xCoef, height/2 - prevValue, i*xCoef, height/2 - currentValue);
+        imgPainter.drawLine(i*xCoef, height/2, i*xCoef, height/2 + currentValue);
+        imgPainter.drawLine((i-1)*xCoef, height/2 + prevValue, i*xCoef, height/2 + currentValue);
+        prevValue = currentValue;
+    }
 }
 
 void WaveshapePainter::drawPitch(QPainter &painter, int height) {

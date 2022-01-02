@@ -6,6 +6,7 @@
 #include "utils.h"
 
 #include <array>
+#include <cmath>
 
 #include <QDataStream>
 #include <QDebug>
@@ -32,9 +33,13 @@ ContourEl WaveContour::calculateElement(QVector<qint16> &samples) const {
             result.max = sample;
         if (result.min > sample)
             result.min = sample;
-        result.energy += abs(lastSample-sample);
+
+        result.energy += abs(sample); //abs(lastSample-sample);
         lastSample = sample;//preparetion for next time
     }
+
+    result.energy = result.energy * 2.0 / samples.size();
+
     return result;
 }
 
@@ -112,14 +117,19 @@ void WaveContour::createCountour(QByteArray& samplesBytes) {
     unsigned long frames = samples.size()/counterFrameSize;
     for (size_t step = 0; step < frames; ++step) {
         auto x64samples = samples.mid(counterFrameSize*step,counterFrameSize);
+
         auto x256samples1 = x64samples.mid(0,31);
         auto x256samples2 = x64samples.mid(31,31);
         auto x256samples3 = x64samples.mid(62,31);
         auto x256samples4 = x64samples.mid(93,32);
+
         ContourEl el256x1 = calculateElement(x256samples1);
+
         ContourEl el256x2 = calculateElement(x256samples2);
+
         ContourEl el256x3 = calculateElement(x256samples3);
         ContourEl el256x4 = calculateElement(x256samples4);
+
         ContourEl el64 = summateElements(el256x1,el256x2,el256x3,el256x4);
         ContourEl el128_1 = summate2Elements(el256x1,el256x2);
         ContourEl el128_2 = summate2Elements(el256x1,el256x2);

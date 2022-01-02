@@ -22,6 +22,8 @@ public:
     const QVector<int>& getNoteStarts() const { return _noteStarts; }
     const QVector<int>& getNoteEnds() const { return _noteEnds; }
 
+    const QVector<float>& getFloatSamples() const { return _floatSamples; }
+
     const QVector<ContourEl>& getZoom64()  const { return _zoom64; }
     const QVector<ContourEl>& getZoom128() const { return _zoom128; }
     const QVector<ContourEl>& getZoom256() const { return _zoom256; }
@@ -85,11 +87,8 @@ private:
     bool loadWavFile(QString filename);
 
     void calculateRms();
-
     void createCountour(QByteArray& samplesBytes);
-
     void markNotesStartEnd(QList<double>& lastRms, bool& noteIsStarted, size_t step);
-
 
 };
 
