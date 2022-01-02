@@ -63,22 +63,20 @@ void WaveshapePainter::makeBackgroungImage(QPainter &painter, int height, double
 
     QPainter imgPainter(&_mainImage);
 
-    //imgPainter.setPen(QColor("green"));
-    //imgPainter.setPen(QColor("chartreuse"));
-    //imgPainter.setPen(QColor("darkgreen"));
     auto rmsStep = _waveContour.getRmsStep();
-
 
     auto rms_8 = _waveContour.getRMS_8();
     double xCoef = rmsStep / (125 * 4.0);
     double prevValue = 0.0;
-    imgPainter.setPen(QColor("darkgreen"));
+
     for (int i = 0; i < rms_8.size(); ++i) {
         auto localRms = rms_8[i];
         double currentValue = (60.0 + localRms)*heightCoef * 1.5;
+        imgPainter.setPen(QColor("darkgreen"));
         imgPainter.drawLine(i*xCoef, height/2, i*xCoef, height/2 - currentValue);
-        imgPainter.drawLine((i-1)*xCoef, height/2 - prevValue, i*xCoef, height/2 - currentValue);
         imgPainter.drawLine(i*xCoef, height/2, i*xCoef, height/2 + currentValue);
+        imgPainter.setPen(QColor("chartreuse")); //chartreuse QColor("green").lighter()
+        imgPainter.drawLine((i-1)*xCoef, height/2 - prevValue, i*xCoef, height/2 - currentValue);
         imgPainter.drawLine((i-1)*xCoef, height/2 + prevValue, i*xCoef, height/2 + currentValue);
         prevValue = currentValue;
     }
@@ -133,34 +131,17 @@ void WaveshapePainter::makeBackgroungImage(QPainter &painter, int height, double
         imgPainter.setPen(currentColor);
 
         bool extendLine = positionsLow.count(i) || positionsHigh.count(i);
-
         auto localRms = rms[i];
         double currentValue = (60.0 + localRms)*heightCoef * 0.4;
 
         QPolygonF poligon;
         poligon << QPointF((i-1)*xCoef, height/2.0 - prevValue) << QPointF(i * xCoef, height/2.0 - currentValue)
                 << QPointF(i*xCoef, height/2 + currentValue) << QPointF((i-1)*xCoef, height/2 + prevValue);
-
-        imgPainter.drawPolygon(poligon);
+        imgPainter.drawPolygon(poligon); //TODO fill this path or minimal rectangle
 
         if (extendLine)
             imgPainter.drawLine(i * xCoef, height/2 + currentValue * 2, i * xCoef, height/2 - currentValue * 2);
 
-        /*
-        QPainterPath path;
-        path.moveTo((i-1)*xCoef, height/2.0 - prevValue);
-        path.lineTo(i * xCoef, height/2.0 - currentValue);
-        path.lineTo(i * xCoef, height/2.0 + currentValue);
-        path.lineTo((i-1)*xCoef, height/2.0 + prevValue);
-        path.lineTo((i-1)*xCoef, height/2.0 - prevValue);
-        painter.setPen (Qt :: NoPen);
-        painter.fillPath(path, QBrush(currentColor));*/
-
-        /*
-        imgPainter.drawLine(i * xCoef, height/2, i * xCoef, height/2 - currentValue);
-        imgPainter.drawLine((i-1) * xCoef, height/2 - prevValue, i * xCoef, height/2 - currentValue);
-        imgPainter.drawLine(i*xCoef, height/2, i*xCoef, height/2 + currentValue);
-        imgPainter.drawLine((i-1)*xCoef, height/2 + prevValue, i*xCoef, height/2 + currentValue);*/
         prevValue = currentValue;
     }
 }
