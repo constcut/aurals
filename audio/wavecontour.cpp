@@ -2,7 +2,7 @@
 #include "wavfile.h"
 
 #include "featureextractor.h"
-#include "envelop.h"
+#include "findpeaks.hpp"
 #include "utils.h"
 
 #include <array>
@@ -147,12 +147,6 @@ bool WaveContour::loadWavFile(QString filename) { //TODO sepparate into sub-func
     }
 
     calculateRms();
-    //_rawRmsEnv = env; //TODO найти другой способ
-
-    /*
-    qDebug() << "Envelop size " << env.size();
-    qDebug() << "Whole envelope " << env;
-    qDebug() << rmsRaw.size() << "rms raw size";*/
 
     return _zoom64.size() && _zoom256.size();
 }
@@ -265,6 +259,12 @@ void WaveContour::calculateRms() {
         //lastRms.append(db);
         //markNotesStartEnd(lastRms, noteIsStarted, step); //First attempt, lets try new
     }
+
+    std::vector<double> stdRms(_rmsLine.begin(), _rmsLine.end());
+    _rmsHigh = peakIndexesInData(stdRms, 3.0); //3.0 is very good
+    for (auto& s: stdRms)
+        s *= -1;
+    _rmsLow = peakIndexesInData(stdRms, 3.0); //3.0 is very good
 }
 
 

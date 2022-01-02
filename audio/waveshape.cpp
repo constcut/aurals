@@ -102,15 +102,22 @@ void WaveshapePainter::makeBackgroungImage(QPainter &painter, int height, double
         prevY2 = height/2 + 2*conturEl.energy/(65000.0/heightCoef);
     }
 
-    auto env = _waveContour.rawEnv();
-    std::set<size_t> pos(env.begin(), env.end());
+    auto highs = _waveContour.rmsHigh();
+    std::set<size_t> positionsHigh(highs.begin(), highs.end());
+    auto lows = _waveContour.rmsLow();
+    std::set<size_t> positionsLow(lows.begin(), lows.end());
 
     auto rms = _waveContour.getRMS();
     auto rmsStep = _waveContour.getRmsStep();
 
-    imgPainter.setPen(QColor("blue"));
     double prevValue = 0.0;
     for (int i = 0; i < rms.size(); ++i) {
+        if (positionsHigh.count(i))
+            imgPainter.setPen(QColor("green"));
+        else if (positionsLow.count(i))
+            imgPainter.setPen(QColor("red"));
+        else
+            imgPainter.setPen(QColor("blue"));
         auto localRms = rms[i];
         const double xCoef = rmsStep / (125 / 2.0);
         imgPainter.drawLine(i*xCoef, 0, i*xCoef,  (60.0 + localRms)*heightCoef);

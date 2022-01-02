@@ -26,7 +26,9 @@ public:
     const QVector<ContourEl>& getZoom128() const { return _zoom128; }
     const QVector<ContourEl>& getZoom256() const { return _zoom256; }
 
-    const std::vector<size_t> rawEnv() const { return _rawRmsEnv; }
+    const std::vector<size_t> rmsHigh() const { return _rmsHigh; }
+    const std::vector<size_t> rmsLow() const { return _rmsLow; }
+
     size_t getRmsStep() const { return _rmsSize; }
 
     void calculateF0();
@@ -45,6 +47,9 @@ protected:
 
     size_t _rmsSize = 125 * 4;
     QVector<double> _rmsLine;
+    std::vector<size_t> _rmsHigh;
+    std::vector<size_t> _rmsLow;
+
     QVector<double> _yinLine;
 
     QVector<int> _noteStarts;
@@ -57,7 +62,7 @@ protected:
     QVector<ContourEl> _bpm64; //TODO
     double _totalBPM;
 
-    std::vector<size_t> _rawRmsEnv;
+
 
 private:
 
