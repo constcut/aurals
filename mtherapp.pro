@@ -11,6 +11,7 @@ SOURCES += \
     audio/audiohandler.cpp \
     audio/audioreceiver.cpp \
     audio/audiospeaker.cpp \
+    audio/envelop.cpp \
     audio/featureextractor.cpp \
     audio/findpeaks.cpp \
     audio/frequencyspectrum.cpp \
@@ -57,6 +58,7 @@ HEADERS += \
     audio/audiohandler.h \
     audio/audioreceiver.h \
     audio/audiospeaker.h \
+    audio/envelop.h \
     audio/featureextractor.h \
     audio/findpeaks.hpp \
     audio/frequencyspectrum.h \
