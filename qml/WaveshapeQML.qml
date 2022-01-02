@@ -166,64 +166,72 @@ Item {
 
     Dialog {
         id: settingsDialog
-        RowLayout {
-            spacing:  10
-            id: upperLayout
-            Text{
-                text: "Window size: "
-            }
-            ComboBox {
-                model: ["256", "1024","2048","4096","8192","16384"]
-                currentIndex: 3
-                onCurrentTextChanged: {
-                    var windowWidth = parseInt(currentText)
-                    waveShape.setWindowWidth(windowWidth)
-                    if (spectrum != null) {
-                        spectrum.setSamplesAmount(windowWidth)
-                        spectrum.setYinLimit(windowWidth) //Earlier was sepparated
-                        spectrum.setFFTLimit((windowWidth))
+        ColumnLayout {
+            spacing: 10
+            id: dialogLayout
+
+            RowLayout {
+                spacing:  10
+                id: upperLayout
+                Text{
+                    text: "Window size: "
+                }
+                ComboBox {
+                    model: ["256", "1024","2048","4096","8192","16384"]
+                    currentIndex: 3
+                    onCurrentTextChanged: {
+                        var windowWidth = parseInt(currentText)
+                        waveShape.setWindowWidth(windowWidth)
+                        if (spectrum != null) {
+                            spectrum.setSamplesAmount(windowWidth)
+                            spectrum.setYinLimit(windowWidth) //Earlier was sepparated
+                            spectrum.setFFTLimit((windowWidth))
+                        }
+                    }
+                }
+                Text{
+                    text: "Spectrum bins: "
+                }
+                ComboBox {
+                    model : [100, 200, 400, 600, 800, 1000]
+                    currentIndex: 2
+                    onCurrentTextChanged: {
+                        spectrum.changeBarsCount(parseInt(currentText))
+                    }
+                }
+                Text{
+                    id: highFreqText
+                    text: "High freq: "
+                }
+                ComboBox {
+                    model: ["1000", "2000", "3000", "4000", "5000", "6000", "7000"]
+                    currentIndex: 3
+                    onCurrentTextChanged: {
+                        spectrum.changeHighFreq(parseInt(currentText))
                     }
                 }
             }
-            Text{
-                text: "Spectrum bins: "
-            }
-            ComboBox {
-                model : [100, 200, 400, 600, 800, 1000]
-                currentIndex: 2
-                onCurrentTextChanged: {
-                    spectrum.changeBarsCount(parseInt(currentText))
+            RowLayout {
+                spacing:  10
+                Text {
+                    text: "RMS Peak sence: "
                 }
-            }
-            Text{
-                id: highFreqText
-                text: "High freq: "
-            }
-            ComboBox {
-                model: ["1000", "2000", "3000", "4000", "5000", "6000", "7000"]
-                currentIndex: 3
-                onCurrentTextChanged: {
-                    spectrum.changeHighFreq(parseInt(currentText))
+                ComboBox {
+                    model : ["2.0", "3.0", "4.0", "5.0", "6.0", "7.0"]
+                    currentIndex: 2
+                    onCurrentTextChanged: {
+                        waveShape.setPeakSence(parseFloat(currentText))
+                    }
                 }
-            }
-            Text {
-                text: "RMS Peak sence: "
-            }
-            ComboBox {
-                model : ["2.0", "3.0", "4.0", "5.0", "6.0", "7.0"]
-                currentIndex: 2
-                onCurrentTextChanged: {
-                    waveShape.setPeakSence(parseFloat(currentText))
+                Text {
+                    text: "RMS step"
                 }
-            }
-            Text {
-                text: "RMS step"
-            }
-            ComboBox {
-                model : ["125", "250", "500", "1000", "1500", "2000", "4000"]
-                currentIndex: 2
-                onCurrentTextChanged: {
-                    waveShape.setRmsStep(parseFloat(currentText))
+                ComboBox {
+                    model : ["125", "250", "500", "1000", "1500", "2000", "4000"]
+                    currentIndex: 2
+                    onCurrentTextChanged: {
+                        waveShape.setRmsStep(parseFloat(currentText))
+                    }
                 }
             }
         }
