@@ -149,7 +149,7 @@ void AudioHandler::requestStopPlayback() {
 
 
 void AudioHandler::requestPermission() const {
-    ::requestPermission();
+    ::requestAudioPermission();
 }
 
 

@@ -160,20 +160,7 @@ void WaveshapePainter::drawPitch(QPainter &painter, int height) {
 
 
 void WaveshapePainter::drawNoteStartEnd(QPainter &painter, int height) {
-    auto noteStarts = _waveContour.getNoteStarts();
-    painter.setPen(QColor("yellow"));
-    for (int i = 0; i < noteStarts.size(); ++i) {
-        auto start = noteStarts[i];
-        const double pixelX = 2.0 * start / (125.0);
-        painter.drawEllipse(pixelX-5, height/2-5, 10, 10);
-    }
-    auto noteEnds = _waveContour.getNoteEnds();
-    painter.setPen(QColor("orange"));
-    for (int i = 0; i < noteEnds.size(); ++i) {
-        auto start = noteEnds[i];
-        const double pixelX = 2.0 * start / (125.0);
-        painter.drawEllipse(pixelX-5, height/2-5, 10, 10);
-    }
+    //TODO use data from high and low rms
 }
 
 

@@ -51,20 +51,28 @@ bool WaveContour::loadWavFile(QString filename) { //TODO sepparate into sub-func
     }
 
     calculateRms();
-    createSubRms();
 
     return _floatSamples.empty() == false;
 }
 
 
 void WaveContour::calculateRms() {
-    size_t rmsFrames = _floatSamples.size() / _rmsStep;
-    _rmsLine.clear();
-    for (size_t step = 0; step < rmsFrames; ++step) {
-        auto forRmsLocal = _floatSamples.mid(_rmsStep*step, _rmsStep);
-        auto db = calc_dB(forRmsLocal.data(), forRmsLocal.size());
-        _rmsLine.append(db);
-    }
+
+    auto calcRms = [&](double coef, QVector<double>& container) {
+      container.clear();
+      double localStep = _rmsStep / coef;
+      size_t rmsFrames = _floatSamples.size() / (localStep);
+      for (size_t step = 0; step < rmsFrames; ++step) {
+          auto forRmsLocal = _floatSamples.mid(localStep * step, _rmsStep);
+          auto db = calc_dB(forRmsLocal.data(), forRmsLocal.size());
+          container.append(db);
+      }
+    };
+
+    calcRms(1.0, _rmsLine);
+    calcRms(2.0, _halfRmsLine);
+    calcRms(4.0, _quaterRmsLine);
+    calcRms(8.0, _8RmsLine);
 
     std::vector<double> stdRms(_rmsLine.begin(), _rmsLine.end());
     _rmsHigh = peakIndexesInData(stdRms, _peakSensetivity);
@@ -74,37 +82,5 @@ void WaveContour::calculateRms() {
 }
 
 
-void WaveContour::createSubRms() {
-    { //TODO lambda or function
-        _halfRmsLine.clear();
-        double localStep = _rmsStep / 2.0;
-        size_t rmsFrames = _floatSamples.size() / (localStep);
-        for (size_t step = 0; step < rmsFrames; ++step) {
-            auto forRmsLocal = _floatSamples.mid(localStep * step, _rmsStep);
-            auto db = calc_dB(forRmsLocal.data(), forRmsLocal.size());
-            _halfRmsLine.append(db);
-        }
-    }
-    {
-        _quaterRmsLine.clear();
-        double localStep = _rmsStep / 4.0;
-        size_t rmsFrames = _floatSamples.size() / (localStep);
-        for (size_t step = 0; step < rmsFrames; ++step) {
-            auto forRmsLocal = _floatSamples.mid(localStep * step, _rmsStep);
-            auto db = calc_dB(forRmsLocal.data(), forRmsLocal.size());
-            _quaterRmsLine.append(db);
-        }
-    }
-    {
-        _8RmsLine.clear();
-        double localStep = _rmsStep / 8.0;
-        size_t rmsFrames = _floatSamples.size() / (localStep);
-        for (size_t step = 0; step < rmsFrames; ++step) {
-            auto forRmsLocal = _floatSamples.mid(localStep * step, _rmsStep);
-            auto db = calc_dB(forRmsLocal.data(), forRmsLocal.size());
-            _8RmsLine.append(db);
-        }
-    }
-}
 
 

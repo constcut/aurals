@@ -1,7 +1,6 @@
 #ifndef ANDROIDTOOLS_H
 #define ANDROIDTOOLS_H
 
-
-void requestPermission();
+void requestAudioPermission();
 
 #endif // ANDROIDTOOLS_H

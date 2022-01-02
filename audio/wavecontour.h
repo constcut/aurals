@@ -12,9 +12,6 @@ public:
     void calculateF0();
     const QVector<double>& getPitch() const { return _yinLine; }
 
-    const QVector<int>& getNoteStarts() const { return _noteStarts; }
-    const QVector<int>& getNoteEnds() const { return _noteEnds; }
-
     const QVector<float>& getFloatSamples() const { return _floatSamples; }
 
     const QVector<double>& getRMS() const { return _rmsLine; }
@@ -47,7 +44,7 @@ protected:
     size_t _rmsStep = 125 * 4;
     QVector<double> _rmsLine; //0, 1, 2, 3
     QVector<double> _halfRmsLine;
-    QVector<double> _quaterRmsLine;
+    QVector<double> _quaterRmsLine; //TODO заменить на обычные вектора,+ сделать объект QObject
     QVector<double> _8RmsLine;
 
     double _peakSensetivity = 4.0;
@@ -57,15 +54,11 @@ protected:
     double _yinTheshold = 0.15;
     QVector<double> _yinLine;
 
-    QVector<int> _noteStarts;
-    QVector<int> _noteEnds;
-
 
 private:
     bool loadWavFile(QString filename);
 
     void calculateRms();
-    void createSubRms();
 };
 
 #endif // WAVECONTOUR_H
