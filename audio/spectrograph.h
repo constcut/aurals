@@ -151,10 +151,7 @@ public:
 
     Q_INVOKABLE qreal getFreq1() const { return _barSelected * _freqStep; } //TODO barRange
     Q_INVOKABLE qreal getFreq2() const { return (_barSelected + 1) * _freqStep; }
-
     Q_INVOKABLE qreal getPitch() const { return _spectrum._pitchYin; }
-    Q_INVOKABLE qreal getPitch2() const { return _spectrum._pitchYin2; }
-
     Q_INVOKABLE qreal freqToMidi(qreal freq) const { return calc_MidiCents(freq) / 100.0; }
     Q_INVOKABLE qreal getValue() const { return _bars[_barSelected].value; }
     Q_INVOKABLE int getIndex() const { return _barSelected; }
