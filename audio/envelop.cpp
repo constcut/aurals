@@ -2,10 +2,13 @@
 
 #include "envelop.h"
 
-#include <vector>
 #include <cmath>
 #include <algorithm>
 
+#include <QDebug>
+
+
+//TODO refactor this code style
 
 struct point {
     double x /** x coordinate */;
@@ -76,23 +79,35 @@ void get_pulses(
     long long sign{ sgn(W[0]) };
     long long i0{ 0 };
     long long im{ 0 };
+
     posX.clear();
     negX.clear();
-    for (unsigned long long i = 1; i < W.size(); i++) {
+
+    for (size_t i = 1; i < W.size(); i++) {
+
         if (sgn(W[i]) != sign) {
+
+
             sign = sgn(W[i]);
+            qDebug() << "First IF " << i - i0 << " sign " << sign;
+
             if (i - i0 > 4) {
                 im = argabsmax(W, i0, i);
                 i0 = i;
-                if (sgn(W[im]) >= 0) {
+
+                qDebug() << "Second if " << sgn(W[im]);
+
+                if (sgn(W[im]) >= 0)
                     posX.push_back(im);
-                }
-                else {
+                else
                     negX.push_back(im);
-                }
             }
+
         }
-    }	return;
+    }
+
+    qDebug() << "Done " << posX.size() << " " << negX.size();
+    return;
 }
 
 
@@ -159,7 +174,8 @@ int pos_n /** Positive frontier size. **/,
 neg_n /** Negative frontier size. **/;
 
 
-int compute_raw_envelope(
+
+std::vector<size_t> compute_raw_envelope(
     double* cW /** Polong longr to an array of doubles, representing a signal. **/,
     unsigned int n /** Size of the array. **/,
     unsigned int mode /** mode = 0 for frontiers and mode = 1 for envelope. Envelope is returned as the positive frontier, in case of mode =1. **/
@@ -171,7 +187,8 @@ int compute_raw_envelope(
     get_pulses(W, posX, negX);
 
     if (posX.size() == 0 || negX.size() == 0) {
-        return 1;    // No pulses found
+        qDebug() << "Failed raw envelop";// "return 1;    // No pulses found
+        return {};
     }
 
     if (mode == 0) { // Frontiers mode
@@ -184,6 +201,8 @@ int compute_raw_envelope(
             W[i] = std::abs(W[i]);
         }
         posF = get_frontier(W, E);
+        qDebug() << "Envelop calculated";
+        return posF;
     }
-    return 0;
+    //return 0;
 }

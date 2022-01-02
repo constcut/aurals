@@ -2,7 +2,7 @@
 #include "wavfile.h"
 
 #include "featureextractor.h"
-
+#include "envelop.h"
 #include "utils.h"
 
 #include <array>
@@ -97,7 +97,8 @@ void WaveContour::calculateF0() {
 }
 
 
-bool WaveContour::loadWavFile(QString filename) {
+
+bool WaveContour::loadWavFile(QString filename) { //TODO sepparate into sub-functions
     WavFile wav;
     wav.open(filename);
 
@@ -124,11 +125,16 @@ bool WaveContour::loadWavFile(QString filename) {
     QList<double> lastRms;
     bool noteIsStarted = false;
 
+    std::vector<double> rmsRaw;
+
     for (size_t step = 0; step < rmsFrames; ++step) {
         auto forRmsLocal = _floatSamples.mid(rmsSize*step,rmsSize);
         auto db = calc_dB(forRmsLocal.data(), forRmsLocal.size());
         _rmsLine.append(db);
         lastRms.append(db);
+
+        auto rms = calc_RMS(forRmsLocal.data(), forRmsLocal.size());
+        rmsRaw.push_back(rms);
 
         const int checkLimit = 12;
 
@@ -220,6 +226,17 @@ bool WaveContour::loadWavFile(QString filename) {
             lastRms.pop_front();
         }
     }
+
+    std::vector<double> dSamples;
+    for (float s: _floatSamples)
+        dSamples.push_back(s);
+
+    //auto env = compute_raw_envelope(dSamples.data(), dSamples.size(), 1); //mode envelop = 1, frontier = 0
+    auto env = compute_raw_envelope(rmsRaw.data(), rmsRaw.size(), 1); //mode envelop = 1, frontier = 0
+
+    qDebug() << "Envelop size " << env.size();
+    qDebug() << "Whole envelope " << env;
+
 
     const size_t counterFrameSize = 125;
     unsigned long frames = samples.size()/counterFrameSize;
