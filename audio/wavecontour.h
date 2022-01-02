@@ -26,6 +26,8 @@ public:
     const QVector<ContourEl>& getZoom128() const { return _zoom128; }
     const QVector<ContourEl>& getZoom256() const { return _zoom256; }
 
+    const std::vector<size_t> rawEnv() const { return _rawRmsEnv; }
+
     void calculateF0();
 
     ContourEl calculateElement(QVector<qint16> &samples) const; //TODO static?
@@ -51,6 +53,8 @@ protected:
 
     QVector<ContourEl> _bpm64; //TODO
     double _totalBPM;
+
+    std::vector<size_t> _rawRmsEnv;
 
 private:
 

@@ -228,11 +228,17 @@ bool WaveContour::loadWavFile(QString filename) { //TODO sepparate into sub-func
     }
 
     std::vector<double> dSamples;
-    for (float s: _floatSamples)
-        dSamples.push_back(s);
+    //for (float s: _floatSamples)
+        //dSamples.push_back(s);
 
-    //auto env = compute_raw_envelope(dSamples.data(), dSamples.size(), 1); //mode envelop = 1, frontier = 0
-    auto env = compute_raw_envelope(rmsRaw.data(), rmsRaw.size(), 1); //mode envelop = 1, frontier = 0
+    for (double s: rmsRaw) {
+        dSamples.push_back(s);
+        dSamples.push_back(-s);
+    }
+
+    auto env = compute_raw_envelope(dSamples.data(), dSamples.size(), 1); //mode envelop = 1, frontier = 0
+    //auto env = compute_raw_envelope(rmsRaw.data(), rmsRaw.size(), 1); //mode envelop = 1, frontier = 0
+    //auto front = get_frontier(rmsRaw)
 
     qDebug() << "Envelop size " << env.size();
     qDebug() << "Whole envelope " << env;

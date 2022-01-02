@@ -205,4 +205,5 @@ std::vector<size_t> compute_raw_envelope(
         return posF;
     }
     //return 0;
+    return {};
 }
