@@ -56,95 +56,69 @@ void WaveshapeQML::paint(QPainter *painter) {
 }
 
 
+
 void WaveshapePainter::makeBackgroungImage(QPainter &painter, int height, double heightCoef) {
 
     _noImage = false;
     _mainImage =  QImage(painter.device()->width(),painter.device()->height(), QImage::Format_ARGB32);
-
     QPainter imgPainter(&_mainImage);
 
     auto rmsStep = _waveContour.getRmsStep();
+    auto paintRms = [&](double rmsCoef, double expandCoef,
+            const QVector<double>& container, QColor base, QColor border) {
+        double xCoef = rmsStep / (125 * rmsCoef / 2.0);
+        double prevValue = 0.0;
+        for (int i = 0; i < container.size(); ++i) {
+            auto localRms = container[i];
+            double currentValue = (60.0 + localRms) * heightCoef * expandCoef;
+            imgPainter.setPen(base);
+            imgPainter.drawLine(i*xCoef, height/2, i*xCoef, height/2 - currentValue);
+            imgPainter.drawLine(i*xCoef, height/2, i*xCoef, height/2 + currentValue);
+            imgPainter.setPen(border);
+            imgPainter.drawLine((i-1)*xCoef, height/2 - prevValue, i*xCoef, height/2 - currentValue);
+            imgPainter.drawLine((i-1)*xCoef, height/2 + prevValue, i*xCoef, height/2 + currentValue);
+            prevValue = currentValue;
+        }
+    };
 
-    auto rms_8 = _waveContour.getRMS_8();
-    double xCoef = rmsStep / (125 * 4.0);
-    double prevValue = 0.0;
-
-    for (int i = 0; i < rms_8.size(); ++i) { //TODO lambda or function
-        auto localRms = rms_8[i];
-        double currentValue = (60.0 + localRms)*heightCoef * 1.5;
-        imgPainter.setPen(QColor("darkgreen"));
-        imgPainter.drawLine(i*xCoef, height/2, i*xCoef, height/2 - currentValue);
-        imgPainter.drawLine(i*xCoef, height/2, i*xCoef, height/2 + currentValue);
-        imgPainter.setPen(QColor("chartreuse")); //chartreuse QColor("green").lighter()
-        imgPainter.drawLine((i-1)*xCoef, height/2 - prevValue, i*xCoef, height/2 - currentValue);
-        imgPainter.drawLine((i-1)*xCoef, height/2 + prevValue, i*xCoef, height/2 + currentValue);
-        prevValue = currentValue;
-    }
-
-    auto rms_4 = _waveContour.getRMS_4();
-    xCoef = rmsStep / (125 * 2.0);
-    prevValue = 0.0;
-    imgPainter.setPen(QColor("green"));
-    for (int i = 0; i < rms_4.size(); ++i) {
-        auto localRms = rms_4[i];
-        double currentValue = (60.0 + localRms)*heightCoef * 1.1;
-        imgPainter.drawLine(i*xCoef, height/2, i*xCoef, height/2 - currentValue);
-        imgPainter.drawLine((i-1)*xCoef, height/2 - prevValue, i*xCoef, height/2 - currentValue);
-        imgPainter.drawLine(i*xCoef, height/2, i*xCoef, height/2 + currentValue);
-        imgPainter.drawLine((i-1)*xCoef, height/2 + prevValue, i*xCoef, height/2 + currentValue);
-        prevValue = currentValue;
-    }
-
-    auto rms_2 = _waveContour.getRMS_2(); //TODO rename better
-    xCoef = rmsStep / (125);
-    prevValue = 0.0;
-    imgPainter.setPen(QColor("green").lighter(110));
-    for (int i = 0; i < rms_2.size(); ++i) {
-        auto localRms = rms_2[i];
-        double currentValue = (60.0 + localRms)*heightCoef * 0.8;
-        imgPainter.drawLine(i*xCoef, height/2, i*xCoef, height/2 - currentValue);
-        imgPainter.drawLine((i-1)*xCoef, height/2 - prevValue, i*xCoef, height/2 - currentValue);
-        imgPainter.drawLine(i*xCoef, height/2, i*xCoef, height/2 + currentValue);
-        imgPainter.drawLine((i-1)*xCoef, height/2 + prevValue, i*xCoef, height/2 + currentValue);
-        prevValue = currentValue;
-    }
+    paintRms(8.0, 1.5, _waveContour.getRMS_8(), QColor("darkgreen"), QColor("chartreuse")); //TODO 8 vs 4 etc
+    paintRms(4.0, 1.1, _waveContour.getRMS_4(), QColor("green"), QColor("green"));
+    paintRms(2.0, 0.8, _waveContour.getRMS_2(), QColor("green").lighter(110), QColor("green").lighter(110));
+    paintMainRms(imgPainter, height, heightCoef);
+}
 
 
+void WaveshapePainter::paintMainRms(QPainter &imgPainter, int height, double heightCoef) {
     auto highs = _waveContour.rmsHigh();
     std::set<size_t> positionsHigh(highs.begin(), highs.end());
     auto lows = _waveContour.rmsLow();
     std::set<size_t> positionsLow(lows.begin(), lows.end());
-
     auto rms = _waveContour.getRMS();
-    xCoef = rmsStep / (125 / 2.0);
-    prevValue = 0.0;
 
-    QColor currentColor;
-    for (int i = 0; i < rms.size(); ++i) {
+    auto rmsStep = _waveContour.getRmsStep();
+    double xCoef = rmsStep / (125 / 2.0);
+    double prevValue = 0.0;
 
+    for (int i = 0; i < rms.size(); ++i) { //TODO? отрисовать лямбдой, и после этого сделать дополнительную отривоску начал\концов
         if (positionsHigh.count(i))
-            currentColor = QColor("blue");
+            imgPainter.setPen(QColor("blue"));
         else if (positionsLow.count(i))
-            currentColor = QColor("red");
+            imgPainter.setPen(QColor("red"));
         else
-            currentColor = QColor("green").lighter(125);
-        imgPainter.setPen(currentColor);
+            imgPainter.setPen(QColor("green").lighter(125));
 
-        bool extendLine = positionsLow.count(i) || positionsHigh.count(i);
-        auto localRms = rms[i];
-        double currentValue = (60.0 + localRms)*heightCoef * 0.4;
-
+        double currentValue = (60.0 + rms[i])*heightCoef * 0.4;
         QPolygonF poligon;
         poligon << QPointF((i-1)*xCoef, height/2.0 - prevValue) << QPointF(i * xCoef, height/2.0 - currentValue)
                 << QPointF(i*xCoef, height/2 + currentValue) << QPointF((i-1)*xCoef, height/2 + prevValue);
         imgPainter.drawPolygon(poligon); //TODO fill this path or minimal rectangle
 
-        if (extendLine)
+        if (positionsLow.count(i) || positionsHigh.count(i))
             imgPainter.drawLine(i * xCoef, height/2 + currentValue * 2, i * xCoef, height/2 - currentValue * 2);
-
         prevValue = currentValue;
     }
 }
+
 
 void WaveshapePainter::drawPitch(QPainter &painter, int height) {
     auto pitchLine = _waveContour.getPitch();
