@@ -173,6 +173,8 @@ public:
     Q_INVOKABLE void setYinLimit(int limit) { _analyser.yinLimit = limit; };
     Q_INVOKABLE void setFFTLimit(int limit) { _analyser.fftLimit = limit; };
 
+    Q_INVOKABLE void setYinThreshold(double threshold) { _analyser.yinThreshold = threshold; }
+
 public slots:
     void spectrumChanged(qint64 position, qint64 length,
                          const FrequencySpectrum &spectrum);

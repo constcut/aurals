@@ -67,8 +67,9 @@ public:
     void setSamplesAmount(int newNumSamples) { _numSamples = newNumSamples; }
     int getSamplesAmount() { return _numSamples; }
 
-    int yinLimit = 512; //TODO set\get
+    int yinLimit = 1024; //TODO set\get
     int fftLimit = 4096;
+    double yinThreshold = 0.15;
 
 public slots:
     void setWindowFunction(WindowFunction type);
@@ -113,8 +114,9 @@ public:
 
 public:
 
-    int yinLimit=512; //TODO as above so below (right here)
+    int yinLimit=1024; //TODO as above so below (right here)
     int fftLimit=4096;
+    double yinThreshold = 0.15;
 
     void setSamplesAmount(int newNumSamples) {
         if (_thread)

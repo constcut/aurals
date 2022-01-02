@@ -132,7 +132,7 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
     size_t realSize = _input.size();
     if (realSize > yinLimit)
         realSize = yinLimit;
-    auto pitch = calc_YinF0(_input.data(), realSize);
+    auto pitch = calc_YinF0(_input.data(), realSize, yinThreshold);
     _spectrum._pitchYin = pitch;
 
     _fft->calculateFFT(_output.data(), _noWindowInput.data()); //m_noWindowInput m_input
@@ -194,6 +194,7 @@ void SpectrumAnalyser::calculate(const QByteArray &buffer,
         _state = Busy;
         _thread->yinLimit = yinLimit;
         _thread->fftLimit = fftLimit;
+        _thread->yinThreshold = yinThreshold;
 
         const bool b = QMetaObject::invokeMethod(_thread, "calculateSpectrum",
                                   Qt::AutoConnection,
