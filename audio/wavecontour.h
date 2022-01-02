@@ -16,7 +16,7 @@ public:
     WaveContour(QString filename);
     WaveContour() {}
 
-    const QVector<double>& getRMS() const { return _rmsLine; }
+    void calculateF0();
     const QVector<double>& getPitch() const { return _yinLine; }
 
     const QVector<int>& getNoteStarts() const { return _noteStarts; }
@@ -24,20 +24,19 @@ public:
 
     const QVector<float>& getFloatSamples() const { return _floatSamples; }
 
-    const QVector<ContourEl>& getZoom64()  const { return _zoom64; }
-    const QVector<ContourEl>& getZoom128() const { return _zoom128; }
-    const QVector<ContourEl>& getZoom256() const { return _zoom256; }
+    const QVector<double>& getRMS() const { return _rmsLine; }
+    const QVector<double>& getRMS_2() const { return _halfRmsLine; }
+    const QVector<double>& getRMS_4() const { return _quaterRmsLine; }
+    const QVector<double>& getRMS_8() const { return _8RmsLine; }
 
     const std::vector<size_t> rmsHigh() const { return _rmsHigh; }
     const std::vector<size_t> rmsLow() const { return _rmsLow; }
-
     size_t getRmsStep() const { return _rmsStep; }
+
     void setRmsStep(size_t newRmsStep) {
         _rmsStep = newRmsStep;
         calculateRms();
     }
-
-    void calculateF0();
 
     ContourEl calculateElement(QVector<qint16> &samples) const; //TODO static?
     qint32 max4(qint32 d1,qint32 d2,qint32 d3,qint32 d4) const;
@@ -61,7 +60,10 @@ protected:
     QVector<float> _floatSamples;
 
     size_t _rmsStep = 125 * 4;
-    QVector<double> _rmsLine;
+    QVector<double> _rmsLine; //0, 1, 2, 3
+    QVector<double> _halfRmsLine;
+    QVector<double> _quaterRmsLine;
+    QVector<double> _8RmsLine;
 
     double _peakSensetivity = 4.0;
     std::vector<size_t> _rmsHigh;
@@ -73,10 +75,6 @@ protected:
     QVector<int> _noteStarts;
     QVector<int> _noteEnds;
 
-    QVector<ContourEl> _zoom64;
-    QVector<ContourEl> _zoom128;
-    QVector<ContourEl> _zoom256;
-
     QVector<ContourEl> _bpm64; //TODO
     double _totalBPM;
 
@@ -87,7 +85,7 @@ private:
     bool loadWavFile(QString filename);
 
     void calculateRms();
-    void createCountour(QByteArray& samplesBytes);
+    void createSubRms();
     void markNotesStartEnd(QList<double>& lastRms, bool& noteIsStarted, size_t step);
 
 };

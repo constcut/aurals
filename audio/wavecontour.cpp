@@ -104,48 +104,12 @@ void WaveContour::calculateF0() {
 }
 
 
-void WaveContour::createCountour(QByteArray& samplesBytes) {
-    QVector<qint16> samples;
-    qint16 pcmSample;
-    QDataStream dataStream(samplesBytes);
-    for (int i = 0; i < samplesBytes.size(); ++i) {
-        dataStream >> pcmSample;
-        samples << pcmSample;
-    }
-
-    const size_t counterFrameSize = 125;
-    unsigned long frames = samples.size()/counterFrameSize;
-    for (size_t step = 0; step < frames; ++step) {
-        auto x64samples = samples.mid(counterFrameSize*step,counterFrameSize);
-
-        auto x256samples1 = x64samples.mid(0,31);
-        auto x256samples2 = x64samples.mid(31,31);
-        auto x256samples3 = x64samples.mid(62,31);
-        auto x256samples4 = x64samples.mid(93,32);
-
-        ContourEl el256x1 = calculateElement(x256samples1);
-
-        ContourEl el256x2 = calculateElement(x256samples2);
-
-        ContourEl el256x3 = calculateElement(x256samples3);
-        ContourEl el256x4 = calculateElement(x256samples4);
-
-        ContourEl el64 = summateElements(el256x1,el256x2,el256x3,el256x4);
-        ContourEl el128_1 = summate2Elements(el256x1,el256x2);
-        ContourEl el128_2 = summate2Elements(el256x1,el256x2);
-        _zoom64 << el64;
-        _zoom128 << el128_1 << el128_2;
-        _zoom256 << el256x1 << el256x2 <<  el256x3 <<  el256x4;
-    }
-    qDebug() << "Loaded "<<samples.size() <<" samples; "<< _zoom64.size() << " z64 " <<_zoom256.size() << " z256";
-}
 
 
 bool WaveContour::loadWavFile(QString filename) { //TODO sepparate into sub-functions
     WavFile wav;
     wav.open(filename);
     QByteArray samplesBytes = wav.readAll();
-    createCountour(samplesBytes);
 
     _floatSamples.clear();
     const char *ptr = samplesBytes.constData();
@@ -157,8 +121,9 @@ bool WaveContour::loadWavFile(QString filename) { //TODO sepparate into sub-func
     }
 
     calculateRms();
+    createSubRms();
 
-    return _zoom64.size() && _zoom256.size();
+    return _floatSamples.empty() == false;
 }
 
 
@@ -257,18 +222,12 @@ void WaveContour::markNotesStartEnd(QList<double>& lastRms,
 
 
 void WaveContour::calculateRms() {
-
-    size_t rmsFrames = _floatSamples.size()/_rmsStep;
-    //QList<double> lastRms;
-    //bool noteIsStarted = false;
+    size_t rmsFrames = _floatSamples.size() / _rmsStep;
     _rmsLine.clear();
-
     for (size_t step = 0; step < rmsFrames; ++step) {
         auto forRmsLocal = _floatSamples.mid(_rmsStep*step, _rmsStep);
         auto db = calc_dB(forRmsLocal.data(), forRmsLocal.size());
         _rmsLine.append(db);
-        //lastRms.append(db);
-        //markNotesStartEnd(lastRms, noteIsStarted, step); //First attempt, lets try new
     }
 
     std::vector<double> stdRms(_rmsLine.begin(), _rmsLine.end());
@@ -276,6 +235,40 @@ void WaveContour::calculateRms() {
     for (auto& s: stdRms)
         s *= -1;
     _rmsLow = peakIndexesInData(stdRms, _peakSensetivity);
+}
+
+
+void WaveContour::createSubRms() {
+    {
+        _halfRmsLine.clear();
+        double localStep = _rmsStep / 2.0;
+        size_t rmsFrames = _floatSamples.size() / (localStep);
+        for (size_t step = 0; step < rmsFrames; ++step) {
+            auto forRmsLocal = _floatSamples.mid(localStep * step, _rmsStep);
+            auto db = calc_dB(forRmsLocal.data(), forRmsLocal.size());
+            _halfRmsLine.append(db);
+        }
+    }
+    {
+        _quaterRmsLine.clear();
+        double localStep = _rmsStep / 4.0;
+        size_t rmsFrames = _floatSamples.size() / (localStep);
+        for (size_t step = 0; step < rmsFrames; ++step) {
+            auto forRmsLocal = _floatSamples.mid(localStep * step, _rmsStep);
+            auto db = calc_dB(forRmsLocal.data(), forRmsLocal.size());
+            _quaterRmsLine.append(db);
+        }
+    }
+    {
+        _8RmsLine.clear();
+        double localStep = _rmsStep / 8.0;
+        size_t rmsFrames = _floatSamples.size() / (localStep);
+        for (size_t step = 0; step < rmsFrames; ++step) {
+            auto forRmsLocal = _floatSamples.mid(localStep * step, _rmsStep);
+            auto db = calc_dB(forRmsLocal.data(), forRmsLocal.size());
+            _8RmsLine.append(db);
+        }
+    }
 }
 
 

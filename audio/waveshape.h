@@ -101,7 +101,7 @@ public:
     ~WaveshapeQML() = default;
 
     Q_INVOKABLE int getPixelsLength() {
-        return _waveContour.getZoom64().size();
+        return _waveContour.getRMS().size() * 4; // TODO rewrit
     }
     Q_INVOKABLE qreal getRMS(int index) const {
         return _waveContour.getRMS()[index];

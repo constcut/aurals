@@ -65,6 +65,52 @@ void WaveshapePainter::makeBackgroungImage(QPainter &painter, int height, double
     //imgPainter.setPen(QColor("green"));
     //imgPainter.setPen(QColor("chartreuse"));
     //imgPainter.setPen(QColor("darkgreen"));
+    auto rmsStep = _waveContour.getRmsStep();
+
+
+    auto rms_8 = _waveContour.getRMS_8();
+    double xCoef = rmsStep / (125 * 4.0);
+    double prevValue = 0.0;
+    imgPainter.setPen(QColor("darkgreen"));
+    for (int i = 0; i < rms_8.size(); ++i) {
+        auto localRms = rms_8[i];
+        double currentValue = (60.0 + localRms)*heightCoef * 1.6;
+        imgPainter.drawLine(i*xCoef, height/2, i*xCoef, height/2 - currentValue);
+        imgPainter.drawLine((i-1)*xCoef, height/2 - prevValue, i*xCoef, height/2 - currentValue);
+        imgPainter.drawLine(i*xCoef, height/2, i*xCoef, height/2 + currentValue);
+        imgPainter.drawLine((i-1)*xCoef, height/2 + prevValue, i*xCoef, height/2 + currentValue);
+        prevValue = currentValue;
+    }
+
+    auto rms_4 = _waveContour.getRMS_4();
+    xCoef = rmsStep / (125 * 2.0);
+    prevValue = 0.0;
+    imgPainter.setPen(QColor("green"));
+    for (int i = 0; i < rms_4.size(); ++i) {
+        auto localRms = rms_4[i];
+        double currentValue = (60.0 + localRms)*heightCoef * 1.4;
+        imgPainter.drawLine(i*xCoef, height/2, i*xCoef, height/2 - currentValue);
+        imgPainter.drawLine((i-1)*xCoef, height/2 - prevValue, i*xCoef, height/2 - currentValue);
+        imgPainter.drawLine(i*xCoef, height/2, i*xCoef, height/2 + currentValue);
+        imgPainter.drawLine((i-1)*xCoef, height/2 + prevValue, i*xCoef, height/2 + currentValue);
+        prevValue = currentValue;
+    }
+
+    auto rms_2 = _waveContour.getRMS_2(); //TODO rename better
+    xCoef = rmsStep / (125);
+    prevValue = 0.0;
+    imgPainter.setPen(QColor("green").lighter(110));
+    for (int i = 0; i < rms_2.size(); ++i) {
+        auto localRms = rms_2[i];
+        double currentValue = (60.0 + localRms)*heightCoef * 1.2;
+        imgPainter.drawLine(i*xCoef, height/2, i*xCoef, height/2 - currentValue);
+        imgPainter.drawLine((i-1)*xCoef, height/2 - prevValue, i*xCoef, height/2 - currentValue);
+        imgPainter.drawLine(i*xCoef, height/2, i*xCoef, height/2 + currentValue);
+        imgPainter.drawLine((i-1)*xCoef, height/2 + prevValue, i*xCoef, height/2 + currentValue);
+        prevValue = currentValue;
+    }
+
+
 
     auto highs = _waveContour.rmsHigh();
     std::set<size_t> positionsHigh(highs.begin(), highs.end());
@@ -72,17 +118,15 @@ void WaveshapePainter::makeBackgroungImage(QPainter &painter, int height, double
     std::set<size_t> positionsLow(lows.begin(), lows.end());
 
     auto rms = _waveContour.getRMS();
-    auto rmsStep = _waveContour.getRmsStep();
-
-    const double xCoef = rmsStep / (125 / 2.0);
-    double prevValue = 0.0;
+    xCoef = rmsStep / (125 / 2.0);
+    prevValue = 0.0;
     for (int i = 0; i < rms.size(); ++i) {
         if (positionsHigh.count(i))
-            imgPainter.setPen(QColor("green"));
+            imgPainter.setPen(QColor("blue"));
         else if (positionsLow.count(i))
             imgPainter.setPen(QColor("red"));
         else
-            imgPainter.setPen(QColor("blue"));
+            imgPainter.setPen(QColor("darkgray"));
         auto localRms = rms[i];
 
         double currentValue = (60.0 + localRms)*heightCoef;
