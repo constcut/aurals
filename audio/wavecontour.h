@@ -38,13 +38,6 @@ public:
         calculateRms();
     }
 
-    ContourEl calculateElement(QVector<qint16> &samples) const; //TODO static?
-    qint32 max4(qint32 d1,qint32 d2,qint32 d3,qint32 d4) const;
-    qint32 min4(qint32 d1,qint32 d2,qint32 d3,qint32 d4) const;
-    ContourEl summateElements(const ContourEl &e1,const  ContourEl &e2,
-                              const  ContourEl &e3,const  ContourEl &e4) const;
-    ContourEl summate2Elements(const ContourEl &e1,const  ContourEl &e2) const;
-
     void changePeakSence(double newSence) {
         _peakSensetivity = newSence;
         calculateRms();
@@ -55,7 +48,6 @@ public:
     }
 
 protected:
-    QVector<ContourEl> summ4Lists(QVector<ContourEl> &source) const;
 
     QVector<float> _floatSamples;
 
@@ -86,8 +78,6 @@ private:
 
     void calculateRms();
     void createSubRms();
-    void markNotesStartEnd(QList<double>& lastRms, bool& noteIsStarted, size_t step);
-
 };
 
 #endif // WAVECONTOUR_H
