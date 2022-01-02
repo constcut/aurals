@@ -55,95 +55,83 @@ void WaveshapeQML::paint(QPainter *painter) {
 }
 
 
-void WaveshapePainter::paintWaveShape(QPainter &painter)
-{
-    //int width = painter.device()->width();
-    int height = painter.device()->height();
-    #ifdef Q_OS_ANDROID
-        height /= 2; //Android is a broke on Qt
-    #endif
-    double heightCoef = height / 200.0;
+void WaveshapePainter::makeBackgroungImage(QPainter &painter, int height, double heightCoef) {
 
+    _noImage = false;
+    _mainImage =  QImage(painter.device()->width(),painter.device()->height(), QImage::Format_ARGB32);
 
-    if (_noImage) {
+    QPainter imgPainter(&_mainImage);
 
-        _noImage = false;
-        _mainImage =  QImage(painter.device()->width(),painter.device()->height(), QImage::Format_ARGB32);
+    auto zoom64 = _waveContour.getZoom64();
+    auto zoom256 = _waveContour.getZoom128();
+    auto zoom128 = _waveContour.getZoom256();
 
-        QPainter imgPainter(&_mainImage);
-
-        auto zoom64 = _waveContour.getZoom64();
-        auto zoom256 = _waveContour.getZoom128();
-        auto zoom128 = _waveContour.getZoom256();
-
-        imgPainter.setPen(QColor("green"));
-        for (int i = 0; i < zoom256.size(); ++i) {
-            ContourEl conturEl = zoom256[i];
-            const int h = 2*conturEl.energy/(65000.0/heightCoef);
-            imgPainter.drawLine(i, height/2, i, height/2 + h);
-            imgPainter.drawLine(i, height/2, i, height/2 - h);
-        }
-
-        imgPainter.setPen(QColor("chartreuse"));
-        int prevX1=0, prevX2=0, prevY1=0, prevY2=0;
-        for (int i = 0; i < zoom64.size(); ++i)
-        {
-            ContourEl conturEl = zoom64[i];
-            imgPainter.drawLine(i*2, height/2 - conturEl.energy/(65000.0/heightCoef), prevX1, prevY1);
-            imgPainter.drawLine(i*2, height/2 + conturEl.energy/(65000.0/heightCoef), prevX2, prevY2);
-            prevX1 = prevX2 = i*2;
-            prevY1 = height/2 - conturEl.energy/(65000.0/heightCoef);
-            prevY2 = height/2 + conturEl.energy/(65000.0/heightCoef);
-        }
-        prevX1=0;
-        prevX2=0;
-        prevY1=0;
-        prevY2=0;
-        imgPainter.setPen(QColor("darkgreen"));
-        for (int i = 0; i < zoom128.size(); ++i)
-        {
-            ContourEl conturEl = zoom128[i];
-            imgPainter.drawLine(i/2, height/2, i/2, height/2 + 2*conturEl.energy/(65000.0/heightCoef));
-            imgPainter.drawLine(i/2, height/2, i/2, height/2 - 2*conturEl.energy/(65000.0/heightCoef));
-            imgPainter.drawLine(i / 2, height/2 - 2*conturEl.energy/(65000.0/heightCoef), prevX1, prevY1);
-            imgPainter.drawLine(i / 2, height/2 + 2*conturEl.energy/(65000.0/heightCoef), prevX2, prevY2);
-            prevX1 = prevX2 = i / 2;
-            prevY1 = height/2 - 2*conturEl.energy/(65000.0/heightCoef);
-            prevY2 = height/2 + 2*conturEl.energy/(65000.0/heightCoef);
-        }
-
-        auto env = _waveContour.rawEnv();
-        std::set<size_t> pos(env.begin(), env.end());
-
-        auto rms = _waveContour.getRMS();
-        auto rmsStep = _waveContour.getRmsStep();
-
-        imgPainter.setPen(QColor("blue"));
-        double prevValue = 0.0;
-        for (int i = 0; i < rms.size(); ++i) {
-            auto localRms = rms[i];
-            const double xCoef = rmsStep / (125 / 2.0);
-            imgPainter.drawLine(i*xCoef, 0, i*xCoef,  (60.0 + localRms)*heightCoef);
-            imgPainter.drawLine((i-1)*xCoef, prevValue, i*xCoef,  (60.0 + localRms)*heightCoef);
-            prevValue = (60.0 + localRms)*heightCoef;
-        }
-        /*
-        imgPainter.setPen(QColor("green"));
-        double prev = 0.0;
-        double prevIdx = 0.0;
-        for (size_t i = 0; i < env.size(); ++i) {
-            size_t rmsIdx = env[i] / 2;
-            auto localRms = rms[rmsIdx];
-
-            imgPainter.drawLine(prevIdx*2, prev, rmsIdx*2,  (60.0 + localRms)*heightCoef);
-            prevIdx = rmsIdx;
-            prev = (60.0 + localRms)*heightCoef;
-        }*/
+    imgPainter.setPen(QColor("green"));
+    for (int i = 0; i < zoom256.size(); ++i) {
+        ContourEl conturEl = zoom256[i];
+        const int h = 2*conturEl.energy/(65000.0/heightCoef);
+        imgPainter.drawLine(i, height/2, i, height/2 + h);
+        imgPainter.drawLine(i, height/2, i, height/2 - h);
     }
 
-    painter.drawImage(QPoint{0,0}, _mainImage);
+    imgPainter.setPen(QColor("chartreuse"));
+    int prevX1=0, prevX2=0, prevY1=0, prevY2=0;
+    for (int i = 0; i < zoom64.size(); ++i)
+    {
+        ContourEl conturEl = zoom64[i];
+        imgPainter.drawLine(i*2, height/2 - conturEl.energy/(65000.0/heightCoef), prevX1, prevY1);
+        imgPainter.drawLine(i*2, height/2 + conturEl.energy/(65000.0/heightCoef), prevX2, prevY2);
+        prevX1 = prevX2 = i*2;
+        prevY1 = height/2 - conturEl.energy/(65000.0/heightCoef);
+        prevY2 = height/2 + conturEl.energy/(65000.0/heightCoef);
+    }
+    prevX1=0;
+    prevX2=0;
+    prevY1=0;
+    prevY2=0;
+    imgPainter.setPen(QColor("darkgreen"));
+    for (int i = 0; i < zoom128.size(); ++i)
+    {
+        ContourEl conturEl = zoom128[i];
+        imgPainter.drawLine(i/2, height/2, i/2, height/2 + 2*conturEl.energy/(65000.0/heightCoef));
+        imgPainter.drawLine(i/2, height/2, i/2, height/2 - 2*conturEl.energy/(65000.0/heightCoef));
+        imgPainter.drawLine(i / 2, height/2 - 2*conturEl.energy/(65000.0/heightCoef), prevX1, prevY1);
+        imgPainter.drawLine(i / 2, height/2 + 2*conturEl.energy/(65000.0/heightCoef), prevX2, prevY2);
+        prevX1 = prevX2 = i / 2;
+        prevY1 = height/2 - 2*conturEl.energy/(65000.0/heightCoef);
+        prevY2 = height/2 + 2*conturEl.energy/(65000.0/heightCoef);
+    }
 
-    //TODO optional
+    auto env = _waveContour.rawEnv();
+    std::set<size_t> pos(env.begin(), env.end());
+
+    auto rms = _waveContour.getRMS();
+    auto rmsStep = _waveContour.getRmsStep();
+
+    imgPainter.setPen(QColor("blue"));
+    double prevValue = 0.0;
+    for (int i = 0; i < rms.size(); ++i) {
+        auto localRms = rms[i];
+        const double xCoef = rmsStep / (125 / 2.0);
+        imgPainter.drawLine(i*xCoef, 0, i*xCoef,  (60.0 + localRms)*heightCoef);
+        imgPainter.drawLine((i-1)*xCoef, prevValue, i*xCoef,  (60.0 + localRms)*heightCoef);
+        prevValue = (60.0 + localRms)*heightCoef;
+    }
+    /*
+    imgPainter.setPen(QColor("green"));
+    double prev = 0.0;
+    double prevIdx = 0.0;
+    for (size_t i = 0; i < env.size(); ++i) {
+        size_t rmsIdx = env[i] / 2;
+        auto localRms = rms[rmsIdx];
+
+        imgPainter.drawLine(prevIdx*2, prev, rmsIdx*2,  (60.0 + localRms)*heightCoef);
+        prevIdx = rmsIdx;
+        prev = (60.0 + localRms)*heightCoef;
+    }*/
+}
+
+void WaveshapePainter::drawPitch(QPainter &painter, int height) {
     auto pitchLine = _waveContour.getPitch();
     painter.setPen(QColor("red"));
     double prevPitch = -1;
@@ -153,30 +141,46 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
         painter.drawLine((i-1)*coef, height - prevPitch / 4.0, i*coef, height - pitch / 4.0);
         prevPitch = pitch;
     }
+}
 
-    if (_showNotes) {
-        auto noteStarts = _waveContour.getNoteStarts();
-        painter.setPen(QColor("yellow"));
-        for (int i = 0; i < noteStarts.size(); ++i) {
-            auto start = noteStarts[i];
-            const double pixelX = 2.0 * start / (125.0);
-            painter.drawEllipse(pixelX-5, height/2-5, 10, 10);
-        }
-        auto noteEnds = _waveContour.getNoteEnds();
-        painter.setPen(QColor("orange"));
-        for (int i = 0; i < noteEnds.size(); ++i) {
-            auto start = noteEnds[i];
-            const double pixelX = 2.0 * start / (125.0);
-            painter.drawEllipse(pixelX-5, height/2-5, 10, 10);
-        }
-    }
 
-    //painter.restore();
-    {
-        painter.setPen(Qt::darkMagenta);
-        painter.drawRect(2*_windowPosition/125,0,2*_windowWidth/125,height);
-       // qDebug() <<"WP "<<windowPosition<<" WW "<<windowWidth;
+void WaveshapePainter::drawNoteStartEnd(QPainter &painter, int height) {
+    auto noteStarts = _waveContour.getNoteStarts();
+    painter.setPen(QColor("yellow"));
+    for (int i = 0; i < noteStarts.size(); ++i) {
+        auto start = noteStarts[i];
+        const double pixelX = 2.0 * start / (125.0);
+        painter.drawEllipse(pixelX-5, height/2-5, 10, 10);
     }
+    auto noteEnds = _waveContour.getNoteEnds();
+    painter.setPen(QColor("orange"));
+    for (int i = 0; i < noteEnds.size(); ++i) {
+        auto start = noteEnds[i];
+        const double pixelX = 2.0 * start / (125.0);
+        painter.drawEllipse(pixelX-5, height/2-5, 10, 10);
+    }
+}
+
+
+void WaveshapePainter::paintWaveShape(QPainter &painter)
+{
+    int height = painter.device()->height();
+    #ifdef Q_OS_ANDROID
+        height /= 2; //Android is a broke on Qt
+    #endif
+    double heightCoef = height / 200.0;
+
+    if (_noImage)
+        makeBackgroungImage(painter, height, heightCoef);
+    painter.drawImage(QPoint{0,0}, _mainImage);
+
+    drawPitch(painter, height);
+
+    if (_showNotes)
+        drawNoteStartEnd(painter, height);
+
+    painter.setPen(Qt::darkMagenta);
+    painter.drawRect(2*_windowPosition/125,0,2*_windowWidth/125,height);
 }
 
 

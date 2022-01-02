@@ -71,6 +71,10 @@ protected:
     QImage _mainImage;
 
     bool _showNotes = false;
+
+    void makeBackgroungImage(QPainter &painter, int height, double heightCoef);
+    void drawPitch(QPainter &painter, int height);
+    void drawNoteStartEnd(QPainter &painter, int height);
 };
 
 
