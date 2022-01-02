@@ -229,6 +229,16 @@ Item {
                     spectrum.changeHighFreq(parseInt(currentText))
                 }
             }
+            Text {
+                text: "Rms Peak sence: "
+            }
+            ComboBox {
+                model : ["2.0", "3.0", "4.0", "5.0", "6.0", "7.0"]
+                currentIndex: 2
+                onCurrentTextChanged: {
+                    waveShape.setPeakSence(parseFloat(currentText))
+                }
+            }
         }
     }
 

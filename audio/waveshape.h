@@ -60,6 +60,11 @@ public:
     void audioPositionChanged(qint64 position);
     void invertShowNotes() { _showNotes = !_showNotes;}
 
+    void changePeakSence(double newSence) {
+        _waveContour.changePeakSence(newSence);
+        _noImage = true;
+    }
+
 protected:
     WaveContour _waveContour;
     qint64 _audioPoistion;
@@ -106,6 +111,7 @@ public:
     Q_INVOKABLE void setWindowWidth(quint64 newWidth) { _windowWidth = newWidth; update(); }
     Q_INVOKABLE void calculateF0() { _waveContour.calculateF0(); update(); }
     Q_INVOKABLE void showNotes() { invertShowNotes(); update();}
+    Q_INVOKABLE void setPeakSence(double newSence) { changePeakSence(newSence); update();}
 };
 
 

@@ -40,6 +40,11 @@ public:
                               const  ContourEl &e3,const  ContourEl &e4) const;
     ContourEl summate2Elements(const ContourEl &e1,const  ContourEl &e2) const;
 
+    void changePeakSence(double newSence) {
+        _peakSensetivity = newSence;
+        calculateRms();
+    }
+
 protected:
     QVector<ContourEl> summ4Lists(QVector<ContourEl> &source) const;
 
@@ -47,6 +52,8 @@ protected:
 
     size_t _rmsSize = 125 * 4;
     QVector<double> _rmsLine;
+
+    double _peakSensetivity = 4.0;
     std::vector<size_t> _rmsHigh;
     std::vector<size_t> _rmsLow;
 
@@ -61,7 +68,6 @@ protected:
 
     QVector<ContourEl> _bpm64; //TODO
     double _totalBPM;
-
 
 
 private:

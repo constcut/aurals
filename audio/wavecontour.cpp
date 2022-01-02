@@ -251,6 +251,7 @@ void WaveContour::calculateRms() {
     size_t rmsFrames = _floatSamples.size()/_rmsSize;
     //QList<double> lastRms;
     //bool noteIsStarted = false;
+    _rmsLine.clear();
 
     for (size_t step = 0; step < rmsFrames; ++step) {
         auto forRmsLocal = _floatSamples.mid(_rmsSize*step, _rmsSize);
@@ -261,10 +262,10 @@ void WaveContour::calculateRms() {
     }
 
     std::vector<double> stdRms(_rmsLine.begin(), _rmsLine.end());
-    _rmsHigh = peakIndexesInData(stdRms, 3.0); //3.0 is very good
+    _rmsHigh = peakIndexesInData(stdRms, _peakSensetivity);
     for (auto& s: stdRms)
         s *= -1;
-    _rmsLow = peakIndexesInData(stdRms, 3.0); //3.0 is very good
+    _rmsLow = peakIndexesInData(stdRms, _peakSensetivity);
 }
 
 
