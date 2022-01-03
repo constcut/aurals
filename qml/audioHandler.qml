@@ -9,72 +9,84 @@ Item {
 
     Dialog {
         id: settingsDialog
-        RowLayout {
+        ColumnLayout {
             spacing:  10
-            id: upperLayout
-            Text {
-                text: "Sample rate:"
-                visible: false //TODO better look on mobile
+            RowLayout {
+                spacing:  10
+                id: upperLayout
+                Text {
+                    text: "Sample rate:"
+                    visible: false //TODO better look on mobile
+                }
+                ComboBox {
+                    model: ["22050", "44100", "48000"]
+                    currentIndex: 1
+                    onCurrentTextChanged: {
+                        var sr = parseInt(currentText)
+                        audio.setSampleRate(sr)
+                    }
+                }
+                ToolButton {
+                    text: "Start record"
+                    onClicked: audio.startRecord()
+                }
+                ToolButton {
+                    text: "Stop record"
+                    onClicked: audio.stopRecord()
+                }
+                ToolButton {
+                    text: "Reset"
+                     onClicked: audio.resetBufer();
+                }
+                ToolButton {
+                    text: "Start player"
+                    onClicked: audio.startPlayback()
+                }
+                ToolButton {
+                    text: "Stop player"
+                    onClicked: audio.stopPlayback()
+                }
+                ToolButton {
+                    text: "Save dump"
+                    onClicked: audio.saveWavFile("rec.dump.wav")
+                }
+                ToolButton {
+                    text: "Load dump"
+                    onClicked: audio.loadWavFile("rec.dump.wav")
+                }
+
+                //ToolButton {
+                //    text: "Request permission"
+                //    onClicked: audio.requestPermission()
+                //}
             }
-            ComboBox {
-                model: ["22050", "44100", "48000"]
-                currentIndex: 1
-                onCurrentTextChanged: {
-                    var sr = parseInt(currentText)
-                    audio.setSampleRate(sr)
+            RowLayout {
+                spacing:  10
+                ToolButton {
+                    text: "Check midi"
+                    onClicked:  {
+                        audio.checkMidi() //LOAD default file
+                    }
+                }
+                ToolButton {
+                    text: "Start midi"
+                    onClicked:  {
+                        audio.startMidiPlayer()
+                    }
+                }
+                ToolButton {
+                    text: "Stop midi"
+                    onClicked:  {
+                        audio.stopMidiPlayer()
+                    }
+                }
+                ToolButton {
+                    text: "Save midi dump"
+                    onClicked: {
+                        audio.saveMidiToWav("midi_.wav")
+                    }
                 }
             }
-            ToolButton {
-                text: "Start record"
-                onClicked: audio.startRecord()
-            }
-            ToolButton {
-                text: "Stop record"
-                onClicked: audio.stopRecord()
-            }
-            ToolButton {
-                text: "Reset"
-                 onClicked: audio.resetBufer();
-            }
-            ToolButton {
-                text: "Start player"
-                onClicked: audio.startPlayback()
-            }
-            ToolButton {
-                text: "Stop player"
-                onClicked: audio.stopPlayback()
-            }
-            ToolButton {
-                text: "Save dump"
-                onClicked: audio.saveWavFile("rec.dump.wav")
-            }
-            ToolButton {
-                text: "Load dump"
-                onClicked: audio.loadWavFile("rec.dump.wav")
-            }
-            ToolButton {
-                text: "Check midi"
-                onClicked:  {
-                    audio.checkMidi()
-                    audio.startMidiPlayer()
-                }
-            }
-            ToolButton {
-                text: "Stop midi"
-                onClicked:  {
-                    audio.stopMidiPlayer()
-                }
-            }
-            ToolButton {
-                text: "Save midi dump"
-                onClicked: {
-                    audio.saveMidiToWav("midi_.wav")
-                }
-            }
-            //ToolButton {
-            //    text: "Request permission"
-            //    onClicked: audio.requestPermission()
-            //}
         }
     }
 
