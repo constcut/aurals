@@ -47,6 +47,8 @@ public:
     void requestStopRecord();
     void requestStopPlayback();
 
+    void checkMidi();
+
 private:
 
     void initRecorder();

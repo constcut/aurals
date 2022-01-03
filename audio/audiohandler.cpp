@@ -9,6 +9,8 @@
 #include "app/androidtools.h"
 #include "wavfile.h"
 
+#include "music/midirender.h"
+
 
 AudioHandler::AudioHandler() {
     _commonFormat.setSampleRate(44100);
@@ -195,4 +197,16 @@ void AudioHandler::deleteRecord(QString filename) const {
 
 void AudioHandler::renameRecord(QString filename, QString newFilename) const {
     QFile::rename("records/" + filename, "records/" + newFilename);
+}
+
+void AudioHandler::checkMidi() {
+    MidiRender render;
+    std::string sfPath = "/home/punnalyse/dev/mtherapp/mtherapp/sf/instrument.sf2";
+    render.openSoundFont(sfPath.c_str());
+    std::string midiPath = "/home/punnalyse/Downloads/TinySoundFont-master/examples/venture.mid";
+    auto qa = render.renderShort(midiPath.c_str());
+    qDebug() << "Generated " << qa.size() << " bytes ";
+    _commonBufer = qa;
+
+    saveWavFile("checkmidi.wav");
 }

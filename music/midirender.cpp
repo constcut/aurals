@@ -13,8 +13,8 @@
 
 MidiRender::MidiRender()
 {
-    renderFrameSize = 1024; //must make simply configurable
-    freq = 8000; //or 44100
+    renderFrameSize = 1024;
+    freq = 44100;
     totalMsSpent = 0;
 }
 
