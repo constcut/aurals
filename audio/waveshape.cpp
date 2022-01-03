@@ -60,10 +60,9 @@ void WaveshapePainter::makeBackgroungImage(QPainter &painter, int height, double
     _mainImage =  QImage(painter.device()->width(),painter.device()->height(), QImage::Format_ARGB32);
     QPainter imgPainter(&_mainImage);
 
-    auto rmsStep = _waveContour.getRmsStep();
     auto paintRms = [&](double rmsCoef, double expandCoef,
             const std::vector<double>& container, QColor base, QColor border) {
-        double xCoef = rmsStep / (125 * rmsCoef / 2.0);
+        double xCoef = _waveContour.getRmsStep() / (_waveContour.getMinRmsStep() * rmsCoef / 2.0);
         double prevValue = 0.0;
         for (size_t i = 0; i < container.size(); ++i) {
             auto localRms = container[i];
@@ -92,8 +91,7 @@ void WaveshapePainter::paintMainRms(QPainter &imgPainter, int height, double hei
     std::unordered_set<size_t> positionsLow(lows.begin(), lows.end());
     auto rms = _waveContour.getRMS();
 
-    auto rmsStep = _waveContour.getRmsStep();
-    double xCoef = rmsStep / (125 / 2.0);
+    double xCoef = _waveContour.getRmsStep() / (_waveContour.getMinRmsStep() / 2.0);
     double prevValue = -1.0;
 
     for (size_t i = 0; i < rms.size(); ++i) { //TODO? отрисовать лямбдой, и после этого сделать дополнительную отривоску начал\концов
