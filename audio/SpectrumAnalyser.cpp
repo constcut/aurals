@@ -38,11 +38,11 @@
 **
 ****************************************************************************/
 
-#include "SpectrumAnalyser.h"
-#include "AudioUtils.h"
+#include "SpectrumAnalyser.hpp"
+#include "AudioUtils.hpp"
 #include "libs/fft/fftreal_wrapper.h"
 
-#include "FeatureExtractor.h"
+#include "FeatureExtractor.hpp"
 
 #include <qmath.h>
 #include <qmetatype.h>

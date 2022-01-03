@@ -1,4 +1,4 @@
-#include "Yin.h"
+#include "Yin.hpp"
 
 Yin::Yin() {
     _threshold = 0.15; //TODO play with + check funny place

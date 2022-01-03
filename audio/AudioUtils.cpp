@@ -39,7 +39,7 @@
 ****************************************************************************/
 
 #include <QAudioFormat>
-#include "AudioUtils.h"
+#include "AudioUtils.hpp"
 
 qint64 audioDuration(const QAudioFormat &format, qint64 bytes) {
     return (bytes * 1000000) /

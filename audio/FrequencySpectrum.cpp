@@ -38,7 +38,7 @@
 **
 ****************************************************************************/
 
-#include "FrequencySpectrum.h"
+#include "FrequencySpectrum.hpp"
 
 
 FrequencySpectrum::FrequencySpectrum(int numPoints)

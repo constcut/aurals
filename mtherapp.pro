@@ -58,20 +58,20 @@ HEADERS += \
     app/Clipboard.hpp \
     app/Init.hpp \
     app/LogHandler.hpp \
-    audio/AudioHandler.h \
-    audio/AudioReceiver.h \
-    audio/AudioSpeaker.h \
-    audio/AudioUtils.h \
-    audio/FeatureExtractor.h \
+    audio/AudioHandler.hpp \
+    audio/AudioReceiver.hpp \
+    audio/AudioSpeaker.hpp \
+    audio/AudioUtils.hpp \
+    audio/FeatureExtractor.hpp \
     audio/FindPeaks.hpp \
-    audio/FrequencySpectrum.h \
-    audio/Spectrograph.h \
-    audio/Spectrum.h \
-    audio/SpectrumAnalyser.h \
-    audio/WavFile.h \
-    audio/WaveContour.h \
-    audio/WaveShape.h \
-    audio/Yin.h \
+    audio/FrequencySpectrum.hpp \
+    audio/Spectrograph.hpp \
+    audio/Spectrum.hpp \
+    audio/SpectrumAnalyser.hpp \
+    audio/WavFile.hpp \
+    audio/WaveContour.hpp \
+    audio/WaveShape.hpp \
+    audio/Yin.hpp \
     libs/fft/Array.h \
     libs/fft/Array.hpp \
     libs/fft/DynArray.h \

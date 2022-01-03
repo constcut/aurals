@@ -41,15 +41,15 @@
 #ifndef SPECTROGRAPH_H
 #define SPECTROGRAPH_H
 
-#include "SpectrumAnalyser.h"
+#include "SpectrumAnalyser.hpp"
 
 #include <QQuickPaintedItem>
 #include <QPainter>
 
 #include <unordered_set>
 
-#include "FrequencySpectrum.h"
-#include "FeatureExtractor.h"
+#include "FrequencySpectrum.hpp"
+#include "FeatureExtractor.hpp"
 
 
 class SpectrographPainter {

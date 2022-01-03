@@ -1,4 +1,4 @@
-#include "AudioSpeaker.h"
+#include "AudioSpeaker.hpp"
 
 #include <QDebug>
 #include <QFile>
@@ -6,7 +6,7 @@
 
 #include <cstring>
 
-#include "AudioHandler.h"
+#include "AudioHandler.hpp"
 
 
 AudioSpeaker::AudioSpeaker(const QAudioFormat &format, QObject *parent, QByteArray& commonBufer)

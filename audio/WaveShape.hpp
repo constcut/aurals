@@ -46,7 +46,7 @@
 
 #include <memory>
 
-#include "WaveContour.h"
+#include "WaveContour.hpp"
 
 
 class WaveshapePainter  {

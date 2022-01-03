@@ -42,7 +42,7 @@
 #define SPECTRUM_H
 
 #include <qglobal.h>
-#include "AudioUtils.h"
+#include "AudioUtils.hpp"
 
 const int FFTLengthPowerOfTwo = 12;
 const int    SpectrumLengthSamples  = PowerOfTwo<FFTLengthPowerOfTwo>::Result;

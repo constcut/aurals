@@ -1,9 +1,9 @@
-﻿#include "WaveContour.h"
-#include "WavFile.h"
+﻿#include "WaveContour.hpp"
+#include "WavFile.hpp"
 
-#include "FeatureExtractor.h"
+#include "FeatureExtractor.hpp"
 #include "FindPeaks.hpp"
-#include "AudioUtils.h"
+#include "AudioUtils.hpp"
 
 #include <QDebug>
 

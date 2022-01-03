@@ -45,8 +45,8 @@
 #include <QObject>
 #include <QVector>
 
-#include "FrequencySpectrum.h"
-#include "Spectrum.h"
+#include "FrequencySpectrum.hpp"
+#include "Spectrum.hpp"
 
 #include "libs/fft/FFTRealFixLenParam.h"
 
