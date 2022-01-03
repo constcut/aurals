@@ -25,11 +25,13 @@ public:
         _peakSensetivity = newSence;
         calculateRms();
     }
+
     size_t getRmsStep() const { return _rmsStep; }
     void setRmsStep(size_t newRmsStep) {
         _rmsStep = newRmsStep;
         calculateRms();
     }
+    size_t getMinRmsStep() const { return _rmsStep / 4; }
 
     void calculateF0();
     const std::vector<double>& getPitch() const { return _yinLine; }

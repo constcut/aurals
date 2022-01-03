@@ -184,9 +184,8 @@ void SpectrumAnalyser::setWindowFunction(WindowFunction type) {
 
 void SpectrumAnalyser::calculate(const QByteArray &buffer,
                          const QAudioFormat &format) {
-    SPECTRUMANALYSER_DEBUG << "SpectrumAnalyser::calculate"
-                           << QThread::currentThread()
-                           << "state" << _state;
+
+    //qDebug() << "SpectrumAnalyser::calculate" << QThread::currentThread() << "state" << _state;
     if (isReady()) {
         Q_ASSERT(isPCMS16LE(format));
         const int bytesPerSample = format.sampleSize() * format.channelCount() / 8;

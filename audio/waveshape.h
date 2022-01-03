@@ -111,6 +111,7 @@ public:
     Q_INVOKABLE qreal getRMS(int index) const { return _waveContour.getRMS()[index]; }
     Q_INVOKABLE int getRmsSize() const { return _waveContour.getRMS().size(); }
     Q_INVOKABLE int getRmsStep() const { return _waveContour.getRmsStep();}
+    Q_INVOKABLE int getMinRmsStep() const { return _waveContour.getMinRmsStep(); }
 
     void paint(QPainter* painter);
 

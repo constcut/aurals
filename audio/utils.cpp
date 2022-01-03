@@ -53,9 +53,6 @@ qint64 audioLength(const QAudioFormat &format, qint64 microSeconds) {
    return result;
 }
 
-qreal nyquistFrequency(const QAudioFormat &format) {
-    return format.sampleRate() / 2;
-}
 
 QString formatToString(const QAudioFormat &format) {
     QString result;

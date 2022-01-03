@@ -154,8 +154,8 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
         drawNoteStartEnd(painter, height);
 
     painter.setPen(Qt::darkMagenta);
-    auto x1 = 2.0 * _windowPosition / (_waveContour.getRmsStep() / 4.0); //TODO отдельная функция для минимального окна RMS
-    auto x2 = 2.0 * _windowWidth / (_waveContour.getRmsStep() / 4.0);
+    auto x1 = 2.0 * _windowPosition / (_waveContour.getMinRmsStep());
+    auto x2 = 2.0 * _windowWidth / (_waveContour.getMinRmsStep());
     painter.drawRect(x1, 0, x2, height);
 }
 

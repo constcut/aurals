@@ -46,18 +46,14 @@
 
 QT_FORWARD_DECLARE_CLASS(QAudioFormat)
 
-//-----------------------------------------------------------------------------
-// Miscellaneous utility functions
-//-----------------------------------------------------------------------------
-
 qint64 audioDuration(const QAudioFormat &format, qint64 bytes);
 qint64 audioLength(const QAudioFormat &format, qint64 microSeconds);
 
 QString formatToString(const QAudioFormat &format);
-qreal nyquistFrequency(const QAudioFormat &format);
 
 qreal pcmToReal(qint16 pcm); // Scale PCM value to [-1.0, 1.0]
 qint16 realToPcm(qreal real); // Scale real value in [-1.0, 1.0] to PCM
+
 bool isPCM(const QAudioFormat &format); // Check whether the audio format is PCM
 bool isPCMS16LE(const QAudioFormat &format); // Check whether the audio format is signed, little-endian, 16-bit PCM
 
@@ -66,36 +62,5 @@ template<int N> class PowerOfTwo // Compile-time calculation of powers of two
 
 template<> class PowerOfTwo<0>
 { public: static const int Result = 1; };
-
-
-//-----------------------------------------------------------------------------
-// Debug output
-//-----------------------------------------------------------------------------
-
-class NullDebug { //TODO заменить позже на собственные флаги использования дебаггера
-public:
-    template <typename T>
-    NullDebug& operator<<(const T&) { return *this; }
-};
-
-inline NullDebug nullDebug() { return NullDebug(); }
-
-#ifdef LOG_ENGINE
-#   define ENGINE_DEBUG qDebug()
-#else
-#   define ENGINE_DEBUG nullDebug()
-#endif
-
-#ifdef LOG_SPECTRUMANALYSER
-#   define SPECTRUMANALYSER_DEBUG qDebug()
-#else
-#   define SPECTRUMANALYSER_DEBUG nullDebug()
-#endif
-
-#ifdef LOG_WAVEFORM
-#   define WAVEFORM_DEBUG qDebug()
-#else
-#   define WAVEFORM_DEBUG nullDebug()
-#endif
 
 #endif // UTILS_H

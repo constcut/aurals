@@ -43,17 +43,16 @@ Item {
                         flick.contentX = 0
                 }
                 onClicked:{
-                    //TODO replace 125
-                    waveShape.setWindowPosition(mouseX*125.0/2.0)
-
-                    //spectrum.loadSpectrum(item.filename,mouseX*125.0/2.0) //This version reloads file
-                    spectrum.loadByteArray(waveShape.getPCM(mouseX*125.0/2.0, spectrum.getSamplesAmount()));
+                    var minRmStep = waveShape.getMinRmsStep()
+                    waveShape.setWindowPosition(mouseX * minRmStep/2.0)
+                    //spectrum.loadSpectrum(item.filename,mouseX*minRmStep/2.0) //This version reloads file
+                    spectrum.loadByteArray(waveShape.getPCM(mouseX * minRmStep / 2.0, spectrum.getSamplesAmount()));
 
                     windowInfo.text = "Window RMS = " + spectrum.getRMSNoWindow().toFixed(4)
                     + "\nPitch = " + spectrum.getPitch().toFixed(3)
                     + "\nMIDI# = " + spectrum.freqToMidi(spectrum.getPitch())
                     + "\nSpecPitch= " + spectrum.getSpectrumF0().toFixed(3)
-                    + "\nTime = " + ((mouseX*125.0/2.0) / 44100.0).toFixed(4)
+                    + "\nTime = " + ((mouseX * minRmStep / 2.0) / 44100.0).toFixed(4)
                     outputRmsGroup(mouseX)
 
                     windowInfo.text += "\n" //TODO rename component
@@ -67,8 +66,9 @@ Item {
                     windowInfo.text += "Gaps: " + spectrum.gapLevel()
                 }
                 onDoubleClicked: {
-                    //audio.loadOnlyWindow(item.filename, mouseX*125.0/2.0, spectrum.getSamplesAmount())
-                    audio.loadWindowPCM(waveShape.getPCM(mouseX*125.0/2.0, spectrum.getSamplesAmount()))
+                    var minRmStep = waveShape.getMinRmsStep()
+                    //audio.loadOnlyWindow(item.filename, mouseX * minRmStep / 2.0, spectrum.getSamplesAmount())
+                    audio.loadWindowPCM(waveShape.getPCM(mouseX * minRmStep / 2.0, spectrum.getSamplesAmount()))
                     audio.startPlayback() //TODO with repeat
                 }
 
@@ -80,7 +80,8 @@ Item {
                     var max = -120.0
 
                     var rmsStep = waveShape.getRmsStep();
-                    var rmsCoef = rmsStep / (125 / 2.0)
+                    var rmsMinStep = waveShape.getMinRmsStep();
+                    var rmsCoef = rmsStep / (rmsMinStep / 2.0)
 
                     for (var i = 0; i < 50; i+=2) {
                         var rmsCheckValue = waveShape.getRMS((mouseX + i) / rmsCoef)
