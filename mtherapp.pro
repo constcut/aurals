@@ -69,6 +69,7 @@ HEADERS += \
     audio/spectrumanalyser.h \
     audio/utils.h \
     audio/wavecontour.h \
+    audio/waveholder.h \
     audio/waveshape.h \
     audio/wavfile.h \
     audio/yin.h \

@@ -42,13 +42,15 @@
 #define SPECTROGRAPH_H
 
 #include "spectrumanalyser.h"
-#include "frequencyspectrum.h"
-#include "featureextractor.h"
 
 #include <QQuickPaintedItem>
 #include <QPainter>
 
 #include <unordered_set>
+
+#include "frequencyspectrum.h"
+#include "featureextractor.h"
+#include "waveholder.h"
 
 
 class SpectrographPainter {
@@ -147,8 +149,6 @@ public:
         updateBars();
     }
 
-
-
     Q_INVOKABLE qreal getFreq1() const { return _barSelected * _freqStep; } //TODO barRange
     Q_INVOKABLE qreal getFreq2() const { return (_barSelected + 1) * _freqStep; }
     Q_INVOKABLE qreal getPitch() const { return _spectrum._pitchYin; }
@@ -168,7 +168,9 @@ public:
     Q_INVOKABLE qreal gapLevel() const { return _gapLevel;  }
 
     Q_INVOKABLE void onPress(int xPress, int yPress, int width, int height);
+
     Q_INVOKABLE bool loadSpectrum(QString filename, quint64 position);
+    Q_INVOKABLE void loadFromWave(WaveHolder w, quint64 position);
 
     Q_INVOKABLE void setYinLimit(int limit) { _analyser.yinLimit = limit; };
     Q_INVOKABLE void setFFTLimit(int limit) { _analyser.fftLimit = limit; };

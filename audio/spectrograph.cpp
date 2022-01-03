@@ -519,3 +519,7 @@ bool SpectrographQML::loadSpectrum(QString filename, quint64 position) {
     _analyser.calculate(analyseData, wav.audioFormat());
     return true;
 }
+
+void SpectrographQML::loadFromWave(WaveHolder w, quint64 position) {
+
+}

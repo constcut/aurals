@@ -5,8 +5,7 @@
 #include <QObject>
 
 
-class WaveContour /*: public QObject*/ { //This class could be sepparated from Qt enviroment, just don't enherit QObject, and remove macros
-    //Q_OBJECT
+class WaveContour  {
 
 public:
 
@@ -43,9 +42,9 @@ protected:
     std::vector<float> _floatSamples;
 
     size_t _rmsStep = 125 * 4;
-    std::vector<double> _rmsLine; //0, 1, 2, 3
+    std::vector<double> _rmsLine;
     std::vector<double> _halfRmsLine;
-    std::vector<double> _quaterRmsLine; //TODO заменить на обычные вектора,+ сделать объект QObject
+    std::vector<double> _quaterRmsLine;
     std::vector<double> _8RmsLine;
 
     double _peakSensetivity = 4.0;
@@ -56,7 +55,7 @@ protected:
     std::vector<double> _yinLine;
 
 private:
-    bool loadWavFile(QString filename);
+    bool loadWavFile(QString filename); //The only left qt part, only beacuse of WaveFile
 
     void calculateRms();
 };

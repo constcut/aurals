@@ -47,6 +47,7 @@
 #include <memory>
 
 #include "wavecontour.h"
+#include "waveholder.h"
 
 
 class WaveshapePainter  {
@@ -107,18 +108,10 @@ public:
     explicit WaveshapeQML([[maybe_unused]] QQuickItem* parent = NULL) {}
     ~WaveshapeQML() = default;
 
-    Q_INVOKABLE int getPixelsLength() {
-        return _waveContour.getRMS_8().size(); // TODO rewrit
-    }
-    Q_INVOKABLE qreal getRMS(int index) const {
-        return _waveContour.getRMS()[index];
-    }
-    Q_INVOKABLE int getRmsSize() const {
-        return _waveContour.getRMS().size();
-    }
-    Q_INVOKABLE int getRmsStep() const {
-        return _waveContour.getRmsStep();
-    }
+    Q_INVOKABLE int getPixelsLength() { return _waveContour.getRMS_8().size();  } // TODO rewrite names
+    Q_INVOKABLE qreal getRMS(int index) const { return _waveContour.getRMS()[index]; }
+    Q_INVOKABLE int getRmsSize() const { return _waveContour.getRMS().size(); }
+    Q_INVOKABLE int getRmsStep() const { return _waveContour.getRmsStep();}
 
     void paint(QPainter* painter);
 
@@ -136,7 +129,7 @@ public:
 
     Q_INVOKABLE void setYinThreshold(double threshold) { changeYinTheshold(threshold); update(); }
 
-    //Q_INVOKABLE WaveContour getWave() { return _waveContour; }
+    Q_INVOKABLE WaveHolder getWave() { return WaveHolder(_waveContour); }
 };
 
 
