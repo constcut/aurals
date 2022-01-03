@@ -44,15 +44,15 @@ std::uint32_t mtherapp::MidiTrack::calculateHeader(bool skipSomeMessages) {
         calculatedSize += operator[](i).calculateSize(skipSomeMessages);
 
     if (enableMidiLog)
-        if (trackSize != calculatedSize)
-            qDebug() << "UPDATING track size: " << trackSize << " to " << calculatedSize;
+        if (_trackSize != calculatedSize)
+            qDebug() << "UPDATING track size: " << _trackSize << " to " << calculatedSize;
 
-    trackSize = calculatedSize;
+    _trackSize = calculatedSize;
 
-    chunkId[0] = 'M';
-    chunkId[1] = 'T';
-    chunkId[2] = 'r';
-    chunkId[3] = 'k';
+    _chunkId[0] = 'M';
+    _chunkId[1] = 'T';
+    _chunkId[2] = 'r';
+    _chunkId[3] = 'k';
     return calculatedSize;
 }
 
@@ -62,10 +62,10 @@ void mtherapp::MidiTrack::pushChangeInstrument(std::uint8_t newInstrument, std::
 
 void mtherapp::MidiTrack::pushTrackName(std::string trackName) {
     MidiMessage nameTrack(0xff, 3);
-    nameTrack.metaLen = NBytesInt(trackName.size());
+    nameTrack._metaLen = NBytesInt(trackName.size());
     //.toLocal8Bit();
     for (size_t i = 0; i < trackName.size(); ++i)
-        nameTrack.metaBufer.push_back(trackName[i]);
+        nameTrack._metaBufer.push_back(trackName[i]);
 
     push_back(nameTrack);
 }
@@ -73,15 +73,15 @@ void mtherapp::MidiTrack::pushTrackName(std::string trackName) {
 void mtherapp::MidiTrack::pushMetricsSignature(std::uint8_t numeration, std::uint8_t denumeration,
                                      std::uint32_t timeShift, std::uint8_t metr, std::uint8_t perQuat) {
     MidiMessage metrics(0xff, 88, 0, timeShift);
-    metrics.metaBufer.push_back(numeration);
+    metrics._metaBufer.push_back(numeration);
 
     //log2 TODO!!!!
     std::uint8_t translatedDuration = 4; //log(denumeration); //there might be some issue on wrong data
 
-    metrics.metaBufer.push_back(translatedDuration);
-    metrics.metaBufer.push_back(metr);
-    metrics.metaBufer.push_back(perQuat);
-    metrics.metaLen = NBytesInt(4); //size of 4 bytes upper
+    metrics._metaBufer.push_back(translatedDuration);
+    metrics._metaBufer.push_back(metr);
+    metrics._metaBufer.push_back(perQuat);
+    metrics._metaLen = NBytesInt(4); //size of 4 bytes upper
 
     push_back(metrics);
 }
@@ -89,10 +89,10 @@ void mtherapp::MidiTrack::pushMetricsSignature(std::uint8_t numeration, std::uin
 void mtherapp::MidiTrack::pushChangeBPM(std::uint16_t bpm, std::uint32_t timeShift) {
     MidiMessage changeTempo(0xff, 81, 0, timeShift);
     std::uint32_t nanoCount = 60000000 / bpm; //6e7 = amount of nanoseconds
-    changeTempo.metaBufer.push_back((nanoCount >> 16) & 0xff);
-    changeTempo.metaBufer.push_back((nanoCount >> 8) & 0xff);
-    changeTempo.metaBufer.push_back(nanoCount & 0xff);
-    changeTempo.metaLen = NBytesInt(3); //size upper
+    changeTempo._metaBufer.push_back((nanoCount >> 16) & 0xff);
+    changeTempo._metaBufer.push_back((nanoCount >> 8) & 0xff);
+    changeTempo._metaBufer.push_back(nanoCount & 0xff);
+    changeTempo._metaLen = NBytesInt(3); //size upper
 
     push_back(changeTempo);
 }
@@ -163,7 +163,7 @@ void mtherapp::MidiTrack::pushFadeIn(std::uint16_t offset, std::uint8_t channel)
 
 void mtherapp::MidiTrack::pushEvent47() { //Emergency event
     MidiMessage event47(0xff, 47, 0, 0);
-    event47.metaLen = NBytesInt(0);
+    event47._metaLen = NBytesInt(0);
     push_back(event47);
 }
 
@@ -184,40 +184,40 @@ std::int16_t mtherapp::MidiTrack::calculateRhythmDetail(std::uint8_t value, std:
 
 std::uint32_t mtherapp::MidiTrack::readFromFile(std::ifstream& f)
 {
-    f.read(chunkId, 4);
-    f.read((char *)&trackSize, 4);
+    f.read(_chunkId, 4);
+    f.read((char *)&_trackSize, 4);
 
-    if ((chunkId[0] != 'M') || (chunkId[1] != 'T') || (chunkId[2] != 'r') || (chunkId[3] != 'k')) //TODO constexpr check
+    if ((_chunkId[0] != 'M') || (_chunkId[1] != 'T') || (_chunkId[2] != 'r') || (_chunkId[3] != 'k')) //TODO constexpr check
     {
         if (enableMidiLog)
             qDebug() << "Error: Header of track corrupted "
-                  << chunkId[0] << chunkId[1] << chunkId[2] << chunkId[3];
+                  << _chunkId[0] << _chunkId[1] << _chunkId[2] << _chunkId[3];
         return 8;
     }
 
-    trackSize = swapEndian<std::uint32_t>(trackSize);
+    _trackSize = swapEndian<std::uint32_t>(_trackSize);
 
     if (enableMidiLog)
-        qDebug() << "Reading midi track " << chunkId[0] << chunkId[1] << chunkId[2] << chunkId[3] << trackSize;
+        qDebug() << "Reading midi track " << _chunkId[0] << _chunkId[1] << _chunkId[2] << _chunkId[3] << _trackSize;
 
     double totalTime = 0.0;
     int beatsPerMinute = 120; //default value
 
     std::uint32_t bytesRead = 0;
-    while (bytesRead < trackSize) {
+    while (bytesRead < _trackSize) {
 
         MidiMessage midiMessage;
         bytesRead += midiMessage.readFromFile(f);
         totalTime += midiMessage.getSecondsLength(beatsPerMinute) * 1000.0; //to ms
-        midiMessage.absoluteTime = totalTime;
+        midiMessage._absoluteTime = totalTime;
         push_back(midiMessage);
     }
 
-    timeLengthOnLoad = totalTime;
+    _timeLengthOnLoad = totalTime;
 
-    if (bytesRead > trackSize) {
+    if (bytesRead > _trackSize) {
         if (enableMidiLog)
-            qDebug() << "Critical ERROR readen more bytes then needed " << bytesRead << trackSize;
+            qDebug() << "Critical ERROR readen more bytes then needed " << bytesRead << _trackSize;
 
         /*if (enableMidiLog) {
             if (f.peek(f.tellg() - (bytesRead - trackSize)))
@@ -233,14 +233,14 @@ std::uint32_t mtherapp::MidiTrack::readFromFile(std::ifstream& f)
 std::uint32_t mtherapp::MidiTrack::writeToFile(std::ofstream& f, bool skipSomeMessages) {
 
     std::uint32_t totalBytesWritten = 0;
-    f << chunkId;
+    f << _chunkId;
 
-    std::uint32_t sizeInverted = swapEndian<std::uint32_t>(trackSize);
+    std::uint32_t sizeInverted = swapEndian<std::uint32_t>(_trackSize);
     f << sizeInverted;
     totalBytesWritten += 8;
 
     if (enableMidiLog)
-        qDebug() << "Writing midi track " << chunkId[0] << chunkId[1] << chunkId[2] << chunkId[3] << trackSize;
+        qDebug() << "Writing midi track " << _chunkId[0] << _chunkId[1] << _chunkId[2] << _chunkId[3] << _trackSize;
 
     for (size_t i = 0; i < size(); ++i)
         totalBytesWritten += this->operator[](i).writeToFile(f, skipSomeMessages);

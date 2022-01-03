@@ -5,32 +5,32 @@
 
 using namespace mtherapp;
 
-MidiMessage::MidiMessage() : byte0(0), p1(0), p2(0){}
+MidiMessage::MidiMessage() : _byte0(0), _p1(0), _p2(0){}
 
 MidiMessage::MidiMessage(std::uint8_t b0, std::uint8_t b1, std::uint8_t b2, std::uint32_t timeShift)
-: byte0(b0), p1(b1), p2(b2), timeStamp(timeShift) {}
+: _byte0(b0), _p1(b1), _p2(b2), _timeStamp(timeShift) {}
 
 
 double MidiMessage::getSecondsLength(double bpm) {
-    double seconds = (double)(timeStamp.getValue())/960.0;
+    double seconds = (double)(_timeStamp.getValue())/960.0;
     return seconds;
 }
 
 
 std::uint8_t MidiMessage::getEventType() {
-    std::uint8_t eventType = (byte0 & (0xf0)) >> 4; //name with enumeration byte blocks
+    std::uint8_t eventType = (_byte0 & (0xf0)) >> 4; //name with enumeration byte blocks
     return eventType;
 }
 
 
 std::uint8_t MidiMessage::getChannel() {
-    std::int8_t midiChannel = byte0 & 0xf; //name with enumeration byte blocks
+    std::int8_t midiChannel = _byte0 & 0xf; //name with enumeration byte blocks
     return midiChannel;
 }
 
 
 bool MidiMessage::isMetaEvent() {
-    return byte0 == 0xff;
+    return _byte0 == 0xff;
 }
 
 
@@ -41,7 +41,7 @@ std::uint32_t MidiMessage::calculateSize(bool skipSomeMessages) {
         if (canSkipThat())
             return 0;
 
-    messageSize += timeStamp.size();
+    messageSize += _timeStamp.size();
     ++messageSize; //byte 0
 
     if (isMetaEvent() == false) {
@@ -53,8 +53,8 @@ std::uint32_t MidiMessage::calculateSize(bool skipSomeMessages) {
     }
     else {
         ++messageSize; //parameter 1 actually
-        messageSize += metaLen.size();
-        messageSize += metaBufer.size();
+        messageSize += _metaLen.size();
+        messageSize += _metaBufer.size();
     }
     return messageSize;
 }
@@ -62,13 +62,13 @@ std::uint32_t MidiMessage::calculateSize(bool skipSomeMessages) {
 
 bool MidiMessage::canSkipThat() {
     if (isMetaEvent()) {
-        if (p1 == 47) //MAKE ENUMERATION
+        if (_p1 == 47) //MAKE ENUMERATION
             return false;
-        if (p1 == 81) //change tempo
+        if (_p1 == 81) //change tempo
             return false;
-        if (p1 == 88)
+        if (_p1 == 88)
             return false; //Time signature
-        if (p1 == 3)
+        if (_p1 == 3)
             return false; //track name
         return true;
     }
@@ -85,39 +85,39 @@ bool MidiMessage::canSkipThat() {
 std::uint32_t MidiMessage::readFromFile(std::ifstream& f) {
 
     std::uint32_t totalBytesRead = 0;
-    totalBytesRead += timeStamp.readFromFile(f);
-    f.read((char*)&byte0, 1);
+    totalBytesRead += _timeStamp.readFromFile(f);
+    f.read((char*)&_byte0, 1);
     ++totalBytesRead;
-    f.read((char*)&p1, 1);
+    f.read((char*)&_p1, 1);
     ++totalBytesRead;
 
     if (isMetaEvent()) { //TODO refact : metaProcess & usualProcess
-        totalBytesRead += metaLen.readFromFile(f);
-        std::uint32_t bytesInMetaBufer = metaLen.getValue();
-        metaBufer.clear(); //to be sure we don't makeit grow
+        totalBytesRead += _metaLen.readFromFile(f);
+        std::uint32_t bytesInMetaBufer = _metaLen.getValue();
+        _metaBufer.clear(); //to be sure we don't makeit grow
 
         for (std::uint32_t i = 0; i < bytesInMetaBufer; ++i) {
             std::uint8_t byteBufer;
             f.read((char *)&byteBufer, 1);
-            metaBufer.push_back(byteBufer); //maybe better make a vector and read whole block once
+            _metaBufer.push_back(byteBufer); //maybe better make a vector and read whole block once
         }
         totalBytesRead += bytesInMetaBufer;
         if (enableMidiLog)
-            qDebug() << "Midi meta mes read " << byte0 << p1 << metaLen.getValue() << timeStamp.getValue() << " total bytes " << totalBytesRead << " " << f.tellg();
+            qDebug() << "Midi meta mes read " << _byte0 << _p1 << _metaLen.getValue() << _timeStamp.getValue() << " total bytes " << totalBytesRead << " " << f.tellg();
     }
     else {
         std::uint8_t eventType = getEventType();  //TODO ENUMERATION                                                                                                                                        
         if ((eventType != 0xC) && (eventType != 0xD) && (eventType != 0x2) && (eventType != 0x3) 
         && (eventType != 0x4) && (eventType != 0x5) && (eventType != 0x6) && (eventType != 0x0)) {
-            f.read((char *)&p2, 1);
+            f.read((char *)&_p2, 1);
             ++totalBytesRead;
         }
         if (enableMidiLog)
             qDebug() << "Midi message read " << nameEvent(eventType) << " ( " << eventType << getChannel() << " ) "
-                   << (int)p1 << " " << (int)p2 << " t: " << timeStamp.getValue() << " total bytes " << totalBytesRead << " " << f.tellg();
+                   << (int)_p1 << " " << (int)_p2 << " t: " << _timeStamp.getValue() << " total bytes " << totalBytesRead << " " << f.tellg();
         if (eventType == 0xB) {
             if (enableMidiLog)
-                qDebug() << "Controller name: " << nameController(p1);
+                qDebug() << "Controller name: " << nameController(_p1);
         }
     }
 
@@ -238,37 +238,37 @@ std::uint32_t MidiMessage::writeToFile(std::ofstream& f, bool skipSomeMessages) 
     if (skipSomeMessages && canSkipThat())
         return 0;
 
-    totalBytesWritten += timeStamp.writeToFile(f);
-    f << byte0;
-    f << p1;
+    totalBytesWritten += _timeStamp.writeToFile(f);
+    f << _byte0;
+    f << _p1;
     totalBytesWritten += 2;
 
     if (isMetaEvent()) {
         if (enableMidiLog)
-            qDebug() << "Midi meta mes write " << byte0 << p1
-                << metaLen.getValue() << timeStamp.getValue() 
+            qDebug() << "Midi meta mes write " << _byte0 << _p1
+                << _metaLen.getValue() << _timeStamp.getValue()
                 << " total bytes " << totalBytesWritten << " " << f.tellp();
 
-        totalBytesWritten += metaLen.writeToFile(f);
+        totalBytesWritten += _metaLen.writeToFile(f);
 
         //TODO compare
         //for (int i = 0; i < metaBufer.size(); ++i)
         //    f.write((const char *)&metaBufer[i], 1); 
-        f.write(reinterpret_cast<char*>(metaBufer.data()), metaBufer.size());
-        totalBytesWritten += metaBufer.size();
+        f.write(reinterpret_cast<char*>(_metaBufer.data()), _metaBufer.size());
+        totalBytesWritten += _metaBufer.size();
     }
     else {
         std::uint8_t eventType = getEventType();
         if ((eventType != 0xC) && (eventType != 0xD) && (eventType != 0x2) && (eventType != 0x3) 
             && (eventType != 0x4) && (eventType != 0x5) && (eventType != 0x6) && (eventType != 0x0)) {
-            f << p2;
+            f << _p2;
             ++totalBytesWritten;
         }
         if (enableMidiLog) {
-            qDebug() << "Midi message write " << nameEvent(eventType) << " ( " << eventType << getChannel() << " ) " << p1 << p2
-                    << " t: " << timeStamp.getValue() << " total bytes " << totalBytesWritten << " " << f.tellp();
+            qDebug() << "Midi message write " << nameEvent(eventType) << " ( " << eventType << getChannel() << " ) " << _p1 << _p2
+                    << " t: " << _timeStamp.getValue() << " total bytes " << totalBytesWritten << " " << f.tellp();
             if (eventType == 0xB)
-                qDebug() << "Controller name: " << nameController(p1);
+                qDebug() << "Controller name: " << nameController(_p1);
         }
     }
 

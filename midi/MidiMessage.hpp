@@ -33,20 +33,20 @@ namespace mtherapp {
 
         double getSecondsLength(double bpm=120.0);
 
-        const std::vector<std::uint8_t>& getMetaInfo() { return metaBufer; }
+        const std::vector<std::uint8_t>& getMetaInfo() { return _metaBufer; }
 
     protected:
-        NBytesInt timeStamp;
+        NBytesInt _timeStamp;
 
-        std::uint8_t byte0; //type + channel //TODO rename typeAndChannel
-        std::uint8_t p1, p2; //parameters //TODO rename paramter1, parameter2
+        std::uint8_t _byte0; //type + channel //TODO rename typeAndChannel
+        std::uint8_t _p1, _p2; //parameters //TODO rename paramter1, parameter2
 
     public: //TODO cover with push functions
 
-        double absoluteTime; //bad code detected
+        double _absoluteTime; //bad code detected
 
-        NBytesInt metaLen;
-        std::vector<std::uint8_t> metaBufer;
+        NBytesInt _metaLen;
+        std::vector<std::uint8_t> _metaBufer;
     };
 
 }

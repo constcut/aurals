@@ -25,13 +25,13 @@ namespace mtherapp {
             std::uint32_t writeToFile(std::ofstream& file, bool skipSomeMessages=false);
 
         protected:
-            std::uint16_t bpm;
+            std::uint16_t _bpm;
 
-            char chunkId[4];
-            std::uint32_t chunkSize;
-            std::uint16_t formatType;
-            std::uint16_t tracksCount;
-            std::uint16_t timeDevisition;
+            char _chunkId[4];
+            std::uint32_t _chunkSize;
+            std::uint16_t _formatType;
+            std::uint16_t _tracksCount;
+            std::uint16_t _timeDevisition;
     };
 
 }

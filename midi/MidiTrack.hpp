@@ -31,21 +31,20 @@ namespace mtherapp {
         std::int16_t calculateRhythmDetail(std::uint8_t value, std::int16_t offset);
 
         protected:
-            char chunkId[4]; //TODO as uint32_t Header: Mtrk + track size
-            std::uint32_t trackSize;
+            char _chunkId[4]; //TODO as uint32_t Header: Mtrk + track size
+            std::uint32_t _trackSize;
 
         private:
-            std::int32_t accum;
-            std::uint8_t tunes[10];
-            std::uint8_t ringRay[10];
+            std::int32_t _accum;
+            std::uint8_t _tunes[10];
+            std::uint8_t _ringRay[10];
 
-            double timeLengthOnLoad; //Ms
+            double _timeLengthOnLoad; //Ms
 
        public:
-            std::int32_t accumulate(std::int32_t addition) { accum += addition; return accum; }
-            std::int32_t getAccum() { return accum; }
-            void flushAccum() { accum = 0; }
-
+            std::int32_t accumulate(std::int32_t addition) { _accum += addition; return _accum; }
+            std::int32_t getAccum() { return _accum; }
+            void flushAccum() { _accum = 0; }
 
             std::uint32_t readFromFile(std::ifstream& f);
             std::uint32_t writeToFile(std::ofstream& f, bool skipSomeMessages=false);

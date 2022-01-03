@@ -25,7 +25,7 @@ T swapEndian(T u) {
 
 
 
-mtherapp::MidiFile::MidiFile():bpm(120)
+mtherapp::MidiFile::MidiFile():_bpm(120)
 {
 }
 
@@ -33,19 +33,19 @@ mtherapp::MidiFile::MidiFile():bpm(120)
 std::uint32_t mtherapp::MidiFile::calculateHeader(bool skipSomeMessages) {
 
     std::uint32_t totalBytesCalculated = 0;
-    chunkId[0] = 'M';
-    chunkId[1] = 'T';
-    chunkId[2] = 'h';
-    chunkId[3] = 'd';
+    _chunkId[0] = 'M';
+    _chunkId[1] = 'T';
+    _chunkId[2] = 'h';
+    _chunkId[3] = 'd';
 
     //std::uint32_t* example = chunkId; //TODO
     //qDebug() << "Example value for MThd in uint32: " << example;
 
-    formatType = 1;
-    timeDevisition = 480; //Explain
-    chunkSize = 6;
-    tracksCount = size();
-    totalBytesCalculated += 8 + chunkSize;
+    _formatType = 1;
+    _timeDevisition = 480; //Explain
+    _chunkSize = 6;
+    _tracksCount = size();
+    totalBytesCalculated += 8 + _chunkSize;
 
     for (size_t i = 0; i < size(); ++i)
         totalBytesCalculated += this->operator [](i).calculateHeader(skipSomeMessages);
@@ -68,46 +68,46 @@ std::uint32_t mtherapp::MidiFile::readFromFile(std::string_view filename) {
 std::uint32_t mtherapp::MidiFile::readFromFile(std::ifstream& f) {
 
     std::uint32_t totalBytesRead = 0;
-    chunkSize = 0;
-    formatType = 0;
-    tracksCount = 0;
-    timeDevisition = 0;
+    _chunkSize = 0;
+    _formatType = 0;
+    _tracksCount = 0;
+    _timeDevisition = 0;
 
-    f.read(&chunkId[0], 4);
-    f.read((char*)&chunkSize, 4); // << fails :(((
-    f.read((char*)&formatType, 2);
-    f.read((char*)&tracksCount, 2);
-    f .read((char*)&timeDevisition, 2);
+    f.read(&_chunkId[0], 4);
+    f.read((char*)&_chunkSize, 4); // << fails :(((
+    f.read((char*)&_formatType, 2);
+    f.read((char*)&_tracksCount, 2);
+    f .read((char*)&_timeDevisition, 2);
     totalBytesRead += 14;
 
-    chunkSize = swapEndian<std::uint32_t>(chunkSize);
-    formatType = swapEndian<std::uint16_t>(formatType);
-    tracksCount = swapEndian<std::uint16_t>(tracksCount);
-    timeDevisition = swapEndian<std::uint16_t>(timeDevisition);
+    _chunkSize = swapEndian<std::uint32_t>(_chunkSize);
+    _formatType = swapEndian<std::uint16_t>(_formatType);
+    _tracksCount = swapEndian<std::uint16_t>(_tracksCount);
+    _timeDevisition = swapEndian<std::uint16_t>(_timeDevisition);
 
 
     //TODO short function based on constExpr
-    if ((chunkId[0]!='M') || (chunkId[1]!='T') || (chunkId[2]!='h')
-            || (chunkId[3]!='d')) 
+    if ((_chunkId[0]!='M') || (_chunkId[1]!='T') || (_chunkId[2]!='h')
+            || (_chunkId[3]!='d'))
     {
         if (enableMidiLog)
             qDebug() << "Midi header corrupted - error "
-                 << chunkId[0] << chunkId[1] << chunkId[2] << chunkId[3];
+                 << _chunkId[0] << _chunkId[1] << _chunkId[2] << _chunkId[3];
 
         return totalBytesRead;
     }
 
-    if (chunkSize != 6) {
+    if (_chunkSize != 6) {
         if (enableMidiLog)
             qDebug()<< "Issue chunk size != 6";
         return totalBytesRead;
     }
 
     if (enableMidiLog)
-        qDebug() << "Reading midi file "<<chunkId[0]<<chunkId[1]<<chunkId[2]<<chunkId[3]<<
-                " "<<chunkSize<<" "<<formatType<<" "<<tracksCount<<" "<<timeDevisition;
+        qDebug() << "Reading midi file "<<_chunkId[0]<<_chunkId[1]<<_chunkId[2]<<_chunkId[3]<<
+                " "<<_chunkSize<<" "<<_formatType<<" "<<_tracksCount<<" "<<_timeDevisition;
 
-    for (auto i = 0; i < tracksCount; ++i) {
+    for (auto i = 0; i < _tracksCount; ++i) {
         MidiTrack track;
         totalBytesRead += track.readFromFile(f);
         push_back(track);
@@ -129,12 +129,12 @@ std::uint32_t mtherapp::MidiFile::writeToFile(std::ofstream& f, bool skipSomeMes
     std::uint32_t totalBytesWritten=0;
     calculateHeader(skipSomeMessages);
 
-    std::uint32_t sizeInverted = swapEndian<std::uint32_t>(chunkSize);
-    std::uint16_t formatInverted = swapEndian<std::uint16_t>(formatType);
-    std::uint16_t tracksNInverted = swapEndian<std::uint16_t>(tracksCount);
-    std::uint16_t timeDInverted = swapEndian<std::uint16_t>(timeDevisition);
+    std::uint32_t sizeInverted = swapEndian<std::uint32_t>(_chunkSize);
+    std::uint16_t formatInverted = swapEndian<std::uint16_t>(_formatType);
+    std::uint16_t tracksNInverted = swapEndian<std::uint16_t>(_tracksCount);
+    std::uint16_t timeDInverted = swapEndian<std::uint16_t>(_timeDevisition);
 
-    f << chunkId;
+    f << _chunkId;
     f << sizeInverted;
     f << formatInverted;
     f << tracksNInverted;
@@ -142,8 +142,8 @@ std::uint32_t mtherapp::MidiFile::writeToFile(std::ofstream& f, bool skipSomeMes
     totalBytesWritten += 14;
 
     if (enableMidiLog)
-        qDebug() << "Writing midi file " << chunkId[0] << chunkId[1] << chunkId[2] << chunkId[3] <<
-                " " << chunkSize << " " << formatType << " " << tracksCount << " " << timeDevisition;
+        qDebug() << "Writing midi file " << _chunkId[0] << _chunkId[1] << _chunkId[2] << _chunkId[3] <<
+                " " << _chunkSize << " " << _formatType << " " << _tracksCount << " " << _timeDevisition;
 
     for (size_t i = 0; i < size(); ++i)
         totalBytesWritten += this->operator [](i).writeToFile(f, skipSomeMessages);

@@ -1,8 +1,6 @@
 #ifndef NBYTESINT_H
 #define NBYTESINT_H
 
-
-
 #include <list>
 #include <deque>
 #include <fstream>
@@ -20,7 +18,6 @@ namespace mtherapp {
 
         std::uint32_t getValue();
     };
-
 }
 
 #endif
