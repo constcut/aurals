@@ -168,6 +168,9 @@ void AudioHandler::requestStopPlayback() {
     stopPlayback();
 }
 
+void AudioHandler::requestStopMidi() {
+    stopMidiPlayer();
+}
 
 void AudioHandler::requestPermission() const {
     ::requestAudioPermission();
@@ -219,9 +222,14 @@ void AudioHandler::startMidiPlayer() {
     if (_isPlaying || _isRecording)
         return;
     _isPlaying = true;
+    const double sampleRate = _midiFormat.sampleRate();
+    const double bytesPerSample = _midiFormat.sampleSize() / 8.0;
+    const double msInSecond = 1000.0;
+    const double channels = 2.0;
+    const double ms = static_cast<double>(_midiBufer.size()) / (channels * bytesPerSample * sampleRate / msInSecond);
     _midiPlayer->start();
     _midiOutput->start(_midiPlayer.get());
-    //TODO timer
+    QTimer::singleShot(ms, this, &AudioHandler::requestStopMidi);
 }
 
 

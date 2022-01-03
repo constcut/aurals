@@ -182,8 +182,6 @@ Item {
             property string filename: ""
         }
 
-
-
         Rectangle {
             id: mainRect
             width: 600;

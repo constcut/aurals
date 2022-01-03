@@ -47,6 +47,7 @@ public:
 
     void requestStopRecord();
     void requestStopPlayback();
+    void requestStopMidi();
 
     Q_INVOKABLE void startMidiPlayer();
     Q_INVOKABLE void stopMidiPlayer();
