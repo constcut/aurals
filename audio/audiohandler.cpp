@@ -246,7 +246,7 @@ void AudioHandler::checkMidi() {
 
 
 void AudioHandler::openMidiFile(QString filename) {
-     static MidiRender render;
+     static mtherapp::MidiRender render;
      static bool loaded = false;
      if (loaded == false) {
          render.openSoundFont("instrument.sf2"); //TODO configurable

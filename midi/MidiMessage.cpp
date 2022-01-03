@@ -5,10 +5,10 @@
 
 using namespace mtherapp;
 
-MidiMessage::MidiMessage() : _byte0(0), _p1(0), _p2(0){}
+MidiMessage::MidiMessage() : _byte0(0), _param1(0), _param2(0){}
 
 MidiMessage::MidiMessage(std::uint8_t b0, std::uint8_t b1, std::uint8_t b2, std::uint32_t timeShift)
-: _byte0(b0), _p1(b1), _p2(b2), _timeStamp(timeShift) {}
+: _byte0(b0), _param1(b1), _param2(b2), _timeStamp(timeShift) {}
 
 
 double MidiMessage::getSecondsLength(double bpm) const {
@@ -62,13 +62,13 @@ std::uint32_t MidiMessage::calculateSize(bool skipSomeMessages) const {
 
 bool MidiMessage::canSkipThat() const {
     if (isMetaEvent()) {
-        if (_p1 == 47) //MAKE ENUMERATION
+        if (_param1 == 47) //MAKE ENUMERATION
             return false;
-        if (_p1 == 81) //change tempo
+        if (_param1 == 81) //change tempo
             return false;
-        if (_p1 == 88)
+        if (_param1 == 88)
             return false; //Time signature
-        if (_p1 == 3)
+        if (_param1 == 3)
             return false; //track name
         return true;
     }
@@ -88,7 +88,7 @@ std::uint32_t MidiMessage::readFromFile(std::ifstream& f) {
     totalBytesRead += _timeStamp.readFromFile(f);
     f.read((char*)&_byte0, 1);
     ++totalBytesRead;
-    f.read((char*)&_p1, 1);
+    f.read((char*)&_param1, 1);
     ++totalBytesRead;
 
     if (isMetaEvent()) { //TODO refact : metaProcess & usualProcess
@@ -103,21 +103,21 @@ std::uint32_t MidiMessage::readFromFile(std::ifstream& f) {
         }
         totalBytesRead += bytesInMetaBufer;
         if (enableMidiLog)
-            qDebug() << "Midi meta mes read " << _byte0 << _p1 << _metaLen.getValue() << _timeStamp.getValue() << " total bytes " << totalBytesRead << " " << f.tellg();
+            qDebug() << "Midi meta mes read " << _byte0 << _param1 << _metaLen.getValue() << _timeStamp.getValue() << " total bytes " << totalBytesRead << " " << f.tellg();
     }
     else {
         std::uint8_t eventType = getEventType();  //TODO ENUMERATION                                                                                                                                        
         if ((eventType != 0xC) && (eventType != 0xD) && (eventType != 0x2) && (eventType != 0x3) 
         && (eventType != 0x4) && (eventType != 0x5) && (eventType != 0x6) && (eventType != 0x0)) {
-            f.read((char *)&_p2, 1);
+            f.read((char *)&_param2, 1);
             ++totalBytesRead;
         }
         if (enableMidiLog)
             qDebug() << "Midi message read " << nameEvent(eventType) << " ( " << eventType << getChannel() << " ) "
-                   << (int)_p1 << " " << (int)_p2 << " t: " << _timeStamp.getValue() << " total bytes " << totalBytesRead << " " << f.tellg();
+                   << (int)_param1 << " " << (int)_param2 << " t: " << _timeStamp.getValue() << " total bytes " << totalBytesRead << " " << f.tellg();
         if (eventType == 0xB) {
             if (enableMidiLog)
-                qDebug() << "Controller name: " << nameController(_p1);
+                qDebug() << "Controller name: " << nameController(_param1);
         }
     }
 
@@ -240,12 +240,12 @@ std::uint32_t MidiMessage::writeToFile(std::ofstream& f, bool skipSomeMessages) 
 
     totalBytesWritten += _timeStamp.writeToFile(f);
     f << _byte0;
-    f << _p1;
+    f << _param1;
     totalBytesWritten += 2;
 
     if (isMetaEvent()) {
         if (enableMidiLog)
-            qDebug() << "Midi meta mes write " << _byte0 << _p1
+            qDebug() << "Midi meta mes write " << _byte0 << _param1
                 << _metaLen.getValue() << _timeStamp.getValue()
                 << " total bytes " << totalBytesWritten << " " << f.tellp();
 
@@ -261,14 +261,14 @@ std::uint32_t MidiMessage::writeToFile(std::ofstream& f, bool skipSomeMessages) 
         std::uint8_t eventType = getEventType();
         if ((eventType != 0xC) && (eventType != 0xD) && (eventType != 0x2) && (eventType != 0x3) 
             && (eventType != 0x4) && (eventType != 0x5) && (eventType != 0x6) && (eventType != 0x0)) {
-            f << _p2;
+            f << _param2;
             ++totalBytesWritten;
         }
         if (enableMidiLog) {
-            qDebug() << "Midi message write " << nameEvent(eventType) << " ( " << eventType << getChannel() << " ) " << _p1 << _p2
+            qDebug() << "Midi message write " << nameEvent(eventType) << " ( " << eventType << getChannel() << " ) " << _param1 << _param2
                     << " t: " << _timeStamp.getValue() << " total bytes " << totalBytesWritten << " " << f.tellp();
             if (eventType == 0xB)
-                qDebug() << "Controller name: " << nameController(_p1);
+                qDebug() << "Controller name: " << nameController(_param1);
         }
     }
 

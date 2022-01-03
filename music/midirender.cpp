@@ -10,6 +10,8 @@
 
 #include <iostream>
 
+using namespace mtherapp;
+
 
 MidiRender::MidiRender()
 {
@@ -275,22 +277,22 @@ QByteArray MidiRender::renderMemoryFloatNext(int len)
         if (SampleBlock > SampleCount) SampleBlock = SampleCount;
 
         for (_msRendered += SampleBlock * (1000.0 / _sampleRate);
-             (_trackPosition < _midiTrack->size()) && (_msRendered >= _midiTrack->at(_trackPosition)->_absoluteTime); //REPLACE 0 with time from midi signals
+             (_trackPosition < _midiTrack->size()) && (_msRendered >= _midiTrack->at(_trackPosition)._absoluteTime); //REPLACE 0 with time from midi signals
              ++_trackPosition)
         {
             auto& signal = _midiTrack->at(_trackPosition); //later replace such place with ->at(i)
 
-            switch (signal->_byte0 & 0xf0)
+            switch (signal.getTypeAndChannel() & 0xf0)
             {
                 case TML_PROGRAM_CHANGE:
-                    _g_MidiChannelPreset[signal->getChannel()] = tsf_get_presetindex(_soundFont, 0, signal->_param1);
-                    if (_g_MidiChannelPreset[signal->getChannel()] < 0) _g_MidiChannelPreset[signal->getChannel()] = 0;
+                    _g_MidiChannelPreset[signal.getChannel()] = tsf_get_presetindex(_soundFont, 0, signal.getParameter1());
+                    if (_g_MidiChannelPreset[signal.getChannel()] < 0) _g_MidiChannelPreset[signal.getChannel()] = 0;
                     break;
                 case TML_NOTE_ON: //play a note
-                    tsf_note_on(_soundFont, _g_MidiChannelPreset[signal->getChannel()], signal->_param1, signal->_param2 / 127.0f);
+                    tsf_note_on(_soundFont, _g_MidiChannelPreset[signal.getChannel()], signal.getParameter1(), signal.getParameter2() / 127.0f);
                     break;
                 case TML_NOTE_OFF: //stop a note
-                    tsf_note_off(_soundFont, _g_MidiChannelPreset[signal->getChannel()], signal->_param1);
+                    tsf_note_off(_soundFont, _g_MidiChannelPreset[signal.getChannel()], signal.getParameter1());
                     break;
             }
 
@@ -318,24 +320,24 @@ QByteArray MidiRender::renderMemoryShortNext(int len)
         if (SampleBlock > SampleCount) SampleBlock = SampleCount;
 
         for (_msRendered += SampleBlock * (1000.0 / _sampleRate);
-             (_trackPosition < _midiTrack->size()) && (_msRendered >= _midiTrack->at(_trackPosition)->_absoluteTime); //REPLACE 0 with time from midi signals
+             (_trackPosition < _midiTrack->size()) && (_msRendered >= _midiTrack->at(_trackPosition)._absoluteTime); //REPLACE 0 with time from midi signals
              ++_trackPosition)
         {
             auto& signal = _midiTrack->at(_trackPosition); //later replace such place with ->at(i)
 
-            qDebug() << "Render "<<signal->_byte0<<" "<<signal->_absoluteTime;
+            qDebug() << "Render "<<signal.getTypeAndChannel()<<" "<<signal._absoluteTime;
 
-            switch (signal->_byte0 & 0xf0)
+            switch (signal.getTypeAndChannel() & 0xf0)
             {
                 case TML_PROGRAM_CHANGE:
-                    _g_MidiChannelPreset[signal->getChannel()] = tsf_get_presetindex(_soundFont, 0, signal->_param1);
-                    if (_g_MidiChannelPreset[signal->getChannel()] < 0) _g_MidiChannelPreset[signal->getChannel()] = 0;
+                    _g_MidiChannelPreset[signal.getChannel()] = tsf_get_presetindex(_soundFont, 0, signal.getParameter1());
+                    if (_g_MidiChannelPreset[signal.getChannel()] < 0) _g_MidiChannelPreset[signal.getChannel()] = 0;
                     break;
                 case TML_NOTE_ON: //play a note
-                    tsf_note_on(_soundFont, _g_MidiChannelPreset[signal->getChannel()], signal->_param1, signal->_param2 / 127.0f);
+                    tsf_note_on(_soundFont, _g_MidiChannelPreset[signal.getChannel()], signal.getParameter1(), signal.getParameter2() / 127.0f);
                     break;
                 case TML_NOTE_OFF: //stop a note
-                    tsf_note_off(_soundFont, _g_MidiChannelPreset[signal->getChannel()], signal->_param1);
+                    tsf_note_off(_soundFont, _g_MidiChannelPreset[signal.getChannel()], signal.getParameter1());
                     break;
             }
         }

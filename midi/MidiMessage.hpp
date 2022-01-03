@@ -35,13 +35,18 @@ namespace mtherapp {
 
         const std::vector<std::uint8_t>& getMetaInfo() const { return _metaBufer; }
 
+        std::uint8_t getParameter1() const { return _param1; }
+        std::uint8_t getParameter2() const { return _param2; }
+
+        std::uint8_t getTypeAndChannel() const { return _byte0; }
+
     protected:
         NBytesInt _timeStamp;
 
-        std::uint8_t _byte0; //type + channel //TODO rename typeAndChannel
-        std::uint8_t _p1, _p2; //parameters //TODO rename paramter1, parameter2
+        std::uint8_t _byte0; //TODO rename typeAndChannel
+        std::uint8_t _param1, _param2;
 
-    public: //TODO cover with push functions
+    public:
 
         double _absoluteTime; //bad code detected
 
