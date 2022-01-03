@@ -44,26 +44,28 @@
 #include <qglobal.h>
 #include "AudioUtils.hpp"
 
-const int FFTLengthPowerOfTwo = 12;
-const int    SpectrumLengthSamples  = PowerOfTwo<FFTLengthPowerOfTwo>::Result;
+namespace mtherapp {
 
-const int    SpectrumNumBands       = 400;
-const qreal  SpectrumLowFreq        = 20.0; // Hz
-const qreal  SpectrumHighFreq       = 4000.0; // Hz
+    const int FFTLengthPowerOfTwo = 12;
+    const int    SpectrumLengthSamples  = PowerOfTwo<FFTLengthPowerOfTwo>::Result;
 
-const qint64 WaveformWindowDuration = 500 * 1000; //TODO rid of useless
-const int   WaveformTileLength      = 4096;
-const qreal SpectrumAnalyserMultiplier = 0.15;
-const int   NullMessageTimeout      = -1;
+    const int    SpectrumNumBands       = 400;
+    const qreal  SpectrumLowFreq        = 20.0; // Hz
+    const qreal  SpectrumHighFreq       = 4000.0; // Hz
 
-
-enum WindowFunction {
-    NoWindow,
-    HannWindow
-};
+    const qint64 WaveformWindowDuration = 500 * 1000; //TODO rid of useless
+    const int   WaveformTileLength      = 4096;
+    const qreal SpectrumAnalyserMultiplier = 0.15;
+    const int   NullMessageTimeout      = -1;
 
 
-const WindowFunction DefaultWindowFunction = HannWindow;
+    enum WindowFunction {
+        NoWindow,
+        HannWindow
+    };
+
+    const WindowFunction DefaultWindowFunction = HannWindow;
+}
 
 
 #define CHECKED_CONNECT(source, signal, receiver, slot) \

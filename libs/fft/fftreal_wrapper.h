@@ -37,7 +37,7 @@
 
 class FFTRealWrapperPrivate {
 public:
-    ffft::FFTRealFixLen<FFTLengthPowerOfTwo> m_fft;
+    ffft::FFTRealFixLen<mtherapp::FFTLengthPowerOfTwo> m_fft;
 };
 
 

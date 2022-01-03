@@ -44,43 +44,48 @@
 
 #include <QtCore/QVector>
 
+namespace mtherapp {
 
-class FrequencySpectrum {
-public:
 
-    double _rms = 0.0;
-    double _rmsNoWindow = 0.0;
-    double _pitchYin = 0.0;
+    class FrequencySpectrum {
+    public:
 
-    FrequencySpectrum(int numPoints = 0);
+        double _rms = 0.0;
+        double _rmsNoWindow = 0.0;
+        double _pitchYin = 0.0;
 
-    struct Element {
-        Element() : frequency(0.0), amplitude(0.0),
-            phase(0.0), clipped(false)
-        {}
-        qreal frequency; //Hertz
-        qreal amplitude; //0.0 -> 1.0
-        qreal phase; //0.0 -> 2*PI
-        bool clipped;
+        FrequencySpectrum(int numPoints = 0);
+
+        struct Element {
+            Element() : frequency(0.0), amplitude(0.0),
+                phase(0.0), clipped(false)
+            {}
+            qreal frequency; //Hertz
+            qreal amplitude; //0.0 -> 1.0
+            qreal phase; //0.0 -> 2*PI
+            bool clipped;
+        };
+
+        typedef QVector<Element>::iterator iterator;
+        typedef QVector<Element>::const_iterator const_iterator;
+
+        void reset();
+
+        int count() const;
+        Element& operator[](int index);
+        const Element& operator[](int index) const;
+
+        iterator begin();
+        iterator end();
+        const_iterator begin() const;
+        const_iterator end() const;
+
+    private:
+
+        QVector<Element> _elements;
     };
 
-    typedef QVector<Element>::iterator iterator;
-    typedef QVector<Element>::const_iterator const_iterator;
+}
 
-    void reset();
-
-    int count() const;
-    Element& operator[](int index);
-    const Element& operator[](int index) const;
-
-    iterator begin();
-    iterator end();
-    const_iterator begin() const;
-    const_iterator end() const;
-
-private:
-
-    QVector<Element> m_elements;
-};
 
 #endif // FREQUENCYSPECTRUM_H

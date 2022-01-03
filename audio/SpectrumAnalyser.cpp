@@ -51,6 +51,9 @@
 #include <QDataStream>
 
 
+using namespace mtherapp;
+
+
 SpectrumAnalyserThread::SpectrumAnalyserThread(QObject *parent)
     :   QObject(parent)
     ,   _fft(new FFTRealWrapper)

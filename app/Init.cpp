@@ -57,12 +57,12 @@ int mainInit(int argc, char *argv[]) {
     else
         qWarning() << "Failed to load font";
 
-    qmlRegisterType<WaveshapeQML>("mther.app", 1, 0, "Waveshape");
-    qmlRegisterType<SpectrographQML>("mther.app", 1, 0,"Spectrograph");
+    qmlRegisterType<mtherapp::WaveshapeQML>("mther.app", 1, 0, "Waveshape");
+    qmlRegisterType<mtherapp::SpectrographQML>("mther.app", 1, 0,"Spectrograph");
 
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("Windows-1251")); //Настройки //KOI8-R //ISO 8859-5 //UTF-8 //Windows-1251
     QQmlApplicationEngine engine;
-    AudioHandler audio;
+    mtherapp::AudioHandler audio;
     engine.rootContext()->setContextProperty("audio", &audio);
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
     if (engine.rootObjects().isEmpty())

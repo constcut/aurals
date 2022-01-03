@@ -48,6 +48,9 @@
 #include <unordered_set>
 
 
+using namespace mtherapp;
+
+
 void WaveshapeQML::paint(QPainter *painter) {
     setFillColor(Qt::darkGray);
     paintWaveShape(*painter);

@@ -57,100 +57,104 @@ class FFTRealWrapper;
 class SpectrumAnalyserThreadPrivate;
 
 
-class SpectrumAnalyserThread : public QObject {
-    Q_OBJECT
+namespace mtherapp {
 
-public:
-    SpectrumAnalyserThread(QObject *parent);
-    ~SpectrumAnalyserThread();
+    class SpectrumAnalyserThread : public QObject {
+        Q_OBJECT
 
-    void setSamplesAmount(int newNumSamples) { _numSamples = newNumSamples; }
-    int getSamplesAmount() { return _numSamples; }
+    public:
+        SpectrumAnalyserThread(QObject *parent);
+        ~SpectrumAnalyserThread();
 
-    int yinLimit = 1024; //TODO set\get
-    int fftLimit = 4096;
-    double yinThreshold = 0.15;
+        void setSamplesAmount(int newNumSamples) { _numSamples = newNumSamples; }
+        int getSamplesAmount() { return _numSamples; }
 
-public slots:
-    void setWindowFunction(WindowFunction type);
-    void calculateSpectrum(const QByteArray &buffer,
-                           int inputFrequency,
-                           int bytesPerSample);
+        int yinLimit = 1024; //TODO set\get
+        int fftLimit = 4096;
+        double yinThreshold = 0.15;
 
-signals:
-    void calculationComplete(const FrequencySpectrum &spectrum);
+    public slots:
+        void setWindowFunction(WindowFunction type);
+        void calculateSpectrum(const QByteArray &buffer,
+                               int inputFrequency,
+                               int bytesPerSample);
 
-private:
-    void calculateWindow();
+    signals:
+        void calculationComplete(const FrequencySpectrum &spectrum);
 
-private:
+    private:
+        void calculateWindow();
 
-    FFTRealWrapper* _fft;
-    int _numSamples;
-    WindowFunction _windowFunction;
+    private:
 
-    typedef ffft::FFTRealFixLenParam::DataType DataType;
+        FFTRealWrapper* _fft;
+        int _numSamples;
+        WindowFunction _windowFunction;
 
-    QVector<DataType> _window;
-    QVector<DataType> _input;
-    QVector<DataType> _noWindowInput;
-    QVector<DataType> _output;
+        typedef ffft::FFTRealFixLenParam::DataType DataType;
 
-    FrequencySpectrum _spectrum;
+        QVector<DataType> _window;
+        QVector<DataType> _input;
+        QVector<DataType> _noWindowInput;
+        QVector<DataType> _output;
 
-#ifdef SPECTRUM_ANALYSER_SEPARATE_THREAD
-    QThread*                                    m_thread;
-#endif
-};
+        FrequencySpectrum _spectrum;
+
+    #ifdef SPECTRUM_ANALYSER_SEPARATE_THREAD
+        QThread*                                    m_thread;
+    #endif
+    };
 
 
 
-class SpectrumAnalyser : public QObject {
-    Q_OBJECT
+    class SpectrumAnalyser : public QObject {
+        Q_OBJECT
 
-public:
-    SpectrumAnalyser(QObject *parent = 0);
-    ~SpectrumAnalyser() = default;
+    public:
+        SpectrumAnalyser(QObject *parent = 0);
+        ~SpectrumAnalyser() = default;
 
-public:
+    public:
 
-    int yinLimit=1024; //TODO as above so below (right here)
-    int fftLimit=4096;
-    double yinThreshold = 0.15;
+        int yinLimit=1024; //TODO as above so below (right here)
+        int fftLimit=4096;
+        double yinThreshold = 0.15;
 
-    void setSamplesAmount(int newNumSamples) {
-        if (_thread)
-            _thread->setSamplesAmount(newNumSamples);
-    }
+        void setSamplesAmount(int newNumSamples) {
+            if (_thread)
+                _thread->setSamplesAmount(newNumSamples);
+        }
 
-    int getSamplesAmount() {
-        if (_thread)
-            return _thread->getSamplesAmount();
-        return 0;
-    }
+        int getSamplesAmount() {
+            if (_thread)
+                return _thread->getSamplesAmount();
+            return 0;
+        }
 
-    void setWindowFunction(WindowFunction type);
-    void calculate(const QByteArray &buffer, const QAudioFormat &format);
-    bool isReady() const;
-    void cancelCalculation();
+        void setWindowFunction(WindowFunction type);
+        void calculate(const QByteArray &buffer, const QAudioFormat &format);
+        bool isReady() const;
+        void cancelCalculation();
 
-signals:
-    void spectrumChanged(const FrequencySpectrum &spectrum);
+    signals:
+        void spectrumChanged(const FrequencySpectrum &spectrum);
 
-private slots:
-    void calculationComplete(const FrequencySpectrum &spectrum);
+    private slots:
+        void calculationComplete(const FrequencySpectrum &spectrum);
 
-private:
-    void calculateWindow();
+    private:
+        void calculateWindow();
 
-    SpectrumAnalyserThread*    _thread;
+        SpectrumAnalyserThread*    _thread;
 
-    enum State {
-        Idle,
-        Busy,
-        Cancelled
-    } _state;
-};
+        enum State {
+            Idle,
+            Busy,
+            Cancelled
+        } _state;
+    };
+
+}
 
 #endif // SPECTRUMANALYSER_H
 

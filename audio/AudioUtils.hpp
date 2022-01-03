@@ -46,16 +46,20 @@
 
 QT_FORWARD_DECLARE_CLASS(QAudioFormat)
 
-qint64 audioDuration(const QAudioFormat &format, qint64 bytes);
-qint64 audioLength(const QAudioFormat &format, qint64 microSeconds);
+namespace mtherapp {
 
-QString formatToString(const QAudioFormat &format);
+    qint64 audioDuration(const QAudioFormat &format, qint64 bytes);
+    qint64 audioLength(const QAudioFormat &format, qint64 microSeconds);
 
-qreal pcmToReal(qint16 pcm); // Scale PCM value to [-1.0, 1.0]
-qint16 realToPcm(qreal real); // Scale real value in [-1.0, 1.0] to PCM
+    QString formatToString(const QAudioFormat &format);
 
-bool isPCM(const QAudioFormat &format); // Check whether the audio format is PCM
-bool isPCMS16LE(const QAudioFormat &format); // Check whether the audio format is signed, little-endian, 16-bit PCM
+    qreal pcmToReal(qint16 pcm); // Scale PCM value to [-1.0, 1.0]
+    qint16 realToPcm(qreal real); // Scale real value in [-1.0, 1.0] to PCM
+
+    bool isPCM(const QAudioFormat &format); // Check whether the audio format is PCM
+    bool isPCMS16LE(const QAudioFormat &format); // Check whether the audio format is signed, little-endian, 16-bit PCM
+
+}
 
 template<int N> class PowerOfTwo // Compile-time calculation of powers of two
 { public: static const int Result = PowerOfTwo<N-1>::Result * 2; };

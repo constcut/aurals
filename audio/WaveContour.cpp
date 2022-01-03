@@ -8,6 +8,8 @@
 #include <QDebug>
 
 
+using namespace mtherapp;
+
 
 WaveContour::WaveContour(QString filename) {
     if (loadWavFile(filename)==false)
@@ -69,10 +71,10 @@ void WaveContour::calculateRms() {
     calcRms(8.0, _8RmsLine);
 
     std::vector<double> stdRms(_rmsLine.begin(), _rmsLine.end());
-    _rmsHigh = peakIndexesInData(stdRms, _peakSensetivity);
+    _rmsHigh = mtherapp::peakIndexesInData(stdRms, _peakSensetivity);
     for (auto& s: stdRms)
         s *= -1;
-    _rmsLow = peakIndexesInData(stdRms, _peakSensetivity);
+    _rmsLow = mtherapp::peakIndexesInData(stdRms, _peakSensetivity);
 }
 
 

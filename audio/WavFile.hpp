@@ -45,24 +45,28 @@
 #include <QFile>
 #include <QAudioFormat>
 
+namespace mtherapp {
 
-class WavFile : public QFile {
-public:
-    WavFile(QObject *parent = 0);
+    class WavFile : public QFile {
+    public:
+        WavFile(QObject *parent = 0);
 
-    using QFile::open;
-    bool open(const QString &fileName, OpenModeFlag openMode = QIODevice::ReadOnly);
-    const QAudioFormat &audioFormat() const;
-    qint64 headerLength() const;
+        using QFile::open;
+        bool open(const QString &fileName, OpenModeFlag openMode = QIODevice::ReadOnly);
+        const QAudioFormat &audioFormat() const;
+        qint64 headerLength() const;
 
-    void writeHeader(unsigned int sampleRate, unsigned int bitRate,
-                     unsigned long dataSize, bool stereo=false, bool floatFormat=false);
+        void writeHeader(unsigned int sampleRate, unsigned int bitRate,
+                         unsigned long dataSize, bool stereo=false, bool floatFormat=false);
 
-private:
-    bool readHeader();
+    private:
+        bool readHeader();
 
-    QAudioFormat _fileFormat;
-    qint64 _headerLength;
-};
+        QAudioFormat _fileFormat;
+        qint64 _headerLength;
+    };
+
+}
+
 
 #endif // WAVFILE_H

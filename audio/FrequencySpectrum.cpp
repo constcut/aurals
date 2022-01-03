@@ -40,9 +40,10 @@
 
 #include "FrequencySpectrum.hpp"
 
+using namespace mtherapp;
 
 FrequencySpectrum::FrequencySpectrum(int numPoints)
-    :   m_elements(numPoints)
+    :   _elements(numPoints)
 {}
 
 
@@ -54,35 +55,35 @@ void FrequencySpectrum::reset() {
 
 
 int FrequencySpectrum::count() const {
-    return m_elements.count();
+    return _elements.count();
 }
 
 
 FrequencySpectrum::Element &FrequencySpectrum::operator[](int index) {
-    return m_elements[index];
+    return _elements[index];
 }
 
 
 const FrequencySpectrum::Element &FrequencySpectrum::operator[](int index) const {
-    return m_elements[index];
+    return _elements[index];
 }
 
 
 FrequencySpectrum::iterator FrequencySpectrum::begin() {
-    return m_elements.begin();
+    return _elements.begin();
 }
 
 
 FrequencySpectrum::iterator FrequencySpectrum::end() {
-    return m_elements.end();
+    return _elements.end();
 }
 
 
 FrequencySpectrum::const_iterator FrequencySpectrum::begin() const {
-    return m_elements.begin();
+    return _elements.begin();
 }
 
 
 FrequencySpectrum::const_iterator FrequencySpectrum::end() const {
-    return m_elements.end();
+    return _elements.end();
 }

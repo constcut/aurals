@@ -44,6 +44,9 @@
 #include "WavFile.hpp"
 
 
+using namespace mtherapp;
+
+
 struct chunk {
     char        id[4];
     quint32     size;

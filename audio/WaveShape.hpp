@@ -44,94 +44,96 @@
 #include <QQuickPaintedItem>
 #include <QImage>
 
-#include <memory>
-
 #include "WaveContour.hpp"
 
-
-class WaveshapePainter  {
-
-public:
-    WaveshapePainter():_windowPosition(0),_windowWidth(4096){}
-
-    void loadContour(QString filename);
-    void paintWaveShape(QPainter& painter);
-    void audioPositionChanged(qint64 position);
-
-protected:
-    WaveContour _waveContour;
-
-    qint64 _audioPoistion;
-
-    quint64 _windowPosition;
-    quint16 _windowWidth;
-
-    bool _noImage = true;
-    QImage _mainImage;
-
-    bool _showNotes = false;
-
-    void makeBackgroungImage(QPainter &painter, int height, double heightCoef);
-    void paintMainRms(QPainter &painter, int height, double heightCoef);
-
-    void drawPitch(QPainter &painter, int height);
-    void drawNoteStartEnd(QPainter &painter, int height);
-
-    void invertShowNotes() { _showNotes = !_showNotes;}
-
-    void changePeakSence(double newSence) {
-        _waveContour.changePeakSence(newSence);
-        resetImage();
-    }
-
-    void changeRmsStep(size_t newStep) {
-        _waveContour.setRmsStep(newStep);
-        resetImage();
-    }
-
-    void changeYinTheshold(double threshold) {
-        _waveContour.changeYinTheshold(threshold);
-    }
-
-    void resetImage() {
-        _mainImage = QImage();
-        _noImage = true;
-    }
-};
+namespace mtherapp {
 
 
+    class WaveshapePainter  {
 
-class WaveshapeQML : public QQuickPaintedItem, public WaveshapePainter {
-    Q_OBJECT
-public:
-    explicit WaveshapeQML([[maybe_unused]] QQuickItem* parent = NULL) {}
-    ~WaveshapeQML() = default;
+    public:
+        WaveshapePainter():_windowPosition(0),_windowWidth(4096){}
 
-    Q_INVOKABLE int getPixelsLength() { return _waveContour.getRMS_8().size();  } // TODO rewrite names
-    Q_INVOKABLE qreal getRMS(int index) const { return _waveContour.getRMS()[index]; }
-    Q_INVOKABLE int getRmsSize() const { return _waveContour.getRMS().size(); }
-    Q_INVOKABLE int getRmsStep() const { return _waveContour.getRmsStep();}
-    Q_INVOKABLE int getMinRmsStep() const { return _waveContour.getMinRmsStep(); }
+        void loadContour(QString filename);
+        void paintWaveShape(QPainter& painter);
+        void audioPositionChanged(qint64 position);
 
-    void paint(QPainter* painter);
+    protected:
+        WaveContour _waveContour;
 
-    Q_INVOKABLE  void loadFile(QString filename) { loadContour(filename);}
+        qint64 _audioPoistion;
 
-    Q_INVOKABLE void setWindowPosition(quint64 newPosition) { _windowPosition = newPosition; update(); }
-    Q_INVOKABLE quint64 getWindowPosition() const { return _windowPosition; }
-    Q_INVOKABLE void setWindowWidth(quint64 newWidth) { _windowWidth = newWidth; update(); }
+        quint64 _windowPosition;
+        quint16 _windowWidth;
 
-    Q_INVOKABLE void calculateF0() { _waveContour.calculateF0(); update(); }
-    Q_INVOKABLE void showNotes() { invertShowNotes(); update();}
+        bool _noImage = true;
+        QImage _mainImage;
 
-    Q_INVOKABLE void setPeakSence(double newSence) { changePeakSence(newSence); update();}
-    Q_INVOKABLE void setRmsStep(int newStep) { changeRmsStep(newStep); update(); }
+        bool _showNotes = false;
 
-    Q_INVOKABLE void setYinThreshold(double threshold) { changeYinTheshold(threshold); update(); }
+        void makeBackgroungImage(QPainter &painter, int height, double heightCoef);
+        void paintMainRms(QPainter &painter, int height, double heightCoef);
 
-    Q_INVOKABLE QByteArray getPCM(quint64 position, quint64 samples) { return _waveContour.getPCM(position, samples); }
+        void drawPitch(QPainter &painter, int height);
+        void drawNoteStartEnd(QPainter &painter, int height);
 
-};
+        void invertShowNotes() { _showNotes = !_showNotes;}
+
+        void changePeakSence(double newSence) {
+            _waveContour.changePeakSence(newSence);
+            resetImage();
+        }
+
+        void changeRmsStep(size_t newStep) {
+            _waveContour.setRmsStep(newStep);
+            resetImage();
+        }
+
+        void changeYinTheshold(double threshold) {
+            _waveContour.changeYinTheshold(threshold);
+        }
+
+        void resetImage() {
+            _mainImage = QImage();
+            _noImage = true;
+        }
+    };
+
+
+
+    class WaveshapeQML : public QQuickPaintedItem, public WaveshapePainter {
+        Q_OBJECT
+    public:
+        explicit WaveshapeQML([[maybe_unused]] QQuickItem* parent = NULL) {}
+        ~WaveshapeQML() = default;
+
+        Q_INVOKABLE int getPixelsLength() { return _waveContour.getRMS_8().size();  } // TODO rewrite names
+        Q_INVOKABLE qreal getRMS(int index) const { return _waveContour.getRMS()[index]; }
+        Q_INVOKABLE int getRmsSize() const { return _waveContour.getRMS().size(); }
+        Q_INVOKABLE int getRmsStep() const { return _waveContour.getRmsStep();}
+        Q_INVOKABLE int getMinRmsStep() const { return _waveContour.getMinRmsStep(); }
+
+        void paint(QPainter* painter);
+
+        Q_INVOKABLE  void loadFile(QString filename) { loadContour(filename);}
+
+        Q_INVOKABLE void setWindowPosition(quint64 newPosition) { _windowPosition = newPosition; update(); }
+        Q_INVOKABLE quint64 getWindowPosition() const { return _windowPosition; }
+        Q_INVOKABLE void setWindowWidth(quint64 newWidth) { _windowWidth = newWidth; update(); }
+
+        Q_INVOKABLE void calculateF0() { _waveContour.calculateF0(); update(); }
+        Q_INVOKABLE void showNotes() { invertShowNotes(); update();}
+
+        Q_INVOKABLE void setPeakSence(double newSence) { changePeakSence(newSence); update();}
+        Q_INVOKABLE void setRmsStep(int newStep) { changeRmsStep(newStep); update(); }
+
+        Q_INVOKABLE void setYinThreshold(double threshold) { changeYinTheshold(threshold); update(); }
+
+        Q_INVOKABLE QByteArray getPCM(quint64 position, quint64 samples) { return _waveContour.getPCM(position, samples); }
+
+    };
+
+}
 
 
 #endif // Waveshape_H

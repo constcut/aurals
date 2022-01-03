@@ -11,6 +11,8 @@
 
 #include "midi/MidiRender.hpp"
 
+using namespace mtherapp;
+
 
 AudioHandler::AudioHandler() {
     _commonFormat.setSampleRate(44100);

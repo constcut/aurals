@@ -53,6 +53,9 @@
 #include "AudioUtils.hpp"
 
 
+using namespace mtherapp;
+
+
 SpectrographPainter::SpectrographPainter() : _barSelected(-1),
     _lowFreq(0.0), _highFreq(0.0)
 {
@@ -350,7 +353,7 @@ void SpectrographPainter::findPeaks() {
     std::vector<double> amps;
     for (auto& bar: _bars)
         amps.push_back(bar.value);
-    auto peaks = peakIndexesInData(amps, 6.0);
+    auto peaks = mtherapp::peakIndexesInData(amps, 6.0);
 
     bool searchTinyPeaks = true;
     if (searchTinyPeaks) {
