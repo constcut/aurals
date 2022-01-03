@@ -43,11 +43,11 @@ namespace mtherapp {
 
        public:
             std::int32_t accumulate(std::int32_t addition) { _accum += addition; return _accum; }
-            std::int32_t getAccum() { return _accum; }
+            std::int32_t getAccum() const { return _accum; }
             void flushAccum() { _accum = 0; }
 
             std::uint32_t readFromFile(std::ifstream& f);
-            std::uint32_t writeToFile(std::ofstream& f, bool skipSomeMessages=false);
+            std::uint32_t writeToFile(std::ofstream& f, bool skipSomeMessages=false) const;
     };
 
 }

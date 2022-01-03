@@ -39,7 +39,7 @@ std::uint32_t mtherapp::NBytesInt::readFromFile(std::ifstream& f) {
     return size();
 }
 
-std::uint32_t mtherapp::NBytesInt::writeToFile(std::ofstream& f) {
+std::uint32_t mtherapp::NBytesInt::writeToFile(std::ofstream& f) const {
     for (size_t i = 0; i < size(); ++i) {
         std::uint8_t anotherByte = operator [](i);
         if (i != size()-1)
@@ -54,7 +54,7 @@ std::uint32_t mtherapp::NBytesInt::writeToFile(std::ofstream& f) {
     return size();
 }
 
-std::uint32_t mtherapp::NBytesInt::getValue() {
+std::uint32_t mtherapp::NBytesInt::getValue() const {
     std::uint32_t value = 0;
     int bytesToCollect = size() < 4 ? size() : 4;
 

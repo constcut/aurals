@@ -230,7 +230,7 @@ std::uint32_t mtherapp::MidiTrack::readFromFile(std::ifstream& f)
     return bytesRead + 8;
 }
 
-std::uint32_t mtherapp::MidiTrack::writeToFile(std::ofstream& f, bool skipSomeMessages) {
+std::uint32_t mtherapp::MidiTrack::writeToFile(std::ofstream& f, bool skipSomeMessages) const {
 
     std::uint32_t totalBytesWritten = 0;
     f << _chunkId;

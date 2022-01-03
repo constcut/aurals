@@ -14,9 +14,9 @@ namespace mtherapp {
         NBytesInt(std::uint32_t source);
 
         std::uint32_t readFromFile(std::ifstream& f);
-        std::uint32_t writeToFile(std::ofstream& f);
+        std::uint32_t writeToFile(std::ofstream& f) const;
 
-        std::uint32_t getValue();
+        std::uint32_t getValue() const;
     };
 }
 

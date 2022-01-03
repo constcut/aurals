@@ -11,30 +11,30 @@ MidiMessage::MidiMessage(std::uint8_t b0, std::uint8_t b1, std::uint8_t b2, std:
 : _byte0(b0), _p1(b1), _p2(b2), _timeStamp(timeShift) {}
 
 
-double MidiMessage::getSecondsLength(double bpm) {
+double MidiMessage::getSecondsLength(double bpm) const {
     double seconds = (double)(_timeStamp.getValue())/960.0;
     return seconds;
 }
 
 
-std::uint8_t MidiMessage::getEventType() {
+std::uint8_t MidiMessage::getEventType() const {
     std::uint8_t eventType = (_byte0 & (0xf0)) >> 4; //name with enumeration byte blocks
     return eventType;
 }
 
 
-std::uint8_t MidiMessage::getChannel() {
+std::uint8_t MidiMessage::getChannel() const {
     std::int8_t midiChannel = _byte0 & 0xf; //name with enumeration byte blocks
     return midiChannel;
 }
 
 
-bool MidiMessage::isMetaEvent() {
+bool MidiMessage::isMetaEvent() const {
     return _byte0 == 0xff;
 }
 
 
-std::uint32_t MidiMessage::calculateSize(bool skipSomeMessages) {
+std::uint32_t MidiMessage::calculateSize(bool skipSomeMessages) const {
     std::uint32_t messageSize = 0;
 
     if (skipSomeMessages == true)
@@ -60,7 +60,7 @@ std::uint32_t MidiMessage::calculateSize(bool skipSomeMessages) {
 }
 
 
-bool MidiMessage::canSkipThat() {
+bool MidiMessage::canSkipThat() const {
     if (isMetaEvent()) {
         if (_p1 == 47) //MAKE ENUMERATION
             return false;
@@ -127,7 +127,7 @@ std::uint32_t MidiMessage::readFromFile(std::ifstream& f) {
 }
 
 
-std::string MidiMessage::nameEvent(std::int8_t eventNumber) {
+std::string MidiMessage::nameEvent(std::int8_t eventNumber) const {
     
     if (eventNumber == 0x8) //TODO switch?
         return "Note off";
@@ -148,7 +148,7 @@ std::string MidiMessage::nameEvent(std::int8_t eventNumber) {
 }
 
 
-std::string MidiMessage::nameController(std::uint8_t controllerNumber)
+std::string MidiMessage::nameController(std::uint8_t controllerNumber) const
 {
     struct controllesNames {
         std::uint8_t index;
@@ -232,7 +232,7 @@ std::string MidiMessage::nameController(std::uint8_t controllerNumber)
     return "Unknown_ControllerName";
 }
 
-std::uint32_t MidiMessage::writeToFile(std::ofstream& f, bool skipSomeMessages) {
+std::uint32_t MidiMessage::writeToFile(std::ofstream& f, bool skipSomeMessages) const {
 
     std::uint32_t totalBytesWritten = 0;
     if (skipSomeMessages && canSkipThat())
@@ -254,7 +254,7 @@ std::uint32_t MidiMessage::writeToFile(std::ofstream& f, bool skipSomeMessages) 
         //TODO compare
         //for (int i = 0; i < metaBufer.size(); ++i)
         //    f.write((const char *)&metaBufer[i], 1); 
-        f.write(reinterpret_cast<char*>(_metaBufer.data()), _metaBufer.size());
+        f.write(reinterpret_cast<const char*>(_metaBufer.data()), _metaBufer.size());
         totalBytesWritten += _metaBufer.size();
     }
     else {
