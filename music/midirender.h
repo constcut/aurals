@@ -19,8 +19,8 @@ class MidiRender
 
 public:
 
-    void setSampleFreq(double newFreq) { _freq = newFreq; } //ON REFACTORING MAKE SUCH THINGS AS A PROPERTY
-    double getSampleFreq() { return _freq; }
+    void setSampleFreq(double newFreq) { _sampleRate = newFreq; } //ON REFACTORING MAKE SUCH THINGS AS A PROPERTY
+    double getSampleFreq() { return _sampleRate; }
 
     void setFrameSize(quint32 newFrameSize)  { _renderFrameSize = newFrameSize; }
     quint32 getFrameSize() { return _renderFrameSize; }
@@ -42,6 +42,10 @@ public:
     qint64 getTotaMsSpent() { return _totalMsSpent; }
     double getRenderTimer() { return _msRendered; }
 
+    void setMono() { _mono = true; }
+    void setStereo() { _mono = false; }
+    bool isMono() { return _mono; }
+
 protected:
 
     QByteArray renderShortNext(int len);
@@ -57,12 +61,13 @@ protected:
     quint32 _trackPosition;
 
     int _renderFrameSize;
-    double _freq;
-
+    double _sampleRate;
 
     int _g_MidiChannelPreset[16];
     double _msRendered;
     qint64 _totalMsSpent;
+
+    bool _mono = false;
 };
 
 

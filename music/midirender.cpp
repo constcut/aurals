@@ -14,7 +14,7 @@
 MidiRender::MidiRender()
 {
     _renderFrameSize = 1024;
-    _freq = 44100;
+    _sampleRate = 44100;
     _totalMsSpent = 0;
 }
 
@@ -40,7 +40,14 @@ bool MidiRender::openSoundFont(QString sfFilename)
         return false;
 
     tsf_channel_set_bank_preset(sf, 9, 128, 0);
-    tsf_set_output(sf, TSF_STEREO_INTERLEAVED, _freq, -6.0f); //Volume -6 dB
+
+    TSFOutputMode mode;
+    if (_mono)
+        mode = TSFOutputMode::TSF_MONO;
+    else
+        mode = TSFOutputMode::TSF_STEREO_INTERLEAVED;
+
+    tsf_set_output(sf, mode, _sampleRate, -6.0f); //Volume -6 dB TODO set\get
 
     _soundFont = sf;
     return true;
@@ -122,7 +129,7 @@ QByteArray MidiRender::renderShortNext(int len)
     {
         if (SampleBlock > SampleCount) SampleBlock = SampleCount; //this is a moment when would have tail can cut
 
-        for (_msRendered += SampleBlock * (1000.0 / _freq); g_MidiMessage && _msRendered>= g_MidiMessage->time;
+        for (_msRendered += SampleBlock * (1000.0 / _sampleRate); g_MidiMessage && _msRendered>= g_MidiMessage->time;
              g_MidiMessage = g_MidiMessage->next)
         {
 
@@ -191,11 +198,11 @@ QByteArray MidiRender::renderFloatNext(int len)
     {
         if (SampleBlock > SampleCount) SampleBlock = SampleCount; //this is a moment when would have tail can cut
 
-        for (_msRendered += SampleBlock * (1000.0 / _freq); g_MidiMessage && _msRendered >= g_MidiMessage->time; g_MidiMessage = g_MidiMessage->next)
+        for (_msRendered += SampleBlock * (1000.0 / _sampleRate); g_MidiMessage && _msRendered >= g_MidiMessage->time; g_MidiMessage = g_MidiMessage->next)
         {
             //qDebug() << "Render message time "<<g_MidiMessage->time;
 
-            switch (g_MidiMessage->type)
+            switch (g_MidiMessage->type)    //TODO update as above
             {
                 case TML_PROGRAM_CHANGE: //channel program (preset) change
                     _g_MidiChannelPreset[g_MidiMessage->channel] = tsf_get_presetindex(_soundFont, 0, g_MidiMessage->program);
@@ -266,7 +273,7 @@ QByteArray MidiRender::renderMemoryFloatNext(int len)
     {
         if (SampleBlock > SampleCount) SampleBlock = SampleCount;
 
-        for (_msRendered += SampleBlock * (1000.0 / _freq);
+        for (_msRendered += SampleBlock * (1000.0 / _sampleRate);
              (_trackPosition < _midiTrack->size()) && (_msRendered >= _midiTrack->at(_trackPosition)->_absoluteTime); //REPLACE 0 with time from midi signals
              ++_trackPosition)
         {
@@ -309,7 +316,7 @@ QByteArray MidiRender::renderMemoryShortNext(int len)
     {
         if (SampleBlock > SampleCount) SampleBlock = SampleCount;
 
-        for (_msRendered += SampleBlock * (1000.0 / _freq);
+        for (_msRendered += SampleBlock * (1000.0 / _sampleRate);
              (_trackPosition < _midiTrack->size()) && (_msRendered >= _midiTrack->at(_trackPosition)->_absoluteTime); //REPLACE 0 with time from midi signals
              ++_trackPosition)
         {

@@ -176,7 +176,7 @@ void AudioHandler::saveRecordTimstamp() const {
 void AudioHandler::saveWavFile(QString filename) const {
     WavFile wav;
     wav.open(filename, QIODevice::WriteOnly);
-    wav.writeHeader(_commonFormat.sampleRate(), _commonFormat.sampleSize(), _commonBufer.size(), false, false); //EH not float fuck stupid QT, not cute at all
+    wav.writeHeader(_commonFormat.sampleRate(), _commonFormat.sampleSize(), _commonBufer.size(), _commonFormat.channelCount() == 2, false); //EH not float fuck stupid QT, not cute at all
     wav.write(_commonBufer);
 }
 
@@ -208,5 +208,5 @@ void AudioHandler::checkMidi() { //Will have to debug it, and make a new speaker
     qDebug() << "Generated " << qa.size() << " bytes ";
     _commonBufer = qa;
     _commonFormat.setChannelCount(2);
-    saveWavFile("checkmidi.wav");
+    saveWavFile("checkmidi_stereo.wav");
 }
