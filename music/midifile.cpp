@@ -55,31 +55,31 @@ void writeReversedEndian(const char* in, size_t len, std::ofstream& file) {
 
 bool MidiFile::readStream(std::ifstream & ifile)
 {
-    ifile.read((char*)midiHeader.chunkId, 4);
-    ifile.read((char*)&(midiHeader.chunkSize), 4);
-    reverseEndian(&(midiHeader.chunkSize));
-    ifile.read((char*)&(midiHeader.formatType), 2);
-    reverseEndian(&(midiHeader.formatType));
-    ifile.read((char*)&(midiHeader.nTracks), 2);
-    reverseEndian(&(midiHeader.nTracks));
-    ifile.read((char*)&(midiHeader.timeDevision), 2);
-    reverseEndian(&(midiHeader.timeDevision));
+    ifile.read((char*)_midiHeader.chunkId, 4);
+    ifile.read((char*)&(_midiHeader.chunkSize), 4);
+    reverseEndian(&(_midiHeader.chunkSize));
+    ifile.read((char*)&(_midiHeader.formatType), 2);
+    reverseEndian(&(_midiHeader.formatType));
+    ifile.read((char*)&(_midiHeader.nTracks), 2);
+    reverseEndian(&(_midiHeader.nTracks));
+    ifile.read((char*)&(_midiHeader.timeDevision), 2);
+    reverseEndian(&(_midiHeader.timeDevision));
 	
 	//allocate tracks:
-	for (int nT=0; nT < midiHeader.nTracks; ++nT)
+	for (int nT=0; nT < _midiHeader.nTracks; ++nT)
 	{
         auto midiTrack = std::make_unique<MidiTrack>();
         this->push_back(std::move(midiTrack));
 	}
 
-    if (midiLog)  qDebug() << "MidiHeader filled : " << midiHeader.chunkId;
-    if (midiLog)  qDebug() << " ch size: " << midiHeader.
-        chunkSize << "; tracks n:" << midiHeader.nTracks;
-    if (midiLog)  qDebug() << " time devision: " << midiHeader.
-        timeDevision << "; ftype:" << midiHeader.formatType;
+    if (midiLog)  qDebug() << "MidiHeader filled : " << _midiHeader.chunkId;
+    if (midiLog)  qDebug() << " ch size: " << _midiHeader.
+        chunkSize << "; tracks n:" << _midiHeader.nTracks;
+    if (midiLog)  qDebug() << " time devision: " << _midiHeader.
+        timeDevision << "; ftype:" << _midiHeader.formatType;
 
-	if (midiHeader.nTracks > 0)
-        for (size_t i = 0; i < midiHeader.nTracks; ++i)	// why was 1!!!&&
+	if (_midiHeader.nTracks > 0)
+        for (size_t i = 0; i < _midiHeader.nTracks; ++i)	// why was 1!!!&&
 		{
 
             if (midiLog)  qDebug() << "Reading track " << i;
@@ -116,14 +116,14 @@ bool MidiFile::readStream(std::ifstream & ifile)
 void MidiFile::printToStream(std::ostream &stream)
 {
 	stream << "Output MidiFile.";
-	stream << "chunky = " << midiHeader.chunkId <<std::endl;
-	stream << "Chunk Size = " << midiHeader.chunkSize;
-	stream << "; Format type = " << midiHeader.formatType <<std::endl;
-	stream << "Tracks amount = " << midiHeader.nTracks;
-	stream << "; TimeD = " << midiHeader.timeDevision << std::endl;
+	stream << "chunky = " << _midiHeader.chunkId <<std::endl;
+	stream << "Chunk Size = " << _midiHeader.chunkSize;
+	stream << "; Format type = " << _midiHeader.formatType <<std::endl;
+	stream << "Tracks amount = " << _midiHeader.nTracks;
+	stream << "; TimeD = " << _midiHeader.timeDevision << std::endl;
 	
 	//then all the tracks
-	for (short i = 0 ; i < midiHeader.nTracks; ++i)
+	for (short i = 0 ; i < _midiHeader.nTracks; ++i)
             at(i)->printToStream(stream);
 	
 	stream << "Printing finished for MidiFile" << std::endl;
@@ -136,15 +136,15 @@ size_t MidiFile::writeStream(std::ofstream &ofile) {
     size_t bytesWritten = 0;
     calculateHeader(); //also fills header of tracks
 		
-    ofile.write((const char*)midiHeader.chunkId,4);
-    writeReversedEndian((const char*)&midiHeader.chunkSize, 4, ofile);
-    writeReversedEndian((const char*)&midiHeader.formatType,2, ofile);
-    writeReversedEndian((const char*)&midiHeader.nTracks,2, ofile);
-    writeReversedEndian((const char*)&midiHeader.timeDevision,2, ofile);
+    ofile.write((const char*)_midiHeader.chunkId,4);
+    writeReversedEndian((const char*)&_midiHeader.chunkSize, 4, ofile);
+    writeReversedEndian((const char*)&_midiHeader.formatType,2, ofile);
+    writeReversedEndian((const char*)&_midiHeader.nTracks,2, ofile);
+    writeReversedEndian((const char*)&_midiHeader.timeDevision,2, ofile);
 
 	bytesWritten += 14;
 		
-    for (short int i = 0; i < midiHeader.nTracks; ++i) {
+    for (short int i = 0; i < _midiHeader.nTracks; ++i) {
 
         ofile.write((const char*)at(i)->trackHeader.chunkId,4);
         writeReversedEndian((const char*)&at(i)->trackHeader.trackSize, 4, ofile);
@@ -168,11 +168,11 @@ size_t MidiFile::noMetricsTest(std::ofstream &ofile)
     int tracks = 1;
 
     //write header
-    ofile.write((const char*)midiHeader.chunkId,4);
-    writeReversedEndian((const char*)&midiHeader.chunkSize, 4, ofile);
-    writeReversedEndian((const char*)&midiHeader.formatType,2, ofile);
+    ofile.write((const char*)_midiHeader.chunkId,4);
+    writeReversedEndian((const char*)&_midiHeader.chunkSize, 4, ofile);
+    writeReversedEndian((const char*)&_midiHeader.formatType,2, ofile);
     writeReversedEndian((const char*)&tracks,2, ofile);
-    writeReversedEndian((const char*)&midiHeader.timeDevision,2, ofile);
+    writeReversedEndian((const char*)&_midiHeader.timeDevision,2, ofile);
 
     bytesWritten += 14;
 
@@ -203,14 +203,14 @@ bool MidiFile::calculateHeader(bool skip)
      size_t calculatedTracks = this->size();
      //NOTE this will work only with previusly loaded file
      if (midiLog)  qDebug() << "Calculating headers "<<calculatedTracks<<"-tracks.";
-     midiHeader.nTracks = calculatedTracks; //NOW PUSED
+     _midiHeader.nTracks = calculatedTracks; //NOW PUSED
 
      //and here we fill header
-     midiHeader.chunkSize = 6;
-     midiHeader.formatType = 1;
-     midiHeader.timeDevision = 480; //LOT OF ATTENTION HERE WAS 480
+     _midiHeader.chunkSize = 6;
+     _midiHeader.formatType = 1;
+     _midiHeader.timeDevision = 480; //LOT OF ATTENTION HERE WAS 480
             //and then  bpm*4;
-     memcpy(midiHeader.chunkId,"MThd",5);
+     memcpy(_midiHeader.chunkId,"MThd",5);
 
 
      for (size_t i = 0; i < calculatedTracks; ++i)

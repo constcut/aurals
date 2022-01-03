@@ -19,11 +19,11 @@ class MidiRender
 
 public:
 
-    void setSampleFreq(double newFreq) { freq = newFreq; } //ON REFACTORING MAKE SUCH THINGS AS A PROPERTY
-    double getSampleFreq() { return freq; }
+    void setSampleFreq(double newFreq) { _freq = newFreq; } //ON REFACTORING MAKE SUCH THINGS AS A PROPERTY
+    double getSampleFreq() { return _freq; }
 
-    void setFrameSize(quint32 newFrameSize)  { renderFrameSize = newFrameSize; }
-    quint32 getFrameSize() { return renderFrameSize; }
+    void setFrameSize(quint32 newFrameSize)  { _renderFrameSize = newFrameSize; }
+    quint32 getFrameSize() { return _renderFrameSize; }
 
     MidiRender();
 
@@ -33,15 +33,14 @@ public:
     QByteArray renderShort(QString midiFilename);
     QByteArray renderFloat(QString midiFilename);
 
-    QByteArray renderFromMemoryShort(MidiTrack &track); //yet trying to make per track generation
-    QByteArray renderFromMemoryFloat(MidiTrack &track); //at least it could be mixed and also generated in append mode
+    QByteArray renderFromMemoryShort(MidiTrack& track);
+    QByteArray renderFromMemoryFloat(MidiTrack& track);
 
     bool openMidiFile(QString midiFilename);
     bool openSoundFont(QString sfFilename);
 
-    qint64 getTotaMsSpent() { return totalMsSpent; }
-    double getRenderTimer() { return msRendered; }
-    //there is also a mixing flag in sf lib - so we can make experiments :)
+    qint64 getTotaMsSpent() { return _totalMsSpent; }
+    double getRenderTimer() { return _msRendered; }
 
 protected:
 
@@ -49,22 +48,21 @@ protected:
     QByteArray renderFloatNext(int len);
 
     QByteArray renderMemoryFloatNext(int len);
-    QByteArray renderMemoryShortNext(int len); //refact to quint32 etc - everywhere
+    QByteArray renderMemoryShortNext(int len); //refact to quint32 etc
 
-    tml_message* midiFile = nullptr;
-    tsf* soundFont = nullptr;
+    tml_message* _midiFile = nullptr;
+    tsf* _soundFont = nullptr;
 
-    MidiTrack *midiTrack;
-    quint32 trackPosition;
+    MidiTrack* _midiTrack;
+    quint32 _trackPosition;
 
-    int renderFrameSize;
-    double freq;
+    int _renderFrameSize;
+    double _freq;
 
-    //migrated:
-    int g_MidiChannelPreset[16];
-    double msRendered;
 
-    qint64 totalMsSpent;
+    int _g_MidiChannelPreset[16];
+    double _msRendered;
+    qint64 _totalMsSpent;
 };
 
 

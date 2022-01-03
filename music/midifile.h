@@ -12,7 +12,7 @@
 class MidiFile : public std::vector<std::unique_ptr<MidiTrack>> {
 
 public:
-    struct midiHeader {
+    struct _midiHeader {
         char chunkId[5]; //4
         int32_t chunkSize; //4b
         int16_t formatType; //2
@@ -22,13 +22,13 @@ public:
     };
 
 protected:
-    struct midiHeader midiHeader;
-    
-    int bpm;
+
+    struct _midiHeader _midiHeader;
+    int _bpm;
     
 public:
 
-    MidiFile():bpm(120) {}
+    MidiFile():_bpm(120) {}
     virtual ~MidiFile() = default;
     
     bool calculateHeader(bool skip=false);
@@ -39,9 +39,8 @@ public:
 
     size_t noMetricsTest(std::ofstream &ofile);
 
-    //set get
-    void setBPM(int bpmNew) { bpm = bpmNew; }
-    int  getBPM() { return bpm; }
+    void setBPM(int bpmNew) { _bpm = bpmNew; }
+    int  getBPM() { return _bpm; }
 
 };
 

@@ -59,7 +59,7 @@ int mainInit(int argc, char *argv[]) {
     QQmlApplicationEngine engine;
     AudioHandler audio;
 
-    //audio.checkMidi();
+    audio.checkMidi();
 
     engine.rootContext()->setContextProperty("audio", &audio);
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));

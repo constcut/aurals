@@ -199,7 +199,7 @@ void AudioHandler::renameRecord(QString filename, QString newFilename) const {
     QFile::rename("records/" + filename, "records/" + newFilename);
 }
 
-void AudioHandler::checkMidi() {
+void AudioHandler::checkMidi() { //Will have to debug it, and make a new speaker
     MidiRender render;
     std::string sfPath = "/home/punnalyse/dev/mtherapp/mtherapp/sf/instrument.sf2";
     render.openSoundFont(sfPath.c_str());
@@ -207,6 +207,6 @@ void AudioHandler::checkMidi() {
     auto qa = render.renderShort(midiPath.c_str());
     qDebug() << "Generated " << qa.size() << " bytes ";
     _commonBufer = qa;
-
+    _commonFormat.setChannelCount(2);
     saveWavFile("checkmidi.wav");
 }
