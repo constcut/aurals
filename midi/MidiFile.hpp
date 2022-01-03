@@ -25,7 +25,7 @@ namespace mtherapp {
             std::uint32_t writeToFile(std::ofstream& file, bool skipSomeMessages=false);
 
         protected:
-            std::uint16_t _bpm;
+            std::uint16_t _bpm; //TODO set/get
 
             char _chunkId[4];
             std::uint32_t _chunkSize;
