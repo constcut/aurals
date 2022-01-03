@@ -23,9 +23,6 @@ public:
     Q_INVOKABLE void stopPlayback();
     Q_INVOKABLE void resetBufer();
 
-    Q_INVOKABLE void startMidiPlayer();
-    Q_INVOKABLE void stopMidiPlayer();
-
     Q_INVOKABLE void loadFile(QString filename);
     Q_INVOKABLE void saveFile(QString filename) const;
     Q_INVOKABLE void loadWavFile(QString filename);
@@ -51,7 +48,13 @@ public:
     void requestStopRecord();
     void requestStopPlayback();
 
+    Q_INVOKABLE void startMidiPlayer();
+    Q_INVOKABLE void stopMidiPlayer();
+
     Q_INVOKABLE void checkMidi();
+
+    Q_INVOKABLE void openMidiFile(QString filename);
+    Q_INVOKABLE void saveMidiToWav(QString filename);
 
 private:
 

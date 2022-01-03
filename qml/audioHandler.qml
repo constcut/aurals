@@ -65,7 +65,12 @@ Item {
                     audio.stopMidiPlayer()
                 }
             }
-
+            ToolButton {
+                text: "Save midi dump"
+                onClicked: {
+                    audio.saveMidiToWav("midi_.wav")
+                }
+            }
             //ToolButton {
             //    text: "Request permission"
             //    onClicked: audio.requestPermission()

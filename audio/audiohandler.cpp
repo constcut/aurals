@@ -28,6 +28,7 @@ AudioHandler::AudioHandler() {
 void AudioHandler::startRecord() {
     if (_isPlaying || _isRecording)
         return;
+    _isRecording = true;
     _prevBufferSize = _commonBufer.size();
     _audioReceiver->start();
     _audioInput->start(_audioReceiver.get());
@@ -44,6 +45,7 @@ void AudioHandler::stopRecord() {
 void AudioHandler::startPlayback() {
     if (_isPlaying || _isRecording)
         return;
+    _isPlaying = true;
     const double sampleRate = _commonFormat.sampleRate();
     const double bitRate = _commonFormat.sampleSize();
     const double bytesPerSample = bitRate / 8.0;
@@ -58,21 +60,6 @@ void AudioHandler::startPlayback() {
 void AudioHandler::stopPlayback() {
     _audioPlayer->stop();
     _audioOutput->stop();
-    _isPlaying = false;
-}
-
-
-void AudioHandler::startMidiPlayer() {
-    if (_isPlaying || _isRecording)
-        return;
-    _midiPlayer->start();
-    _midiOutput->start(_midiPlayer.get());
-    //TODO timer
-}
-
-void AudioHandler::stopMidiPlayer() {
-    _midiPlayer->stop();
-    _midiOutput->stop();
     _isPlaying = false;
 }
 
@@ -227,12 +214,43 @@ void AudioHandler::renameRecord(QString filename, QString newFilename) const {
     QFile::rename("records/" + filename, "records/" + newFilename);
 }
 
-void AudioHandler::checkMidi() { //Will have to debug it, and make a new speaker
-    MidiRender render;
-    std::string sfPath = "instrument.sf2";
-    render.openSoundFont(sfPath.c_str());
-    std::string midiPath = "test1.mid";
-    auto qa = render.renderShort(midiPath.c_str());
-    qDebug() << "Generated " << qa.size() << " bytes ";
-    _midiBufer = qa;
+
+void AudioHandler::startMidiPlayer() {
+    if (_isPlaying || _isRecording)
+        return;
+    _isPlaying = true;
+    _midiPlayer->start();
+    _midiOutput->start(_midiPlayer.get());
+    //TODO timer
+}
+
+
+void AudioHandler::stopMidiPlayer() {
+    _midiPlayer->stop();
+    _midiOutput->stop();
+    _isPlaying = false;
+}
+
+
+void AudioHandler::checkMidi() {
+    openMidiFile("test1.mid");
+}
+
+
+void AudioHandler::openMidiFile(QString filename) {
+     static MidiRender render;
+     static bool loaded = false;
+     if (loaded == false) {
+         render.openSoundFont("instrument.sf2"); //TODO configurable
+         loaded = true;
+     }
+     _midiBufer = render.renderShort(filename);
+}
+
+
+void AudioHandler::saveMidiToWav(QString filename) {
+    WavFile wav;
+    wav.open(filename, QIODevice::WriteOnly);
+    wav.writeHeader(_midiFormat.sampleRate(), _midiFormat.sampleSize(), _midiBufer.size(), _midiFormat.channelCount() == 2, false); //EH not float fuck stupid QT, not cute at all
+    wav.write(_midiBufer);
 }
