@@ -38,20 +38,26 @@ namespace mtherapp {
         std::uint8_t getParameter1() const { return _param1; }
         std::uint8_t getParameter2() const { return _param2; }
 
-        std::uint8_t getTypeAndChannel() const { return _byte0; }
+        std::uint8_t getTypeAndChannel() const { return _typeAndChannel; }
 
     protected:
         NBytesInt _timeStamp;
 
-        std::uint8_t _byte0; //TODO rename typeAndChannel
+        std::uint8_t _typeAndChannel;
         std::uint8_t _param1, _param2;
 
-    public:
-
-        double _absoluteTime; //bad code detected
+        double _absoluteTime;
 
         NBytesInt _metaLen;
         std::vector<std::uint8_t> _metaBufer;
+
+    public:
+
+        void setAbsoluteTime(double time) { _absoluteTime = time; }
+        double absoluteTime() const { return _absoluteTime; }
+        NBytesInt& metaLen() { return _metaLen; }
+        std::vector<std::uint8_t>& metaBufer() { return _metaBufer; }
+
     };
 
 }

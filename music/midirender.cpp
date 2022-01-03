@@ -191,8 +191,8 @@ QByteArray MidiRender::renderFloatNext(int len)
 {
     tml_message* g_MidiMessage = _midiFile;
 
-    QByteArray result; //(const char*)data,len); - old way
-    result.resize(len);      //may have some tail in the end
+    QByteArray result;
+    result.resize(len);
 
     char *stream = result.data();
 
@@ -277,7 +277,7 @@ QByteArray MidiRender::renderMemoryFloatNext(int len)
         if (SampleBlock > SampleCount) SampleBlock = SampleCount;
 
         for (_msRendered += SampleBlock * (1000.0 / _sampleRate);
-             (_trackPosition < _midiTrack->size()) && (_msRendered >= _midiTrack->at(_trackPosition)._absoluteTime); //REPLACE 0 with time from midi signals
+             (_trackPosition < _midiTrack->size()) && (_msRendered >= _midiTrack->at(_trackPosition).absoluteTime()); //REPLACE 0 with time from midi signals
              ++_trackPosition)
         {
             auto& signal = _midiTrack->at(_trackPosition); //later replace such place with ->at(i)
@@ -320,12 +320,12 @@ QByteArray MidiRender::renderMemoryShortNext(int len)
         if (SampleBlock > SampleCount) SampleBlock = SampleCount;
 
         for (_msRendered += SampleBlock * (1000.0 / _sampleRate);
-             (_trackPosition < _midiTrack->size()) && (_msRendered >= _midiTrack->at(_trackPosition)._absoluteTime); //REPLACE 0 with time from midi signals
+             (_trackPosition < _midiTrack->size()) && (_msRendered >= _midiTrack->at(_trackPosition).absoluteTime()); //REPLACE 0 with time from midi signals
              ++_trackPosition)
         {
             auto& signal = _midiTrack->at(_trackPosition); //later replace such place with ->at(i)
 
-            qDebug() << "Render "<<signal.getTypeAndChannel()<<" "<<signal._absoluteTime;
+            qDebug() << "Render "<<signal.getTypeAndChannel()<<" "<<signal.absoluteTime();
 
             switch (signal.getTypeAndChannel() & 0xf0)
             {

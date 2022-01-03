@@ -65,10 +65,10 @@ void mtherapp::MidiTrack::pushChangeInstrument(std::uint8_t newInstrument, std::
 
 void mtherapp::MidiTrack::pushTrackName(std::string trackName) {
     MidiMessage nameTrack(0xff, 3);
-    nameTrack._metaLen = NBytesInt(trackName.size());
+    nameTrack.metaLen() = NBytesInt(trackName.size());
     //.toLocal8Bit();
     for (size_t i = 0; i < trackName.size(); ++i)
-        nameTrack._metaBufer.push_back(trackName[i]);
+        nameTrack.metaBufer().push_back(trackName[i]);
 
     push_back(nameTrack);
 }
@@ -77,15 +77,15 @@ void mtherapp::MidiTrack::pushTrackName(std::string trackName) {
 void mtherapp::MidiTrack::pushMetricsSignature(std::uint8_t numeration, std::uint8_t denumeration,
                                      std::uint32_t timeShift, std::uint8_t metr, std::uint8_t perQuat) {
     MidiMessage metrics(0xff, 88, 0, timeShift);
-    metrics._metaBufer.push_back(numeration);
+    metrics.metaBufer().push_back(numeration);
 
     //log2 TODO!!!!
     std::uint8_t translatedDuration = 4; //log(denumeration); //there might be some issue on wrong data
 
-    metrics._metaBufer.push_back(translatedDuration);
-    metrics._metaBufer.push_back(metr);
-    metrics._metaBufer.push_back(perQuat);
-    metrics._metaLen = NBytesInt(4); //size of 4 bytes upper
+    metrics.metaBufer().push_back(translatedDuration);
+    metrics.metaBufer().push_back(metr);
+    metrics.metaBufer().push_back(perQuat);
+    metrics.metaLen() = NBytesInt(4); //size of 4 bytes upper
 
     push_back(metrics);
 }
@@ -94,10 +94,10 @@ void mtherapp::MidiTrack::pushMetricsSignature(std::uint8_t numeration, std::uin
 void mtherapp::MidiTrack::pushChangeBPM(std::uint16_t bpm, std::uint32_t timeShift) {
     MidiMessage changeTempo(0xff, 81, 0, timeShift);
     std::uint32_t nanoCount = 60000000 / bpm; //6e7 = amount of nanoseconds
-    changeTempo._metaBufer.push_back((nanoCount >> 16) & 0xff);
-    changeTempo._metaBufer.push_back((nanoCount >> 8) & 0xff);
-    changeTempo._metaBufer.push_back(nanoCount & 0xff);
-    changeTempo._metaLen = NBytesInt(3); //size upper
+    changeTempo.metaBufer().push_back((nanoCount >> 16) & 0xff);
+    changeTempo.metaBufer().push_back((nanoCount >> 8) & 0xff);
+    changeTempo.metaBufer().push_back(nanoCount & 0xff);
+    changeTempo.metaLen() = NBytesInt(3); //size upper
 
     push_back(changeTempo);
 }
@@ -175,7 +175,7 @@ void mtherapp::MidiTrack::pushFadeIn(std::uint16_t offset, std::uint8_t channel)
 
 void mtherapp::MidiTrack::pushEvent47() { //Emergency event
     MidiMessage event47(0xff, 47, 0, 0);
-    event47._metaLen = NBytesInt(0);
+    event47.metaLen() = NBytesInt(0);
     push_back(event47);
 }
 
@@ -223,7 +223,7 @@ std::uint32_t mtherapp::MidiTrack::readFromFile(std::ifstream& f)
         MidiMessage midiMessage;
         bytesRead += midiMessage.readFromFile(f);
         totalTime += midiMessage.getSecondsLength(beatsPerMinute) * 1000.0; //to ms
-        midiMessage._absoluteTime = totalTime;
+        midiMessage.setAbsoluteTime(totalTime);
         push_back(midiMessage);
     }
 

@@ -5,10 +5,10 @@
 
 using namespace mtherapp;
 
-MidiMessage::MidiMessage() : _byte0(0), _param1(0), _param2(0){}
+MidiMessage::MidiMessage() : _typeAndChannel(0), _param1(0), _param2(0){}
 
 MidiMessage::MidiMessage(std::uint8_t b0, std::uint8_t b1, std::uint8_t b2, std::uint32_t timeShift)
-: _byte0(b0), _param1(b1), _param2(b2), _timeStamp(timeShift) {}
+: _typeAndChannel(b0), _param1(b1), _param2(b2), _timeStamp(timeShift) {}
 
 
 double MidiMessage::getSecondsLength(double bpm) const {
@@ -18,19 +18,19 @@ double MidiMessage::getSecondsLength(double bpm) const {
 
 
 std::uint8_t MidiMessage::getEventType() const {
-    std::uint8_t eventType = (_byte0 & (0xf0)) >> 4; //name with enumeration byte blocks
+    std::uint8_t eventType = (_typeAndChannel & (0xf0)) >> 4; //name with enumeration byte blocks
     return eventType;
 }
 
 
 std::uint8_t MidiMessage::getChannel() const {
-    std::int8_t midiChannel = _byte0 & 0xf; //name with enumeration byte blocks
+    std::int8_t midiChannel = _typeAndChannel & 0xf; //name with enumeration byte blocks
     return midiChannel;
 }
 
 
 bool MidiMessage::isMetaEvent() const {
-    return _byte0 == 0xff;
+    return _typeAndChannel == 0xff;
 }
 
 
@@ -86,7 +86,7 @@ std::uint32_t MidiMessage::readFromFile(std::ifstream& f) {
 
     std::uint32_t totalBytesRead = 0;
     totalBytesRead += _timeStamp.readFromFile(f);
-    f.read((char*)&_byte0, 1);
+    f.read((char*)&_typeAndChannel, 1);
     ++totalBytesRead;
     f.read((char*)&_param1, 1);
     ++totalBytesRead;
@@ -103,7 +103,7 @@ std::uint32_t MidiMessage::readFromFile(std::ifstream& f) {
         }
         totalBytesRead += bytesInMetaBufer;
         if (enableMidiLog)
-            qDebug() << "Midi meta mes read " << _byte0 << _param1 << _metaLen.getValue() << _timeStamp.getValue() << " total bytes " << totalBytesRead << " " << f.tellg();
+            qDebug() << "Midi meta mes read " << _typeAndChannel << _param1 << _metaLen.getValue() << _timeStamp.getValue() << " total bytes " << totalBytesRead << " " << f.tellg();
     }
     else {
         std::uint8_t eventType = getEventType();  //TODO ENUMERATION                                                                                                                                        
@@ -239,13 +239,13 @@ std::uint32_t MidiMessage::writeToFile(std::ofstream& f, bool skipSomeMessages) 
         return 0;
 
     totalBytesWritten += _timeStamp.writeToFile(f);
-    f << _byte0;
+    f << _typeAndChannel;
     f << _param1;
     totalBytesWritten += 2;
 
     if (isMetaEvent()) {
         if (enableMidiLog)
-            qDebug() << "Midi meta mes write " << _byte0 << _param1
+            qDebug() << "Midi meta mes write " << _typeAndChannel << _param1
                 << _metaLen.getValue() << _timeStamp.getValue()
                 << " total bytes " << totalBytesWritten << " " << f.tellp();
 
