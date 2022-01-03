@@ -67,7 +67,8 @@ Item {
                     windowInfo.text += "Gaps: " + spectrum.gapLevel()
                 }
                 onDoubleClicked: {
-                    audio.loadOnlyWindow(item.filename, mouseX*125.0/2.0, parseInt(sizeComboBox.currentText))
+                    //audio.loadOnlyWindow(item.filename, mouseX*125.0/2.0, spectrum.getSamplesAmount())
+                    audio.loadWindowPCM(waveShape.getPCM(mouseX*125.0/2.0, spectrum.getSamplesAmount()))
                     audio.startPlayback() //TODO with repeat
                 }
 

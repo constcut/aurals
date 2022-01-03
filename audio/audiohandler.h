@@ -27,6 +27,7 @@ public:
     Q_INVOKABLE void loadWavFile(QString filename);
     Q_INVOKABLE void saveWavFile(QString filename) const;
     Q_INVOKABLE void loadOnlyWindow(QString filename, quint64 position, quint64 window);
+    Q_INVOKABLE void loadWindowPCM(QByteArray window);
 
     Q_INVOKABLE int getSampleRate() const {
         return _commonFormat.sampleRate();

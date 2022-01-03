@@ -103,6 +103,10 @@ void AudioHandler::loadOnlyWindow(QString filename, quint64 position, quint64 wi
     _commonBufer = wav.read(window*2);
 }
 
+void AudioHandler::loadWindowPCM(QByteArray window) {
+    _commonBufer = window;
+}
+
 
 void AudioHandler::loadFile(QString filename) {
     if (_isPlaying || _isRecording)
