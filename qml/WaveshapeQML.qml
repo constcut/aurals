@@ -41,8 +41,6 @@ Item {
                     flick.contentX += diff
                     if (flick.contentX < 0)
                         flick.contentX = 0
-                    if (flick.contentX >wavPos.width)
-                        flick.contentX = wavPos.width
                 }
                 onClicked:{
                     waveShape.setWindowPosition(mouseX*125.0/2.0)
