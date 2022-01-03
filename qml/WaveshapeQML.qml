@@ -46,8 +46,8 @@ Item {
                     //TODO replace 125
                     waveShape.setWindowPosition(mouseX*125.0/2.0)
 
-                    spectrum.loadSpectrum(item.filename,mouseX*125.0/2.0) //This version reloads file
-                    //spectrum.loadFromWave(waveShape.getWave(), mouseX*125.0/2.0);
+                    //spectrum.loadSpectrum(item.filename,mouseX*125.0/2.0) //This version reloads file
+                    spectrum.loadByteArray(waveShape.getPCM(mouseX*125.0/2.0, spectrum.getSamplesAmount()));
 
                     windowInfo.text = "Window RMS = " + spectrum.getRMSNoWindow().toFixed(4)
                     + "\nPitch = " + spectrum.getPitch().toFixed(3)
