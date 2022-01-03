@@ -24,8 +24,11 @@ namespace mtherapp {
             std::uint32_t writeToFile(std::string_view filename, bool skipSomeMessages=false);
             std::uint32_t writeToFile(std::ofstream& file, bool skipSomeMessages=false);
 
+            std::uint16_t getBPM() const { return _bpm; }
+            void setBPM(std::uint16_t newBPM) { _bpm = newBPM; }
+
         protected:
-            std::uint16_t _bpm; //TODO set/get
+            std::uint16_t _bpm;
 
             char _chunkId[4];
             std::uint32_t _chunkSize;

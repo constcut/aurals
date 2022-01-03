@@ -36,6 +36,7 @@ constexpr std::uint32_t returnChunkId(std::string_view str = "MTrk") {
     return value;
 }
 
+
 std::uint32_t mtherapp::MidiTrack::calculateHeader(bool skipSomeMessages) {
 
     std::uint32_t calculatedSize = 0;
@@ -56,9 +57,11 @@ std::uint32_t mtherapp::MidiTrack::calculateHeader(bool skipSomeMessages) {
     return calculatedSize;
 }
 
+
 void mtherapp::MidiTrack::pushChangeInstrument(std::uint8_t newInstrument, std::uint8_t channel, std::uint32_t timeShift) {
     push_back(MidiMessage(0xC0 | channel, newInstrument, 0, timeShift));
 }
+
 
 void mtherapp::MidiTrack::pushTrackName(std::string trackName) {
     MidiMessage nameTrack(0xff, 3);
@@ -69,6 +72,7 @@ void mtherapp::MidiTrack::pushTrackName(std::string trackName) {
 
     push_back(nameTrack);
 }
+
 
 void mtherapp::MidiTrack::pushMetricsSignature(std::uint8_t numeration, std::uint8_t denumeration,
                                      std::uint32_t timeShift, std::uint8_t metr, std::uint8_t perQuat) {
@@ -86,6 +90,7 @@ void mtherapp::MidiTrack::pushMetricsSignature(std::uint8_t numeration, std::uin
     push_back(metrics);
 }
 
+
 void mtherapp::MidiTrack::pushChangeBPM(std::uint16_t bpm, std::uint32_t timeShift) {
     MidiMessage changeTempo(0xff, 81, 0, timeShift);
     std::uint32_t nanoCount = 60000000 / bpm; //6e7 = amount of nanoseconds
@@ -97,15 +102,18 @@ void mtherapp::MidiTrack::pushChangeBPM(std::uint16_t bpm, std::uint32_t timeShi
     push_back(changeTempo);
 }
 
+
 void mtherapp::MidiTrack::pushChangeVolume(std::uint8_t newVolume, std::uint8_t channel) {
     MidiMessage volumeChange(0xB0 | channel, 7, newVolume > 127 ? 127 : newVolume, 0);
     push_back(volumeChange);
 }
 
+
 void mtherapp::MidiTrack::pushChangePanoram(std::uint8_t newPanoram, std::uint8_t channel) {
     MidiMessage panoramChange(0xB0 | channel, 0xA, newPanoram, 0);
     push_back(panoramChange);
 }
+
 
 void mtherapp::MidiTrack::pushVibration(std::uint8_t channel, std::uint8_t depth, std::uint16_t step, std::uint8_t stepsCount) {
     std::uint8_t shiftDown = 64 - depth;
@@ -119,6 +127,7 @@ void mtherapp::MidiTrack::pushVibration(std::uint8_t channel, std::uint8_t depth
     push_back(MidiMessage(signalKey, 0, 64, 0));
 }
 
+
 void mtherapp::MidiTrack::pushSlideUp(std::uint8_t channel, std::uint8_t shift, std::uint16_t step, std::uint8_t stepsCount) {
     std::uint8_t pitchShift = 64;
     std::uint8_t signalKey = 0xE0 + channel;
@@ -129,6 +138,7 @@ void mtherapp::MidiTrack::pushSlideUp(std::uint8_t channel, std::uint8_t shift, 
     push_back(MidiMessage(signalKey, 0, 64, 0));
 }
 
+
 void mtherapp::MidiTrack::pushSlideDown(std::uint8_t channel, std::uint8_t shift, std::uint16_t step, std::uint8_t stepsCount) {
     std::uint8_t pitchShift = 64;
     std::uint8_t signalKey = 0xE0 + channel;
@@ -138,6 +148,7 @@ void mtherapp::MidiTrack::pushSlideDown(std::uint8_t channel, std::uint8_t shift
     }
     push_back(MidiMessage(signalKey, 0, 64, 0));
 }
+
 
 void mtherapp::MidiTrack::pushTremolo(std::uint8_t channel, std::uint16_t offset) {
     std::uint16_t slideStep = offset / 40;
@@ -150,6 +161,7 @@ void mtherapp::MidiTrack::pushTremolo(std::uint8_t channel, std::uint16_t offset
     push_back(MidiMessage(0xE0 | channel, 0, pitchShift, offset));
     push_back(MidiMessage(0xE0 | channel, 0, 64, 0));
 }
+
 
 void mtherapp::MidiTrack::pushFadeIn(std::uint16_t offset, std::uint8_t channel) {
     std::uint8_t newVolume = 27;
@@ -167,6 +179,7 @@ void mtherapp::MidiTrack::pushEvent47() { //Emergency event
     push_back(event47);
 }
 
+
 std::int16_t mtherapp::MidiTrack::calculateRhythmDetail(std::uint8_t value, std::int16_t offset) {
     std::uint16_t resultOffset = 0;
     if (value == 3)
@@ -181,6 +194,7 @@ std::int16_t mtherapp::MidiTrack::calculateRhythmDetail(std::uint8_t value, std:
         resultOffset = (offset * 8) / 9;
     return resultOffset;
 }
+
 
 std::uint32_t mtherapp::MidiTrack::readFromFile(std::ifstream& f)
 {
@@ -230,8 +244,8 @@ std::uint32_t mtherapp::MidiTrack::readFromFile(std::ifstream& f)
     return bytesRead + 8;
 }
 
-std::uint32_t mtherapp::MidiTrack::writeToFile(std::ofstream& f, bool skipSomeMessages) const {
 
+std::uint32_t mtherapp::MidiTrack::writeToFile(std::ofstream& f, bool skipSomeMessages) const {
     std::uint32_t totalBytesWritten = 0;
     f << _chunkId;
 
@@ -246,4 +260,63 @@ std::uint32_t mtherapp::MidiTrack::writeToFile(std::ofstream& f, bool skipSomeMe
         totalBytesWritten += this->operator[](i).writeToFile(f, skipSomeMessages);
 
     return totalBytesWritten;
+}
+
+
+void mtherapp::MidiTrack::closeLetRings(std::uint8_t channel) {
+    for (size_t i = 0; i < 10; ++i)
+        if (_ringRay[i] != 255)
+            closeLetRing(i,channel);
+}
+
+
+void mtherapp::MidiTrack::closeLetRing(std::uint8_t stringN, std::uint8_t channel) {
+    if (stringN > 8){
+        qDebug() <<"String issue " << stringN;
+        return;
+    }
+
+    std::uint8_t ringNote = _ringRay[stringN];
+    _ringRay[stringN]=255;
+    std::uint8_t ringVelocy=80;
+    if (ringNote != 255)
+        pushNoteOff(ringNote,ringVelocy,channel);
+}
+
+
+void mtherapp::MidiTrack::openLetRing(std::uint8_t stringN, std::uint8_t midiNote,
+                                      std::uint8_t velocity, std::uint8_t channel) {
+    if (stringN > 8){
+        qDebug() <<"String issue "<<stringN;
+        return;
+    }
+
+    if (_ringRay[stringN]!=255)
+        closeLetRing(stringN,channel);
+    _ringRay[stringN]=midiNote;
+    pushNoteOn(midiNote,velocity,channel);
+}
+
+
+void mtherapp::MidiTrack::finishIncomplete(short specialR) {
+    short int rhyBase = 120;
+    short int power2 = 2<<(3);
+    int preRValue = rhyBase*power2/4;
+    preRValue *= specialR;
+    preRValue /= 1000;
+    accumulate(preRValue);
+}
+
+
+void mtherapp::MidiTrack::pushNoteOn(std::uint8_t midiNote, std::uint8_t velocity, std::uint8_t channel) {
+    MidiMessage msg(0x90 | channel, midiNote, velocity,_accum);
+    flushAccum();
+    push_back(msg);
+}
+
+
+void mtherapp::MidiTrack::pushNoteOff(std::uint8_t midiNote, std::uint8_t velocity, std::uint8_t channel) {
+    MidiMessage msg(0x80 | channel, midiNote, velocity,_accum);
+    flushAccum();
+    push_back(msg);
 }

@@ -30,24 +30,18 @@ namespace mtherapp {
 
         std::int16_t calculateRhythmDetail(std::uint8_t value, std::int16_t offset);
 
-        //TODO для полной совместимости:
-        /*void closeLetRings(std::uint8_t channel);		//-
-        void openLetRing(std::uint8_t stringN, std::uint8_t midiNote, std::uint8_t velocity, std::uint8_t channel); //-
-        void closeLetRing(std::uint8_t stringN, std::uint8_t channel);  //-
+        [[deprecated]] void closeLetRings(std::uint8_t channel);
+        [[deprecated]] void openLetRing(std::uint8_t stringN, std::uint8_t midiNote, std::uint8_t velocity, std::uint8_t channel);
+        [[deprecated]] void closeLetRing(std::uint8_t stringN, std::uint8_t channel);
 
-        void finishIncomplete(short specialR); //-
+        [[deprecated]] void finishIncomplete(short specialR);
 
-        void pushNoteOn(std::uint8_t midiNote, std::uint8_t velocity, std::uint8_t channel); //acummulated already inside
-        void pushNoteOff(std::uint8_t midiNote, std::uint8_t velocity, std::uint8_t channel); //-
+        void pushNoteOn(std::uint8_t midiNote, std::uint8_t velocity, std::uint8_t channel);
+        void pushNoteOff(std::uint8_t midiNote, std::uint8_t velocity, std::uint8_t channel);
 
-        void startLeeg(std::uint8_t stringN, std::uint8_t channel);
-        void stopLeeg(std::uint8_t stringN, std::uint8_t channel);
-
-        bool checkForLeegFails(); */
-        //But mark depricated
 
         protected:
-            char _chunkId[4]; //TODO as uint32_t Header: Mtrk + track size
+            char _chunkId[4]; //TODO as uint32_t = 'xxxx'
             std::uint32_t _trackSize;
 
         private:
