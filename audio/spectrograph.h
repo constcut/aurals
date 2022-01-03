@@ -50,7 +50,6 @@
 
 #include "frequencyspectrum.h"
 #include "featureextractor.h"
-#include "waveholder.h"
 
 
 class SpectrographPainter {
@@ -170,7 +169,7 @@ public:
     Q_INVOKABLE void onPress(int xPress, int yPress, int width, int height);
 
     Q_INVOKABLE bool loadSpectrum(QString filename, quint64 position);
-    Q_INVOKABLE bool loadFromWave(WaveHolder w, quint64 position);
+    Q_INVOKABLE bool loadByteArray(QByteArray analyseData);
 
     Q_INVOKABLE void setYinLimit(int limit) { _analyser.yinLimit = limit; };
     Q_INVOKABLE void setFFTLimit(int limit) { _analyser.fftLimit = limit; };

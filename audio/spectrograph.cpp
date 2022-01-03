@@ -523,18 +523,18 @@ bool SpectrographQML::loadSpectrum(QString filename, quint64 position) {
 }
 
 
-bool SpectrographQML::loadFromWave(WaveHolder w, quint64 position) {
-    auto samples = w.getPtr()->getFloatSamples();
-    std::vector<quint16> intSamples(_samplesAmount, 0); //Slow - to improve accept float samples also
-    for (size_t i = position; i < position + _samplesAmount; ++i) {
-        if (i >= samples.size())
-            break;
-        intSamples[i - position] = realToPcm(samples[i]);
-    }
+bool SpectrographQML::loadByteArray(QByteArray analyseData) {
+    QAudioFormat format;;
+    format.setSampleRate(44100);
+    format.setChannelCount(1);
+    format.setSampleSize(16);
+    format.setSampleType(QAudioFormat::SignedInt);
+    format.setByteOrder(QAudioFormat::LittleEndian);
+    format.setCodec("audio/pcm");
+
     const int bytesInSample = 2;
-    QByteArray analyseData = QByteArray(reinterpret_cast<const char*>(intSamples.data()), intSamples.size() * bytesInSample);
     if (analyseData.size() != _samplesAmount * bytesInSample)
         return false;
-    _analyser.calculate(analyseData, w.getPtr()->getAudioFormat());
+    _analyser.calculate(analyseData, format);
     return true;
 }

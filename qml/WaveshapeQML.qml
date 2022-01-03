@@ -43,8 +43,12 @@ Item {
                         flick.contentX = 0
                 }
                 onClicked:{
+                    //TODO replace 125
                     waveShape.setWindowPosition(mouseX*125.0/2.0)
-                    spectrum.loadSpectrum(item.filename,mouseX*125.0/2.0)
+
+                    spectrum.loadSpectrum(item.filename,mouseX*125.0/2.0) //This version reloads file
+                    //spectrum.loadFromWave(waveShape.getWave(), mouseX*125.0/2.0);
+
                     windowInfo.text = "Window RMS = " + spectrum.getRMSNoWindow().toFixed(4)
                     + "\nPitch = " + spectrum.getPitch().toFixed(3)
                     + "\nMIDI# = " + spectrum.freqToMidi(spectrum.getPitch())
