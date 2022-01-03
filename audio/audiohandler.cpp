@@ -9,7 +9,7 @@
 #include "app/androidtools.h"
 #include "wavfile.h"
 
-#include "music/midirender.h"
+#include "midi/MidiRender.hpp"
 
 
 AudioHandler::AudioHandler() {

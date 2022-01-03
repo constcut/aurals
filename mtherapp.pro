@@ -55,6 +55,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     app/androidtools.h \
+    app/clipboard.h \
     app/loghandler.h \
     audio/audiohandler.h \
     audio/audioreceiver.h \
