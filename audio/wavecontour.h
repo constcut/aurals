@@ -1,9 +1,7 @@
 #ifndef WAVECONTOUR_H
 #define WAVECONTOUR_H
 
-#include <QList>
-#include <QObject>
-
+#include <QAudioFormat>
 
 class WaveContour  {
 
@@ -37,6 +35,8 @@ public:
     const std::vector<double>& getPitch() const { return _yinLine; }
     void changeYinTheshold(double threshold) { _yinTheshold = threshold; }
 
+    QAudioFormat getAudioFormat() { return _audioFormat; }
+
 protected:
 
     std::vector<float> _floatSamples;
@@ -53,6 +53,8 @@ protected:
 
     double _yinTheshold = 0.15;
     std::vector<double> _yinLine;
+
+    QAudioFormat _audioFormat;
 
 private:
     bool loadWavFile(QString filename); //The only left qt part, only beacuse of WaveFile

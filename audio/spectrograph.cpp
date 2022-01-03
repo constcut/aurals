@@ -45,11 +45,12 @@
 #include <QPainter>
 #include <QTimerEvent>
 
-#include "wavfile.h"
-#include "findpeaks.hpp"
-
 #include <cmath>
 #include <unordered_map>
+
+#include "wavfile.h"
+#include "findpeaks.hpp"
+#include "utils.h"
 
 
 SpectrographPainter::SpectrographPainter() : _barSelected(-1),
@@ -506,20 +507,34 @@ void SpectrographQML::onPress(int xPress, [[maybe_unused]] int yPress, int width
     selectBar(index);
 }
 
-//TODO использовать уже загруженный буфер передавать wavecountur как qml аргумент и в waveshape и в spectrograph
+
 bool SpectrographQML::loadSpectrum(QString filename, quint64 position) {
     WavFile wav;
     if ( wav.open(filename) == false)
        return false;
+    const int bytesInSample = 2;
     quint64 afterHeaderPosition = wav.pos();
-    wav.seek(afterHeaderPosition + position*2);
-    QByteArray analyseData = wav.read(_samplesAmount*2);
-    if (analyseData.size() != _samplesAmount*2)
+    wav.seek(afterHeaderPosition + position * bytesInSample);
+    QByteArray analyseData = wav.read(_samplesAmount * bytesInSample);
+    if (analyseData.size() != _samplesAmount * bytesInSample)
         return false;
     _analyser.calculate(analyseData, wav.audioFormat());
     return true;
 }
 
-void SpectrographQML::loadFromWave(WaveHolder w, quint64 position) {
 
+bool SpectrographQML::loadFromWave(WaveHolder w, quint64 position) {
+    auto samples = w.getPtr()->getFloatSamples();
+    std::vector<quint16> intSamples(_samplesAmount, 0); //Slow - to improve accept float samples also
+    for (size_t i = position; i < position + _samplesAmount; ++i) {
+        if (i >= samples.size())
+            break;
+        intSamples[i - position] = realToPcm(samples[i]);
+    }
+    const int bytesInSample = 2;
+    QByteArray analyseData = QByteArray(reinterpret_cast<const char*>(intSamples.data()), intSamples.size() * bytesInSample);
+    if (analyseData.size() != _samplesAmount * bytesInSample)
+        return false;
+    _analyser.calculate(analyseData, w.getPtr()->getAudioFormat());
+    return true;
 }

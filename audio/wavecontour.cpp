@@ -44,6 +44,7 @@ bool WaveContour::loadWavFile(QString filename) {
         ptr += 2; //16 bit audio
     }
     calculateRms();
+    _audioFormat = wav.audioFormat();
     return _floatSamples.empty() == false;
 }
 
