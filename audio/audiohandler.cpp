@@ -219,9 +219,9 @@ void AudioHandler::renameRecord(QString filename, QString newFilename) const {
 
 
 void AudioHandler::startMidiPlayer() {
-    if (_isPlaying || _isRecording)
+    /*if (_isPlaying || _isRecording)
         return;
-    _isPlaying = true;
+    _isPlaying = true;*/
     const double sampleRate = _midiFormat.sampleRate();
     const double bytesPerSample = _midiFormat.sampleSize() / 8.0;
     const double msInSecond = 1000.0;
@@ -236,7 +236,7 @@ void AudioHandler::startMidiPlayer() {
 void AudioHandler::stopMidiPlayer() {
     _midiPlayer->stop();
     _midiOutput->stop();
-    _isPlaying = false;
+    //_isPlaying = false;
 }
 
 
