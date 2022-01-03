@@ -197,15 +197,15 @@ void MidiEngine::playTrack(MidiTrack &track)
 
     for (int i = 0; i < track.size(); ++i)
     {
-        MidiMessage sig = track[i];
+        MidiSignal& sig = *track[i];
 
         unsigned absValue = 10;
         //ul waitTime = absValue
 
         if (sig._byte0!=0xff)
             sendSignalShortDelay(absValue,
-                        sig._byte0,sig._p1,
-                            sig._p2);
+                        sig._byte0,sig._param1,
+                            sig._param2);
     }
 }
 
@@ -220,7 +220,7 @@ void MidiEngine::run()
 
     for (auto i = 0; i < _toPlay->size(); ++i)
     {
-        MidiMessage sig = _toPlay->operator [](i);
+        MidiSignal& sig = *_toPlay->operator [](i);
 
         double toWaitSeconds = sig.getSecondsLength();
         quint32 toWaitMs = toWaitSeconds*1000.0;
@@ -232,10 +232,10 @@ void MidiEngine::run()
 
         if (_playNotes)
         if (sig._byte0!=0xff)
-            sendSignalShort(sig._byte0,sig._p1,sig._p2);
+            sendSignalShort(sig._byte0,sig._param1,sig._param2);
 
         if (_emitSignal)
-            Q_EMIT messagePlaying(sig._byte0,sig._p1,sig._p2);
+            Q_EMIT messagePlaying(sig._byte0,sig._param1,sig._param2);
 
     }
     qDebug() << "Realtime play finished";
@@ -250,7 +250,7 @@ void MidiEngine::playTrackRealtime(MidiTrack &track, bool playNotes, bool emitSi
    start();
 }
 
-void MidiEngine::sendSignal(MidiMessage &signal)
+void MidiEngine::sendSignal(MidiSignal &signal)
 {
     if (opened==false)
         init();
@@ -258,7 +258,7 @@ void MidiEngine::sendSignal(MidiMessage &signal)
     if (signal._byte0==0xff)
         sendSignalLong(signal);
     else
-        sendSignalShort(signal._byte0,signal._p1,signal._p2);
+        sendSignalShort(signal._byte0,signal._param1,signal._param2);
 }
 
 void MidiEngine::sendSignalShort(byte status, int byte1, int byte2)
@@ -280,7 +280,7 @@ void MidiEngine::sendSignalShort(byte status, int byte1, int byte2)
 #endif
 }
 
-void MidiEngine::sendSignalLong(MidiMessage &signal)
+void MidiEngine::sendSignalLong(MidiSignal &signal)
 {
     if (opened==false)
         init();

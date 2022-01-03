@@ -36,8 +36,9 @@ SOURCES += \
     music/midiengine.cpp \
     music/midifile.cpp \
     music/midirender.cpp \
-    libs/sf/tsf.cpp \
-    app/init.cpp
+    app/init.cpp \
+    music/midisignal.cpp \
+    music/miditrack.cpp
 
 RESOURCES += qml.qrc \
     fonts.qrc \
@@ -109,7 +110,9 @@ HEADERS += \
     music/midirender.h \
     libs/sf/tml.h \
     libs/sf/tsf.h \
-    app/init.h
+    app/init.h \
+    music/midisignal.h \
+    music/miditrack.h
 
 
 DISTFILES += \

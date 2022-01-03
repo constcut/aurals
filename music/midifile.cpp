@@ -1,771 +1,223 @@
 #include "midifile.h"
 
-#include "log.hpp"
-#include <QtEndian>
 
-#include <cmath>
-#include <math.h>
+#include <iostream>
+#include <fstream>
+#include <algorithm>
+
+#include <QDebug>
 
 
-//full loging must be able to turn on\off
+bool midiLog = false;
 
-bool enableMidiLog = false;
-
-unsigned int log2_local( unsigned int x )
-{
-  unsigned int ans = 0 ;
-  while( x>>=1 ) ans++;
-  return ans ;
-}
-
-//=====================VarInt===========================================
-
-VariableInteger::VariableInteger(quint32 source)
-{
-    if (source == 0){
-        append(0); return;
+/*
+void reverseEndian(void _*_ p,int s) {
+    char *bytes = (char*)p;
+    if (s == 4){
+        char b = bytes[0];
+        bytes[0] = bytes[3];
+        bytes[3] = b;
+        b = bytes[1];
+        bytes[1] = bytes[2];
+        bytes[2] = b;
     }
-
-    QList<quint8> byteParts;
-    while (source)
-    {
-        quint8 nextByte = source % 128;
-        byteParts<<nextByte;
-        source /= 128;
+    if (s == 2) {
+        char b = bytes[0];
+        bytes[0] = bytes[1];
+        bytes[1] = b;
     }
+}*/ //TODO check midi file read-write stays the same - then wipe
 
-    for (int i = byteParts.size()-1; i >=0 ; --i)
-        append(byteParts[i]);
+
+template <class T>
+void reverseEndian(T *objp) {
+    unsigned char *memp = reinterpret_cast<unsigned char*>(objp);
+    std::reverse(memp, memp + sizeof(T));
 }
 
-quint32 VariableInteger::readFromFile(QFile &f)
-{
-    quint8 lastByte = 0;
-    do
-    {
-        f.read((char*)&lastByte, 1);
-        append(lastByte & 127);
 
-    } while (lastByte & 128);
-
-    if (enableMidiLog)
-    {
-        qDebug() << "VarInt read "<<getValue()<<" "<<size();
-
-        for (auto i = 0; i < size(); ++i)
-            qDebug() << "VarInt["<<i<<"] = "<<this->operator [](i);
+void writeReversedEndian(const char* in, size_t len, std::ofstream& file) {
+    char buf[4];
+    if (len == 2) {
+        buf[0] = in[1];
+        buf[1] = in[0];
     }
-
-    return size();
-}
-
-quint32 VariableInteger::writeToFile(QFile &f)
-{
-  for (int i = 0; i < size(); ++i)
-  {
-      quint8 anotherByte = operator [](i);
-      if (i != size()-1)
-        anotherByte |= 128;
-
-      f.write((const char*)&anotherByte,1);
-  }
-
-  if (enableMidiLog) {
-  for (auto i = 0; i < size(); ++i)
-      qDebug() << "VarInt["<<i<<"] = "<<this->operator [](i);
-
-  qDebug() << "VarInt write "<<getValue()<<" "<<size();
-  }
-
-  return size();
-}
-
-quint32 VariableInteger::getValue()
-{
- quint32 result = 0;
- int bytesToCollect = size() < 4 ? size() : 4;
-
- for (int i = 0; i < bytesToCollect; ++i)
- {
-     result <<= 7;
-     result += this->operator [](i);
- }
-
- return result;
-}
-
-//=======================Midi Message==========================================
-
-quint8 MidiMessage::getEventType() {
-    quint8 eventType = (_byte0 & (0xf0))>>4; //name with enumeration byte blocks
-    return eventType;
-}
-
-quint8 MidiMessage::getChannel() {
-    qint8 midiChannel = _byte0 & 0xf;//name with enumeration byte blocks
-    return midiChannel;
-}
-
-bool MidiMessage::isMetaEvent() {
-    return _byte0 == 0xff;
-}
-
-MidiMessage::MidiMessage():_byte0(0),_p1(0),_p2(0)
-{
-}
-
-MidiMessage::MidiMessage(quint8 b0, quint8 b1, quint8 b2, quint32 timeShift):
-    _byte0(b0),_p1(b1),_p2(b2),_timeStamp(timeShift)
-{
-}
-
-quint32 MidiMessage::calculateSize(bool skip)
-{
-    quint32  messageSize = 0;
-
-    if (skip == true)
-        if (skipThat())
-            return 0;
-
-    messageSize += _timeStamp.size();
-    ++messageSize; //byte 0
-
-    if (isMetaEvent() == false)
-    {
-        ++messageSize; //parameter 1
-        quint8 eventType = getEventType();
-
-        if ((eventType != 0xC) && (eventType != 0xD)&& (eventType != 0x2)&& (eventType != 0x3)&& (eventType != 0x4)&& (eventType != 0x5)&& (eventType != 0x6)&& (eventType != 0x0)) //MAKE ENUMERATION
-           ++messageSize; //parameter 2
+    else if (len == 4) {
+        buf[0] = in[3];
+        buf[1] = in[2];
+        buf[2] = in[1];
+        buf[3] = in[0];
     }
-    else
-    {
-        ++messageSize; //parameter 1 actually
-        messageSize += _metaLen.size();
-        messageSize += _metaBufer.size();
-    }
-    return messageSize;
+    file.write(buf, len);
 }
 
-///there is some debug or quick fix function found there also:
-bool MidiMessage::skipThat()
+
+
+bool MidiFile::readStream(std::ifstream & ifile)
 {
-    if (isMetaEvent()) {
-            if (_p1 == 47) //MAKE ENUMERATION
-                return false;
-            if (_p1 == 81) //change tempo
-                return false;
-            if (_p1 == 88)
-                return false; //Time signature
-            if (_p1 == 3)
-                return false; //track name
+    ifile.read((char*)midiHeader.chunkId, 4);
+    ifile.read((char*)&(midiHeader.chunkSize), 4);
+    reverseEndian(&(midiHeader.chunkSize));
+    ifile.read((char*)&(midiHeader.formatType), 2);
+    reverseEndian(&(midiHeader.formatType));
+    ifile.read((char*)&(midiHeader.nTracks), 2);
+    reverseEndian(&(midiHeader.nTracks));
+    ifile.read((char*)&(midiHeader.timeDevision), 2);
+    reverseEndian(&(midiHeader.timeDevision));
+	
+	//allocate tracks:
+	for (int nT=0; nT < midiHeader.nTracks; ++nT)
+	{
+        auto midiTrack = std::make_unique<MidiTrack>();
+        this->push_back(std::move(midiTrack));
+	}
 
-            //qDebug() << "SKIP META "<<p1;
+    if (midiLog)  qDebug() << "MidiHeader filled : " << midiHeader.chunkId;
+    if (midiLog)  qDebug() << " ch size: " << midiHeader.
+        chunkSize << "; tracks n:" << midiHeader.nTracks;
+    if (midiLog)  qDebug() << " time devision: " << midiHeader.
+        timeDevision << "; ftype:" << midiHeader.formatType;
 
-            //all the meta event must be here to be playable in winamp at least
+	if (midiHeader.nTracks > 0)
+        for (size_t i = 0; i < midiHeader.nTracks; ++i)	// why was 1!!!&&
+		{
 
-            return true;  //this gives play in winamp only
-    }
-    else  {
-        quint8 eventType = getEventType();
-        if ((eventType == 8) || (eventType == 9)) //MAKE ENUMERATION
-            return false; //notes on and off
+            if (midiLog)  qDebug() << "Reading track " << i;
 
+            ifile.read((char*)at(i)->trackHeader.chunkId, 4);
+            at(i)->trackHeader.chunkId[4] = 0;
 
-        //AT first skip events that useful to be played through MPC
-        ///LATER WILL name them
-        return true;
-    }
+            if (midiLog)  qDebug() << "Track " << i << " header " << at(i)->trackHeader.chunkId;
+
+            uint32_t trackSize = 0;
+            ifile.read((char*)&trackSize, 4);
+            reverseEndian(&trackSize);
+
+            if (midiLog)  qDebug() << "Size of track " << trackSize;
+
+            at(i)->trackHeader.trackSize = trackSize;
+            size_t totalRead = 0;
+			
+            while (totalRead < trackSize) {
+                auto singleSignal = std::make_unique<MidiSignal>(); //for those who have troubles in speach
+                size_t signalBytesRead = singleSignal->readStream(ifile);
+				totalRead += signalBytesRead;
+                at(i)->push_back(std::move(singleSignal));
+                if (midiLog)  qDebug() << "Cycle of events. Read " << totalRead << " of " << trackSize;
+			}
+            if (midiLog)  qDebug() <<"Track reading finished. "<<totalRead<<" from "<<trackSize;
+        }
 
     return true;
 }
 
-///===========================================
 
-quint32 MidiMessage::readFromFile(QFile &f)
+
+void MidiFile::printToStream(std::ostream &stream)
 {
-    quint32 totalBytesRead = 0;
-
-    totalBytesRead +=  _timeStamp.readFromFile(f);
-    f.read((char*)&_byte0,1); ++totalBytesRead;
-    f.read((char*)&_p1,1); ++totalBytesRead;
-
-
-    if (isMetaEvent())
-    {
-        totalBytesRead += _metaLen.readFromFile(f);
-        quint32 bytesInMetaBufer = _metaLen.getValue();
-        _metaBufer.clear(); //to be sure we don't makeit grow
-
-        for (quint32 i = 0; i < bytesInMetaBufer; ++i)
-        {
-            quint8 byteBufer;
-            f.read((char*)&byteBufer,1);
-            _metaBufer.append(byteBufer); //maybe better make a vector and read whole block once
-        }
-
-        totalBytesRead += bytesInMetaBufer;
-
-        if (enableMidiLog)
-        qDebug() <<"Midi meta mes read "<<_byte0<<_p1<<_metaLen.getValue() <<_timeStamp.getValue()<<" total bytes "<<totalBytesRead <<" "<<f.pos();
-
-        //SAME HERE PLEASE NAME SOME EVENTS
-    }
-    else
-    {
-        quint8 eventType = getEventType(); //ups - update conditions
-        if ((eventType != 0xC) && (eventType != 0xD) && (eventType != 0x2)&& (eventType != 0x3)&& (eventType != 0x4)&& (eventType != 0x5)&& (eventType != 0x6) && (eventType != 0x0)) //MAKE ENUMERATION
-        {
-            f.read((char*)&_p2,1);
-            ++totalBytesRead;
-        }
-         if (enableMidiLog)
-        qDebug() << "Midi message read "<< nameEvent(eventType) << " ( " << eventType << getChannel()<< " ) " << _p1 << _p2 <<" t: "<<_timeStamp.getValue()<<" total bytes "<<totalBytesRead<<" "<<f.pos();
-
-        if (eventType == 0xB)
-        {
-             if (enableMidiLog)
-            qDebug() << "Controller name: " << nameController(_p1);
-            if (_p1 == 100)
-            {
-                //qDebug() << "WATCH OUT";
-            }
-        }
-
-    }
-
-
-    if (totalBytesRead > calculateSize())
-        qDebug() << "Error! overread "<<f.pos();
-
-    return totalBytesRead;
+	stream << "Output MidiFile.";
+	stream << "chunky = " << midiHeader.chunkId <<std::endl;
+	stream << "Chunk Size = " << midiHeader.chunkSize;
+	stream << "; Format type = " << midiHeader.formatType <<std::endl;
+	stream << "Tracks amount = " << midiHeader.nTracks;
+	stream << "; TimeD = " << midiHeader.timeDevision << std::endl;
+	
+	//then all the tracks
+	for (short i = 0 ; i < midiHeader.nTracks; ++i)
+            at(i)->printToStream(stream);
+	
+	stream << "Printing finished for MidiFile" << std::endl;
 }
 
- QString MidiMessage::nameEvent(qint8 eventNumber)
- {
-     if (eventNumber == 0x8) return "Note off";
-     if (eventNumber == 0x9) return "Note on";
-     if (eventNumber == 0xA) return "Aftertouch";
-     if (eventNumber == 0xB) return "Control change";
-     if (eventNumber == 0xC) return "Program (patch) change";
-     if (eventNumber == 0xD) return "Channel pressure";
-     if (eventNumber == 0xE) return "Pitch Wheel";
 
-     return "Unknown_EventType";
- }
 
- QString MidiMessage::nameController(quint8 controllerNumber)
- {
-     struct controllesNames
+size_t MidiFile::writeStream(std::ofstream &ofile) {
+
+    size_t bytesWritten = 0;
+    calculateHeader(); //also fills header of tracks
+		
+    ofile.write((const char*)midiHeader.chunkId,4);
+    writeReversedEndian((const char*)&midiHeader.chunkSize, 4, ofile);
+    writeReversedEndian((const char*)&midiHeader.formatType,2, ofile);
+    writeReversedEndian((const char*)&midiHeader.nTracks,2, ofile);
+    writeReversedEndian((const char*)&midiHeader.timeDevision,2, ofile);
+
+	bytesWritten += 14;
+		
+    for (short int i = 0; i < midiHeader.nTracks; ++i) {
+
+        ofile.write((const char*)at(i)->trackHeader.chunkId,4);
+        writeReversedEndian((const char*)&at(i)->trackHeader.trackSize, 4, ofile);
+
+		bytesWritten += 8;
+        size_t amountOfEvents = at(i)->size();
+		
+		for (size_t j = 0; j < amountOfEvents; ++j)
+            bytesWritten += at(i)->at(j)->writeStream(ofile);
+	}
+		
+	return bytesWritten;		
+}
+
+
+
+size_t MidiFile::noMetricsTest(std::ofstream &ofile)
+{
+    size_t bytesWritten = 0;
+
+    int tracks = 1;
+
+    //write header
+    ofile.write((const char*)midiHeader.chunkId,4);
+    writeReversedEndian((const char*)&midiHeader.chunkSize, 4, ofile);
+    writeReversedEndian((const char*)&midiHeader.formatType,2, ofile);
+    writeReversedEndian((const char*)&tracks,2, ofile);
+    writeReversedEndian((const char*)&midiHeader.timeDevision,2, ofile);
+
+    bytesWritten += 14;
+
+    calculateHeader(true);
+
+    //for (short int i = 1; i < 2; ++i)
+    {
+        size_t i = 1;
+        ofile.write((const char*)at(i)->trackHeader.chunkId,4);
+        writeReversedEndian((const char*)&at(i)->trackHeader.trackSize, 2, ofile);
+
+        bytesWritten += 8;
+
+        size_t amountOfEvents = at(i)->size();
+
+        for (size_t j = 0; j < amountOfEvents; ++j)
+        {
+            bytesWritten += at(i)->at(j)->writeStream(ofile,true);
+        }
+    }
+
+    return bytesWritten;
+}
+
+
+bool MidiFile::calculateHeader(bool skip)
+{
+     size_t calculatedTracks = this->size();
+     //NOTE this will work only with previusly loaded file
+     if (midiLog)  qDebug() << "Calculating headers "<<calculatedTracks<<"-tracks.";
+     midiHeader.nTracks = calculatedTracks; //NOW PUSED
+
+     //and here we fill header
+     midiHeader.chunkSize = 6;
+     midiHeader.formatType = 1;
+     midiHeader.timeDevision = 480; //LOT OF ATTENTION HERE WAS 480
+            //and then  bpm*4;
+     memcpy(midiHeader.chunkId,"MThd",5);
+
+
+     for (size_t i = 0; i < calculatedTracks; ++i)
      {
-         quint8 index;
-         char *name;
-     };
-
-     controllesNames names[] ={{0  ,"Bank Select"},
-     {1  ,"Modulation Wheel (coarse)"},
-     {2  ,"Breath controller (coarse)"},
-     {4  ,"Foot Pedal (coarse)"},
-     {5  ,"Portamento Time (coarse)"},
-     {6  ,"Data Entry (coarse)"},
-     {7  ,"Volume (coarse)"},
-     {8  ,"Balance (coarse)"},
-     {10 ,"Pan position (coarse)"},
-     {11 ,"Expression (coarse)"},
-     {12 ,"Effect Control 1 (coarse)"},
-     {13 ,"Effect Control 2 (coarse)"},
-     {16 ,"General Purpose Slider 1"},
-     {17 ,"General Purpose Slider 2"},
-     {18 ,"General Purpose Slider 3"},
-     {19 ,"General Purpose Slider 4"},
-     {32 ,"Bank Select (fine)"},
-     {33 ,"Modulation Wheel (fine)"},
-     {34 ,"Breath controller (fine)"},
-     {36 ,"Foot Pedal (fine)"},
-     {37 ,"Portamento Time (fine)"},
-     {38 ,"Data Entry (fine)"},
-     {39 ,"Volume (fine)"},
-     {40 ,"Balance (fine)"},
-     {42 ,"Pan position (fine)"},
-     {43 ,"Expression (fine)"},
-     {44 ,"Effect Control 1 (fine)"},
-     {45 ,"Effect Control 2 (fine)"},
-     {64 ,"Hold Pedal (on/off)"},
-     {65 ,"Portamento (on/off)"},
-     {66 ,"Sustenuto Pedal (on/off)"},
-     {67 ,"Soft Pedal (on/off)"},
-     {68 ,"Legato Pedal (on/off)"},
-     {69 ,"Hold 2 Pedal (on/off)"},
-     {70 ,"Sound Variation"},
-     {71 ,"Sound Timbre"},
-     {72 ,"Sound Release Time"},
-     {73 ,"Sound Attack Time"},
-     {74 ,"Sound Brightness"},
-     {75 ,"Sound Control 6"},
-     {76 ,"Sound Control 7"},
-     {77 ,"Sound Control 8"},
-     {78 ,"Sound Control 9"},
-     {79 ,"Sound Control 10"},
-     {80 ,"General Purpose Button 1 (on/off)"},
-     {81 ,"General Purpose Button 2 (on/off)"},
-     {82 ,"General Purpose Button 3 (on/off)"},
-     {83 ,"General Purpose Button 4 (on/off)"},
-     {91 ,"Effects Level"},
-     {92 ,"Tremulo Level"},
-     {93 ,"Chorus Level"},
-     {94 ,"Celeste Level"},
-     {95 ,"Phaser Level"},
-     {96 ,"Data Button increment"},
-     {97 ,"Data Button decrement"},
-     {98 ,"Non-registered Parameter (coarse)"},
-     {99 ,"Non-registered Parameter (fine)"},
-     {100,"Registered Parameter (coarse)"},
-     {101,"Registered Parameter (fine)"},
-     {120,"All Sound Off"},
-     {121,"All Controllers Off"},
-     {122,"Local Keyboard (on/off)"},
-     {123,"All Notes Off"},
-     {124,"Omni Mode Off"},
-     {125,"Omni Mode On"},
-     {126,"Mono Operation"},
-     {127,"Poly Operation"}};
-
-     for (auto i = 0; i < (sizeof(names)/sizeof(controllesNames)); ++i)
-     {
-         if (names[i].index == controllerNumber)
-             return names[i].name;
+        at(i)->calculateHeader(skip);
      }
 
-     return "Unknown_ControllerName";
- }
-
-quint32 MidiMessage::writeToFile(QFile &f, bool skip)
-{
-    quint32 totalBytesWritten = 0;
-
-    if (skip && skipThat())
-        return 0;
-
-    totalBytesWritten += _timeStamp.writeToFile(f);
-    f.write((const char*)&_byte0,1);
-    f.write((const char*)&_p1,1);
-    totalBytesWritten += 2;
-
-    //qDebug() << "Writing midi message "<<byte0<<" "<<p1<<" : position "<<f.pos();
-
-    if (isMetaEvent())
-    {
-        //also maybe its nice to recalculate, yet we don't edit meta midi event,
-        //but maybe once
-
-         if (enableMidiLog)
-        qDebug() <<"Midi meta mes write "<<_byte0<<_p1<<_metaLen.getValue() <<_timeStamp.getValue()<<" total bytes "<<totalBytesWritten <<" "<<f.pos();
-
-
-        totalBytesWritten += _metaLen.writeToFile(f);
-
-        for (int i = 0; i < _metaBufer.size(); ++i)
-            f.write((const char*)&_metaBufer[i],1); //if there was a vector can write a block
-
-
-        totalBytesWritten += _metaBufer.size();
-    }
-    else
-    {
-        quint8 eventType = getEventType();
-        if ((eventType != 0xC) && (eventType != 0xD)&& (eventType != 0x2)&& (eventType != 0x3)&& (eventType != 0x4)&& (eventType != 0x5)&& (eventType != 0x6) && (eventType != 0x0))
-        {
-            f.write((const char*)&_p2,1);
-            ++totalBytesWritten;
-        }
-
-         if (enableMidiLog)
-         {
-            qDebug() << "Midi message write "<< nameEvent(eventType) << " ( " << eventType << getChannel()<< " ) " << _p1 << _p2 <<" t: "<<_timeStamp.getValue()<<" total bytes "<<totalBytesWritten<<" "<<f.pos();
-
-            if (eventType == 0xB)
-                qDebug() << "Controller name: " << nameController(_p1);
-         }
-    }
-
-
-    if (enableMidiLog) {
-    qDebug() << "Total bytes written in message "<<totalBytesWritten;
-
-    if (totalBytesWritten > calculateSize())
-        qDebug() << "Error! overwritten "<<f.pos();
-    }
-
-    return totalBytesWritten;
+     return true;
 }
 
-//=====================MidiTrack===================================
-
-quint32 MidiTrack::calculateHeader(bool skip)
-{
-    quint32 calculatedSize = 0;
-
-    for (quint32 i = 0; i < size(); ++i)
-        calculatedSize += operator [](i).calculateSize(skip);
-
-    if (enableMidiLog)
-    if (_trackSize != calculatedSize)
-        qDebug () << "UPDATING track size: "<<_trackSize<<" to "<<calculatedSize;
-
-    _trackSize = calculatedSize;
-
-    memcpy(_chunkId,"MTrk",4);
-    return calculatedSize;
-}
-
-
-void MidiTrack::pushChangeInstrument(quint8 newInstrument, quint8 channel,  quint32 timeShift){
-    append (MidiMessage(0xC0 | channel, newInstrument, 0, timeShift));
-}
-
-void MidiTrack::pushTrackName(QString trackName)
-{
-   MidiMessage nameTrack(0xff,3);
-   nameTrack._metaLen = VariableInteger(trackName.size());
-
-   QByteArray nameBytes = trackName.toLocal8Bit();
-
-   for (auto i = 0; i < trackName.size(); ++i)
-       nameTrack._metaBufer.append(nameBytes[i]);
-
-    append(nameTrack);
-}
-
-void MidiTrack::pushMetricsSignature(quint8 numeration, quint8 denumeration,
-                          quint32 timeShift, quint8 metr, quint8 perQuat)
-{
-    MidiMessage metrics(0xff,88,0,timeShift);
-    metrics._metaBufer.append(numeration);
-
-    qint8 translatedDuration = log2_local(denumeration); //there might be some issue on wrong data
-
-    metrics._metaBufer.append(translatedDuration);
-    metrics._metaBufer.append(metr);
-    metrics._metaBufer.append(perQuat);
-    metrics._metaLen = VariableInteger(4); //size of 4 bytes upper
-
-    append(metrics);
-}
-
-void MidiTrack::pushChangeBPM(quint16 bpm, quint32 timeShift)
-{
-  MidiMessage changeTempo(0xff,81,0,timeShift);
-
-   quint32 nanoCount = 60000000/bpm; //6e7 = amount of nanoseconds
-
-   changeTempo._metaBufer.append((nanoCount>>16)&0xff);
-   changeTempo._metaBufer.append((nanoCount>>8)&0xff);
-   changeTempo._metaBufer.append(nanoCount&0xff);
-
-   changeTempo._metaLen = VariableInteger(3);//size upper
-
-   append(changeTempo);
-}
-
-void MidiTrack::pushChangeVolume(quint8 newVolume, quint8 channel){
-    MidiMessage volumeChange(0xB0 | channel, 7, newVolume > 127 ? 127 : newVolume,0);
-    append(volumeChange);
-}
-
-void MidiTrack::pushChangePanoram(quint8 newPanoram, quint8 channel){
-    MidiMessage panoramChange(0xB0 | channel, 0xA, newPanoram, 0);
-    append(panoramChange);
-}
-
-void MidiTrack::pushVibration(quint8 channel, quint8 depth, quint16 step, quint8 stepsCount)
-{
-    quint8 shiftDown = 64-depth;
-    quint8 shiftUp = 64+depth;
-    quint8 signalKey = 0xE0 + channel;
-
-    for (quint32 i = 0; i < stepsCount; ++i)
-    {
-        append(MidiMessage(signalKey,0,shiftDown,step));
-        append(MidiMessage(signalKey,0,shiftUp,step));
-    }
-    append(MidiMessage(signalKey,0,64,0));
-}
-
-void MidiTrack::pushSlideUp(quint8 channel, quint8 shift, quint16 step, quint8 stepsCount)
-{
-    quint8 pitchShift = 64;
-    quint8 signalKey = 0xE0 + channel;
-    for (quint32 i = 0; i < stepsCount; ++i)
-    {
-        append(MidiMessage(signalKey,0,pitchShift,step));
-        pitchShift += shift;
-    }
-    append(MidiMessage(signalKey,0,64,0));
-}
-
-void MidiTrack::pushSlideDown(quint8 channel, quint8 shift, quint16 step, quint8 stepsCount)
-{
-    quint8 pitchShift = 64;
-    quint8 signalKey = 0xE0 + channel;
-    for (quint32 i = 0; i < stepsCount; ++i)
-    {
-        append(MidiMessage(signalKey,0,pitchShift,step));
-        pitchShift -= shift;
-    }
-    append(MidiMessage(signalKey,0,64,0));
-}
-
-void MidiTrack::pushTremolo(quint8 channel,quint16 offset)
-{
-    quint16 slideStep = offset/40;
-
-    quint8 pitchShift = 64;
-    for (int i = 0; i < 10; ++i)
-    {
-        append(MidiMessage(0xE0 | channel, 0, pitchShift, slideStep));
-        pitchShift -= 3;
-    }
-
-    offset -= offset/4;
-
-    append(MidiMessage(0xE0 | channel, 0, pitchShift, offset));
-    append(MidiMessage(0xE0 | channel, 0, 64, 0));
-}
-
-void MidiTrack::pushFadeIn(quint16 offset, quint8 channel)
-{
-    quint8 newVolume = 27;
-    quint16 fadeInStep = offset/20;
-
-    append(MidiMessage(0xB0 | channel, 7, newVolume, 0));
-
-    for (int i = 0; i < 20; ++i)
-    {
-        newVolume += 5;
-        append(MidiMessage(0xB0 | channel, 7, newVolume, fadeInStep));
-    }
-}
-
-void MidiTrack::pushEvent47()
-{
-    MidiMessage event47(0xff,47,0,0);
-    event47._metaLen = VariableInteger(0);
-    append(event47);
-}
-
-qint16 MidiTrack::calculateRhythmDetail(quint8 value, qint16 offset) //maybe nice to have double equalent to calculate more proper?
-{
-    quint16 resultOffset = 0;
-
-    if (value == 3) resultOffset = (offset*2)/3;
-    if (value == 5) resultOffset = (offset*4)/5;
-    if (value == 6) resultOffset = (offset*5)/6;
-    if (value == 7) resultOffset = (offset*4)/7;
-    if (value == 9) resultOffset = (offset*8)/9;
-
-    return resultOffset;
-}
-
-quint32 MidiTrack::readFromFile(QFile &f)
-{
-    f.read(_chunkId,4); //CHECK ITS RIGHT
-    f.read((char*)&_trackSize,4);  //when there is too big - its sign of know error
-
-    if ((_chunkId[0]!='M') || (_chunkId[1]!='T')
-            || (_chunkId[2]!='r') || (_chunkId[3]!='k'))
-    {
-       if (enableMidiLog)
-        qDebug() << "Error: Header of track corrupted "
-                 <<_chunkId[0]<<_chunkId[1]<<_chunkId[2]<<_chunkId[3];
-        return 8;
-    }
-
-    _trackSize = qToBigEndian(_trackSize);
-
-     if (enableMidiLog)
-        qDebug() << "Reading midi track "<<_chunkId[0]<<_chunkId[1]<<_chunkId[2]<<_chunkId[3]<<
-             _trackSize;
-
-    double totalTime = 0.0;
-    int beatsPerMinute = 120; //default value
-
-    quint32 bytesRead = 0;
-    while (bytesRead < _trackSize)
-    {
-         MidiMessage midiMessage;
-         bytesRead += midiMessage.readFromFile(f);
-
-         //WE NEED LOOK FOR BPM CHANGE HERE AND UPDATE variable
-         ///beatsPerMinute = midiMessage.getBPM(); //helper function to unpack bpm rate
-         //
-         ///AND IN FUTURE NEED TO MAKE A PSEUDO MIDI TRACK mixed from all other
-         /// containing ptrs to MidiMessages, and so this is the way to set all the absolute time
-         /// well together so bpm change on one track will afect another
-
-         totalTime += midiMessage.getSecondsLength(beatsPerMinute)*1000.0; //to ms
-         midiMessage._absoluteTime = totalTime;
-
-         append(midiMessage);
-    }
-
-    _timeLengthOnLoad = totalTime;
-
-    if (bytesRead > _trackSize)
-    {
-        if (enableMidiLog)
-            qDebug() << "ERROR readen more bytes then needed "<<bytesRead<< _trackSize;
-
-        //Recovery system on issues
-        if (enableMidiLog)
-        {
-            if (f.seek(f.pos() - (bytesRead-_trackSize)))
-            qDebug() <<"Rolled back to continue read file as possible";
-            else
-            qDebug() << "Failed to roll back";
-        }
-
-    }
-
-    return bytesRead + 8;
-}
-
-quint32 MidiTrack::writeToFile(QFile &f, bool skip)
-{
-    quint32 totalBytesWritten = 0;
-
-    f.write(_chunkId,4);
-    quint32 sizeInverted = qToBigEndian(_trackSize);
-    f.write((char *)&sizeInverted,4);
-    totalBytesWritten += 8;
-
-    if (enableMidiLog)
-        qDebug() << "Writing midi track "<<_chunkId[0]<<_chunkId[1]<<_chunkId[2]<<_chunkId[3]<<
-                _trackSize;
-
-    for (auto i = 0; i < size(); ++i)
-        totalBytesWritten += this->operator [](i).writeToFile(f,skip);
-
-    return totalBytesWritten;
-}
-
-//=========================MidiFile===============================
-
-MidiFile::MidiFile():_bpm(120)
-{
-}
-
-quint32 MidiFile::calculateHeader(bool skip)
-{
-    quint32 totalBytesCalculated = 0;
-
-    memcpy(_chunkId,"MThd",4);
-    _formatType = 1; //look over 0 and are there other formats? //0 is 1 track
-    _timeD = 480; //also look please
-    _chunkSize = 6;
-    _tracksCount = size();
-
-    totalBytesCalculated += 8 + _chunkSize; //header total size
-
-    for (int i = 0; i < size(); ++i)
-        totalBytesCalculated += this->operator [](i).calculateHeader();
-
-    return totalBytesCalculated;
-}
-
-MidiFile::MidiFile(QString filename)
-{
-    readFromFile(filename);
-}
-
-quint32 MidiFile::readFromFile(QString filename)
-{
-    QFile file(filename);
-    file.open(QIODevice::ReadOnly);
-    readFromFile(file);
-}
-
-quint32 MidiFile::readFromFile(QFile &f)
-{
-    quint32 totalBytesRead = 0;
-
-    _chunkSize = 0;
-    _formatType = 0;
-    _tracksCount = 0;
-    _timeD = 0;
-
-    f.read((char*)&_chunkId,4); //Must check is value inside right
-    f.read((char*)&_chunkSize,4); //should check is it == 6 - if not notify and read the space
-    f.read((char*)&_formatType,2);  //Must check is it 0 or 1 if else we don't know it
-    f.read((char*)&_tracksCount,2);
-    f.read((char*)&_timeD,2);
-    totalBytesRead += 14;
-
-    _chunkSize = qToBigEndian(_chunkSize);
-    _formatType = qToBigEndian(_formatType);
-    _tracksCount = qToBigEndian(_tracksCount);
-    _timeD = qToBigEndian(_timeD);
-
-    if ((_chunkId[0]!='M') || (_chunkId[1]!='T') || (_chunkId[2]!='h')
-            ||(_chunkId[3]!='d'))
-    {
-        if (enableMidiLog)
-            qDebug() << "Midi header corrupted - error "
-                 <<_chunkId[0]<<_chunkId[1]<<_chunkId[2]<<_chunkId[3];
-        return totalBytesRead;
-    }
-
-    if (_chunkSize != 6)
-    {
-        if (enableMidiLog)
-            qDebug()<< "Issue chunk size != 6";
-        return totalBytesRead;
-    }
-
-    if (enableMidiLog)
-        qDebug() << "Reading midi file "<<_chunkId[0]<<_chunkId[1]<<_chunkId[2]<<_chunkId[3]<<
-                " "<<_chunkSize<<" "<<_formatType<<" "<<_tracksCount<<" "<<_timeD;
-
-    for (auto i = 0; i < _tracksCount; ++i) //something about future codding style I hope
-    {
-        MidiTrack track;
-        totalBytesRead += track.readFromFile(f);
-        append(track);
-    }
-
-    return totalBytesRead;
-}
-
-quint32 MidiFile::writeToFile(QString filename, bool skip)
-{
-    QFile file(filename);
-    file.open(QIODevice::WriteOnly);
-    return writeToFile(file,skip);
-}
-
-quint32 MidiFile::writeToFile(QFile &f, bool skip)
-{
-    quint32 totalBytesWritten=0;
-
-    calculateHeader(skip);
-
-    quint32 sizeInverted = qToBigEndian(_chunkSize);
-    quint16 formatInverted = qToBigEndian(_formatType);
-    quint16 tracksNInverted = qToBigEndian(_tracksCount);
-    quint16 timeDInverted = qToBigEndian(_timeD);
-
-    f.write((const char*)&_chunkId,4);
-    f.write((const char*)&sizeInverted,4);
-    f.write((const char*)&formatInverted,2);
-    f.write((const char*)&tracksNInverted,2);
-    f.write((const char*)&timeDInverted,2);
-    totalBytesWritten += 14;
-
-    if (enableMidiLog)
-        qDebug() << "Writing midi file "<<_chunkId[0]<<_chunkId[1]<<_chunkId[2]<<_chunkId[3]<<
-                " "<<_chunkSize<<" "<<_formatType<<" "<<_tracksCount<<" "<<_timeD;
-
-    for (auto i = 0; i < size(); ++i)
-        totalBytesWritten += this->operator [](i).writeToFile(f, skip);
-
-    return totalBytesWritten;
-}

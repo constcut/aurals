@@ -6,6 +6,7 @@
 #include <QThread>
 
 #include "midifile.h"
+#include "midisignal.h"
 
 #ifdef WIN32
 
@@ -45,9 +46,9 @@ static void sendSignalShortWin(DWORD signal);
 
     virtual void run() override;
 
-    static void sendSignal(MidiMessage &signal);
+    static void sendSignal(MidiSignal &signal);
     static void sendSignalShort(byte status, int byte1=-1, int byte2=-1);
-    static void sendSignalLong(MidiMessage &signal);
+    static void sendSignalLong(MidiSignal &signal);
 
     static void sendSignalShortDelay(int msdelay, byte status, int byte1=-1, int byte2=-1);
 
