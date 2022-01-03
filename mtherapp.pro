@@ -34,11 +34,8 @@ SOURCES += \
     midi/NBytesInt.cpp \
     music/graphicmap.cpp \
     music/midiengine.cpp \
-    music/midifile.cpp \
     music/midirender.cpp \
-    app/init.cpp \
-    music/midisignal.cpp \
-    music/miditrack.cpp
+    app/init.cpp
 
 RESOURCES += qml.qrc \
     fonts.qrc \
@@ -106,13 +103,10 @@ HEADERS += \
     midi/NBytesInt.hpp \
     music/graphicmap.h \
     music/midiengine.h \
-    music/midifile.h \
     music/midirender.h \
     libs/sf/tml.h \
     libs/sf/tsf.h \
-    app/init.h \
-    music/midisignal.h \
-    music/miditrack.h
+    app/init.h
 
 
 DISTFILES += \

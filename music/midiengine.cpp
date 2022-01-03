@@ -1,16 +1,15 @@
 #include "midiengine.h"
 
-#ifndef WIN32 //that did halped earlier to play something on android - but rather useless now
-#include <QMediaPlayer>
-#endif //the android implementation should be different (maybe Sonivox usage)
-
-#include "log.hpp"
+#ifndef WIN32
+#include <QMediaPlayer> //Linux fails :( Android should be doublechecked
+#endif
 
 #include <QThread>
 
-
 #define min_DEF(a,b) a>b ? b:a;
 #define max_DEF(a,b) a>b ? a:b;
+
+using namespace mtherapp;
 
 MidiEngine *MidiEngine::inst=0;
 
@@ -109,7 +108,6 @@ void MidiEngine::openFile(QString filename, QString aliasName)
     return;
 #endif
 
-    //\"
     QString openCommand = "open " + filename + " type sequencer alias " + aliasName;
     QByteArray openCommandBytes = openCommand.toLocal8Bit();
     lastAlias = aliasName;
@@ -180,8 +178,9 @@ void MidiEngine::freeInitials()
 
 MidiEngine::MidiEngine()
 {
-    if (inst!=0) return;
-    inst = this; //last one
+    if (inst != 0)
+        return;
+    inst = this; //TODO Mayers Singleton
     init();
 }
 
@@ -190,22 +189,20 @@ MidiEngine::~MidiEngine()
     freeInitials();
 }
 
-void MidiEngine::playTrack(MidiTrack &track)
+void MidiEngine::playTrack(mtherapp::MidiTrack &track)
 {
     if (opened==false)
         init();
 
-    for (int i = 0; i < track.size(); ++i)
-    {
-        MidiSignal& sig = *track[i];
+    for (size_t i = 0; i < track.size(); ++i) {
+        mtherapp::MidiMessage& sig = track[i];
 
         unsigned absValue = 10;
         //ul waitTime = absValue
 
-        if (sig._byte0!=0xff)
-            sendSignalShortDelay(absValue,
-                        sig._byte0,sig._param1,
-                            sig._param2);
+        if (sig.getTypeAndChannel() !=0xff)
+            sendSignalShortDelay(absValue, sig.getTypeAndChannel(),
+                                 sig.getParameter1(), sig.getParameter2());
     }
 }
 
@@ -218,9 +215,9 @@ void MidiEngine::run()
 
     qDebug() <<"Starting midi real time playing "<<_toPlay->size();
 
-    for (auto i = 0; i < _toPlay->size(); ++i)
+    for (size_t i = 0; i < _toPlay->size(); ++i)
     {
-        MidiSignal& sig = *_toPlay->operator [](i);
+       mtherapp::MidiMessage& sig = _toPlay->operator [](i);
 
         double toWaitSeconds = sig.getSecondsLength();
         quint32 toWaitMs = toWaitSeconds*1000.0;
@@ -231,17 +228,17 @@ void MidiEngine::run()
         //best is to check this moment
 
         if (_playNotes)
-        if (sig._byte0!=0xff)
-            sendSignalShort(sig._byte0,sig._param1,sig._param2);
+        if (sig.getTypeAndChannel() !=0xff)
+            sendSignalShort(sig.getTypeAndChannel(),sig.getParameter1(),sig.getParameter2());
 
         if (_emitSignal)
-            Q_EMIT messagePlaying(sig._byte0,sig._param1,sig._param2);
+            Q_EMIT messagePlaying(sig.getTypeAndChannel(),sig.getParameter1(),sig.getParameter2());
 
     }
     qDebug() << "Realtime play finished";
 }
 
-void MidiEngine::playTrackRealtime(MidiTrack &track, bool playNotes, bool emitSignal)
+void MidiEngine::playTrackRealtime(mtherapp::MidiTrack &track, bool playNotes, bool emitSignal)
 {
    _toPlay = &track;
    this->_playNotes = playNotes;
@@ -250,18 +247,18 @@ void MidiEngine::playTrackRealtime(MidiTrack &track, bool playNotes, bool emitSi
    start();
 }
 
-void MidiEngine::sendSignal(MidiSignal &signal)
+void MidiEngine::sendSignal(mtherapp::MidiMessage &signal)
 {
     if (opened==false)
         init();
 
-    if (signal._byte0==0xff)
+    if (signal.getTypeAndChannel() ==0xff)
         sendSignalLong(signal);
     else
-        sendSignalShort(signal._byte0,signal._param1,signal._param2);
+        sendSignalShort(signal.getTypeAndChannel() ,signal.getParameter1(),signal.getParameter2());
 }
 
-void MidiEngine::sendSignalShort(byte status, int byte1, int byte2)
+void MidiEngine::sendSignalShort(uint8_t status, int byte1, int byte2)
 {
     if (opened==false)
         init();
@@ -280,7 +277,7 @@ void MidiEngine::sendSignalShort(byte status, int byte1, int byte2)
 #endif
 }
 
-void MidiEngine::sendSignalLong(MidiSignal &signal)
+void MidiEngine::sendSignalLong(mtherapp::MidiMessage& signal)
 {
     if (opened==false)
         init();
@@ -316,7 +313,7 @@ void MidiEngine::sendSignalShortWin(DWORD signal)
 
 #endif
 
-void MidiEngine::sendSignalShortDelay( int msdelay, byte status, int byte1, int byte2)
+void MidiEngine::sendSignalShortDelay( int msdelay, uint8_t status, int byte1, int byte2)
 {
     if (opened==false)
         init();
