@@ -202,10 +202,10 @@ void MidiEngine::playTrack(MidiTrack &track)
         unsigned absValue = 10;
         //ul waitTime = absValue
 
-        if (sig.byte0!=0xff)
+        if (sig._byte0!=0xff)
             sendSignalShortDelay(absValue,
-                        sig.byte0,sig.p1,
-                            sig.p2);
+                        sig._byte0,sig._p1,
+                            sig._p2);
     }
 }
 
@@ -231,11 +231,11 @@ void MidiEngine::run()
         //best is to check this moment
 
         if (_playNotes)
-        if (sig.byte0!=0xff)
-            sendSignalShort(sig.byte0,sig.p1,sig.p2);
+        if (sig._byte0!=0xff)
+            sendSignalShort(sig._byte0,sig._p1,sig._p2);
 
         if (_emitSignal)
-            Q_EMIT messagePlaying(sig.byte0,sig.p1,sig.p2);
+            Q_EMIT messagePlaying(sig._byte0,sig._p1,sig._p2);
 
     }
     qDebug() << "Realtime play finished";
@@ -255,10 +255,10 @@ void MidiEngine::sendSignal(MidiMessage &signal)
     if (opened==false)
         init();
 
-    if (signal.byte0==0xff)
+    if (signal._byte0==0xff)
         sendSignalLong(signal);
     else
-        sendSignalShort(signal.byte0,signal.p1,signal.p2);
+        sendSignalShort(signal._byte0,signal._p1,signal._p2);
 }
 
 void MidiEngine::sendSignalShort(byte status, int byte1, int byte2)

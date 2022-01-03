@@ -33,7 +33,7 @@ public:
 
     quint32 calculateSize(bool skip=false);
 
-    bool skipThat();///there is some debug or quick fix function found there also:
+    bool skipThat();//Debug\quickfix get rid
 
     quint32 readFromFile(QFile &f);
     quint32 writeToFile(QFile &f, bool skip=false);
@@ -41,24 +41,21 @@ public:
     QString nameEvent(qint8 eventNumber);
     QString nameController(quint8 controllerNumber);
 
-    //GREAT IDEA TO MAKE BPM WITH DOTS
-    double getSecondsLength(double bpm=120.0)
-    { //yet only 120 and on default 480 time division -modify later
-        double seconds = (double)(timeStamp.getValue())/960.0;
+    double getSecondsLength(double bpm=120.0) { //TODO only 120 and on default 480 time division -modify later
+        double seconds = (double)(_timeStamp.getValue())/960.0;
         return seconds;
     }
 
-public:                       //maybe protected is a better case - speeding up right now
-    VariableInteger timeStamp;
+public:
+    VariableInteger _timeStamp;
 
-    quint8 byte0; //type + channel
-    quint8 p1,p2; //parameters
+    quint8 _byte0; //type + channel
+    quint8 _p1, _p2; //parameters
 
-    double absoluteTime;
+    double _absoluteTime;
 
-    //On case its a Meta message:
-    VariableInteger metaLen;
-    QList<quint8> metaBufer;
+    VariableInteger _metaLen;
+    QList<quint8> _metaBufer;
 };
 
 
@@ -87,29 +84,26 @@ class MidiTrack : public QList<MidiMessage>
 
     void pushTrackName(QString trackName);
 
-    qint16 calculateRhythmDetail(quint8 value, qint16 offset); //maybe nice to have double equalent to calculate more proper?
+    qint16 calculateRhythmDetail(quint8 value, qint16 offset); //Todo maybe double?
     //Helpers for tab loading: calcMidiPanoramGP, calcMidiVolumeGP, calcPalmMuteVelocy, calcLeggatoVelocy
-
-    ///Helpers for let rings closeLetRings, openLetRing, closeLetRing,
-    /// finishIncomplete, startLeeg, stopLeeg, checkForLeegFails
+    //Helpers for let rings closeLetRings, openLetRing, closeLetRing,
+    //finishIncomplete, startLeeg, stopLeeg, checkForLeegFails
 
     protected:
         //Header: Mtrk + track size
-        char chunkId[4];
-        quint32 trackSize;
+        char _chunkId[4];
+        quint32 _trackSize;
 
-        //Helpers - might go private
-        qint32 accum;
-        quint8 tunes[10]; //legacy
-        quint8 ringRay[10];     //stayed for tablature generation needs
+        qint32 _accum;
+        quint8 _tunes[16]; //gtp legacy
+        quint8 _ringRay[16];//stayed for tablature generation needs
 
-        double timeLengthOnLoad; //miliseconds of track
-        //yet it appaers only on load
+        double _timeLengthOnLoad;
 
    public:
-        qint32 accumulate(qint32 addition) { accum += addition; return accum; }
-        qint32 getAccum() { return accum; }
-        void flushAccum() { accum = 0; }
+        qint32 accumulate(qint32 addition) { _accum += addition; return _accum; }
+        qint32 getAccum() { return _accum; }
+        void flushAccum() { _accum = 0; }
 
     public:
 
@@ -135,14 +129,14 @@ public:
 
     //somthing called 'no metrics test' used with that (skip) calculateHeader
 protected:
-    quint16 bpm;
+    quint16 _bpm;
 
     //header
-    char chunkId[4];
-    quint32 chunkSize;
-    quint16 formatType;
-    quint16 tracksCount;
-    quint16 timeDevisition;
+    char _chunkId[4];
+    quint32 _chunkSize;
+    quint16 _formatType;
+    quint16 _tracksCount;
+    quint16 _timeD;
 };
 
 #endif // MIDIFILE_H

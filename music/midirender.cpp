@@ -240,22 +240,22 @@ QByteArray MidiRender::renderMemoryFloatNext(int len)
         if (SampleBlock > SampleCount) SampleBlock = SampleCount;
 
         for (msRendered += SampleBlock * (1000.0 / freq);
-             (trackPosition < midiTrack->size()) && (msRendered >= midiTrack->at(trackPosition).absoluteTime); //REPLACE 0 with time from midi signals
+             (trackPosition < midiTrack->size()) && (msRendered >= midiTrack->at(trackPosition)._absoluteTime); //REPLACE 0 with time from midi signals
              ++trackPosition)
         {
             MidiMessage signal = midiTrack->operator [](trackPosition); //later replace such place with ->at(i)
 
-            switch (signal.byte0 & 0xf0)
+            switch (signal._byte0 & 0xf0)
             {
                 case TML_PROGRAM_CHANGE:
-                    g_MidiChannelPreset[signal.getChannel()] = tsf_get_presetindex((tsf*)soundFont, 0, signal.p1);
+                    g_MidiChannelPreset[signal.getChannel()] = tsf_get_presetindex((tsf*)soundFont, 0, signal._p1);
                     if (g_MidiChannelPreset[signal.getChannel()] < 0) g_MidiChannelPreset[signal.getChannel()] = 0;
                     break;
                 case TML_NOTE_ON: //play a note
-                    tsf_note_on((tsf*)soundFont, g_MidiChannelPreset[signal.getChannel()], signal.p1, signal.p2 / 127.0f);
+                    tsf_note_on((tsf*)soundFont, g_MidiChannelPreset[signal.getChannel()], signal._p1, signal._p2 / 127.0f);
                     break;
                 case TML_NOTE_OFF: //stop a note
-                    tsf_note_off((tsf*)soundFont, g_MidiChannelPreset[signal.getChannel()], signal.p1);
+                    tsf_note_off((tsf*)soundFont, g_MidiChannelPreset[signal.getChannel()], signal._p1);
                     break;
             }
 
@@ -283,24 +283,24 @@ QByteArray MidiRender::renderMemoryShortNext(int len)
         if (SampleBlock > SampleCount) SampleBlock = SampleCount;
 
         for (msRendered += SampleBlock * (1000.0 / freq);
-             (trackPosition < midiTrack->size()) && (msRendered >= midiTrack->at(trackPosition).absoluteTime); //REPLACE 0 with time from midi signals
+             (trackPosition < midiTrack->size()) && (msRendered >= midiTrack->at(trackPosition)._absoluteTime); //REPLACE 0 with time from midi signals
              ++trackPosition)
         {
             MidiMessage signal = midiTrack->operator [](trackPosition); //later replace such place with ->at(i)
 
             //qDebug() << "Render "<<signal.byte0<<" "<<signal.absoluteTime;
 
-            switch (signal.byte0 & 0xf0)
+            switch (signal._byte0 & 0xf0)
             {
                 case TML_PROGRAM_CHANGE:
-                    g_MidiChannelPreset[signal.getChannel()] = tsf_get_presetindex((tsf*)soundFont, 0, signal.p1);
+                    g_MidiChannelPreset[signal.getChannel()] = tsf_get_presetindex((tsf*)soundFont, 0, signal._p1);
                     if (g_MidiChannelPreset[signal.getChannel()] < 0) g_MidiChannelPreset[signal.getChannel()] = 0;
                     break;
                 case TML_NOTE_ON: //play a note
-                    tsf_note_on((tsf*)soundFont, g_MidiChannelPreset[signal.getChannel()], signal.p1, signal.p2 / 127.0f);
+                    tsf_note_on((tsf*)soundFont, g_MidiChannelPreset[signal.getChannel()], signal._p1, signal._p2 / 127.0f);
                     break;
                 case TML_NOTE_OFF: //stop a note
-                    tsf_note_off((tsf*)soundFont, g_MidiChannelPreset[signal.getChannel()], signal.p1);
+                    tsf_note_off((tsf*)soundFont, g_MidiChannelPreset[signal.getChannel()], signal._p1);
                     break;
             }
         }
