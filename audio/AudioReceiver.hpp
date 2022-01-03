@@ -4,37 +4,38 @@
 #include <QIODevice>
 #include <QAudioFormat>
 
+namespace mtherapp {
+
+    class AudioReceiver : public QIODevice
+    {
+        Q_OBJECT
+
+    public:
+        AudioReceiver(const QAudioFormat& format, QObject *parent, QByteArray& commonBufer);
+        ~AudioReceiver() = default;
+
+        void start();
+        void stop();
+
+        qreal normLevel() const { return _level; }
+
+        qint64 readData(char *data, qint64 maxlen);
+        qint64 writeData(const char *data, qint64 len);
 
 
-class AudioReceiver : public QIODevice
-{
-    Q_OBJECT
+    private:
 
-public:
-    AudioReceiver(const QAudioFormat& format, QObject *parent, QByteArray& commonBufer);
-    ~AudioReceiver() = default;
+        const QAudioFormat _audioFormat;
+        QByteArray& _bufer;
+        quint32 _maxAmplitude;
+        qreal _level; // 0.0 <= m_level <= 1.0
 
-    void start();
-    void stop();
+        const quint32 msToStopRecord = 30000;
 
-    qreal normLevel() const { return _level; }
+    signals:
+        void update();
+    };
 
-    qint64 readData(char *data, qint64 maxlen);
-    qint64 writeData(const char *data, qint64 len);
-
-
-private:
-
-    const QAudioFormat _audioFormat;
-    QByteArray& _bufer;
-    quint32 _maxAmplitude;
-    qreal _level; // 0.0 <= m_level <= 1.0
-
-    const quint32 msToStopRecord = 30000;
-
-signals:
-    void update();
-};
-
+}
 
 #endif // AUDIORECEIVER_H

@@ -6,6 +6,7 @@
 
 #include "AudioHandler.hpp"
 
+using namespace mtherapp;
 
 AudioReceiver::AudioReceiver(const QAudioFormat& format, QObject *parent, QByteArray& commonBufer)
     :   QIODevice(parent)

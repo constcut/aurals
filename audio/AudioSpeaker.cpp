@@ -8,6 +8,7 @@
 
 #include "AudioHandler.hpp"
 
+using namespace mtherapp;
 
 AudioSpeaker::AudioSpeaker(const QAudioFormat &format, QObject *parent, QByteArray& commonBufer)
     :   QIODevice(parent)
