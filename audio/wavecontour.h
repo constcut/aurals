@@ -36,6 +36,7 @@ public:
     void changeYinTheshold(double threshold) { _yinTheshold = threshold; }
 
     QAudioFormat getAudioFormat() { return _audioFormat; }
+    QByteArray getPCM(quint64 position, quint64 samples);
 
 protected:
 

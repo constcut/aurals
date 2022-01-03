@@ -47,7 +47,6 @@
 #include <memory>
 
 #include "wavecontour.h"
-#include "waveholder.h"
 
 
 class WaveshapePainter  {
@@ -129,7 +128,8 @@ public:
 
     Q_INVOKABLE void setYinThreshold(double threshold) { changeYinTheshold(threshold); update(); }
 
-    Q_INVOKABLE WaveHolder getWave() { return WaveHolder(_waveContour); }
+    Q_INVOKABLE QByteArray getPCM(quint64 position, quint64 samples) { return _waveContour.getPCM(position, samples); }
+
 };
 
 
