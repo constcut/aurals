@@ -38,7 +38,7 @@
 **
 ****************************************************************************/
 
-#include "spectrograph.h"
+#include "Spectrograph.h"
 
 #include <QDebug>
 #include <QMouseEvent>
@@ -48,9 +48,9 @@
 #include <cmath>
 #include <unordered_map>
 
-#include "wavfile.h"
-#include "findpeaks.hpp"
-#include "utils.h"
+#include "WavFile.h"
+#include "FindPeaks.hpp"
+#include "AudioUtils.h"
 
 
 SpectrographPainter::SpectrographPainter() : _barSelected(-1),

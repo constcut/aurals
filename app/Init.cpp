@@ -20,9 +20,9 @@
 #include <fstream>
 #include <cstdlib>
 
-#include "audio/audiohandler.h"
-#include "audio/waveshape.h"
-#include "audio/spectrograph.h"
+#include "audio/AudioHandler.h"
+#include "audio/WaveShape.h"
+#include "audio/Spectrograph.h"
 
 using namespace std;
 

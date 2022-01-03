@@ -38,29 +38,51 @@
 **
 ****************************************************************************/
 
-#ifndef UTILS_H
-#define UTILS_H
+#include "FrequencySpectrum.h"
 
-#include <QtCore/qglobal.h>
-#include <QDebug>
 
-QT_FORWARD_DECLARE_CLASS(QAudioFormat)
+FrequencySpectrum::FrequencySpectrum(int numPoints)
+    :   m_elements(numPoints)
+{}
 
-qint64 audioDuration(const QAudioFormat &format, qint64 bytes);
-qint64 audioLength(const QAudioFormat &format, qint64 microSeconds);
 
-QString formatToString(const QAudioFormat &format);
+void FrequencySpectrum::reset() {
+    iterator i = begin();
+    for ( ; i != end(); ++i)
+        *i = Element();
+}
 
-qreal pcmToReal(qint16 pcm); // Scale PCM value to [-1.0, 1.0]
-qint16 realToPcm(qreal real); // Scale real value in [-1.0, 1.0] to PCM
 
-bool isPCM(const QAudioFormat &format); // Check whether the audio format is PCM
-bool isPCMS16LE(const QAudioFormat &format); // Check whether the audio format is signed, little-endian, 16-bit PCM
+int FrequencySpectrum::count() const {
+    return m_elements.count();
+}
 
-template<int N> class PowerOfTwo // Compile-time calculation of powers of two
-{ public: static const int Result = PowerOfTwo<N-1>::Result * 2; };
 
-template<> class PowerOfTwo<0>
-{ public: static const int Result = 1; };
+FrequencySpectrum::Element &FrequencySpectrum::operator[](int index) {
+    return m_elements[index];
+}
 
-#endif // UTILS_H
+
+const FrequencySpectrum::Element &FrequencySpectrum::operator[](int index) const {
+    return m_elements[index];
+}
+
+
+FrequencySpectrum::iterator FrequencySpectrum::begin() {
+    return m_elements.begin();
+}
+
+
+FrequencySpectrum::iterator FrequencySpectrum::end() {
+    return m_elements.end();
+}
+
+
+FrequencySpectrum::const_iterator FrequencySpectrum::begin() const {
+    return m_elements.begin();
+}
+
+
+FrequencySpectrum::const_iterator FrequencySpectrum::end() const {
+    return m_elements.end();
+}

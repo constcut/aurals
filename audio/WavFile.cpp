@@ -41,7 +41,7 @@
 #include <qendian.h>
 #include <QVector>
 #include <QDebug>
-#include "wavfile.h"
+#include "WavFile.h"
 
 
 struct chunk {

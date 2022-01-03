@@ -5,7 +5,7 @@
 #include <iostream>
 #include <algorithm>
 #include <cmath>
-#include "findpeaks.hpp"
+#include "FindPeaks.hpp"
 
 #include <list>
 #include <algorithm>

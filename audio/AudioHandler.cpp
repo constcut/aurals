@@ -1,4 +1,4 @@
-#include "audiohandler.h"
+#include "AudioHandler.h"
 
 #include <QFile>
 #include <QDebug>
@@ -7,7 +7,7 @@
 #include <QTimer>
 
 #include "app/AndroidTools.hpp"
-#include "wavfile.h"
+#include "WavFile.h"
 
 #include "midi/MidiRender.hpp"
 

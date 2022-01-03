@@ -29,7 +29,7 @@
 #endif
 
 #include "libs/fft/FFTRealFixLen.h"
-#include "audio/spectrum.h"
+#include "audio/Spectrum.h"
 
 // Each pass of the FFT processes 2^X samples, where X is the
 // number below.

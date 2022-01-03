@@ -1,10 +1,10 @@
-#include "audioreceiver.h"
+#include "AudioReceiver.h"
 
 #include <QDebug>
 #include <QFile>
 #include <QTimer>
 
-#include "audiohandler.h"
+#include "AudioHandler.h"
 
 
 AudioReceiver::AudioReceiver(const QAudioFormat& format, QObject *parent, QByteArray& commonBufer)

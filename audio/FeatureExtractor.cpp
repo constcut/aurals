@@ -1,10 +1,10 @@
-#include "featureextractor.h"
+#include "FeatureExtractor.h"
 
 #include <cmath>
 
 #include <QDebug>
 
-#include "yin.h"
+#include "Yin.h"
 
 
 

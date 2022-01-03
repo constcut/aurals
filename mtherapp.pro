@@ -14,19 +14,19 @@ SOURCES += \
     app/AndroidTools.cpp \
     app/Init.cpp \
     app/LogHandler.cpp \
-    audio/audiohandler.cpp \
-    audio/audioreceiver.cpp \
-    audio/audiospeaker.cpp \
-    audio/featureextractor.cpp \
-    audio/findpeaks.cpp \
-    audio/frequencyspectrum.cpp \
-    audio/spectrograph.cpp \
-    audio/spectrumanalyser.cpp \
-    audio/utils.cpp \
-    audio/wavecontour.cpp \
-    audio/waveshape.cpp \
-    audio/wavfile.cpp \
-    audio/yin.cpp \
+    audio/AudioHandler.cpp \
+    audio/AudioReceiver.cpp \
+    audio/AudioSpeaker.cpp \
+    audio/AudioUtils.cpp \
+    audio/FeatureExtractor.cpp \
+    audio/FindPeaks.cpp \
+    audio/FrequencySpectrum.cpp \
+    audio/Spectrograph.cpp \
+    audio/SpectrumAnalyser.cpp \
+    audio/WavFile.cpp \
+    audio/WaveContour.cpp \
+    audio/WaveShape.cpp \
+    audio/Yin.cpp \
     libs/fft/fftreal_wrapper.cpp \
     main.cpp \
     midi/MidiEngine.cpp \
@@ -58,20 +58,20 @@ HEADERS += \
     app/Clipboard.hpp \
     app/Init.hpp \
     app/LogHandler.hpp \
-    audio/audiohandler.h \
-    audio/audioreceiver.h \
-    audio/audiospeaker.h \
-    audio/featureextractor.h \
-    audio/findpeaks.hpp \
-    audio/frequencyspectrum.h \
-    audio/spectrograph.h \
-    audio/spectrum.h \
-    audio/spectrumanalyser.h \
-    audio/utils.h \
-    audio/wavecontour.h \
-    audio/waveshape.h \
-    audio/wavfile.h \
-    audio/yin.h \
+    audio/AudioHandler.h \
+    audio/AudioReceiver.h \
+    audio/AudioSpeaker.h \
+    audio/AudioUtils.h \
+    audio/FeatureExtractor.h \
+    audio/FindPeaks.hpp \
+    audio/FrequencySpectrum.h \
+    audio/Spectrograph.h \
+    audio/Spectrum.h \
+    audio/SpectrumAnalyser.h \
+    audio/WavFile.h \
+    audio/WaveContour.h \
+    audio/WaveShape.h \
+    audio/Yin.h \
     libs/fft/Array.h \
     libs/fft/Array.hpp \
     libs/fft/DynArray.h \

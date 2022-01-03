@@ -38,7 +38,7 @@
 **
 ****************************************************************************/
 
-#include "waveshape.h"
+#include "WaveShape.h"
 
 #include <qglobal.h>
 #include <QPainter>

@@ -5,8 +5,8 @@
 #include <QAudioInput>
 #include <memory>
 
-#include "audioreceiver.h"
-#include "audiospeaker.h"
+#include "AudioReceiver.h"
+#include "AudioSpeaker.h"
 
 
 class AudioHandler : public QObject
