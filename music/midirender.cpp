@@ -46,6 +46,7 @@ bool MidiRender::openSoundFont(QString sfFilename)
         mode = TSFOutputMode::TSF_MONO;
     else
         mode = TSFOutputMode::TSF_STEREO_INTERLEAVED;
+    //TODO TSF_STEREO_UNWEAVED для возможности отображения в WaveShape
 
     tsf_set_output(sf, mode, _sampleRate, -6.0f); //Volume -6 dB TODO set\get
 

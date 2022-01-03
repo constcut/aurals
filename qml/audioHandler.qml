@@ -52,6 +52,14 @@ Item {
                 text: "Load dump"
                 onClicked: audio.loadWavFile("rec.dump.wav")
             }
+            ToolButton {
+                text: "Check midi"
+                onClicked:  {
+                    audio.checkMidi()
+                    audio.startPlayback()
+                }
+            }
+
             //ToolButton {
             //    text: "Request permission"
             //    onClicked: audio.requestPermission()

@@ -42,9 +42,9 @@ public:
     qint64 getTotaMsSpent() { return _totalMsSpent; }
     double getRenderTimer() { return _msRendered; }
 
-    void setMono() { _mono = true; }
+    /*void setMono() { _mono = true; }
     void setStereo() { _mono = false; }
-    bool isMono() { return _mono; }
+    bool isMono() { return _mono; }*/ //Mono gives issues yet
 
 protected:
 

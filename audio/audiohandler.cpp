@@ -208,5 +208,6 @@ void AudioHandler::checkMidi() { //Will have to debug it, and make a new speaker
     qDebug() << "Generated " << qa.size() << " bytes ";
     _commonBufer = qa;
     _commonFormat.setChannelCount(2);
-    saveWavFile("checkmidi_stereo.wav");
+    initPlayer();
+    //saveWavFile("checkmidi_stereo.wav");
 }
