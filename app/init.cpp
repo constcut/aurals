@@ -30,8 +30,7 @@ using namespace std;
 int mainInit(int argc, char *argv[]) {
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    Q_INIT_RESOURCE(soundfonts);
-    QFile::copy(":/soundfonts/instrument.sf2","instrument.sf2");
+
 
     qmlRegisterType<ConsoleLogQML>("mther.app",1,0,"ConsoleLogView");
     //qmlRegisterType<PianoQML>("mther.app",1,0,"Piano");
@@ -43,6 +42,13 @@ int mainInit(int argc, char *argv[]) {
     app.setOrganizationDomain("acc.u.merite");
 
     Q_INIT_RESOURCE(fonts);
+    Q_INIT_RESOURCE(soundfonts);
+
+    if (QFile::exists("instrument.sf2") == false)
+        QFile::copy(":/sf/instrument.sf2", "instrument.sf2");
+    if (QFile::exists("test1.mid") == false)
+        QFile::copy(":/sf/test1.mid", "test1.mid");
+
     qDebug() << "Current working path "<<QDir::currentPath();
     int fontId = QFontDatabase::addApplicationFont(":/fonts/prefont.ttf");
     QStringList famList = QFontDatabase::applicationFontFamilies(fontId) ;

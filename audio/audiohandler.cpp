@@ -21,6 +21,7 @@ AudioHandler::AudioHandler() {
     _commonFormat.setCodec("audio/pcm");
     initRecorder();
     initPlayer();
+    initMidiPlayer();
 }
 
 
@@ -58,6 +59,33 @@ void AudioHandler::stopPlayback() {
     _audioPlayer->stop();
     _audioOutput->stop();
     _isPlaying = false;
+}
+
+
+void AudioHandler::startMidiPlayer() {
+    if (_isPlaying || _isRecording)
+        return;
+    _midiPlayer->start();
+    _midiOutput->start(_midiPlayer.get());
+    //TODO timer
+}
+
+void AudioHandler::stopMidiPlayer() {
+    _midiPlayer->stop();
+    _midiOutput->stop();
+    _isPlaying = false;
+}
+
+
+void AudioHandler::initMidiPlayer() {
+    _midiFormat.setSampleRate(44100);
+    _midiFormat.setChannelCount(2);
+    _midiFormat.setSampleSize(16);
+    _midiFormat.setSampleType(QAudioFormat::SignedInt);
+    _midiFormat.setByteOrder(QAudioFormat::LittleEndian);
+    _midiFormat.setCodec("audio/pcm");
+    _midiPlayer = std::make_unique<AudioSpeaker>(_midiFormat, this, _midiBufer);
+    _midiOutput = std::make_unique<QAudioOutput>(QAudioDeviceInfo::defaultOutputDevice(), _midiFormat, nullptr);
 }
 
 
@@ -201,13 +229,10 @@ void AudioHandler::renameRecord(QString filename, QString newFilename) const {
 
 void AudioHandler::checkMidi() { //Will have to debug it, and make a new speaker
     MidiRender render;
-    std::string sfPath = "/home/punnalyse/dev/mtherapp/mtherapp/sf/instrument.sf2";
+    std::string sfPath = "instrument.sf2";
     render.openSoundFont(sfPath.c_str());
-    std::string midiPath = "/home/punnalyse/Downloads/TinySoundFont-master/examples/venture.mid";
+    std::string midiPath = "test1.mid";
     auto qa = render.renderShort(midiPath.c_str());
     qDebug() << "Generated " << qa.size() << " bytes ";
-    _commonBufer = qa;
-    _commonFormat.setChannelCount(2);
-    initPlayer();
-    //saveWavFile("checkmidi_stereo.wav");
+    _midiBufer = qa;
 }

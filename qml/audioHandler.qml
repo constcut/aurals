@@ -56,7 +56,13 @@ Item {
                 text: "Check midi"
                 onClicked:  {
                     audio.checkMidi()
-                    audio.startPlayback()
+                    audio.startMidiPlayer()
+                }
+            }
+            ToolButton {
+                text: "Stop midi"
+                onClicked:  {
+                    audio.stopMidiPlayer()
                 }
             }
 

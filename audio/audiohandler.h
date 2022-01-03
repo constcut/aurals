@@ -18,9 +18,13 @@ public:
 
     Q_INVOKABLE void startRecord();
     Q_INVOKABLE void stopRecord();
+
     Q_INVOKABLE void startPlayback();
     Q_INVOKABLE void stopPlayback();
     Q_INVOKABLE void resetBufer();
+
+    Q_INVOKABLE void startMidiPlayer();
+    Q_INVOKABLE void stopMidiPlayer();
 
     Q_INVOKABLE void loadFile(QString filename);
     Q_INVOKABLE void saveFile(QString filename) const;
@@ -53,6 +57,7 @@ private:
 
     void initRecorder();
     void initPlayer();
+    void initMidiPlayer();
 
     std::unique_ptr<QAudioInput> _audioInput;
     std::unique_ptr<AudioReceiver> _audioReceiver;
@@ -67,6 +72,12 @@ private:
 
     bool _isPlaying = false;
     bool _isRecording = false;
+
+    std::unique_ptr<QAudioOutput> _midiOutput;
+    std::unique_ptr<AudioSpeaker> _midiPlayer;
+
+    QByteArray _midiBufer;
+    QAudioFormat _midiFormat;
 };
 
 

@@ -2,5 +2,6 @@
     <qresource prefix="/soundfonts"/>
     <qresource prefix="/">
         <file>sf/instrument.sf2</file>
+        <file>sf/test1.mid</file>
     </qresource>
 </RCC>
