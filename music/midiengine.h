@@ -25,9 +25,9 @@ protected:
 #endif
          static bool opened;
 
-       MidiTrack *toPlay;
-       bool playNotes;
-       bool emitSignal;
+       MidiTrack *_toPlay;
+       bool _playNotes;
+       bool _emitSignal;
 
 static MidiEngine *inst;
 
@@ -62,7 +62,6 @@ static void sendSignalShortWin(DWORD signal);
     static void playTrack(MidiTrack &track);
     void playTrackRealtime(MidiTrack &track, bool playNotes=true, bool emitSignal=false);
 
-    static MidiTrack uniteFileToTrack(MidiFile &midiFile);
 
     //COVER WINDOWS DEFINE TOO
 #ifdef WIN32
@@ -72,7 +71,7 @@ static void sendSignalShortWin(DWORD signal);
     static QString lastAlias;
 
 Q_SIGNALS:
-        void messagePlaying(qint16 messageType, qint16 p1, qint16 p2);
+    void messagePlaying(qint16 messageType, qint16 p1, qint16 p2);
 };
 
 #endif // MIDIENGINE_H

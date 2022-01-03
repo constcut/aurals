@@ -27,6 +27,7 @@ QString MidiEngine::lastAlias = QString();
 QMediaPlayer *midiPlayer=0;
 #endif
 
+
 #ifdef WIN32
 void MidiEngine::printMMError(DWORD err) //beter return value
 {
@@ -41,15 +42,14 @@ void MidiEngine::printMMError(DWORD err) //beter return value
 }
 #endif
 
+
 void MidiEngine::startFile(QString aliasName)
 {
     if (opened)
         freeInitials();
 
-    //if (opened==false)
-        //init();
 
- QString commandString = "play " + aliasName;  //maybe will need some transform of path here in case of full path in WIN
+ QString commandString = "play " + aliasName;
  QByteArray stringBytes = commandString.toLocal8Bit();
 
 #ifdef WIN32
@@ -66,21 +66,18 @@ void MidiEngine::startFile(QString aliasName)
 
 }
 
+
 void MidiEngine::stopFile(QString aliasName)
 {
     if (opened)
         freeInitials();
 
-    //if (opened==false)
-        //init();
-
-QString commandString = "stop " + aliasName;  //maybe will need some transform of path here in case of full path in WIN
+QString commandString = "stop " + aliasName;
 QByteArray stringBytes = commandString.toLocal8Bit();
 
 #ifdef WIN32
    DWORD error = mciSendStringA(stringBytes.constData(),0,0,0);
-   if (error != 0)
-   {
+   if (error != 0) {
        qDebug() <<"Stop midi error "<<error;
        printMMError(error);
    }
@@ -95,10 +92,7 @@ void MidiEngine::openFile(QString filename, QString aliasName)
     if (opened)
         freeInitials();
 
-    //if (opened==false)
-        //init();
-
-    QString commandString = "close " + lastAlias;  //maybe will need some transform of path here in case of full path in WIN
+    QString commandString = "close " + lastAlias;
     QByteArray stringBytes = commandString.toLocal8Bit();
 
 #ifdef WIN32
@@ -108,8 +102,7 @@ void MidiEngine::openFile(QString filename, QString aliasName)
 #else
       if (midiPlayer==0)
         midiPlayer = new QMediaPlayer();
-
-      ///COMENTED TO CO<PILE
+    //Earlier it worked on linux, later Qt broke it
     //command <<getTestsLocation()<<"midiOutput.mid";
     //QString playerPath = command.c_str();
     //midiPlayer->setMedia(QUrl::fromLocalFile(playerPath));
@@ -125,8 +118,7 @@ void MidiEngine::openFile(QString filename, QString aliasName)
 
 #ifdef WIN32
     DWORD error = mciSendStringA(openCommandBytes.constData(),0,0,0);
-    if (error != 0)
-    {
+    if (error != 0) {
         qDebug() <<"Open midi error "<<error;
         printMMError(error);
     }
@@ -139,16 +131,12 @@ void MidiEngine::closeFile(QString aliasName)
     if (opened)
         freeInitials();
 
-    //if (opened==false)
-        //init();
-
     QString commandString = "close " + aliasName;  //maybe will need some transform of path here in case of full path in WIN
     QByteArray stringBytes = commandString.toLocal8Bit();
 
     #ifdef WIN32
     DWORD error = mciSendStringA(stringBytes.constData(),0,0,0);
-    if (error != 0)
-    {
+    if (error != 0) {
         qDebug() <<"Close file error"<<error;
         printMMError(error);
     }
@@ -160,27 +148,24 @@ void MidiEngine::init()
 {
 #ifdef WIN32
 
-    //WE CAN HAVE CALLBACK!
-
-     unsigned int err = midiOutOpen(&winMidi, 0, 0, 0, CALLBACK_NULL);
-       if (err != MMSYSERR_NOERROR)
-          qDebug()<<"error opening default MIDI device: "<<err;
-       else
-           qDebug()<<"successfully opened default MIDI device";
+    unsigned int err = midiOutOpen(&winMidi, 0, 0, 0, CALLBACK_NULL);
+    if (err != MMSYSERR_NOERROR)
+      qDebug()<<"error opening default MIDI device: "<<err;
+    else
+       qDebug()<<"successfully opened default MIDI device";
 
 
 #define TimerResolution 1
 
-       TIMECAPS tc;
+    TIMECAPS tc;
 
-       if (timeGetDevCaps(&tc,sizeof(TIMECAPS)) != TIMERR_NOERROR)
-           qDebug() << "MM timer critical error";
+    if (timeGetDevCaps(&tc,sizeof(TIMECAPS)) != TIMERR_NOERROR)
+       qDebug() << "MM timer critical error";
 
+    UINT timeRes = max_DEF(tc.wPeriodMin,TimerResolution);
+    wTimerRes = min_DEF(timeRes ,tc.wPeriodMax);
 
-       UINT timeRes = max_DEF(tc.wPeriodMin,TimerResolution);
-       wTimerRes = min_DEF(timeRes ,tc.wPeriodMax);
-
-       timeBeginPeriod(wTimerRes);
+    timeBeginPeriod(wTimerRes);
 #endif
        opened = true;
 }
@@ -189,7 +174,6 @@ void MidiEngine::freeInitials()
 {
 #ifdef WIN32
     midiOutClose(winMidi);
-    //logger<<"closed default MIDI device";
 #endif
     opened = false;
 }
@@ -230,15 +214,13 @@ void MidiEngine::run()
     if (opened==false)
         init();
 
-    //maybe nice to make there some semafor like thing to let know we are ready to play
-    //but be prepared at this point
     QThread::sleep(1); //1 second sleep
 
-    qDebug() <<"Starting midi real time playing "<<toPlay->size();
+    qDebug() <<"Starting midi real time playing "<<_toPlay->size();
 
-    for (auto i = 0; i < toPlay->size(); ++i)
+    for (auto i = 0; i < _toPlay->size(); ++i)
     {
-        MidiMessage sig = toPlay->operator [](i);
+        MidiMessage sig = _toPlay->operator [](i);
 
         double toWaitSeconds = sig.getSecondsLength();
         quint32 toWaitMs = toWaitSeconds*1000.0;
@@ -248,11 +230,11 @@ void MidiEngine::run()
 
         //best is to check this moment
 
-        if (playNotes)
+        if (_playNotes)
         if (sig.byte0!=0xff)
             sendSignalShort(sig.byte0,sig.p1,sig.p2);
 
-        if (emitSignal)
+        if (_emitSignal)
             Q_EMIT messagePlaying(sig.byte0,sig.p1,sig.p2);
 
     }
@@ -261,11 +243,10 @@ void MidiEngine::run()
 
 void MidiEngine::playTrackRealtime(MidiTrack &track, bool playNotes, bool emitSignal)
 {
-   toPlay = &track;
-   this->playNotes = playNotes;
-   this->emitSignal = emitSignal;
+   _toPlay = &track;
+   this->_playNotes = playNotes;
+   this->_emitSignal = emitSignal;
 
-   //Then starting thread
    start();
 }
 
@@ -308,8 +289,7 @@ void MidiEngine::sendSignalLong(MidiMessage &signal)
 
     MIDIHDR mH;
     //https://msdn.microsoft.com/en-us/library/windows/desktop/dd798474(v=vs.85).aspx
-
-    //midiOutLongMsg(winMidi,mH,sizeof(mH));
+    midiOutLongMsg(winMidi,mH,sizeof(mH));
 
 #endif
 }
@@ -318,7 +298,6 @@ void MidiEngine::sendSignalLong(MidiMessage &signal)
 #ifdef WIN32
 
 
-//LPTIMECALLBACK Midi_Callback_Win(UINT uId, UINT uMsg, DWORD dwUser, DWORD dw1, DWORD dw2)
 LPTIMECALLBACK Midi_Callback_Win(UINT uId, UINT uMsg, DWORD_PTR dwUser, DWORD_PTR dw1, DWORD_PTR dw2)
 {
     qDebug() << "Midi cb begin "<<dwUser;
@@ -354,14 +333,12 @@ void MidiEngine::sendSignalShortDelay( int msdelay, byte status, int byte1, int 
     qDebug()<<"Pushing signal "<<signal<<"for ms delay "<<msdelay;
     qDebug()<<"Sinal parts "<<byte1<<" "<<byte2<<"; "<<status;
 
-    /*
     if (timeSetEvent(msdelay, wTimerRes, Midi_Callback_Win,signal,TIME_ONESHOT) ==  0)
     {
         qDebug() <<"failed to start mmtimer";
     }
     else
         qDebug() << "Timer was set for midi event";
-        */
 
     //yet have some issue
 #endif
@@ -390,84 +367,5 @@ int MidiEngine::getVolume()
     response=vol;
 #endif
     return response;
-}
-
-bool midiAbsSortFunction(MidiMessage &a, MidiMessage &b)
-{
-    /*
-    ul timeA = a->absValue;
-    ul timeB = b->absValue;
-    return timeA>timeB;
-    */
-    return false; //used for next function
-}
-
-MidiTrack MidiEngine::uniteFileToTrack(MidiFile &midiFile)
-{
-    //TODO
-
-    //1 makes all signals global counters apended ul(eats mem but helps alot)
-    //2 put all together
-    //3 sort by global
-    //4 trace - group by same time
-    ///ITS a good idea - should maybe check it once
-    /*
-
-
-    std::vector<MidiSignal*> allSignals;
-
-    for (int trackI = 0; trackI < midiFile->len(); ++trackI)
-    {
-        MidiTrack *track = midiFile->getV(trackI);
-        ul absTimeShift =0;
-        for (int sigI = 0; sigI < track->len(); ++sigI)
-        {
-            MidiSignal *sig = track->getV(sigI);
-
-            ul signalTimeShift = sig->time.getValue();
-            absTimeShift += signalTimeShift;
-
-            sig->absValue = absTimeShift;
-
-            allSignals.push_back(sig);
-        }
-    }
-
-    std::sort(allSignals.begin(),allSignals.end(),midiAbsSortFunction);
-
-    //repair local position from abs
-
-    MidiTrack *result = new MidiTrack();
-
-    ul lastGlobalAbs = 0;
-    for (int sigI = allSignals.size()-1; sigI >= 0; --sigI)
-    {
-            MidiSignal *sig = allSignals[sigI];
-
-
-            ul currentAbs = sig->absValue;
-            ul shift = currentAbs - lastGlobalAbs;
-
-
-            MidiSignal *signalCopy = new MidiSignal(sig->byte0,
-                                                    sig->param1,
-                                                    sig->param2,shift);
-
-            signalCopy->absValue = sig->absValue;
-
-            if (sig->byte0==0xff)
-                signalCopy->metaStore = sig->metaStore; //attention
-
-
-            lastGlobalAbs = currentAbs;
-
-            result->add(signalCopy);
-
-    }
-
-    qDebug() << "Produced midi track with "<<(int)result->len()<<" elements";
-    */
-
-    return MidiTrack(); //instead of result
 }
 
