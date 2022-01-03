@@ -8,9 +8,7 @@ extern bool midiLog; //TODO review log groups, make atomics
 void MidiTrack::printToStream(std::ostream &stream)
 {
     stream << "Output MidiTrack.";
-    //stream << "chunky = " << trackHeader.chunkId <<std::endl;
     stream << "Track Size = " << trackHeader.trackSize << std::endl;
-
     //size_t signalsAmount = size();
     //for (size_t i = 0; i < signalsAmount; ++i)
         //at(i)->printToStream(stream); //message printing diabled
@@ -23,26 +21,17 @@ bool MidiTrack::calculateHeader(bool skip)
     //this function responsable for calculations of data stored inside MidiTrack
 
     size_t calculatedSize = 0;
-
-    for (size_t i =0; i < size(); ++i)
-    {
-        //seams to be easiest option
+    for (size_t i =0; i < size(); ++i){
         calculatedSize += at(i)->calculateSize(skip);
     }
-
     if (midiLog)  qDebug() <<"Calculating track size : "<<calculatedSize;
     if (midiLog)  qDebug() <<"Previously stored : "<<trackHeader.trackSize;
 
-    trackHeader.trackSize=calculatedSize;//NOW PUSED
-
-    //and header defaults
-    memcpy(trackHeader.chunkId,"MTrk",5); //some attention here if normal wouldnt go
-
+    trackHeader.trackSize = calculatedSize;
+    memcpy(trackHeader.chunkId,"MTrk",5);
     return true;
 }
 
-
-//HELPERS BEGIN
 
 void MidiTrack::pushChangeInstrument(std::uint8_t newInstr, std::uint8_t channel, size_t timeShift)
 {
@@ -55,7 +44,7 @@ void MidiTrack::pushMetrSignature(std::uint8_t num, std::uint8_t den,size_t time
 {
     auto signatureEvent  = std::make_unique<MidiSignal>(0xff,88,0,timeShift);
 
-    signatureEvent->metaBufer.push_back(num);
+    signatureEvent->_metaBufer.push_back(num);
 
     std::uint8_t transDur=0;
     switch (den)
@@ -71,12 +60,12 @@ void MidiTrack::pushMetrSignature(std::uint8_t num, std::uint8_t den,size_t time
         transDur=6;
     }
 
-    signatureEvent->metaBufer.push_back(transDur);
-    signatureEvent->metaBufer.push_back(metr);
-    signatureEvent->metaBufer.push_back(perQuat);
+    signatureEvent->_metaBufer.push_back(transDur);
+    signatureEvent->_metaBufer.push_back(metr);
+    signatureEvent->_metaBufer.push_back(perQuat);
 
     std::uint8_t metaSize = 4;
-    signatureEvent->metaLen.push_back(metaSize);
+    signatureEvent->_metaLen.push_back(metaSize);
 
     push_back(std::move(signatureEvent));
 }
@@ -86,22 +75,20 @@ void MidiTrack::pushChangeBPM(int bpm, size_t timeShift)
     if (midiLog)  qDebug() << "We change midi temp to "<<bpm; //attention
 
     auto changeTempEvent = std::make_unique<MidiSignal>(0xff,81,0,timeShift);
-
     //changeTempEvent.byte0 = 0xff;
     //changeTempEvent.param1 = 81;
-
     size_t MCount = 60000000/bpm;
 
     std::uint8_t tempB1 = (MCount>>16)&0xff; //0x7
     std::uint8_t tempB2 = (MCount>>8)&0xff; //0xa1
     std::uint8_t tempB3 = MCount&0xff; //0x20
 
-    changeTempEvent->metaBufer.push_back(tempB1);
-    changeTempEvent->metaBufer.push_back(tempB2);
-    changeTempEvent->metaBufer.push_back(tempB3);
+    changeTempEvent->_metaBufer.push_back(tempB1);
+    changeTempEvent->_metaBufer.push_back(tempB2);
+    changeTempEvent->_metaBufer.push_back(tempB3);
 
     std::uint8_t lenMeta = 3;
-    changeTempEvent->metaLen.push_back(lenMeta);
+    changeTempEvent->_metaLen.push_back(lenMeta);
 
     //byte timeZero = 0;
     //changeTempEvent.param2 = 0;
@@ -116,9 +103,9 @@ void MidiTrack::pushChangeVolume(std::uint8_t newVolume, std::uint8_t channel)
     if (newVolume > 127)
          newVolume = 127;
 
-    volumeChange->byte0 = 0xB0 | channel;
-    volumeChange->param1 = 7; //volume change
-    volumeChange->param2 = newVolume;
+    volumeChange->_byte0 = 0xB0 | channel;
+    volumeChange->_param1 = 7; //volume change
+    volumeChange->_param2 = newVolume;
     std::uint8_t timeZero = 0;
     volumeChange->timeStamp.push_back(timeZero);
 
@@ -128,9 +115,9 @@ void MidiTrack::pushChangeVolume(std::uint8_t newVolume, std::uint8_t channel)
 void MidiTrack::pushChangePanoram(std::uint8_t newPanoram, std::uint8_t channel)
 {
     auto panoramChange = std::make_unique<MidiSignal>();
-    panoramChange->byte0 = 0xB0 | channel;
-    panoramChange->param1 = 0xA; //change panoram
-    panoramChange->param2 = newPanoram;
+    panoramChange->_byte0 = 0xB0 | channel;
+    panoramChange->_param1 = 0xA; //change panoram
+    panoramChange->_param2 = newPanoram;
     std::uint8_t timeZero = 0;
     panoramChange->timeStamp.push_back(timeZero);
 
@@ -235,7 +222,7 @@ void MidiTrack::pushEvent47()
 
     auto event47 = std::make_unique<MidiSignal>(0xff,47,0,0);
     std::uint8_t lenZero = 0;
-    event47->metaLen.push_back(lenZero);
+    event47->_metaLen.push_back(lenZero);
     this->push_back(std::move(event47));
 }
 
@@ -321,7 +308,7 @@ void MidiTrack::closeLetRings(std::uint8_t channel)
 {
     for (size_t i = 0; i < 10; ++i)
     {
-        if (ringRay[i] != 255)
+        if (_ringRay[i] != 255)
         {
             closeLetRing(i,channel);
         }
@@ -336,8 +323,8 @@ void MidiTrack::closeLetRing(std::uint8_t stringN, std::uint8_t channel)
         return;
     }
 
-    std::uint8_t ringNote = ringRay[stringN];
-    ringRay[stringN]=255;
+    std::uint8_t ringNote = _ringRay[stringN];
+    _ringRay[stringN]=255;
 
     std::uint8_t ringVelocy=80;
 
@@ -354,11 +341,11 @@ void MidiTrack::openLetRing(std::uint8_t stringN, std::uint8_t midiNote, std::ui
         return;
     }
 
-    if (ringRay[stringN]!=255)
+    if (_ringRay[stringN]!=255)
     {
         closeLetRing(stringN,channel);
     }
-    ringRay[stringN]=midiNote;
+    _ringRay[stringN]=midiNote;
 
     pushNoteOn(midiNote,velocity,channel);
 }
@@ -379,14 +366,14 @@ void MidiTrack::finishIncomplete(short specialR)
 
 void MidiTrack::pushNoteOn(std::uint8_t midiNote, std::uint8_t velocity, std::uint8_t channel)
 {
-    auto noteOn = std::make_unique<MidiSignal>(0x90 | channel, midiNote, velocity,accum);
+    auto noteOn = std::make_unique<MidiSignal>(0x90 | channel, midiNote, velocity,_accum);
     takeAccum();
     push_back(std::move(noteOn));
 }
 
 void MidiTrack::pushNoteOff(std::uint8_t midiNote, std::uint8_t velocity, std::uint8_t channel)
 {
-    auto noteOn = std::make_unique<MidiSignal>(0x80 | channel, midiNote, velocity,accum);
+    auto noteOn = std::make_unique<MidiSignal>(0x80 | channel, midiNote, velocity,_accum);
     takeAccum();
     push_back(std::move(noteOn));
 }

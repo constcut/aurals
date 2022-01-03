@@ -25,16 +25,6 @@ public:
     bool calculateHeader(bool skip=false);
     void printToStream(std::ostream &stream);
 
-    //ul writeStream(AF ile &ofile);
-    //ul readStream(AF ile &ifile); //missing from refactoing
-
-    //bool fromTrack(Track *track, std::uint8_t channel=0, size_t shiftCursorBar=0);
-
-    //void add(MidiSignal &val);
-
-    //HELPERS functions from AMUSIC generation
-
-    //no time versions
     void pushChangeInstrument(std::uint8_t newInstr, std::uint8_t channel, size_t timeShift=0);
     void pushChangeBPM(int bpm, size_t timeShift=0); //same way others
     void pushChangeVolume(std::uint8_t newVolume, std::uint8_t channel);
@@ -47,13 +37,9 @@ public:
     void pushSlideDown(std::uint8_t channel, std::uint8_t shift, short int step, std::uint8_t stepsCount=8);
 
     void pushTremolo(short int rOffset); //yet deadcoded one
-
     void pushFadeIn(short int rOffset, std::uint8_t channel);
-
-
     void pushEvent47();
 
-    //END of HELPERS
 
     short int calcRhythmDetail(std::uint8_t RDValue, short int rhythmOffset);
     std::uint8_t calcMidiPanoramGP(std::uint8_t pan); //GUITAR P OPTION
@@ -61,11 +47,10 @@ public:
     std::uint8_t calcPalmMuteVelocy(std::uint8_t vel);
     std::uint8_t calcLeggatoVelocy(std::uint8_t vel);
 
-public: //TODO review when midi generation is done
+public:
 
-
-    std::uint8_t tunes[10];
-    std::uint8_t ringRay[10];
+    std::uint8_t _tunes[10];
+    std::uint8_t _ringRay[10];
 
     void closeLetRings(std::uint8_t channel);		//-
     void openLetRing(std::uint8_t stringN, std::uint8_t midiNote, std::uint8_t velocity, std::uint8_t channel); //-
@@ -81,18 +66,18 @@ public: //TODO review when midi generation is done
 
     bool checkForLeegFails();
 
-public:
+public: //TODO
 
-    int accum;//TODO int& accumulate(); int takeAccumulate();
+    int _accum;
 
-    int accumulate(int value) { accum += value; return accum; }
-    int getAccum() { return accum; }
-    void takeAccum() { accum=0; }
+    int accumulate(int value) { _accum += value; return _accum; }
+    int getAccum() const { return _accum; }
+    void takeAccum() { _accum=0; }
 
     void setTunes(std::uint8_t *from) {
         for (std::uint8_t i=0; i < 10; ++i){
-            tunes[i]=from[i];
-            ringRay[i]=255;
+            _tunes[i]=from[i];
+            _ringRay[i]=255;
         }
     }
 };

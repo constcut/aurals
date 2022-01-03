@@ -51,12 +51,10 @@ public:
 public: //TODO :(
     NBytesInt timeStamp;
 
-    std::uint8_t _byte0; //type + channel //TODO rename typeAndChannel
-    std::uint8_t _param1, _param2; //parameters //TODO rename paramter1, parameter2
+    std::uint8_t _byte0;
+    std::uint8_t _param1, _param2;
 
-public: //TODO cover with push functions
-
-    double _absoluteTime; //bad code detected
+    double _absoluteTime;
 
     NBytesInt _metaLen;
     std::vector<std::uint8_t> _metaBufer;
