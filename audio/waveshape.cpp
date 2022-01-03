@@ -62,10 +62,10 @@ void WaveshapePainter::makeBackgroungImage(QPainter &painter, int height, double
 
     auto rmsStep = _waveContour.getRmsStep();
     auto paintRms = [&](double rmsCoef, double expandCoef,
-            const QVector<double>& container, QColor base, QColor border) {
+            const std::vector<double>& container, QColor base, QColor border) {
         double xCoef = rmsStep / (125 * rmsCoef / 2.0);
         double prevValue = 0.0;
-        for (int i = 0; i < container.size(); ++i) {
+        for (size_t i = 0; i < container.size(); ++i) {
             auto localRms = container[i];
             double currentValue = (60.0 + localRms) * heightCoef * expandCoef;
             imgPainter.setPen(base);
@@ -94,9 +94,9 @@ void WaveshapePainter::paintMainRms(QPainter &imgPainter, int height, double hei
 
     auto rmsStep = _waveContour.getRmsStep();
     double xCoef = rmsStep / (125 / 2.0);
-    double prevValue = 0.0;
+    double prevValue = -1.0;
 
-    for (int i = 0; i < rms.size(); ++i) { //TODO? отрисовать лямбдой, и после этого сделать дополнительную отривоску начал\концов
+    for (size_t i = 0; i < rms.size(); ++i) { //TODO? отрисовать лямбдой, и после этого сделать дополнительную отривоску начал\концов
         if (positionsHigh.count(i))
             imgPainter.setPen(QColor("blue"));
         else if (positionsLow.count(i))
@@ -108,7 +108,9 @@ void WaveshapePainter::paintMainRms(QPainter &imgPainter, int height, double hei
         QPolygonF poligon;
         poligon << QPointF((i-1)*xCoef, height/2.0 - prevValue) << QPointF(i * xCoef, height/2.0 - currentValue)
                 << QPointF(i*xCoef, height/2 + currentValue) << QPointF((i-1)*xCoef, height/2 + prevValue);
-        imgPainter.drawPolygon(poligon); //TODO fill this path or minimal rectangle
+
+        if (prevValue != -1.0)
+            imgPainter.drawPolygon(poligon); //TODO fill this path or minimal rectangle
 
         if (positionsLow.count(i) || positionsHigh.count(i))
             imgPainter.drawLine(i * xCoef, height/2 + currentValue * 2, i * xCoef, height/2 - currentValue * 2);
@@ -123,7 +125,7 @@ void WaveshapePainter::drawPitch(QPainter &painter, int height) {
     double prevPitch = -1;
     auto rmsStep = _waveContour.getRmsStep();
     double coef = (2048.0) / (rmsStep / 2.0);
-    for (int i = 0; i < pitchLine.size(); ++i) {
+    for (size_t i = 0; i < pitchLine.size(); ++i) {
         auto pitch = pitchLine[i];
         painter.drawLine((i-1)*coef, height - prevPitch / 4.0, i*coef, height - pitch / 4.0);
         prevPitch = pitch;
@@ -152,7 +154,7 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
         drawNoteStartEnd(painter, height);
 
     painter.setPen(Qt::darkMagenta);
-    auto x = 2.0 * _windowPosition / _waveContour.getRmsStep();
+    auto x = 2.0 * _windowPosition / (_waveContour.getRmsStep() / 4.0);
     painter.drawRect(x, 0, x, height);
 }
 

@@ -44,6 +44,8 @@
 #include <QQuickPaintedItem>
 #include <QImage>
 
+#include <memory>
+
 #include "wavecontour.h"
 
 
@@ -58,6 +60,7 @@ public:
 
 protected:
     WaveContour _waveContour;
+
     qint64 _audioPoistion;
 
     quint64 _windowPosition;
@@ -132,6 +135,8 @@ public:
     Q_INVOKABLE void setRmsStep(int newStep) { changeRmsStep(newStep); update(); }
 
     Q_INVOKABLE void setYinThreshold(double threshold) { changeYinTheshold(threshold); update(); }
+
+    //Q_INVOKABLE WaveContour getWave() { return _waveContour; }
 };
 
 

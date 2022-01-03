@@ -20,11 +20,12 @@ void WaveContour::calculateF0() {
     size_t yinSize = 2048; //TODO configurable
     size_t yinFrames = _floatSamples.size() / yinSize;
     for (size_t step = 0; step < yinFrames; ++step) {
-        auto forLocalYin = _floatSamples.mid(yinSize * step, yinSize);
+        auto forLocalYin = std::vector<float>(_floatSamples.begin() + yinSize * step,
+                                _floatSamples.begin() + yinSize * step + yinSize);
         if (forLocalYin.empty())
             break;
         auto pitch = calc_YinF0(forLocalYin.data(), forLocalYin.size(), _yinTheshold);
-        _yinLine.append(pitch);
+        _yinLine.push_back(pitch);
     }
 }
 
@@ -39,7 +40,7 @@ bool WaveContour::loadWavFile(QString filename) {
     for (int i = 0; i < samplesBytes.size()/2; ++i) {
         auto pcmSample2 = *reinterpret_cast<const qint16*>(ptr);
         const float realSample = pcmToReal(pcmSample2);
-        _floatSamples.append(realSample);
+        _floatSamples.push_back(realSample);
         ptr += 2; //16 bit audio
     }
     calculateRms();
@@ -49,14 +50,15 @@ bool WaveContour::loadWavFile(QString filename) {
 
 void WaveContour::calculateRms() {
 
-    auto calcRms = [&](double coef, QVector<double>& container) {
+    auto calcRms = [&](double coef, std::vector<double>& container) {
       container.clear();
       double localStep = _rmsStep / coef;
       size_t rmsFrames = _floatSamples.size() / (localStep);
       for (size_t step = 0; step < rmsFrames; ++step) {
-          auto forRmsLocal = _floatSamples.mid(localStep * step, _rmsStep);
+          auto forRmsLocal = std::vector<float>(_floatSamples.begin() + localStep * step,
+                                _floatSamples.begin() + localStep * step + _rmsStep);
           auto db = calc_dB(forRmsLocal.data(), forRmsLocal.size());
-          container.append(db);
+          container.push_back(db);
       }
     };
 
