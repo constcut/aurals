@@ -28,13 +28,13 @@ SOURCES += \
     libs/fft/fftreal_wrapper.cpp \
     main.cpp \
     app/loghandler.cpp \
+    midi/MidiEngine.cpp \
     midi/MidiFile.cpp \
     midi/MidiMessage.cpp \
+    midi/MidiRender.cpp \
     midi/MidiTrack.cpp \
     midi/NBytesInt.cpp \
     music/graphicmap.cpp \
-    music/midiengine.cpp \
-    music/midirender.cpp \
     app/init.cpp
 
 RESOURCES += qml.qrc \
@@ -97,13 +97,13 @@ HEADERS += \
     libs/stft/STFT.h \
     libs/stft/WAV.h \
     log.hpp \
+    midi/MidiEngine.hpp \
     midi/MidiFile.hpp \
     midi/MidiMessage.hpp \
+    midi/MidiRender.hpp \
     midi/MidiTrack.hpp \
     midi/NBytesInt.hpp \
     music/graphicmap.h \
-    music/midiengine.h \
-    music/midirender.h \
     libs/sf/tml.h \
     libs/sf/tsf.h \
     app/init.h
