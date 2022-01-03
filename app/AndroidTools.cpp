@@ -1,4 +1,4 @@
-#include "androidtools.h"
+#include "AndroidTools.hpp"
 #include <qglobal.h>
 
 #ifdef Q_OS_ANDROID

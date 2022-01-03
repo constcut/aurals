@@ -1,6 +1,8 @@
-#include "graphicmap.h"
+#include "GraphicMap.hpp"
 
 #include <QPainter>
+
+using namespace mtherapp;
 
 GraphicMap::GraphicMap()
 {

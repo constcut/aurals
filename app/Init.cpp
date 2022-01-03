@@ -1,4 +1,4 @@
-#include "init.h"
+#include "Init.hpp"
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
@@ -8,7 +8,7 @@
 #include <QDir>
 
 #include "log.hpp"
-#include "app/loghandler.h"
+#include "app/LogHandler.hpp"
 //#include "music/graphicmap.h"
 
 #include <iostream>
@@ -31,8 +31,7 @@ int mainInit(int argc, char *argv[]) {
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
-
-    qmlRegisterType<ConsoleLogQML>("mther.app",1,0,"ConsoleLogView");
+    qmlRegisterType<mtherapp::ConsoleLogQML>("mther.app",1,0,"ConsoleLogView");
     //qmlRegisterType<PianoQML>("mther.app",1,0,"Piano");
 
     QGuiApplication app(argc, argv);

@@ -1,5 +1,5 @@
-﻿#include "app/init.h"
-#include "app/loghandler.h"
+﻿#include "app/Init.hpp"
+#include "app/LogHandler.hpp"
 
 
 using namespace mtherapp;

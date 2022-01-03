@@ -1,6 +1,8 @@
-#include "loghandler.h"
+#include "LogHandler.hpp"
 
-LogHandler* LogHandler::instance = 0;
+using namespace mtherapp;
+
+LogHandler* LogHandler::instance = 0; //TODO mayers singletone
 
 void newLogMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {

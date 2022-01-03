@@ -6,7 +6,7 @@
 #include <QDateTime>
 #include <QTimer>
 
-#include "app/androidtools.h"
+#include "app/AndroidTools.hpp"
 #include "wavfile.h"
 
 #include "midi/MidiRender.hpp"

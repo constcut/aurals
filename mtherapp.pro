@@ -11,7 +11,9 @@ QMAKE_CXXFLAGS += -std=c++17
 android: QT += androidextras
 
 SOURCES += \
-    app/androidtools.cpp \
+    app/AndroidTools.cpp \
+    app/Init.cpp \
+    app/LogHandler.cpp \
     audio/audiohandler.cpp \
     audio/audioreceiver.cpp \
     audio/audiospeaker.cpp \
@@ -27,15 +29,13 @@ SOURCES += \
     audio/yin.cpp \
     libs/fft/fftreal_wrapper.cpp \
     main.cpp \
-    app/loghandler.cpp \
     midi/MidiEngine.cpp \
     midi/MidiFile.cpp \
     midi/MidiMessage.cpp \
     midi/MidiRender.cpp \
     midi/MidiTrack.cpp \
     midi/NBytesInt.cpp \
-    music/graphicmap.cpp \
-    app/init.cpp
+    music/GraphicMap.cpp
 
 RESOURCES += qml.qrc \
     fonts.qrc \
@@ -54,9 +54,10 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 
 HEADERS += \
-    app/androidtools.h \
-    app/clipboard.h \
-    app/loghandler.h \
+    app/AndroidTools.hpp \
+    app/Clipboard.hpp \
+    app/Init.hpp \
+    app/LogHandler.hpp \
     audio/audiohandler.h \
     audio/audioreceiver.h \
     audio/audiospeaker.h \
@@ -104,10 +105,9 @@ HEADERS += \
     midi/MidiRender.hpp \
     midi/MidiTrack.hpp \
     midi/NBytesInt.hpp \
-    music/graphicmap.h \
     libs/sf/tml.h \
     libs/sf/tsf.h \
-    app/init.h
+    music/GraphicMap.hpp
 
 
 DISTFILES += \
