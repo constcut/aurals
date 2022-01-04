@@ -1,9 +1,14 @@
 import QtQuick 2.15
 import QtQml 2.15
 import QtQuick.Controls 2.15
+import mther.app 1.0
 
 Item {
     id: tapperItem
+
+    Tapper {
+        id: tapper
+    }
 
     Rectangle {
         x: 0
@@ -15,10 +20,10 @@ Item {
         MouseArea {
             anchors.fill: parent
             onPressed: {
-                console.log("pressed 1")
+                tapper.pressed(0);
             }
             onReleased: {
-                console.log("released 1")
+                tapper.released(0);
             }
         }
     }
@@ -32,10 +37,10 @@ Item {
         MouseArea {
             anchors.fill: parent
             onPressed: {
-                console.log("pressed 2")
+                tapper.pressed(1);
             }
             onReleased: {
-                console.log("released 2")
+                tapper.released(1);
             }
         }
     }
@@ -45,12 +50,18 @@ Item {
         text: "Reset"
         y: 5
         x: leftTap.width + 10
+        onClicked: {
+            tapper.reset()
+        }
     }
     ToolButton {
         id: saveButton
         text: "Save"
         y: 5
         x: resetButton.x + resetButton.width + 10
+        onClicked: {
+            tapper.saveAsMidi("tapCheck.mid")
+        }
     }
     ToolButton {
         id: playButton

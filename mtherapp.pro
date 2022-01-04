@@ -35,7 +35,8 @@ SOURCES += \
     midi/MidiRender.cpp \
     midi/MidiTrack.cpp \
     midi/NBytesInt.cpp \
-    music/GraphicMap.cpp
+    music/GraphicMap.cpp \
+    music/Tapper.cpp
 
 RESOURCES += qml.qrc \
     fonts.qrc \
@@ -107,7 +108,8 @@ HEADERS += \
     midi/NBytesInt.hpp \
     libs/sf/tml.h \
     libs/sf/tsf.h \
-    music/GraphicMap.hpp
+    music/GraphicMap.hpp \
+    music/Tapper.h
 
 
 DISTFILES += \

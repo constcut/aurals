@@ -7,7 +7,7 @@
 
 namespace mtherapp {
 
-    struct GraphicElement
+    struct GraphicElement //TODO refactor this thing too
     {
       int x,y,w,h;
       QColor color;

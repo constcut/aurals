@@ -94,21 +94,19 @@ void PianoQML::addNote(int x, int y, int note, bool hasBlack)
     whiteKey.x = x;
     whiteKey.y = y;
     whiteKey.color = QColor(Qt::white);
-    whiteKey.hl = QColor(Qt::darkGreen);
+    whiteKey.hl = QColor(Qt::darkGreen); //TODO fix it, just to try having fun there
     whiteKey.w = whiteKeyWidth;
     whiteKey.h = whiteKeyHeight;
 
     elements << whiteKey;
 
-    if (hasBlack)
-    {
+    if (hasBlack) {
         GraphicElement blackKey;
         blackKey.association = note + 1;
         blackKey.x = x+ (whiteKeyWidth-blackKeyWidth);
         blackKey.y = y;
         blackKey.w = blackKeyWidth;
         blackKey.h = blackKeyHeight;
-
         elements << blackKey;
     }
 }

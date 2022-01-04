@@ -1,5 +1,13 @@
 #include "Init.hpp"
 
+#include <iostream> //TODO review do we really need them?
+#include <vector>
+#include <chrono>
+#include <numeric>
+#include <algorithm>
+#include <fstream>
+#include <cstdlib>
+
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -9,20 +17,12 @@
 
 #include "log.hpp"
 #include "app/LogHandler.hpp"
-//#include "music/graphicmap.h"
-
-#include <iostream>
-#include <vector>
-
-#include <chrono>
-#include <numeric>
-#include <algorithm>
-#include <fstream>
-#include <cstdlib>
 
 #include "audio/AudioHandler.hpp"
 #include "audio/WaveShape.hpp"
 #include "audio/Spectrograph.hpp"
+#include "music/Tapper.h"
+//#include "music/graphicmap.h"
 
 using namespace std;
 
@@ -59,6 +59,7 @@ int mainInit(int argc, char *argv[]) {
 
     qmlRegisterType<mtherapp::WaveshapeQML>("mther.app", 1, 0, "Waveshape");
     qmlRegisterType<mtherapp::SpectrographQML>("mther.app", 1, 0,"Spectrograph");
+    qmlRegisterType<mtherapp::Tapper>("mther.app", 1, 0,"Tapper");
 
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("Windows-1251")); //Настройки //KOI8-R //ISO 8859-5 //UTF-8 //Windows-1251
     QQmlApplicationEngine engine;
