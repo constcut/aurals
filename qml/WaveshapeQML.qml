@@ -53,7 +53,7 @@ Item {
 
                     windowInfo.text = "Window RMS = " + winRmsDb.toFixed(4)
                     + "\nWindow Pitch = " + winYinF0.toFixed(3)
-                    + "\nMIDI# = " + spectrum.freqToMidi(winYinF0)
+                    + "\nMIDI# = " + waveShape.freqToMidi(winYinF0)
                     + "\nSpecPitch= " + spectrum.getSpectrumF0().toFixed(3)
                     + "\nTime = " + ((mouseX * minRmStep / 2.0) / 44100.0).toFixed(4)
                     outputRmsGroup(mouseX)

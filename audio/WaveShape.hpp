@@ -135,6 +135,7 @@ namespace mtherapp {
 
         Q_INVOKABLE double getWindowRmsDb() { return calculateWindowRmsDb(); }
         Q_INVOKABLE double getWindowYinF0() { return calculateWindowYin(); }
+        Q_INVOKABLE qreal freqToMidi(qreal freq) const;
     };
 
 }

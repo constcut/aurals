@@ -99,7 +99,7 @@ namespace mtherapp {
         double _spectrumPitch = 0.0;
         double _specPitchAprox = 0.0;
 
-        QVector<qreal> _idxPeaksAmp;
+        QVector<qreal> _idxPeaksAmp; //TODO возможно вокруг лишнее
         QVector<int> _idxPeaks;
 
         QVector<int> _binTable;
@@ -152,8 +152,7 @@ namespace mtherapp {
 
         Q_INVOKABLE qreal getFreq1() const { return _barSelected * _freqStep; } //TODO barRange
         Q_INVOKABLE qreal getFreq2() const { return (_barSelected + 1) * _freqStep; }
-        Q_INVOKABLE qreal getPitch() const { return _spectrum._pitchYin; }
-        Q_INVOKABLE qreal freqToMidi(qreal freq) const { return calc_MidiCents(freq) / 100.0; }
+
         Q_INVOKABLE qreal getValue() const { return _bars[_barSelected].value; }
         Q_INVOKABLE int getIndex() const { return _barSelected; }
 
@@ -162,8 +161,6 @@ namespace mtherapp {
         Q_INVOKABLE QVector<int> getBinTable() const { return _binTable; }
         Q_INVOKABLE QVector<int> getBinCount() const { return _binCount; }
 
-        Q_INVOKABLE qreal getRMS() const { return _spectrum._rms; }
-        Q_INVOKABLE qreal getRMSNoWindow() const { return _spectrum._rmsNoWindow; }
         Q_INVOKABLE bool clipped() const { return _gotClipping; }
         Q_INVOKABLE bool gotGap() const { return _spectrumGap; }
         Q_INVOKABLE qreal gapLevel() const { return _gapLevel;  }

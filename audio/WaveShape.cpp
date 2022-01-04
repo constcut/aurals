@@ -184,3 +184,7 @@ double WaveshapePainter::calculateWindowYin() {
     auto& samples = _waveContour.getFloatSamples();
     return calc_YinF0(&samples[_windowPosition], _windowWidth, threshold);
 }
+
+qreal WaveshapeQML::freqToMidi(qreal freq) const {
+    return calc_MidiCents(freq) / 100.0;
+}

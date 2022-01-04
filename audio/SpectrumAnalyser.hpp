@@ -83,7 +83,7 @@ namespace mtherapp {
     private:
         void calculateWindow();
 
-        int _fftLimit = 4096;//TODO
+        int _fftLimit = 4096;
 
         FFTRealWrapper* _fft;
         int _numSamples;
@@ -95,10 +95,6 @@ namespace mtherapp {
         QVector<DataType> _input;
         QVector<DataType> _output;
         FrequencySpectrum _spectrum;
-
-    #ifdef SPECTRUM_ANALYSER_SEPARATE_THREAD
-        QThread*                                    m_thread;
-    #endif
     };
 
 
@@ -137,9 +133,7 @@ namespace mtherapp {
         void calculateWindow();
 
         SpectrumAnalyserThread*    _thread;
-
         int _fftLimit = 4096;
-
         enum State {
             Idle,
             Busy,

@@ -63,16 +63,7 @@ SpectrumAnalyserThread::SpectrumAnalyserThread(QObject *parent)
     ,   _input(4096*4, 0.0)
     ,   _output(4096*4, 0.0)
     ,   _spectrum(4096*4) //16 before
-#ifdef SPECTRUM_ANALYSER_SEPARATE_THREAD
-    ,   m_thread(new QThread(this))
-#endif
 {
-#ifdef SPECTRUM_ANALYSER_SEPARATE_THREAD
-    // moveToThread() cannot be called on a QObject with a parent
-    setParent(0);
-    moveToThread(m_thread);
-    m_thread->start();
-#endif
     calculateWindow();
 }
 
