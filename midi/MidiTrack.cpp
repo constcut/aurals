@@ -247,10 +247,12 @@ std::uint32_t mtherapp::MidiTrack::readFromFile(std::ifstream& f)
 
 std::uint32_t mtherapp::MidiTrack::writeToFile(std::ofstream& f, bool skipSomeMessages) const {
     std::uint32_t totalBytesWritten = 0;
-    f << _chunkId;
+    //f << _chunkId;
+    f.write(_chunkId, 4);
 
     std::uint32_t sizeInverted = swapEndian<std::uint32_t>(_trackSize);
-    f << sizeInverted;
+    //f << sizeInverted;
+    f.write((const char*)&sizeInverted, 4);
     totalBytesWritten += 8;
 
     if (enableMidiLog)

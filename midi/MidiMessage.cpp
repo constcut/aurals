@@ -239,8 +239,10 @@ std::uint32_t MidiMessage::writeToFile(std::ofstream& f, bool skipSomeMessages) 
         return 0;
 
     totalBytesWritten += _timeStamp.writeToFile(f);
-    f << _typeAndChannel;
-    f << _param1;
+    //f << _typeAndChannel;
+    //f << _param1;
+    f.write((const char*)&_typeAndChannel, 1);
+    f.write((const char*)&_param1, 1);
     totalBytesWritten += 2;
 
     if (isMetaEvent()) {
@@ -261,7 +263,8 @@ std::uint32_t MidiMessage::writeToFile(std::ofstream& f, bool skipSomeMessages) 
         std::uint8_t eventType = getEventType();
         if ((eventType != 0xC) && (eventType != 0xD) && (eventType != 0x2) && (eventType != 0x3) 
             && (eventType != 0x4) && (eventType != 0x5) && (eventType != 0x6) && (eventType != 0x0)) {
-            f << _param2;
+            //f << _param2;
+            f.write((const char*)&_param2, 1);
             ++totalBytesWritten;
         }
         if (enableMidiLog) {

@@ -134,11 +134,17 @@ std::uint32_t mtherapp::MidiFile::writeToFile(std::ofstream& f, bool skipSomeMes
     std::uint16_t tracksNInverted = swapEndian<std::uint16_t>(_tracksCount);
     std::uint16_t timeDInverted = swapEndian<std::uint16_t>(_timeDevisition);
 
-    f << _chunkId;
+    f.write(_chunkId, 4);
+    f.write((const char*)&sizeInverted, 4);
+    f.write((const char*)&formatInverted, 2);
+    f.write((const char*)&tracksNInverted, 2);
+    f.write((const char*)&timeDInverted, 2);
+
+    /*f << _chunkId; //This isn't works fine :(
     f << sizeInverted;
     f << formatInverted;
     f << tracksNInverted;
-    f << timeDInverted;
+    f << timeDInverted;*/
     totalBytesWritten += 14;
 
     if (enableMidiLog)
