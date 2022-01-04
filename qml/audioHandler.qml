@@ -194,46 +194,79 @@ Item {
             property string filename: ""
         }
 
+        Component {
+            id: highlightBar
+            Rectangle {
+                id: highlightBarRect
+                width: 200; height: 50
+                color: "#FFFF88"
+                y: filesList.currentItem.y;
+                Behavior on y { SpringAnimation { spring: 2; damping: 0.3 } } //read about it
+            }
+        }
+
+        Component {
+            id: fileDeligate
+            Item {
+                id: wrapper
+                width: filesList.width
+                height: 40
+                Column {
+                    Text {
+                        text: name
+                    }
+                }
+                states: State {
+                    name: "Current"
+                    when: wrapper.ListView.isCurrentItem
+                    PropertyChanges { target: wrapper; x: 20 }
+                }
+                transitions: Transition {
+                    NumberAnimation { properties: "x"; duration: 200 }
+                }
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        wrapper.ListView.view.currentIndex = index
+                        filesModel.filename = name
+                        filenameEdit.text = name
+                    }
+
+                    onDoubleClicked: {
+                        thatWindow.requestWaveshape("records/" + filenameEdit.text)
+                    }
+
+                    onPressAndHold: {
+                        wrapper.ListView.view.currentIndex = index
+                        filesModel.filename = name
+                        filenameEdit.text = name
+                        //aimMenu.x = mouse.x
+                        //aimMenu.y = parent.y + mouse.y //works on item
+                        //aimMenu.open()
+                    }
+                }
+            }
+        }
+
         Rectangle {
             id: mainRect
             width: 600;
             height: audioHandlerItem.height - y - 10
 
-            Component {
-                id: fileDeligate
-
-                Rectangle {
-                    height: 50
-                    width: mainRect.width
-
-                    color: filesModel.selected === index ? "lightgreen" : "white"
-
-                    Row {
-                        spacing: 10
-                        Text { text: name}
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        onDoubleClicked: {
-                            thatWindow.requestWaveshape("records/" + filenameEdit.text)
-                        }
-                        onClicked: {
-                            filesModel.selected = index
-                            filesModel.filename = name
-                            filenameEdit.text = name
-                        }
-                    }
-                }
-            }
-
-            ListView {
+            ListView
+            {
+                id: filesList
+                clip: true
                 anchors.fill: parent
                 model: filesModel
+                Behavior on y { NumberAnimation{ duration: 200 } }
+                onContentYChanged: {} //Maybe copy of hide
                 delegate: fileDeligate
+                highlight: highlightBar
+                focus:  true
+                ScrollBar.vertical: ScrollBar {}
             }
         }
-
     }
 
     property bool useHotFixFirstRecord: true
@@ -252,7 +285,6 @@ Item {
     }
 
     Component.onCompleted: {
-
         audioHandlerItem.reload()
     }
 
