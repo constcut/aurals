@@ -48,8 +48,11 @@ Item {
                     //spectrum.loadSpectrum(item.filename,mouseX*minRmStep/2.0) //This version reloads file
                     spectrum.loadByteArray(waveShape.getPCM(mouseX * minRmStep / 2.0, spectrum.getSamplesAmount()));
 
-                    windowInfo.text = "Window RMS = " + spectrum.getRMSNoWindow().toFixed(4)
-                    + "\nPitch = " + spectrum.getPitch().toFixed(3)
+                    var winRmsDb = waveShape.getWindowRmsDb()
+                    var winYinF0 = waveShape.getWindowYinF0()
+
+                    windowInfo.text = "Window RMS = " + spectrum.getRMSNoWindow().toFixed(4) + " wsR = " + winRmsDb.toFixed(4)
+                    + "\nPitch = " + spectrum.getPitch().toFixed(3) + " wsP = " + winYinF0.toFixed(3)
                     + "\nMIDI# = " + spectrum.freqToMidi(spectrum.getPitch())
                     + "\nSpecPitch= " + spectrum.getSpectrumF0().toFixed(3)
                     + "\nTime = " + ((mouseX * minRmStep / 2.0) / 44100.0).toFixed(4)

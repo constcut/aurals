@@ -48,7 +48,6 @@
 
 namespace mtherapp {
 
-
     class WaveshapePainter  {
 
     public:
@@ -58,10 +57,13 @@ namespace mtherapp {
         void paintWaveShape(QPainter& painter);
         void audioPositionChanged(qint64 position);
 
+        double calculateWindowRmsDb();
+        double calculateWindowYin();
+
     protected:
         WaveContour _waveContour;
 
-        qint64 _audioPoistion;
+        qint64 _audioPoistion; //TODO remove?
 
         quint64 _windowPosition;
         quint16 _windowWidth;
@@ -131,6 +133,8 @@ namespace mtherapp {
 
         Q_INVOKABLE QByteArray getPCM(quint64 position, quint64 samples) { return _waveContour.getPCM(position, samples); }
 
+        Q_INVOKABLE double getWindowRmsDb() { return calculateWindowRmsDb(); }
+        Q_INVOKABLE double getWindowYinF0() { return calculateWindowYin(); }
     };
 
 }

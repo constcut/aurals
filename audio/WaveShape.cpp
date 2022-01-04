@@ -47,6 +47,8 @@
 
 #include <unordered_set>
 
+#include "FeatureExtractor.hpp"
+
 
 using namespace mtherapp;
 
@@ -168,4 +170,17 @@ void WaveshapePainter::audioPositionChanged(qint64 position) {
 
 void WaveshapePainter::loadContour(QString filename) {
     _waveContour = WaveContour(filename);
+}
+
+
+double WaveshapePainter::calculateWindowRmsDb() {
+    auto& samples = _waveContour.getFloatSamples();
+    return calc_dB(&samples[_windowPosition], _windowWidth);
+}
+
+
+double WaveshapePainter::calculateWindowYin() {
+    double threshold = _waveContour.getYinThreshold();
+    auto& samples = _waveContour.getFloatSamples();
+    return calc_YinF0(&samples[_windowPosition], _windowWidth, threshold);
 }

@@ -37,6 +37,7 @@ namespace mtherapp {
         void calculateF0();
         const std::vector<double>& getPitch() const { return _yinLine; }
         void changeYinTheshold(double threshold) { _yinTheshold = threshold; }
+        double getYinThreshold() const { return _yinTheshold; }
 
         QAudioFormat getAudioFormat() { return _audioFormat; }
         QByteArray getPCM(quint64 position, quint64 samples);
