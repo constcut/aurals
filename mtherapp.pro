@@ -134,7 +134,8 @@ DISTFILES += \
     qml/WaveshapeQML.qml \
     qml/audioHandler.qml \
     qml/consoleLog.qml \
-    qml/main.qml
+    qml/main.qml \
+    qml/tapper.qml
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 

@@ -35,6 +35,10 @@ ApplicationWindow {
                 onClicked: mainLoader.setSource("audioHandler.qml")
             }
             ToolButton {
+                text: "Tap"
+                onClicked: mainLoader.setSource("tapper.qml")
+            }
+            ToolButton {
                 text: "Exit"
                 onClicked:  {
                     if (Qt.platform.os !== "android")
