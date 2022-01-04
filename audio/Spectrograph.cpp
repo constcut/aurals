@@ -135,7 +135,7 @@ void SpectrographPainter::paintBars(QPainter &painter, QRect &rect) const {
         if (_bars[i].clipped)
             color = clipColor;
         else {
-            if (peaksIdx.count(i))
+            if (_peaksIdx.count(i))
                 color = QColor("orange");
         }
         painter.fillRect(bar, color);
@@ -238,7 +238,6 @@ void SpectrographPainter::updateBars()
                 _lastIdx = count;
                 _lastValue = bar.value;
             }
-            _idxPeaksAmp.append(level);
         }
         ++count;
     }
@@ -377,11 +376,11 @@ void SpectrographPainter::findPeaks() {
         peaks.erase(removeIt, peaks.end());
     }
 
-    peaksIdx.clear();
+    _peaksIdx.clear();
     std::map<int, int> diffCount;
     int prev = -1;
     for (auto p: peaks) {
-        peaksIdx.insert(p);
+        _peaksIdx.insert(p);
         if (prev != -1) {
             int diff = p - prev;
             if (diffCount.count(diff))

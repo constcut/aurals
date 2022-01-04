@@ -41,6 +41,8 @@
 #ifndef SPECTRUMANALYSER_H
 #define SPECTRUMANALYSER_H
 
+#include <memory>
+
 #include <QByteArray>
 #include <QObject>
 #include <QVector>
@@ -49,6 +51,7 @@
 #include "Spectrum.hpp"
 
 #include "libs/fft/FFTRealFixLenParam.h"
+#include "libs/fft/fftreal_wrapper.h"
 
 QT_FORWARD_DECLARE_CLASS(QAudioFormat)
 QT_FORWARD_DECLARE_CLASS(QThread)
@@ -64,7 +67,7 @@ namespace mtherapp {
 
     public:
         SpectrumAnalyserThread(QObject *parent);
-        ~SpectrumAnalyserThread();
+        ~SpectrumAnalyserThread() = default;
 
         void setSamplesAmount(int newNumSamples) { _numSamples = newNumSamples; }
         int getSamplesAmount() { return _numSamples; }
@@ -85,7 +88,7 @@ namespace mtherapp {
 
         int _fftLimit = 4096;
 
-        FFTRealWrapper* _fft;
+        std::unique_ptr<FFTRealWrapper> _fft;
         int _numSamples;
         WindowFunction _windowFunction;
 

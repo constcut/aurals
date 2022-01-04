@@ -56,7 +56,6 @@ using namespace mtherapp;
 
 SpectrumAnalyserThread::SpectrumAnalyserThread(QObject *parent)
     :   QObject(parent)
-    ,   _fft(new FFTRealWrapper)
     ,   _numSamples(SpectrumLengthSamples)
     ,   _windowFunction(DefaultWindowFunction)
     ,   _window(4096*4, 0.0) //SpectrumLengthSamples
@@ -64,11 +63,8 @@ SpectrumAnalyserThread::SpectrumAnalyserThread(QObject *parent)
     ,   _output(4096*4, 0.0)
     ,   _spectrum(4096*4) //16 before
 {
+    _fft = std::make_unique<FFTRealWrapper>();
     calculateWindow();
-}
-
-SpectrumAnalyserThread::~SpectrumAnalyserThread() {
-    delete _fft; //TODO unique
 }
 
 void SpectrumAnalyserThread::setWindowFunction(WindowFunction type) {

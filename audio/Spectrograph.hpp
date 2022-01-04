@@ -99,13 +99,10 @@ namespace mtherapp {
         double _spectrumPitch = 0.0;
         double _specPitchAprox = 0.0;
 
-        QVector<qreal> _idxPeaksAmp; //TODO возможно вокруг лишнее
-        QVector<int> _idxPeaks;
-
         QVector<int> _binTable;
         QVector<int> _binCount;
 
-        std::unordered_set<int> peaksIdx;
+        std::unordered_set<int> _peaksIdx;
 
         double _maxValue = -120;
         int _maxIdx = -1;
