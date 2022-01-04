@@ -61,7 +61,6 @@ SpectrumAnalyserThread::SpectrumAnalyserThread(QObject *parent)
     ,   _windowFunction(DefaultWindowFunction)
     ,   _window(4096*4, 0.0) //SpectrumLengthSamples
     ,   _input(4096*4, 0.0)
-    ,   _noWindowInput(4096*4, 0.0)
     ,   _output(4096*4, 0.0)
     ,   _spectrum(4096*4) //16 before
 #ifdef SPECTRUM_ANALYSER_SEPARATE_THREAD
@@ -75,7 +74,6 @@ SpectrumAnalyserThread::SpectrumAnalyserThread(QObject *parent)
     m_thread->start();
 #endif
     calculateWindow();
-    //SpectrumLengthSamples = 2048;
 }
 
 SpectrumAnalyserThread::~SpectrumAnalyserThread() {
@@ -112,33 +110,19 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
     const char *ptr = buffer.constData(); //TODO from preloaded
     for (int i=0; i<_numSamples; ++i) {
 
-        if (i > fftLimit) {
+        if (i > _fftLimit) {
             _input[i] = 0.f;
-            _noWindowInput[i] = 0.f;
         }
         else {
             const qint16 pcmSample = *reinterpret_cast<const qint16*>(ptr);
             const float realSample = pcmToReal(pcmSample); // Scale down to range [-1.0, 1.0]
             const float windowedSample = realSample * _window[i];
             _input[i] = windowedSample;
-            _noWindowInput[i] = realSample;
         }
         ptr += bytesPerSample;
     }
 
-    auto rms = calc_dB(_input.data(), _input.size());
-    auto rmsNoWin = calc_dB(_noWindowInput.data(), _input.size());
-
-    _spectrum._rms = rms;
-    _spectrum._rmsNoWindow = rmsNoWin;
-
-    size_t realSize = _input.size();
-    if (realSize > yinLimit)
-        realSize = yinLimit;
-    auto pitch = calc_YinF0(_input.data(), realSize, yinThreshold);
-    _spectrum._pitchYin = pitch;
-
-    _fft->calculateFFT(_output.data(), _noWindowInput.data()); //m_noWindowInput m_input
+    _fft->calculateFFT(_output.data(), _input.data()); //m_noWindowInput m_input
 
     for (int i=2; i<=_numSamples/2; ++i) {
         _spectrum[i].frequency = qreal(i * inputFrequency) / (_numSamples);
@@ -194,10 +178,7 @@ void SpectrumAnalyser::calculate(const QByteArray &buffer,
         const int bytesPerSample = format.sampleSize() * format.channelCount() / 8;
 
         _state = Busy;
-        _thread->yinLimit = yinLimit;
-        _thread->fftLimit = fftLimit;
-        _thread->yinThreshold = yinThreshold;
-
+        _thread->setFFTLimit(_fftLimit);
         const bool b = QMetaObject::invokeMethod(_thread, "calculateSpectrum",
                                   Qt::AutoConnection,
                                   Q_ARG(QByteArray, buffer),

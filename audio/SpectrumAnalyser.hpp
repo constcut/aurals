@@ -69,9 +69,7 @@ namespace mtherapp {
         void setSamplesAmount(int newNumSamples) { _numSamples = newNumSamples; }
         int getSamplesAmount() { return _numSamples; }
 
-        int yinLimit = 1024; //TODO set\get
-        int fftLimit = 4096;
-        double yinThreshold = 0.15;
+        void setFFTLimit(int newLimit) { _fftLimit = newLimit; }
 
     public slots:
         void setWindowFunction(WindowFunction type);
@@ -85,7 +83,7 @@ namespace mtherapp {
     private:
         void calculateWindow();
 
-    private:
+        int _fftLimit = 4096;//TODO
 
         FFTRealWrapper* _fft;
         int _numSamples;
@@ -95,9 +93,7 @@ namespace mtherapp {
 
         QVector<DataType> _window;
         QVector<DataType> _input;
-        QVector<DataType> _noWindowInput;
         QVector<DataType> _output;
-
         FrequencySpectrum _spectrum;
 
     #ifdef SPECTRUM_ANALYSER_SEPARATE_THREAD
@@ -114,17 +110,10 @@ namespace mtherapp {
         SpectrumAnalyser(QObject *parent = 0);
         ~SpectrumAnalyser() = default;
 
-    public:
-
-        int yinLimit=1024; //TODO as above so below (right here)
-        int fftLimit=4096;
-        double yinThreshold = 0.15;
-
         void setSamplesAmount(int newNumSamples) {
             if (_thread)
                 _thread->setSamplesAmount(newNumSamples);
         }
-
         int getSamplesAmount() {
             if (_thread)
                 return _thread->getSamplesAmount();
@@ -136,6 +125,8 @@ namespace mtherapp {
         bool isReady() const;
         void cancelCalculation();
 
+        void setFFTLimit(int newLimit) { _fftLimit = newLimit; }
+
     signals:
         void spectrumChanged(const FrequencySpectrum &spectrum);
 
@@ -146,6 +137,8 @@ namespace mtherapp {
         void calculateWindow();
 
         SpectrumAnalyserThread*    _thread;
+
+        int _fftLimit = 4096;
 
         enum State {
             Idle,

@@ -51,9 +51,9 @@ Item {
                     var winRmsDb = waveShape.getWindowRmsDb()
                     var winYinF0 = waveShape.getWindowYinF0()
 
-                    windowInfo.text = "Window RMS = " + spectrum.getRMSNoWindow().toFixed(4) + " wsR = " + winRmsDb.toFixed(4)
-                    + "\nPitch = " + spectrum.getPitch().toFixed(3) + " wsP = " + winYinF0.toFixed(3)
-                    + "\nMIDI# = " + spectrum.freqToMidi(spectrum.getPitch())
+                    windowInfo.text = "Window RMS = " + winRmsDb.toFixed(4)
+                    + "\nWindow Pitch = " + winYinF0.toFixed(3)
+                    + "\nMIDI# = " + spectrum.freqToMidi(winYinF0)
                     + "\nSpecPitch= " + spectrum.getSpectrumF0().toFixed(3)
                     + "\nTime = " + ((mouseX * minRmStep / 2.0) / 44100.0).toFixed(4)
                     outputRmsGroup(mouseX)
@@ -234,18 +234,6 @@ Item {
                     onCurrentTextChanged: {
                         var threshold = parseFloat(currentText)
                         waveShape.setYinThreshold(threshold)
-                        spectrum.setYinThreshold(threshold)
-                    }
-                }
-                Text{
-                    text: "Yin limit size: "
-                }
-                ComboBox {
-                    model: ["2048", "4096", "6000", "8192"]
-                    currentIndex: 1
-                    onCurrentTextChanged: {
-                        if (spectrum)
-                            spectrum.setYinLimit(parseInt(currentText))
                     }
                 }
             }

@@ -173,10 +173,7 @@ namespace mtherapp {
         Q_INVOKABLE bool loadSpectrum(QString filename, quint64 position);
         Q_INVOKABLE bool loadByteArray(QByteArray analyseData);
 
-        Q_INVOKABLE void setYinLimit(int limit) { _analyser.yinLimit = limit; };
-        Q_INVOKABLE void setFFTLimit(int limit) { _analyser.fftLimit = limit; };
-
-        Q_INVOKABLE void setYinThreshold(double threshold) { _analyser.yinThreshold = threshold; }
+        Q_INVOKABLE void setFFTLimit(int limit) { _analyser.setFFTLimit(limit); };
 
     public slots:
         void spectrumChanged(qint64 position, qint64 length,
