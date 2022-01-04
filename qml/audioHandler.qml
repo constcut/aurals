@@ -190,7 +190,7 @@ Item {
 
         ListModel {
             id: filesModel
-            property int selected: -1
+            property int selected: -1 //TODO maybe get rid
             property string filename: ""
         }
 
@@ -201,7 +201,7 @@ Item {
                 width: 200; height: 50
                 color: "#FFFF88"
                 y: filesList.currentItem.y;
-                Behavior on y { SpringAnimation { spring: 2; damping: 0.3 } } //read about it
+                Behavior on y { SpringAnimation { spring: 2; damping: 0.3 } }
             }
         }
 
@@ -210,7 +210,7 @@ Item {
             Item {
                 id: wrapper
                 width: filesList.width
-                height: 40
+                height: 35
                 Column {
                     Text {
                         text: name
@@ -240,27 +240,53 @@ Item {
                         wrapper.ListView.view.currentIndex = index
                         filesModel.filename = name
                         filenameEdit.text = name
-                        //aimMenu.x = mouse.x
-                        //aimMenu.y = parent.y + mouse.y //works on item
-                        //aimMenu.open()
+                        filesMenu.x = mouse.x
+                        filesMenu.y = parent.y + mouse.y
+                        filesMenu.open()
                     }
                 }
             }
         }
 
-        Rectangle {
+
+        Menu {
+            id: filesMenu
+            MenuItem {
+                text: "Play"
+                onTriggered: { //TODO functions to copy actions here and on pannel above
+                    audio.resetBufer()
+                    audio.loadWavFile("records/" + filenameEdit.text)
+                    audio.startPlayback()
+                }
+            }
+            MenuItem {
+                text: "Open"
+                onTriggered: {
+                    thatWindow.requestWaveshape("records/" + filenameEdit.text)
+                }
+            }
+            MenuItem {
+                text: "Delete"
+                onTriggered: {
+                    if (filesModel[filesModel.selected] === -1)
+                        return
+                    confirmDialog.visible = true
+                }
+            }
+        }
+
+
+        Rectangle { //TODO search box from aim
             id: mainRect
             width: 600;
             height: audioHandlerItem.height - y - 10
-
-            ListView
-            {
+            ListView {
                 id: filesList
                 clip: true
                 anchors.fill: parent
                 model: filesModel
                 Behavior on y { NumberAnimation{ duration: 200 } }
-                onContentYChanged: {} //Maybe copy of hide
+                onContentYChanged: {} //When implement search bar copy behavior
                 delegate: fileDeligate
                 highlight: highlightBar
                 focus:  true
