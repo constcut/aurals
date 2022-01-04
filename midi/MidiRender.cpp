@@ -1,5 +1,6 @@
-#include "MidiRender.hpp".h"
+#include "MidiRender.hpp"
 
+//TODO make sepparate file with implementaion to avoid long compilation on render changes
 #define TSF_IMPLEMENTATION 1
 #include "libs/sf/tsf.h"
 #define TML_IMPLEMENTATION 1
