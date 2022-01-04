@@ -10,7 +10,7 @@ ApplicationWindow {
 
     id: thatWindow
     visible: true
-    visibility: "FullScreen" //TODO only if android
+    visibility: "FullScreen"
     title: "Mtherapp"
 
     onClosing: {
@@ -35,11 +35,6 @@ ApplicationWindow {
                 onClicked: mainLoader.setSource("audioHandler.qml")
             }
             ToolButton {
-                text: "Wave"
-                onClicked: mainLoader.setSource("WaveshapeQML.qml")
-            }
-
-            ToolButton {
                 text: "Exit"
                 onClicked:  {
                     if (Qt.platform.os !== "android")
@@ -52,9 +47,8 @@ ApplicationWindow {
 
 
     function requestWaveshape(filename) {
-        //console.log('Requested waveshape', filename)
+        //TODO open many tabs, just like in athenum
         mainLoader.setSource("qrc:/qml/WaveshapeQML.qml", {"filename": filename});
-        //mainLoader.item.reloadFile()
     }
 
     Loader {

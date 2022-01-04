@@ -97,7 +97,6 @@ Item {
 
         RowLayout {
             spacing: 10
-
             ToolButton {
                 property bool recording: false
                 text: recording ? "Stop and save" : "Start record"
@@ -231,11 +230,9 @@ Item {
                         filesModel.filename = name
                         filenameEdit.text = name
                     }
-
                     onDoubleClicked: {
                         thatWindow.requestWaveshape("records/" + filenameEdit.text)
                     }
-
                     onPressAndHold: {
                         wrapper.ListView.view.currentIndex = index
                         filesModel.filename = name
@@ -278,7 +275,7 @@ Item {
 
         Rectangle { //TODO search box from aim
             id: mainRect
-            width: 600;
+            width: 600
             height: audioHandlerItem.height - y - 10
             ListView {
                 id: filesList
