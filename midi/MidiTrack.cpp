@@ -79,8 +79,19 @@ void mtherapp::MidiTrack::pushMetricsSignature(std::uint8_t numeration, std::uin
     MidiMessage metrics(0xff, 88, 0, timeShift);
     metrics.metaBufer().push_back(numeration);
 
-    //log2 TODO!!!!
-    std::uint8_t translatedDuration = 4; //log(denumeration); //there might be some issue on wrong data
+
+    std::uint8_t translatedDuration = 4;  //log2 TODO!!!!
+    switch (denumeration)  {
+        case 1: translatedDuration = 0; break;
+        case 2: translatedDuration = 1; break;
+        case 4: translatedDuration = 2; break;
+        case 8: translatedDuration = 3; break;
+        case 16: translatedDuration = 4; break;
+        case 32: translatedDuration = 5; break;
+        case 64: translatedDuration = 6; break;
+    default:
+        translatedDuration = 2;
+    }
 
     metrics.metaBufer().push_back(translatedDuration);
     metrics.metaBufer().push_back(metr);

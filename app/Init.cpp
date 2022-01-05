@@ -24,10 +24,37 @@
 #include "music/Tapper.h"
 //#include "music/graphicmap.h"
 
+#include "midi/MidiFile.hpp"
+
+
 using namespace std;
 
 
 int mainInit(int argc, char *argv[]) {
+
+    { //TEST plain midi generation
+        mtherapp::MidiFile m;
+        mtherapp::MidiTrack track;
+        //Is it needed?
+        track.pushChangeBPM(120, 0);
+        track.pushMetricsSignature(4, 4, 0);
+        track.pushChangeInstrument(0, 0, 0);
+        track.pushChangePanoram(128, 0);
+        track.pushChangeVolume(128, 0);
+        //calcRhythmDetail
+        track.pushNoteOn(60, 100, 0);
+        track.accumulate(960);
+        track.pushNoteOff(60, 100, 0);
+        track.accumulate(960);
+        track.pushNoteOn(60, 100, 0);
+        track.accumulate(960);
+        track.pushNoteOff(60, 100, 0);
+        track.pushEvent47();
+        m.push_back(std::move(track));
+
+        m.writeToFile("/home/punnalyse/check2.mid");
+    }
+    return 0;
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 

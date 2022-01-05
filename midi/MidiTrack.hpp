@@ -45,7 +45,7 @@ namespace mtherapp {
             std::uint32_t _trackSize;
 
         private:
-            std::int32_t _accum;
+            std::int32_t _accum = 0;
             std::uint8_t _tunes[10];
             std::uint8_t _ringRay[10];
 
