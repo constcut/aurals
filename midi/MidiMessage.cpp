@@ -33,6 +33,12 @@ bool MidiMessage::isMetaEvent() const {
     return _typeAndChannel == 0xff;
 }
 
+bool MidiMessage::isNotSingleParamEvent(std::uint8_t eventType) const {
+    return (eventType != MidiEvent::PatchChange) && (eventType != MidiEvent::ChannelPressure) &&
+            (eventType != 0x2) && (eventType != 0x3) && (eventType != 0x4) &&
+            (eventType != 0x5) && (eventType != 0x6) && (eventType != 0x0);
+}
+
 
 std::uint32_t MidiMessage::calculateSize(bool skipSomeMessages) const {
     std::uint32_t messageSize = 0;
@@ -48,7 +54,7 @@ std::uint32_t MidiMessage::calculateSize(bool skipSomeMessages) const {
         ++messageSize; //parameter 1
         std::uint8_t eventType = getEventType();
 
-        if ((eventType != 0xC) && (eventType != 0xD) && (eventType != 0x2) && (eventType != 0x3) && (eventType != 0x4) && (eventType != 0x5) && (eventType != 0x6) && (eventType != 0x0)) //MAKE ENUMERATION
+        if (isNotSingleParamEvent(eventType))
             ++messageSize;                                                                                                                                                                //parameter 2
     }
     else {
@@ -74,7 +80,7 @@ bool MidiMessage::canSkipThat() const {
     }
     else {
         std::uint8_t eventType = getEventType();
-        if ((eventType == 8) || (eventType == 9))
+        if ((eventType == MidiEvent::NoteOff) || (eventType == MidiEvent::NoteOn))
             return false;
         return true;
     }
@@ -107,8 +113,7 @@ std::uint32_t MidiMessage::readFromFile(std::ifstream& f) {
     }
     else {
         std::uint8_t eventType = getEventType();  //TODO ENUMERATION                                                                                                                                        
-        if ((eventType != 0xC) && (eventType != 0xD) && (eventType != 0x2) && (eventType != 0x3) 
-        && (eventType != 0x4) && (eventType != 0x5) && (eventType != 0x6) && (eventType != 0x0)) {
+        if (isNotSingleParamEvent(eventType)) {
             f.read((char *)&_param2, 1);
             ++totalBytesRead;
         }
@@ -129,19 +134,19 @@ std::uint32_t MidiMessage::readFromFile(std::ifstream& f) {
 
 std::string MidiMessage::nameEvent(std::int8_t eventNumber) const {
     switch (eventNumber) {
-        case 0x8:
+        case MidiEvent::NoteOff:
             return "Note off";
-        case 0x9:
+        case MidiEvent::NoteOn:
             return "Note on";
-        case 0xA:
+        case MidiEvent::Aftertouch:
             return "Aftertouch";
-        case 0xB:
+        case MidiEvent::ControlChange:
             return "Control change";
-        case 0xC:
+        case MidiEvent::PatchChange:
             return "Program (patch) change";
-        case 0xD:
+        case MidiEvent::ChannelPressure:
             return "Channel pressure";
-        case 0xE:
+        case MidiEvent::PitchWheel:
             return "Pitch Wheel";
     }
     return "Unknown_EventType";
@@ -258,9 +263,7 @@ std::uint32_t MidiMessage::writeToFile(std::ofstream& f, bool skipSomeMessages) 
     }
     else {
         std::uint8_t eventType = getEventType();
-        if ((eventType != 0xC) && (eventType != 0xD) && (eventType != 0x2) && (eventType != 0x3) 
-            && (eventType != 0x4) && (eventType != 0x5) && (eventType != 0x6) && (eventType != 0x0)) {
-
+        if (isNotSingleParamEvent(eventType)) {
             f << _param2;
             ++totalBytesWritten;
         }

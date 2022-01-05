@@ -6,9 +6,19 @@
 #include <list>
 #include <vector>
 
-
+//http://www.music.mcgill.ca/~ich/classes/mumt306/StandardMIDIfileformat.html
 
 namespace mtherapp {
+
+    enum MidiEvent {
+        NoteOff = 0x8,
+        NoteOn = 0x9,
+        Aftertouch = 0xA,
+        ControlChange = 0xB,
+        PatchChange = 0xC,
+        ChannelPressure = 0xD,
+        PitchWheel = 0xE
+    };
 
     class MidiMessage
     {
@@ -40,6 +50,11 @@ namespace mtherapp {
 
         std::uint8_t getTypeAndChannel() const { return _typeAndChannel; }
 
+        void setAbsoluteTime(double time) { _absoluteTime = time; }
+        double absoluteTime() const { return _absoluteTime; }
+        NBytesInt& metaLen() { return _metaLen; }
+        std::vector<std::uint8_t>& metaBufer() { return _metaBufer; }
+
     protected:
         std::uint8_t _typeAndChannel;
         std::uint8_t _param1, _param2;
@@ -51,12 +66,7 @@ namespace mtherapp {
         NBytesInt _metaLen;
         std::vector<std::uint8_t> _metaBufer;
 
-    public:
-
-        void setAbsoluteTime(double time) { _absoluteTime = time; }
-        double absoluteTime() const { return _absoluteTime; }
-        NBytesInt& metaLen() { return _metaLen; }
-        std::vector<std::uint8_t>& metaBufer() { return _metaBufer; }
+        bool isNotSingleParamEvent(std::uint8_t eventType) const;
 
     };
 
