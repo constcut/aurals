@@ -1,7 +1,6 @@
 #include "MidiMessage.hpp"
 #include "log.hpp"
 
-#include "log.hpp"
 
 using namespace mtherapp;
 

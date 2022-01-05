@@ -1,15 +1,9 @@
 // This code was derived from https://github.com/claydergc/find-peaks
 // and distributed under MIT lisence
-
-
-#include <iostream>
-#include <algorithm>
-#include <cmath>
 #include "FindPeaks.hpp"
 
-#include <list>
 #include <algorithm>
-
+#include <cmath>
 
 
 using std::vector;

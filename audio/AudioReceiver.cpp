@@ -1,7 +1,5 @@
 #include "AudioReceiver.hpp"
 
-#include <QDebug>
-#include <QFile>
 #include <QTimer>
 
 #include "AudioHandler.hpp"

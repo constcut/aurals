@@ -40,12 +40,12 @@
 
 #include "WaveShape.hpp"
 
+#include <unordered_set>
+
 #include <qglobal.h>
 #include <QPainter>
 #include <QPainterPath>
 #include <QDebug>
-
-#include <unordered_set>
 
 #include "FeatureExtractor.hpp"
 

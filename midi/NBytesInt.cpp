@@ -2,7 +2,6 @@
 #include "log.hpp"
 #include <vector>
 
-#include "log.hpp"
 
 using namespace mtherapp;
 

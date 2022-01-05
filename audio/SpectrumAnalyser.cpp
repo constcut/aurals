@@ -39,16 +39,14 @@
 ****************************************************************************/
 
 #include "SpectrumAnalyser.hpp"
-#include "AudioUtils.hpp"
-#include "libs/fft/fftreal_wrapper.h"
-
-#include "FeatureExtractor.hpp"
 
 #include <qmath.h>
 #include <qmetatype.h>
 #include <QAudioFormat>
-#include <QThread>
-#include <QDataStream>
+
+#include "libs/fft/fftreal_wrapper.h"
+#include "FeatureExtractor.hpp"
+#include "AudioUtils.hpp"
 
 
 using namespace mtherapp;

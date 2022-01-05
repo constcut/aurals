@@ -1,11 +1,11 @@
 ﻿#include "WaveContour.hpp"
-#include "WavFile.hpp"
 
+#include <QDebug>
+
+#include "WavFile.hpp"
 #include "FeatureExtractor.hpp"
 #include "FindPeaks.hpp"
 #include "AudioUtils.hpp"
-
-#include <QDebug>
 
 
 using namespace mtherapp;

@@ -41,9 +41,7 @@
 #include "Spectrograph.hpp"
 
 #include <QDebug>
-#include <QMouseEvent>
 #include <QPainter>
-#include <QTimerEvent>
 
 #include <cmath>
 #include <unordered_map>

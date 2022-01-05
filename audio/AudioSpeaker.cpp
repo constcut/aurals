@@ -1,9 +1,5 @@
 #include "AudioSpeaker.hpp"
 
-#include <QDebug>
-#include <QFile>
-#include <QTimer>
-
 #include <cstring>
 
 #include "AudioHandler.hpp"

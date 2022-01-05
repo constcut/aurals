@@ -38,13 +38,14 @@
 **
 ****************************************************************************/
 
+#include "WavFile.hpp"
+
+#include <cstring>
+
 #include <qendian.h>
 #include <QVector>
 #include <QDebug>
 
-#include <cstring>
-
-#include "WavFile.hpp"
 
 using namespace mtherapp;
 
