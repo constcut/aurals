@@ -16,7 +16,7 @@ namespace mtherapp {
     public:
         explicit LogHandler(QObject *parent = nullptr);
 
-        static LogHandler *instance;
+        static LogHandler& getInstance();
 
         void addLine(QString anotherLine);
 

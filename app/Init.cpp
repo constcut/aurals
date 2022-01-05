@@ -1,13 +1,5 @@
 #include "Init.hpp"
 
-#include <iostream> //TODO review do we really need them?
-#include <vector>
-#include <chrono>
-#include <numeric>
-#include <algorithm>
-#include <fstream>
-#include <cstdlib>
-
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -24,8 +16,6 @@
 #include "music/Tapper.h"
 //#include "music/graphicmap.h"
 
-#include "midi/MidiFile.hpp"
-
 
 using namespace std;
 
@@ -33,7 +23,6 @@ using namespace std;
 int mainInit(int argc, char *argv[]) {
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-
     qmlRegisterType<mtherapp::ConsoleLogQML>("mther.app",1,0,"ConsoleLogView");
     //qmlRegisterType<PianoQML>("mther.app",1,0,"Piano");
 
