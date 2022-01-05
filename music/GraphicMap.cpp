@@ -28,7 +28,7 @@ void GraphicMap::addElement(int x, int y, int w, int h, QColor c, QColor hl, int
     elements << el;
 }
 
-void GraphicMap::paint(QPainter *painter) const {
+void GraphicMap::paint(QPainter *painter) {
 
     for (auto& el: elements) {
         if (el.selected == false)
@@ -105,7 +105,7 @@ void PianoQML::unSelectByAssociation(int ass) {
     }
 }
 
-GraphicElement *PianoQML::findElementByAssociation(int ass) const {
+GraphicElement *PianoQML::findElementByAssociation(int ass) {
     for (auto& e: elements)
         if (e.association == ass)
             return &e;

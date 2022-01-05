@@ -47,7 +47,7 @@ namespace mtherapp {
 
     protected:
 
-        GraphicElement* findElementByAssociation(int ass) const;
+        GraphicElement* findElementByAssociation(int ass);
 
         int whiteKeyWidth, whiteKeyHeight, blackKeyWidth, blackKeyHeight;
     };
