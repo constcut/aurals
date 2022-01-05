@@ -44,7 +44,7 @@ namespace mtherapp {
         double getRenderTimer() { return _msRendered; }
 
         float getVolumeDb() { return _volume; }
-        double setVolumeDb(float newVol) { _volume = newVol; }
+        void setVolumeDb(float newVol) { _volume = newVol; }
 
     protected:
 

@@ -20,19 +20,19 @@ double MidiMessage::getSecondsLength(double bpm) const {
 
 
 std::uint8_t MidiMessage::getEventType() const {
-    std::uint8_t eventType = (_typeAndChannel & (0xf0)) >> 4; //name with enumeration byte blocks
+    std::uint8_t eventType = (_typeAndChannel & (MidiMasks::EventTypeMask)) >> 4; //name with enumeration byte blocks
     return eventType;
 }
 
 
 std::uint8_t MidiMessage::getChannel() const {
-    std::int8_t midiChannel = _typeAndChannel & 0xf; //name with enumeration byte blocks
+    std::int8_t midiChannel = _typeAndChannel & MidiMasks::ChannelMask; //name with enumeration byte blocks
     return midiChannel;
 }
 
 
 bool MidiMessage::isMetaEvent() const {
-    return _typeAndChannel == 0xff;
+    return _typeAndChannel == MidiEvent::MetaEvent;
 }
 
 bool MidiMessage::isNotSingleParamEvent(std::uint8_t eventType) const {
@@ -71,14 +71,14 @@ std::uint32_t MidiMessage::calculateSize(bool skipSomeMessages) const {
 
 bool MidiMessage::canSkipThat() const {
     if (isMetaEvent()) {
-        if (_param1 == 47) //MAKE ENUMERATION
+        if (_param1 == MidiMetaTypes::KindOfFinish)
             return false;
-        if (_param1 == 81) //change tempo
+        if (_param1 == MidiMetaTypes::ChangeTempo)
             return false;
-        if (_param1 == 88)
-            return false; //Time signature
-        if (_param1 == 3)
-            return false; //track name
+        if (_param1 == MidiMetaTypes::ChangeTimeSignature)
+            return false;
+        if (_param1 == MidiMetaTypes::TrackName)
+            return false;
         return true;
     }
     else {

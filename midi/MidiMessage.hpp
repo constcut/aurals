@@ -26,7 +26,20 @@ namespace mtherapp {
         ControlChange = 0xB,
         PatchChange = 0xC,
         ChannelPressure = 0xD,
-        PitchWheel = 0xE
+        PitchWheel = 0xE,
+        MetaEvent = 0xFF
+    };
+
+    enum MidiMetaTypes {
+        TrackName = 0x3,
+        KindOfFinish = 0x2f, //:)
+        ChangeTempo = 0x51,
+        ChangeTimeSignature = 0x58
+    };
+
+    enum MidiMasks {
+        ChannelMask = 0xF,
+        EventTypeMask = 0xF0,
     };
 
     class MidiMessage
