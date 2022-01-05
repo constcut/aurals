@@ -1,7 +1,5 @@
 #include "MidiFile.hpp"
 
-#include <fstream>
-
 #include "log.hpp"
 #include "MidiUtils.hpp"
 

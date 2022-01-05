@@ -1,12 +1,10 @@
 #include "MidiRender.hpp"
 
+#include <QDebug>
+
 #include "libs/sf/tsf.h"
 #include "libs/sf/tml.h"
 
-#include <QElapsedTimer>
-#include <QDebug>
-
-#include <iostream>
 
 using namespace mtherapp;
 
@@ -172,7 +170,7 @@ QByteArray MidiRender::renderShortNext(int len)
                 break;
 
                 default:
-                    std::cerr << "EVENT NOT HANDLED: " << static_cast<int>(g_MidiMessage->type) << std::endl;
+                    qDebug() << "EVENT NOT HANDLED: " << static_cast<int>(g_MidiMessage->type);
             }
         }
         tsf_render_short(_soundFont, (short*)stream, SampleBlock, 0);
