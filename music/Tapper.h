@@ -8,7 +8,7 @@
 
 namespace mtherapp {
 
-    using moment = std::chrono::time_point<std::chrono::steady_clock>;
+    using moment = std::chrono::time_point<std::chrono::high_resolution_clock>;
 
     struct TapEvent {
         int idx;
