@@ -11,7 +11,6 @@
 
 using namespace mtherapp;
 
-MidiEngine *MidiEngine::inst=0;
 
 #ifdef WIN32
          HMIDIOUT MidiEngine::winMidi;
@@ -178,9 +177,6 @@ void MidiEngine::freeInitials()
 
 MidiEngine::MidiEngine()
 {
-    if (inst != 0)
-        return;
-    inst = this; //TODO Mayers Singleton
     init();
 }
 

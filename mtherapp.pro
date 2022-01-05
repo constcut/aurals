@@ -28,6 +28,7 @@ SOURCES += \
     audio/WaveShape.cpp \
     audio/Yin.cpp \
     libs/fft/fftreal_wrapper.cpp \
+    libs/sf/tsf.cpp \
     main.cpp \
     midi/MidiEngine.cpp \
     midi/MidiFile.cpp \
@@ -105,6 +106,7 @@ HEADERS += \
     midi/MidiMessage.hpp \
     midi/MidiRender.hpp \
     midi/MidiTrack.hpp \
+    midi/MidiUtils.hpp \
     midi/NBytesInt.hpp \
     libs/sf/tml.h \
     libs/sf/tsf.h \

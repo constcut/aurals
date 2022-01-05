@@ -52,13 +52,13 @@ Item {
                     var winYinF0 = waveShape.getWindowYinF0()
 
                     windowInfo.text = "Window RMS = " + winRmsDb.toFixed(4)
-                    + "\nWindow Pitch = " + winYinF0.toFixed(3)
+                    + "\nWindow Pitch = " + winYinF0.toFixed(3) // Хорошо бы добавлять ещё probability
                     + "\nMIDI# = " + waveShape.freqToMidi(winYinF0)
                     + "\nSpecPitch= " + spectrum.getSpectrumF0().toFixed(3)
                     + "\nTime = " + ((mouseX * minRmStep / 2.0) / 44100.0).toFixed(4)
                     outputRmsGroup(mouseX)
 
-                    windowInfo.text += "\n" //TODO rename component
+                    windowInfo.text += "\n"
                     if (tooLoudRms)
                         windowInfo.text += "RMS clipped!  "
                     if (spectrum.clipped())
@@ -72,7 +72,7 @@ Item {
                     var minRmStep = waveShape.getMinRmsStep()
                     //audio.loadOnlyWindow(item.filename, mouseX * minRmStep / 2.0, spectrum.getSamplesAmount())
                     audio.loadWindowPCM(waveShape.getPCM(mouseX * minRmStep / 2.0, spectrum.getSamplesAmount()))
-                    audio.startPlayback() //TODO with repeat
+                    audio.startPlayback()
                 }
 
                 property bool tooLoudRms: false

@@ -55,15 +55,12 @@ namespace mtherapp {
 
         void loadContour(QString filename);
         void paintWaveShape(QPainter& painter);
-        void audioPositionChanged(qint64 position);
 
         double calculateWindowRmsDb();
         double calculateWindowYin();
 
     protected:
         WaveContour _waveContour;
-
-        qint64 _audioPoistion; //TODO remove?
 
         quint64 _windowPosition;
         quint16 _windowWidth;

@@ -4,7 +4,7 @@ using namespace mtherapp;
 
 
 Yin::Yin() {
-    _threshold = 0.15; //TODO play with + check funny place
+    _threshold = 0.15;
     _probability = 0.0;
 }
 

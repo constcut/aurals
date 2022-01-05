@@ -7,7 +7,7 @@
 
 namespace mtherapp {
     inline bool enableMidiLog = false;
-    //TODO разные варианты логирования
+    //DELAYED: разные варианты логирования + возможность включить их в настройках
 }
 
 QDebug& operator<<(QDebug& logger, const std::string& msg);

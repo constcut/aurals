@@ -18,17 +18,20 @@ namespace mtherapp {
     {
         Q_OBJECT
     protected:
-    #ifdef WIN32
-             static HMIDIOUT winMidi;
-             static UINT wTimerRes;
-    #endif
-             static bool opened;
+        #ifdef WIN32
+         static HMIDIOUT winMidi;
+         static UINT wTimerRes;
+        #endif
+         static bool opened;
 
-           mtherapp::MidiTrack *_toPlay;
-           bool _playNotes;
-           bool _emitSignal;
+       mtherapp::MidiTrack *_toPlay;
+       bool _playNotes;
+       bool _emitSignal;
 
-    static MidiEngine *inst;
+       static MidiEngine& getInst() {
+           static MidiEngine eng;
+           return eng;
+       }
 
     public:
 

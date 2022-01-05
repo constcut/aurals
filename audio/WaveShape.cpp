@@ -137,7 +137,7 @@ void WaveshapePainter::drawPitch(QPainter &painter, int height) {
 
 
 void WaveshapePainter::drawNoteStartEnd(QPainter &painter, int height) {
-    //TODO use data from high and low rms
+    //TODO вначале отобразить точки найденные RMS но позволить из двигать, чтобы повышать точность
 }
 
 
@@ -162,10 +162,6 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
     painter.drawRect(x1, 0, x2, height);
 }
 
-
-void WaveshapePainter::audioPositionChanged(qint64 position) {
-    _audioPoistion = position;
-}
 
 
 void WaveshapePainter::loadContour(QString filename) {

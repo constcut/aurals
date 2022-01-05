@@ -15,8 +15,8 @@ class Yin {
         void init(double sampleRate, size_t bufferSize);
         double getPitch(const float* buffer);
 
-        double getProbability() const; //TODO look for funny place
-        double getThreshold() const;    //TODO play with configurable parameter
+        double getProbability() const;
+        double getThreshold() const;
 
         void setProbability(double newProb);
         void setThreshold(double newThresh);
