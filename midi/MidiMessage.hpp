@@ -38,6 +38,14 @@ namespace mtherapp {
     };
 
     enum MidiMasks {
+        NoteOffMask = 0x80,
+        NoteOnMask = 0x90,
+        AftetouchMask = 0xA0,
+        ControlChangeMask = 0xB0,
+        PatchChangeMask = 0xC0,
+        ChannelPessureMask = 0xD0,
+        PitchWheelMask = 0xE0,
+
         ChannelMask = 0xF,
         EventTypeMask = 0xF0,
     };

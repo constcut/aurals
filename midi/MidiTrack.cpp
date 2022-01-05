@@ -43,12 +43,12 @@ std::uint32_t mtherapp::MidiTrack::calculateHeader(bool skipSomeMessages) {
 
 
 void mtherapp::MidiTrack::pushChangeInstrument(std::uint8_t newInstrument, std::uint8_t channel, std::uint32_t timeShift) {
-    push_back(MidiMessage(0xC0 | channel, newInstrument, 0, timeShift));
+    push_back(MidiMessage(MidiMasks::PatchChangeMask | channel, newInstrument, 0, timeShift));
 }
 
 
 void mtherapp::MidiTrack::pushTrackName(std::string trackName) {
-    MidiMessage nameTrack(0xff, 3);
+    MidiMessage nameTrack(MidiEvent::MetaEvent, MidiMetaTypes::TrackName);
     nameTrack.metaLen() = NBytesInt(trackName.size());
     //.toLocal8Bit();
     for (size_t i = 0; i < trackName.size(); ++i)
@@ -60,7 +60,7 @@ void mtherapp::MidiTrack::pushTrackName(std::string trackName) {
 
 void mtherapp::MidiTrack::pushMetricsSignature(std::uint8_t numeration, std::uint8_t denumeration,
                                      std::uint32_t timeShift, std::uint8_t metr, std::uint8_t perQuat) {
-    MidiMessage metrics(0xff, 88, 0, timeShift);
+    MidiMessage metrics(MidiEvent::MetaEvent, MidiMetaTypes::ChangeTimeSignature, 0, timeShift);
     metrics.metaBufer().push_back(numeration);
 
     std::uint8_t translatedDuration = std::log2(denumeration);
@@ -74,7 +74,7 @@ void mtherapp::MidiTrack::pushMetricsSignature(std::uint8_t numeration, std::uin
 
 
 void mtherapp::MidiTrack::pushChangeBPM(std::uint16_t bpm, std::uint32_t timeShift) {
-    MidiMessage changeTempo(0xff, 81, 0, timeShift);
+    MidiMessage changeTempo(MidiEvent::MetaEvent, MidiMetaTypes::ChangeTempo, 0, timeShift);
     std::uint32_t nanoCount = 60000000 / bpm; //6e7 = amount of nanoseconds
     changeTempo.metaBufer().push_back((nanoCount >> 16) & 0xff);
     changeTempo.metaBufer().push_back((nanoCount >> 8) & 0xff);
@@ -86,13 +86,13 @@ void mtherapp::MidiTrack::pushChangeBPM(std::uint16_t bpm, std::uint32_t timeShi
 
 
 void mtherapp::MidiTrack::pushChangeVolume(std::uint8_t newVolume, std::uint8_t channel) {
-    MidiMessage volumeChange(0xB0 | channel, 7, newVolume > 127 ? 127 : newVolume, 0);
+    MidiMessage volumeChange(MidiMasks::ControlChangeMask | channel, 7, newVolume > 127 ? 127 : newVolume, 0);
     push_back(volumeChange);
 }
 
 
 void mtherapp::MidiTrack::pushChangePanoram(std::uint8_t newPanoram, std::uint8_t channel) {
-    MidiMessage panoramChange(0xB0 | channel, 0xA, newPanoram, 0);
+    MidiMessage panoramChange(MidiMasks::ControlChangeMask | channel, 0xA, newPanoram, 0);
     push_back(panoramChange);
 }
 
@@ -100,7 +100,7 @@ void mtherapp::MidiTrack::pushChangePanoram(std::uint8_t newPanoram, std::uint8_
 void mtherapp::MidiTrack::pushVibration(std::uint8_t channel, std::uint8_t depth, std::uint16_t step, std::uint8_t stepsCount) {
     std::uint8_t shiftDown = 64 - depth;
     std::uint8_t shiftUp = 64 + depth;
-    std::uint8_t signalKey = 0xE0 + channel;
+    std::uint8_t signalKey = MidiMasks::PitchWheelMask + channel;
 
     for (std::uint32_t i = 0; i < stepsCount; ++i) {
         push_back(MidiMessage(signalKey, 0, shiftDown, step));
@@ -112,7 +112,7 @@ void mtherapp::MidiTrack::pushVibration(std::uint8_t channel, std::uint8_t depth
 
 void mtherapp::MidiTrack::pushSlideUp(std::uint8_t channel, std::uint8_t shift, std::uint16_t step, std::uint8_t stepsCount) {
     std::uint8_t pitchShift = 64;
-    std::uint8_t signalKey = 0xE0 + channel;
+    std::uint8_t signalKey = MidiMasks::PitchWheelMask + channel;
     for (std::uint32_t i = 0; i < stepsCount; ++i) {
         push_back(MidiMessage(signalKey, 0, pitchShift, step));
         pitchShift += shift;
@@ -123,7 +123,7 @@ void mtherapp::MidiTrack::pushSlideUp(std::uint8_t channel, std::uint8_t shift, 
 
 void mtherapp::MidiTrack::pushSlideDown(std::uint8_t channel, std::uint8_t shift, std::uint16_t step, std::uint8_t stepsCount) {
     std::uint8_t pitchShift = 64;
-    std::uint8_t signalKey = 0xE0 + channel;
+    std::uint8_t signalKey = MidiMasks::PitchWheelMask + channel;
     for (std::uint32_t i = 0; i < stepsCount; ++i) {
         push_back(MidiMessage(signalKey, 0, pitchShift, step));
         pitchShift -= shift;
@@ -136,27 +136,27 @@ void mtherapp::MidiTrack::pushTremolo(std::uint8_t channel, std::uint16_t offset
     std::uint16_t slideStep = offset / 40;
     std::uint8_t pitchShift = 64;
     for (int i = 0; i < 10; ++i) {
-        push_back(MidiMessage(0xE0 | channel, 0, pitchShift, slideStep));
+        push_back(MidiMessage(MidiMasks::PitchWheelMask | channel, 0, pitchShift, slideStep));
         pitchShift -= 3;
     }
     offset -= offset / 4;
-    push_back(MidiMessage(0xE0 | channel, 0, pitchShift, offset));
-    push_back(MidiMessage(0xE0 | channel, 0, 64, 0));
+    push_back(MidiMessage(MidiMasks::PitchWheelMask | channel, 0, pitchShift, offset));
+    push_back(MidiMessage(MidiMasks::PitchWheelMask | channel, 0, 64, 0));
 }
 
 
 void mtherapp::MidiTrack::pushFadeIn(std::uint16_t offset, std::uint8_t channel) {
     std::uint8_t newVolume = 27;
     std::uint16_t fadeInStep = offset / 20;
-    push_back(MidiMessage(0xB0 | channel, 7, newVolume, 0));
+    push_back(MidiMessage(MidiMasks::ControlChangeMask | channel, 7, newVolume, 0));
     for (int i = 0; i < 20; ++i) {
         newVolume += 5;
-        push_back(MidiMessage(0xB0 | channel, 7, newVolume, fadeInStep));
+        push_back(MidiMessage(MidiMasks::ControlChangeMask | channel, 7, newVolume, fadeInStep));
     }
 }
 
 void mtherapp::MidiTrack::pushEvent47() { //Emergency event
-    MidiMessage event47(0xff, 47, 0, 0);
+    MidiMessage event47(MidiEvent::MetaEvent, MidiMetaTypes::KindOfFinish, 0, 0);
     event47.metaLen() = NBytesInt(0);
     push_back(event47);
 }
@@ -214,13 +214,6 @@ std::uint32_t mtherapp::MidiTrack::readFromFile(std::ifstream& f)
     if (bytesRead > _trackSize) {
         if (enableMidiLog)
             qDebug() << "Critical ERROR readen more bytes then needed " << bytesRead << _trackSize;
-
-        /*if (enableMidiLog) {
-            if (f.peek(f.tellg() - (bytesRead - trackSize)))
-                qDebug() << "Rolled back to continue read file as possible";
-            else
-                qDebug() << "Failed to roll back";
-        }*/
     }
 
     return bytesRead + 8;
@@ -293,14 +286,14 @@ void mtherapp::MidiTrack::finishIncomplete(short specialR) {
 
 
 void mtherapp::MidiTrack::pushNoteOn(std::uint8_t midiNote, std::uint8_t velocity, std::uint8_t channel) {
-    MidiMessage msg(0x90 | channel, midiNote, velocity,_accum);
+    MidiMessage msg(MidiMasks::NoteOnMask | channel, midiNote, velocity,_accum);
     flushAccum();
     push_back(msg);
 }
 
 
 void mtherapp::MidiTrack::pushNoteOff(std::uint8_t midiNote, std::uint8_t velocity, std::uint8_t channel) {
-    MidiMessage msg(0x80 | channel, midiNote, velocity,_accum);
+    MidiMessage msg(MidiMasks::NoteOffMask | channel, midiNote, velocity,_accum);
     flushAccum();
     push_back(msg);
 }
