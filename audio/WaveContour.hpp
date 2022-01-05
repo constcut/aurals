@@ -43,6 +43,7 @@ namespace mtherapp {
         QByteArray getPCM(quint64 position, quint64 samples);
 
         void setYinWindowSize(size_t newSize) { _yinWindowSize = newSize; }
+        size_t getYinWindowSize() { return _yinWindowSize; }
 
     protected:
 

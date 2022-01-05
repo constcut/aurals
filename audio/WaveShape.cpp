@@ -126,8 +126,9 @@ void WaveshapePainter::drawPitch(QPainter &painter, int height) {
     auto pitchLine = _waveContour.getPitch();
     painter.setPen(QColor("red"));
     double prevPitch = -1;
-    auto rmsStep = _waveContour.getRmsStep();
-    double coef = (2048.0) / (rmsStep / 2.0);
+    auto rmsStep = _waveContour.getMinRmsStep();
+    auto yinWindow = _waveContour.getYinWindowSize();
+    double coef = static_cast<double>(yinWindow) / (rmsStep / 2.0);
     for (size_t i = 0; i < pitchLine.size(); ++i) {
         auto pitch = pitchLine[i];
         painter.drawLine((i-1)*coef, height - prevPitch / 4.0, i*coef, height - pitch / 4.0);
