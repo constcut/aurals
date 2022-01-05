@@ -78,11 +78,7 @@ void Tapper::saveTapsAsMidi(QString filename) const {
 
     MidiTrack track;
     track.pushChangeBPM(240, 0); //somehow 240 is almost! realtime
-
-    //Proportion is wrong - need to find better coef,
-    //hot fix is local coef %
-
-    const double coef = 0.5;
+    const double coef = 0.95; //Найти точную пропорцию времени
 
     moment prevMoment;
     for (size_t i = 0; i < _tapEvents.size(); ++i) {
@@ -91,7 +87,7 @@ void Tapper::saveTapsAsMidi(QString filename) const {
         if (i != 0)
             fromPrevTap = chrono::duration_cast<chrono::milliseconds>(currentMoment - prevMoment).count();
 
-        qDebug() << "From prev note " << fromPrevTap;
+        //qDebug() << "From prev note " << fromPrevTap;
 
         double accurateValue = 2.0 * fromPrevTap * (480.0 / 500.0) * coef;
         if (i != 0) {
