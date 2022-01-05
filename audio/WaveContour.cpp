@@ -19,11 +19,10 @@ WaveContour::WaveContour(QString filename) {
 
 void WaveContour::calculateF0() {
     _yinLine.clear();
-    size_t yinSize = 2048; //TODO configurable
-    size_t yinFrames = _floatSamples.size() / yinSize;
+    size_t yinFrames = _floatSamples.size() / _yinWindowSize;
     for (size_t step = 0; step < yinFrames; ++step) {
-        auto forLocalYin = std::vector<float>(_floatSamples.begin() + yinSize * step,
-                                _floatSamples.begin() + yinSize * step + yinSize);
+        auto forLocalYin = std::vector<float>(_floatSamples.begin() + _yinWindowSize * step,
+                                _floatSamples.begin() + _yinWindowSize * step + _yinWindowSize);
         if (forLocalYin.empty())
             break;
         auto pitch = calc_YinF0(forLocalYin.data(), forLocalYin.size(), _yinTheshold);

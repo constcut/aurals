@@ -242,6 +242,16 @@ Item {
                         waveShape.setYinThreshold(threshold)
                     }
                 }
+                Text {
+                    text: "Yin window size"
+                }
+                ComboBox {
+                    model : [1024, 2048, 3072, 4096, 6144, 8192]
+                    currentIndex: 1
+                    onCurrentIndexChanged: {
+                        waveShape.setYinWindowSize(parseInt(currentText))
+                    }
+                }
 
             }
         }

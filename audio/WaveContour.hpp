@@ -42,6 +42,8 @@ namespace mtherapp {
         QAudioFormat getAudioFormat() { return _audioFormat; }
         QByteArray getPCM(quint64 position, quint64 samples);
 
+        void setYinWindowSize(size_t newSize) { _yinWindowSize = newSize; }
+
     protected:
 
         std::vector<float> _floatSamples;
@@ -57,6 +59,7 @@ namespace mtherapp {
         std::vector<size_t> _rmsLow;
 
         double _yinTheshold = 0.15;
+        size_t _yinWindowSize = 2048;
         std::vector<double> _yinLine;
 
         QAudioFormat _audioFormat;
