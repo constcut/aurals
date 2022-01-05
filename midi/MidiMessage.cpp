@@ -5,7 +5,9 @@
 
 using namespace mtherapp;
 
+
 MidiMessage::MidiMessage() : _typeAndChannel(0), _param1(0), _param2(0){}
+
 
 MidiMessage::MidiMessage(std::uint8_t b0, std::uint8_t b1, std::uint8_t b2, std::uint32_t timeShift)
 : _typeAndChannel(b0), _param1(b1), _param2(b2), _timeStamp(timeShift) {}
@@ -35,8 +37,9 @@ bool MidiMessage::isMetaEvent() const {
 
 bool MidiMessage::isNotSingleParamEvent(std::uint8_t eventType) const {
     return (eventType != MidiEvent::PatchChange) && (eventType != MidiEvent::ChannelPressure) &&
-            (eventType != 0x2) && (eventType != 0x3) && (eventType != 0x4) &&
-            (eventType != 0x5) && (eventType != 0x6) && (eventType != 0x0);
+            (eventType != MidiEvent::SystemCommonMessage2Bytes) && (eventType != MidiEvent::SystemCommonMessage3Bytes) &&
+            (eventType != MidiEvent::SysExStartOrContinue) && (eventType != MidiEvent::SystemCommonMessage1Byte) &&
+            (eventType != MidiEvent::SysExEnds2Bytes) && (eventType != MidiEvent::ReservedExtentions);
 }
 
 

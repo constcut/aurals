@@ -7,10 +7,19 @@
 #include <vector>
 
 //http://www.music.mcgill.ca/~ich/classes/mumt306/StandardMIDIfileformat.html
+//https://www.usb.org/sites/default/files/midi10.pdf
 
 namespace mtherapp {
 
     enum MidiEvent {
+        ReservedExtentions = 0x0,
+        CableReserved = 0x1,
+        SystemCommonMessage2Bytes = 0x2,
+        SystemCommonMessage3Bytes = 0x3,
+        SysExStartOrContinue = 0x4,
+        SystemCommonMessage1Byte = 0x5,
+        SysExEnds2Bytes = 0x6,
+        SysExEnds3Bytes = 0x7,
         NoteOff = 0x8,
         NoteOn = 0x9,
         Aftertouch = 0xA,
