@@ -104,7 +104,7 @@ namespace mtherapp {
     class WaveshapeQML : public QQuickPaintedItem, public WaveshapePainter {
         Q_OBJECT
     public:
-        explicit WaveshapeQML([[maybe_unused]] QQuickItem* parent = NULL) {}
+        explicit WaveshapeQML() = default; //[[maybe_unused]] QQuickItem* parent = NULL OMG mingw fails in 2022
         ~WaveshapeQML() = default;
 
         Q_INVOKABLE int getPixelsLength() { return _waveContour.getRMS_8().size();  } // TODO rewrite names

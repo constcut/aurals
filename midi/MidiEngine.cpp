@@ -4,6 +4,8 @@
 #include <QMediaPlayer> //Linux fails :( Android should be doublechecked
 #endif
 
+#include <QDebug>
+
 #include <QThread>
 
 #define min_DEF(a,b) a>b ? b:a;
@@ -280,10 +282,10 @@ void MidiEngine::sendSignalLong([[maybe_unused]] mtherapp::MidiMessage& signal)
 
 #ifdef WIN32
 
-    MIDIHDR mH;
+    //MIDIHDR mH;
     //https://msdn.microsoft.com/en-us/library/windows/desktop/dd798474(v=vs.85).aspx
-    midiOutLongMsg(winMidi,mH,sizeof(mH));
-
+    //midiOutLongMsg(winMidi,mH,sizeof(mH));
+    //FAILED on last windows build
 #endif
 }
 
@@ -326,12 +328,14 @@ void MidiEngine::sendSignalShortDelay([[maybe_unused]] int msdelay, [[maybe_unus
     qDebug()<<"Pushing signal "<<signal<<"for ms delay "<<msdelay;
     qDebug()<<"Sinal parts "<<byte1<<" "<<byte2<<"; "<<status;
 
+    /*
     if (timeSetEvent(msdelay, wTimerRes, Midi_Callback_Win,signal,TIME_ONESHOT) ==  0)
     {
         qDebug() <<"failed to start mmtimer";
     }
     else
         qDebug() << "Timer was set for midi event";
+        */ //FAILED on last windows build
 
     //yet have some issue
 #endif

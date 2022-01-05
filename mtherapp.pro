@@ -1,7 +1,8 @@
 QT += quick multimedia core
 CONFIG += c++17
 
-Debug:CONFIG += sanitizer sanitize_address sanitize_memory sanitize_undefined
+#Doesn't work on windows
+linux:Debug:CONFIG += sanitizer sanitize_address sanitize_memory sanitize_undefined
 #sanitize_thread
 
 #CONFIG += no_keywords #was used only for python interpreter
