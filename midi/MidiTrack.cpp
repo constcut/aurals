@@ -250,7 +250,7 @@ std::uint32_t mtherapp::MidiTrack::writeToFile(std::ofstream& f, bool skipSomeMe
 void mtherapp::MidiTrack::closeLetRings(std::uint8_t channel) {
     for (size_t i = 0; i < 10; ++i)
         if (_ringRay[i] != 255)
-            closeLetRing(i,channel);
+            closeLetRing(i, channel);
 }
 
 

@@ -43,7 +43,7 @@ float *	FFTRealSelect <P>::sel_bin (float *e_ptr, float *o_ptr)
 
 
 template <>
-inline float *	FFTRealSelect <0>::sel_bin (float *e_ptr, float *o_ptr)
+inline float *	FFTRealSelect <0>::sel_bin (float *e_ptr, [[maybe_unused]] float *o_ptr)
 {
 	return (e_ptr);
 }

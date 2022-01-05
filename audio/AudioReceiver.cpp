@@ -85,7 +85,5 @@ qint64 AudioReceiver::readData(char *data, qint64 maxlen)
 
 qint64 AudioReceiver::writeData(const char *data, qint64 len) {
     _bufer += QByteArray(data,len);
-    static int lastSize = 0;
-    lastSize = _bufer.size();
     return len;
 }

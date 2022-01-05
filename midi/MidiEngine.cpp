@@ -254,7 +254,7 @@ void MidiEngine::sendSignal(mtherapp::MidiMessage &signal)
         sendSignalShort(signal.getTypeAndChannel() ,signal.getParameter1(),signal.getParameter2());
 }
 
-void MidiEngine::sendSignalShort(uint8_t status, int byte1, int byte2)
+void MidiEngine::sendSignalShort([[maybe_unused]] uint8_t status, [[maybe_unused]] int byte1, [[maybe_unused]] int byte2)
 {
     if (opened==false)
         init();
@@ -273,7 +273,7 @@ void MidiEngine::sendSignalShort(uint8_t status, int byte1, int byte2)
 #endif
 }
 
-void MidiEngine::sendSignalLong(mtherapp::MidiMessage& signal)
+void MidiEngine::sendSignalLong([[maybe_unused]] mtherapp::MidiMessage& signal)
 {
     if (opened==false)
         init();
@@ -309,7 +309,7 @@ void MidiEngine::sendSignalShortWin(DWORD signal)
 
 #endif
 
-void MidiEngine::sendSignalShortDelay( int msdelay, uint8_t status, int byte1, int byte2)
+void MidiEngine::sendSignalShortDelay([[maybe_unused]] int msdelay, [[maybe_unused]] uint8_t status, [[maybe_unused]] int byte1, [[maybe_unused]] int byte2)
 {
     if (opened==false)
         init();
@@ -337,7 +337,7 @@ void MidiEngine::sendSignalShortDelay( int msdelay, uint8_t status, int byte1, i
 #endif
 }
 
-void MidiEngine::setVolume(int vol)
+void MidiEngine::setVolume([[maybe_unused]] int vol)
 {
     if (opened==false)
         init();

@@ -12,7 +12,7 @@ MidiMessage::MidiMessage(std::uint8_t b0, std::uint8_t b1, std::uint8_t b2, std:
 
 
 double MidiMessage::getSecondsLength(double bpm) const {
-    double seconds = (double)(_timeStamp.getValue())/960.0;
+    double seconds = (double)(_timeStamp.getValue())/960.0; //TODO!
     return seconds;
 }
 

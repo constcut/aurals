@@ -41,10 +41,10 @@ namespace mtherapp {
         std::uint8_t getTypeAndChannel() const { return _typeAndChannel; }
 
     protected:
-        NBytesInt _timeStamp;
-
         std::uint8_t _typeAndChannel;
         std::uint8_t _param1, _param2;
+
+        NBytesInt _timeStamp;
 
         double _absoluteTime;
 
