@@ -12,7 +12,7 @@ MidiMessage::MidiMessage(std::uint8_t b0, std::uint8_t b1, std::uint8_t b2, std:
 
 
 double MidiMessage::getSecondsLength(double bpm) const {
-    double seconds = (double)(_timeStamp.getValue())/960.0; //TODO!
+    double seconds = static_cast<double>(_timeStamp.getValue()) * (120.0 / bpm) / 960.0; //TODO перепроверить
     return seconds;
 }
 

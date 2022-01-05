@@ -214,7 +214,7 @@ void SpectrographPainter::updateBars()
 
     for ( ; i != end; ++i) {
         const FrequencySpectrum::Element e = *i;
-        if (e.frequency >= _lowFreq && e.frequency < _highFreq && count < _bars.size()) {
+        if (e.frequency >= _lowFreq && e.frequency < _highFreq && count < static_cast<size_t>(_bars.size())) {
             //auto idx = barIndex(e.frequency); //Точный размер
             Bar &bar = _bars[count];
             bar.value = qMax(bar.value, e.amplitude);
@@ -351,9 +351,14 @@ void SpectrographPainter::findPeaks() {
         amps.push_back(bar.value);
     auto peaks = mtherapp::peakIndexesInData(amps, 6.0);
 
+    if (_bars.size() < 7) {
+        qDebug() << "Spectrograph bars size issue";
+        return;
+    }
+
     bool searchTinyPeaks = true;
     if (searchTinyPeaks) {
-        for (size_t i = 80; i < _bars.size() - 6; ++i) {
+        for (size_t i = 80; i < static_cast<size_t>(_bars.size()) - 6; ++i) {
             size_t emptyCount = 0;
             size_t maxIdx = 0;
             double maxValue = 0.0;
@@ -422,31 +427,19 @@ void SpectrographPainter::findPeaks() {
 
 
 void SpectrographPainter::classifySlope() {
-    double y1 = (1.0 - _maxValue); //* barHeight
-    double y2 = (1.0 - _lastValue); //* barHeight;
-    double x1 = _maxIdx; //calcXPos
-    double x2 = _lastIdx; //calcXPos
-
-    //search as triangle
+    double y1 = (1.0 - _maxValue);
+    double y2 = (1.0 - _lastValue);
+    double x1 = _maxIdx;
+    double x2 = _lastIdx;
     double vK = y2 - y1;
     double hK = x2 - x1;
     double angle1 = atan(vK/hK)  * 180.0 / 3.141592653;
     double angle2 = atan(hK/vK)  * 180.0 / 3.141592653;
-    //qDebug() << vK << " " << hK << " katets " << angle1 << " " << angle2;
-
-    //Another algorithm
-    double diffY = y2 - y1;
-    double diffX = x2 - x1;
-    auto radian = atan(diffY/diffX);
-    auto degree = radian * 180.0 / 3.141592653;
-    auto k2 = tan(radian);
-    //qDebug() << "Degree " << degree << " radian " << radian << " k2 " << k2 << " " << diffY/diffX;
-    //использовать -k чтобы получить ту же картинку, т.е. одна из осей перевернута
-    //TODO возможно сделать расчёт по всем корзинам, и наблюдать как меняется угол
-    //THIS is fine, but need to use -k
+    qDebug() << " Vertial katet "<< vK << " horizontal katet " << hK << " angle1 " << angle1 << " angle2 " << angle2;
+    //Использовать -k чтобы получить ту же картинку, т.к. одна из осей перевернута
+    //Возможно сделать расчёт по всем корзинам, и наблюдать как меняется угол
     //Вначале больше похоже на розовый шум, потом на белый
-    // Другой способ анализа это проверка как меняется сигнал по окатвам, если идёт падение на 3 дБ - это розовый шум
-    // В белом шуме этот наклон фактически отсутствует
+    //Другой способ анализа это проверка как меняется сигнал по окатвам, если идёт падение на 3 дБ - это розовый шум
 }
 
 

@@ -30,11 +30,10 @@ namespace mtherapp {
 
         std::int16_t calculateRhythmDetail(std::uint8_t value, std::int16_t offset);
 
-        [[deprecated]] void closeLetRings(std::uint8_t channel);
-        [[deprecated]] void openLetRing(std::uint8_t stringN, std::uint8_t midiNote, std::uint8_t velocity, std::uint8_t channel);
-        [[deprecated]] void closeLetRing(std::uint8_t stringN, std::uint8_t channel);
-
-        [[deprecated]] void finishIncomplete(short specialR);
+        void closeLetRings(std::uint8_t channel);//Those functions used for generation from tablature, in case we would bring tablatures there
+        void openLetRing(std::uint8_t stringN, std::uint8_t midiNote, std::uint8_t velocity, std::uint8_t channel);
+        void closeLetRing(std::uint8_t stringN, std::uint8_t channel);
+        void finishIncomplete(short specialR);
 
         void pushNoteOn(std::uint8_t midiNote, std::uint8_t velocity, std::uint8_t channel);
         void pushNoteOff(std::uint8_t midiNote, std::uint8_t velocity, std::uint8_t channel);

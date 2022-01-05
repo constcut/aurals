@@ -97,7 +97,7 @@ inline void	FFTRealPassInverse <0>::process_rec ([[maybe_unused]] long len, [[ma
 
 
 template <int PASS>
-void	FFTRealPassInverse <PASS>::process_internal (long len, DataType dest_ptr [], const DataType src_ptr [], const DataType cos_ptr [], long cos_len, const long br_ptr [], OscType osc_list [])
+void	FFTRealPassInverse <PASS>::process_internal (long len, DataType dest_ptr [], const DataType src_ptr [], const DataType cos_ptr [], long cos_len, [[maybe_unused]] const long br_ptr [], OscType osc_list [])
 {
 	const long		dist = 1L << (PASS - 1);
 	const long		c1_r = 0;
