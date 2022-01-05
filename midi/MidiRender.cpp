@@ -46,7 +46,6 @@ bool MidiRender::openSoundFont(QString sfFilename)
         mode = TSFOutputMode::TSF_MONO;
     else
         mode = TSFOutputMode::TSF_STEREO_INTERLEAVED;
-    //TODO TSF_STEREO_UNWEAVED для возможности отображения в WaveShape
 
     tsf_set_output(sf, mode, _sampleRate, -6.0f); //Volume -6 dB TODO set\get
 
@@ -203,7 +202,7 @@ QByteArray MidiRender::renderFloatNext(int len)
         {
             //qDebug() << "Render message time "<<g_MidiMessage->time;
 
-            switch (g_MidiMessage->type)    //TODO update as above
+            switch (g_MidiMessage->type)    //TODO обновить все процедуры генерации, чтобы они покрывали больше сообщений
             {
                 case TML_PROGRAM_CHANGE: //channel program (preset) change
                     _g_MidiChannelPreset[g_MidiMessage->channel] = tsf_get_presetindex(_soundFont, 0, g_MidiMessage->program);

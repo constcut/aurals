@@ -22,9 +22,6 @@ std::uint32_t mtherapp::MidiFile::calculateHeader(bool skipSomeMessages) {
     _chunkId[2] = 'h';
     _chunkId[3] = 'd';
 
-    //std::uint32_t* example = chunkId; //TODO
-    //qDebug() << "Example value for MThd in uint32: " << example;
-
     _formatType = 1;
     _timeDevisition = 480; //Explain
     _chunkSize = 6;
@@ -70,14 +67,12 @@ std::uint32_t mtherapp::MidiFile::readFromFile(std::ifstream& f) {
     _timeDevisition = swapEndian<std::uint16_t>(_timeDevisition);
 
 
-    //TODO short function based on constExpr
-    if ((_chunkId[0]!='M') || (_chunkId[1]!='T') || (_chunkId[2]!='h')
-            || (_chunkId[3]!='d'))
-    {
+    if ((_chunkId[0]!='M') || (_chunkId[1]!='T')
+     || (_chunkId[2]!='h') || (_chunkId[3]!='d')) {
+
         if (enableMidiLog)
             qDebug() << "Midi header corrupted - error "
                  << _chunkId[0] << _chunkId[1] << _chunkId[2] << _chunkId[3];
-
         return totalBytesRead;
     }
 

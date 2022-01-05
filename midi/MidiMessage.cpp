@@ -91,15 +91,15 @@ std::uint32_t MidiMessage::readFromFile(std::ifstream& f) {
     f.read((char*)&_param1, 1);
     ++totalBytesRead;
 
-    if (isMetaEvent()) { //TODO refact : metaProcess & usualProcess
+    if (isMetaEvent()) {
         totalBytesRead += _metaLen.readFromFile(f);
         std::uint32_t bytesInMetaBufer = _metaLen.getValue();
-        _metaBufer.clear(); //to be sure we don't makeit grow
+        _metaBufer.clear();
 
         for (std::uint32_t i = 0; i < bytesInMetaBufer; ++i) {
             std::uint8_t byteBufer;
             f.read((char *)&byteBufer, 1);
-            _metaBufer.push_back(byteBufer); //maybe better make a vector and read whole block once
+            _metaBufer.push_back(byteBufer);
         }
         totalBytesRead += bytesInMetaBufer;
         if (enableMidiLog)
@@ -128,22 +128,22 @@ std::uint32_t MidiMessage::readFromFile(std::ifstream& f) {
 
 
 std::string MidiMessage::nameEvent(std::int8_t eventNumber) const {
-    
-    if (eventNumber == 0x8) //TODO switch?
-        return "Note off";
-    if (eventNumber == 0x9)
-        return "Note on";
-    if (eventNumber == 0xA)
-        return "Aftertouch";
-    if (eventNumber == 0xB)
-        return "Control change";
-    if (eventNumber == 0xC)
-        return "Program (patch) change";
-    if (eventNumber == 0xD)
-        return "Channel pressure";
-    if (eventNumber == 0xE)
-        return "Pitch Wheel";
-
+    switch (eventNumber) {
+        case 0x8:
+            return "Note off";
+        case 0x9:
+            return "Note on";
+        case 0xA:
+            return "Aftertouch";
+        case 0xB:
+            return "Control change";
+        case 0xC:
+            return "Program (patch) change";
+        case 0xD:
+            return "Channel pressure";
+        case 0xE:
+            return "Pitch Wheel";
+    }
     return "Unknown_EventType";
 }
 
@@ -253,9 +253,6 @@ std::uint32_t MidiMessage::writeToFile(std::ofstream& f, bool skipSomeMessages) 
 
         totalBytesWritten += _metaLen.writeToFile(f);
 
-        //TODO compare
-        //for (int i = 0; i < metaBufer.size(); ++i)
-        //    f.write((const char *)&metaBufer[i], 1); 
         f.write(reinterpret_cast<const char*>(_metaBufer.data()), _metaBufer.size());
         totalBytesWritten += _metaBufer.size();
     }
@@ -264,8 +261,7 @@ std::uint32_t MidiMessage::writeToFile(std::ofstream& f, bool skipSomeMessages) 
         if ((eventType != 0xC) && (eventType != 0xD) && (eventType != 0x2) && (eventType != 0x3) 
             && (eventType != 0x4) && (eventType != 0x5) && (eventType != 0x6) && (eventType != 0x0)) {
 
-            f << _param2; //Why on good version its here?
-            //f.write((const char*)&_param2, 1);
+            f << _param2;
             ++totalBytesWritten;
         }
         if (enableMidiLog) {
