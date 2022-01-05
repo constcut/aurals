@@ -77,7 +77,12 @@ void Tapper::tapped(int idx) {
 void Tapper::saveTapsAsMidi(QString filename) const {
 
     MidiTrack track;
-    track.pushChangeBPM(240, 0); //somehow 240 is realtime
+    track.pushChangeBPM(240, 0); //somehow 240 is almost! realtime
+
+    //Proportion is wrong - need to find better coef,
+    //hot fix is local coef %
+
+    const double coef = 0.5;
 
     moment prevMoment;
     for (size_t i = 0; i < _tapEvents.size(); ++i) {
@@ -88,15 +93,21 @@ void Tapper::saveTapsAsMidi(QString filename) const {
 
         qDebug() << "From prev note " << fromPrevTap;
 
+        double accurateValue = 2.0 * fromPrevTap * (480.0 / 500.0) * coef;
         if (i != 0) {
-            track.accumulate(fromPrevTap * 2);
+            track.accumulate(accurateValue);
             track.pushNoteOff(60, 100, 0);
         }
+        //if (i != _tapEvents.size() - 1)
         track.pushNoteOn(60, 100, 0);
         prevMoment = currentMoment;
     }
-    track.accumulate(1000);
+    track.accumulate(480 * coef);
     track.pushNoteOff(60, 100, 0);
+    track.accumulate(2000 * coef);
+    track.pushNoteOff(60, 100, 0); //Pause in the end:_)
+    track.pushEvent47();
+
     MidiFile midi;
     midi.push_back(track);
     midi.writeToFile(filename.toStdString());

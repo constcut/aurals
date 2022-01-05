@@ -70,7 +70,7 @@ Item {
         y: 5
         x: resetButton.x + resetButton.width + 10
         onClicked: {
-            tapper.saveClicksAsMidi("clickCheck.mid")
+            tapper.saveClicksAsMidi("tapper.mid")
         }
     }
     ToolButton {
@@ -79,7 +79,7 @@ Item {
         y: 5
         x: saveClicksButton.x + saveClicksButton.width + 10
         onClicked: {
-            tapper.saveTapsAsMidi("tapCheck.mid")
+            tapper.saveTapsAsMidi("tapper.mid")
         }
     }
     ToolButton {
@@ -87,14 +87,19 @@ Item {
         text: "Play"
         y: 5
         x: saveTapButton.x + saveTapButton.width + 10
+        onClicked: {
+            audio.openMidiFile("tapper.mid")
+            audio.startMidiPlayer()
+        }
     }
     ToolButton {
         y: 5
         x: playButton.x + playButton.width + 10
-        text: "Save audio"
+        text: "Save taps audio"
         onClicked: {
-            audio.openMidiFile("tapCheck.mid")
-            audio.saveMidiToWav("tapCheck.wav")
+            tapper.saveTapsAsMidi("tapper.mid")
+            audio.openMidiFile("tapper.mid")
+            audio.saveMidiToWav("tapper.wav")
         }
     }
 
