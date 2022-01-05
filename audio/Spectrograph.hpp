@@ -169,6 +169,12 @@ namespace mtherapp {
         Q_INVOKABLE bool loadByteArray(QByteArray analyseData);
 
         Q_INVOKABLE void setFFTLimit(int limit) { _analyser.setFFTLimit(limit); };
+        Q_INVOKABLE void setWindowFunction(bool turnedOn) {
+            if (turnedOn)
+                _analyser.setWindowFunction(WindowFunction::HannWindow);
+            else
+                _analyser.setWindowFunction(WindowFunction::NoWindow);
+        }
 
     public slots:
         void spectrumChanged(qint64 position, qint64 length,

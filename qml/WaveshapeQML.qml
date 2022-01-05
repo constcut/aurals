@@ -221,7 +221,13 @@ Item {
                         waveShape.setRmsStep(parseInt(currentText))
                     }
                 }
-
+                CheckBox {
+                    text: "Use fft window"
+                    checked: true
+                    onCheckStateChanged: {
+                        spectrum.setWindowFunction(checked)
+                    }
+                }
             }
             RowLayout {
                 spacing:  10
@@ -236,6 +242,7 @@ Item {
                         waveShape.setYinThreshold(threshold)
                     }
                 }
+
             }
         }
     }
