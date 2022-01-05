@@ -10,9 +10,14 @@ namespace mtherapp {
 
     using moment = std::chrono::time_point<std::chrono::high_resolution_clock>;
 
-    struct TapEvent {
+    struct MouseEvent {
         int idx;
         bool pressed;
+        moment time;
+    };
+
+    struct TapEvent {
+        int idx;
         moment time;
     };
 
@@ -22,16 +27,20 @@ namespace mtherapp {
         public:
             Tapper() = default;
 
-            Q_INVOKABLE void pressed(int idx);
-            Q_INVOKABLE void released(int idx);
-
             Q_INVOKABLE void reset();
 
-            Q_INVOKABLE void saveAsMidi(QString filename);
+            Q_INVOKABLE void pressed(int idx);
+            Q_INVOKABLE void released(int idx);
+            Q_INVOKABLE void saveClicksAsMidi(QString filename) const;
+
+            Q_INVOKABLE void tapped(int idx);
+            Q_INVOKABLE void saveTapsAsMidi(QString filename) const;
 
         private:
 
-            std::vector<TapEvent> _events;
+            std::vector<MouseEvent> _mouseEvents;
+
+            std::vector<TapEvent> _tapEvents;
     };
 
 }

@@ -9,35 +9,36 @@ using namespace std;
 
 
 void Tapper::pressed(int idx) {
-    _events.push_back(TapEvent{idx, true, std::chrono::high_resolution_clock::now()});
+    _mouseEvents.push_back(MouseEvent{idx, true, std::chrono::high_resolution_clock::now()});
 }
 
 
 void Tapper::released(int idx) {
-    _events.push_back(TapEvent{idx, false, std::chrono::high_resolution_clock::now()});
+    _mouseEvents.push_back(MouseEvent{idx, false, std::chrono::high_resolution_clock::now()});
 }
 
 
 void Tapper::reset() {
-    _events.clear();
+    _mouseEvents.clear();
+    _tapEvents.clear();
 }
 
 
-void Tapper::saveAsMidi(QString filename) {
+void Tapper::saveClicksAsMidi(QString filename) const {
     //Для начала мы рассмотрим самый простой случай, одной единственной ноты
     //Тогда нам не нужно делать анализ какая нота начала звучать, а какая закончила
-    if (_events.size() % 2 != 0)
+    if (_mouseEvents.size() % 2 != 0)
         qDebug() << "ERROR! Not all tap events where closed!!!";
 
     std::vector<long> msIntervals;
     moment prevMoment;
-    for (size_t i = 0; i < _events.size() / 2; ++i) {
+    for (size_t i = 0; i < _mouseEvents.size() / 2; ++i) {
         long fromPrev = 0;
-        auto startMoment = _events[i * 2].time;
+        auto startMoment = _mouseEvents[i * 2].time;
         if (i != 0)
             fromPrev = chrono::duration_cast<chrono::milliseconds>(startMoment - prevMoment).count();
         msIntervals.push_back(fromPrev);
-        auto endMoment = _events[i * 2 + 1].time;
+        auto endMoment = _mouseEvents[i * 2 + 1].time;
         auto durationMs = chrono::duration_cast<chrono::milliseconds>(endMoment - startMoment).count();
         msIntervals.push_back(durationMs);
         prevMoment = endMoment;
@@ -63,6 +64,39 @@ void Tapper::saveAsMidi(QString filename) {
     }
 
     track.pushEvent47();
+    MidiFile midi;
+    midi.push_back(track);
+    midi.writeToFile(filename.toStdString());
+}
+
+
+void Tapper::tapped(int idx) {
+    _tapEvents.push_back(TapEvent{idx, std::chrono::high_resolution_clock::now()});
+}
+
+void Tapper::saveTapsAsMidi(QString filename) const {
+
+    MidiTrack track;
+    track.pushChangeBPM(240, 0); //somehow 240 is realtime
+
+    moment prevMoment;
+    for (size_t i = 0; i < _tapEvents.size(); ++i) {
+        long fromPrevTap = 0;
+        moment currentMoment = _tapEvents[i].time;
+        if (i != 0)
+            fromPrevTap = chrono::duration_cast<chrono::milliseconds>(currentMoment - prevMoment).count();
+
+        qDebug() << "From prev note " << fromPrevTap;
+
+        if (i != 0) {
+            track.accumulate(fromPrevTap * 2);
+            track.pushNoteOff(60, 100, 0);
+        }
+        track.pushNoteOn(60, 100, 0);
+        prevMoment = currentMoment;
+    }
+    track.accumulate(1000);
+    track.pushNoteOff(60, 100, 0);
     MidiFile midi;
     midi.push_back(track);
     midi.writeToFile(filename.toStdString());

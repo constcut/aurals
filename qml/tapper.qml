@@ -10,20 +10,31 @@ Item {
         id: tapper
     }
 
-    Rectangle {
+    Rectangle { //TODO tap handler?
         x: 0
         y: 0
         height: parent.height
         width: parent.width / 8
         color: "darkgray"
         id: leftTap
+
+        property int clickCount: 0
+        property int releaseCount: 0
+
         MouseArea {
             anchors.fill: parent
             onPressed: {
                 tapper.pressed(0);
+                leftTap.clickCount += 1
+                console.log("pressed triggered", leftTap.clickCount)
             }
             onReleased: {
                 tapper.released(0);
+                leftTap.releaseCount += 1
+                console.log("released triggered", leftTap.releaseCount)
+            }
+            onDoubleClicked: {
+                console.log("double click triggered")
             }
         }
     }
@@ -34,13 +45,12 @@ Item {
         width: parent.width / 8
         color: "darkgray"
         id: rightTap
-        MouseArea {
-            anchors.fill: parent
-            onPressed: {
-                tapper.pressed(1);
-            }
-            onReleased: {
-                tapper.released(1);
+
+        TapHandler {
+            acceptedButtons: Qt.AllButtons
+            onTapped: {
+                //console.log("Tap ", tapCount)
+                tapper.tapped(0)
             }
         }
     }
@@ -55,19 +65,37 @@ Item {
         }
     }
     ToolButton {
-        id: saveButton
-        text: "Save"
+        id: saveClicksButton
+        text: "Save clicks"
         y: 5
         x: resetButton.x + resetButton.width + 10
         onClicked: {
-            tapper.saveAsMidi("tapCheck.mid")
+            tapper.saveClicksAsMidi("clickCheck.mid")
+        }
+    }
+    ToolButton {
+        id: saveTapButton
+        text: "Save taps"
+        y: 5
+        x: saveClicksButton.x + saveClicksButton.width + 10
+        onClicked: {
+            tapper.saveTapsAsMidi("tapCheck.mid")
         }
     }
     ToolButton {
         id: playButton
         text: "Play"
         y: 5
-        x: saveButton.x + saveButton.width + 10
+        x: saveTapButton.x + saveTapButton.width + 10
+    }
+    ToolButton {
+        y: 5
+        x: playButton.x + playButton.width + 10
+        text: "Save audio"
+        onClicked: {
+            audio.openMidiFile("tapCheck.mid")
+            audio.saveMidiToWav("tapCheck.wav")
+        }
     }
 
 }
