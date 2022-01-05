@@ -79,8 +79,8 @@ void WaveContour::calculateRms() {
 
 
 
-QByteArray WaveContour::getPCM(quint64 position, quint64 samples) { //TODO maybe move into waveshape + file load too! then we have pure std c++ class
-    std::vector<quint16> intSamples(samples, 0); //Slow - to improve accept float samples also
+QByteArray WaveContour::getPCM(quint64 position, quint64 samples) { //TODO перенести позже в WaveShape сделать WaveContour pure C++
+    std::vector<quint16> intSamples(samples, 0); //Научить спекрограф получасть сразу float сэмплы
     for (size_t i = position; i < position + samples; ++i) {
        if (i >= _floatSamples.size())
            break;

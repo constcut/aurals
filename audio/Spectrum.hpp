@@ -47,16 +47,11 @@
 namespace mtherapp {
 
     const int FFTLengthPowerOfTwo = 12;
-    const int    SpectrumLengthSamples  = PowerOfTwo<FFTLengthPowerOfTwo>::Result;
-
-    const int    SpectrumNumBands       = 400;
-    const qreal  SpectrumLowFreq        = 20.0; // Hz
-    const qreal  SpectrumHighFreq       = 4000.0; // Hz
-
-    const qint64 WaveformWindowDuration = 500 * 1000; //TODO rid of useless
-    const int   WaveformTileLength      = 4096;
+    const int SpectrumLengthSamples = PowerOfTwo<FFTLengthPowerOfTwo>::Result;
+    const int SpectrumNumBands = 400;
+    const qreal SpectrumLowFreq = 20.0; // Hz
+    const qreal SpectrumHighFreq = 4000.0; // Hz
     const qreal SpectrumAnalyserMultiplier = 0.15;
-    const int   NullMessageTimeout      = -1;
 
 
     enum WindowFunction {

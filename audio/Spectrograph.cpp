@@ -95,7 +95,7 @@ void SpectrographPainter::prepareBackground(QPainter &painter, QRect &rect) cons
     if (numBars) {
         const int numHorizontalSections = numBars;
         for (int i= 0; i < numHorizontalSections; ++i) {
-            QLineF line(rect.topLeft(), rect.bottomLeft()); //TODO создавать каждый раз новую
+            QLineF line(rect.topLeft(), rect.bottomLeft());
             line.setP1({calcXPos(i), line.y1()});
             line.setP2({line.x2() + static_cast<int>(barWidth * i), line.y2()});
             painter.drawLine(line);
@@ -203,11 +203,8 @@ void SpectrographPainter::updateBars()
     const FrequencySpectrum::const_iterator end = _spectrum.end();
     size_t count = 0;
     double emptyBins = 0.0;
-    {
-        auto j = i + 11;
-        auto k = i + 12;//TODO c конца
-        _freqStep = k->frequency - j->frequency;
-    }
+
+    _freqStep = (i+1)->frequency - i->frequency;
     _gotClipping = false;
     _spectrumGap = false;
     _maxValue = -120;
@@ -256,7 +253,7 @@ void SpectrographPainter::findF0() { //Возможно проверять уж�
     std::unordered_map<int, double> table;
     std::unordered_map<int, std::vector<int>> sequences;
 
-    for (int i = 6; i < 100; ++i) { //On 4096, 6 is lowest note TODO calculation
+    for (int i = 6; i < 100; ++i) { //TODO необходимо считать нижнюю границу исходя из частоты корзины и нижней анализируемой ноты, данный случай для 4096
         double summ = 0.0;
         std::vector<int> sequence;
 
@@ -405,14 +402,12 @@ void SpectrographPainter::findPeaks() {
                 subBin = sorted[i].first;
                 subCount = sorted[i].second;
                 break;
-            }//Можно искать не только +-1, но и x2 +-1, x3 +-1 итд
+            }
         if (subBin != -1) {
             double countCoef = static_cast<double>(sorted[0].second) / subCount;
-            double midBin = (static_cast<double>(mainBin) + subBin ) / 2.0; //TODO ? +.05 в каждую
+            double midBin = (static_cast<double>(mainBin) + subBin ) / 2.0;
             double addition = 0.5 - 0.5 / countCoef;
             midBin += addition;
-            //qDebug() << "Main " << mainBin << " new " << midBin
-                     //<< " FM " << _spectrumPitch << " FN " << _freqStep * midBin;
             _spectrumPitch = _freqStep * midBin;
         }
     }
@@ -427,8 +422,6 @@ void SpectrographPainter::findPeaks() {
 
 
 void SpectrographPainter::classifySlope() {
-    //Все значения спектрограммы должны быть ниже линии slope
-    //TODO возможно придётся сохранять данные отрисовки, и использовать их, но в идеале уйти от них
     double y1 = (1.0 - _maxValue); //* barHeight
     double y2 = (1.0 - _lastValue); //* barHeight;
     double x1 = _maxIdx; //calcXPos

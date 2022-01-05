@@ -111,7 +111,7 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
 
     _fft->calculateFFT(_output.data(), _input.data()); //m_noWindowInput m_input
 
-    for (int i=2; i<=_numSamples/2; ++i) {
+    for (int i=0; i<=_numSamples/2; ++i) {
         _spectrum[i].frequency = qreal(i * inputFrequency) / (_numSamples);
         const qreal real = _output[i];
         qreal imag = 0.0;

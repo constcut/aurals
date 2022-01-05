@@ -41,8 +41,10 @@
 #include <qendian.h>
 #include <QVector>
 #include <QDebug>
-#include "WavFile.hpp"
 
+#include <cstring>
+
+#include "WavFile.hpp"
 
 using namespace mtherapp;
 
@@ -176,10 +178,10 @@ bool WavFile::readHeader() {
     CombinedHeader header;
     bool result = read(reinterpret_cast<char *>(&header), sizeof(CombinedHeader)) == sizeof(CombinedHeader);
     if (result) {
-        if ((memcmp(&header.riff.descriptor.id, "RIFF", 4) == 0
-            || memcmp(&header.riff.descriptor.id, "RIFX", 4) == 0)
-            && memcmp(&header.riff.type, "WAVE", 4) == 0
-            && memcmp(&header.wave.descriptor.id, "fmt ", 4) == 0
+        if ((std::memcmp(&header.riff.descriptor.id, "RIFF", 4) == 0
+            || std::memcmp(&header.riff.descriptor.id, "RIFX", 4) == 0)
+            && std::memcmp(&header.riff.type, "WAVE", 4) == 0
+            && std::memcmp(&header.wave.descriptor.id, "fmt ", 4) == 0
             && (header.wave.audioFormat == 1 || header.wave.audioFormat == 0)) {
 
             DATAHeader dataHeader;
@@ -196,11 +198,11 @@ bool WavFile::readHeader() {
             if (read((char*)&dataHeader, sizeof(DATAHeader)) != sizeof(DATAHeader))
                 return false;
 
-            while (memcmp(&dataHeader.descriptor.id, "data",4) != 0) //TODO 'data'
+            while (std::memcmp(&dataHeader.descriptor.id, "data",4) != 0)
                 if (read((char*)&dataHeader, sizeof(DATAHeader)) != sizeof(DATAHeader))
                     return false;
 
-            if (memcmp(&header.riff.descriptor.id, "RIFF", 4) == 0)
+            if (std::memcmp(&header.riff.descriptor.id, "RIFF", 4) == 0)
                 _fileFormat.setByteOrder(QAudioFormat::LittleEndian);
             else
                 _fileFormat.setByteOrder(QAudioFormat::BigEndian);

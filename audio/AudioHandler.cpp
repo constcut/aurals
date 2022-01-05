@@ -152,7 +152,7 @@ void AudioHandler::saveFile(QString filename) const {
 }
 
 
-void AudioHandler::setSampleRate(int newSampleRate) { //?TODO resampling
+void AudioHandler::setSampleRate(int newSampleRate) { //DELAYED: resampling
     if (_isPlaying || _isRecording)
         return;
     _commonFormat.setSampleRate(newSampleRate);

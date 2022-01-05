@@ -43,9 +43,8 @@ LogHandler::LogHandler(QObject *parent) : QObject(parent)
 
 void LogHandler::addLine(QString anotherLine)
 {
-    if (logFileName.isEmpty() == false)
-    {
-        //TODO logging in another thread + possible server loging
+    if (logFileName.isEmpty() == false) {
+        //DELAYED: logging in another thread + possible server loging
         QString closedLine = anotherLine + QString("\n\n");
         QFile logFile(logFileName);
         logFile.open(QIODevice::Append);

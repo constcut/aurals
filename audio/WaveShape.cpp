@@ -82,7 +82,7 @@ void WaveshapePainter::makeBackgroungImage(QPainter &painter, int height, double
         }
     };
 
-    paintRms(8.0, 1.5, _waveContour.getRMS_8(), QColor("darkgreen"), QColor("chartreuse")); //TODO 8 vs 4 etc
+    paintRms(8.0, 1.5, _waveContour.getRMS_8(), QColor("darkgreen"), QColor("chartreuse"));
     paintRms(4.0, 1.1, _waveContour.getRMS_4(), QColor("green"), QColor("green"));
     paintRms(2.0, 0.8, _waveContour.getRMS_2(), QColor("green").lighter(110), QColor("green").lighter(110));
     paintMainRms(imgPainter, height, heightCoef);
@@ -99,7 +99,7 @@ void WaveshapePainter::paintMainRms(QPainter &imgPainter, int height, double hei
     double xCoef = _waveContour.getRmsStep() / (_waveContour.getMinRmsStep() / 2.0);
     double prevValue = -1.0;
 
-    for (size_t i = 0; i < rms.size(); ++i) { //TODO? отрисовать лямбдой, и после этого сделать дополнительную отривоску начал\концов
+    for (size_t i = 0; i < rms.size(); ++i) {
         if (positionsHigh.count(i))
             imgPainter.setPen(QColor("blue"));
         else if (positionsLow.count(i))
@@ -113,7 +113,7 @@ void WaveshapePainter::paintMainRms(QPainter &imgPainter, int height, double hei
                 << QPointF(i*xCoef, height/2 + currentValue) << QPointF((i-1)*xCoef, height/2 + prevValue);
 
         if (prevValue != -1.0)
-            imgPainter.drawPolygon(poligon); //TODO fill this path or minimal rectangle
+            imgPainter.drawPolygon(poligon);
 
         if (positionsLow.count(i) || positionsHigh.count(i))
             imgPainter.drawLine(i * xCoef, height/2 + currentValue * 2, i * xCoef, height/2 - currentValue * 2);
