@@ -54,7 +54,6 @@ using namespace mtherapp;
 
 
 void WaveshapeQML::paint(QPainter *painter) {
-    setFillColor(Qt::darkGray);
     paintWaveShape(*painter);
 }
 
@@ -62,8 +61,9 @@ void WaveshapeQML::paint(QPainter *painter) {
 void WaveshapePainter::makeBackgroungImage(QPainter &painter, int height, double heightCoef) {
 
     _noImage = false;
-    _mainImage =  QImage(painter.device()->width(),painter.device()->height(), QImage::Format_ARGB32);
+    _mainImage =  QImage(painter.device()->width(), painter.device()->height(), QImage::Format_ARGB32);
     QPainter imgPainter(&_mainImage);
+    imgPainter.fillRect(0, 0, painter.device()->width(), painter.device()->height(), QBrush(QColor(Qt::darkGray)));
 
     auto paintRms = [&](double rmsCoef, double expandCoef,
             const std::vector<double>& container, QColor base, QColor border) {
@@ -152,6 +152,7 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
 
     if (_noImage)
         makeBackgroungImage(painter, height, heightCoef);
+
     painter.drawImage(QPoint{0,0}, _mainImage);
     drawPitch(painter, height);
     if (_showNotes)
