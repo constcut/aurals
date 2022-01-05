@@ -20,6 +20,8 @@ constexpr std::uint32_t returnChunkId(std::string_view str = "MTrk") {
     return value;
 }
 
+//DELAYED: inverse string from chunk? strings yet not supported as constexpr in C++17 but in C++20
+
 
 std::uint32_t mtherapp::MidiTrack::calculateHeader(bool skipSomeMessages) {
 
