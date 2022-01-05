@@ -44,12 +44,12 @@ void Tapper::saveAsMidi(QString filename) {
     }
 
     MidiTrack track;
-    track.pushChangeBPM(240, 0);
+    track.pushChangeBPM(240, 0); //somehow 240 is realtime
 
     for (size_t i = 0; i < msIntervals.size(); ++i) {
         if (i % 2 == 0) {
-            //In 120 bpm 960 = 500 ms, so for now just stupid * 2
-            long fromPrevNote = msIntervals[i]; //TODO wrong
+            //Возможно стоит использовать коэфициент 500 преобразовывать в 480
+            long fromPrevNote = msIntervals[i];
             qDebug() << "From prev note " << fromPrevNote;
             track.accumulate(fromPrevNote * 2);
             track.pushNoteOn(60, 100, 0);

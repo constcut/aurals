@@ -7,8 +7,7 @@
 
 namespace mtherapp {
 
-    struct GraphicElement //TODO refactor this thing too
-    {
+    struct GraphicElement  {
       int x,y,w,h;
       QColor color;
       QColor hl;
@@ -16,20 +15,16 @@ namespace mtherapp {
       bool selected;
     };
 
-    class GraphicMap : public QQuickPaintedItem
-    {
+    class GraphicMap : public QQuickPaintedItem {
         Q_OBJECT
     public:
-        GraphicMap();
+        GraphicMap() = default;
 
-        Q_INVOKABLE int getAssociation(int x, int y);
-        //maybe will need getAssociationFront
-
+        Q_INVOKABLE int getAssociation(int x, int y) const;
         Q_INVOKABLE void addElement(int x, int y, int w, int h, QColor c, QColor hl, int association);
 
-        void paint(QPainter *painter);
+        void paint(QPainter *painter) override;
 
-     //signals:
        Q_SIGNALS:
         void initAssociation(int ass);
 
@@ -38,15 +33,13 @@ namespace mtherapp {
     };
 
 
-    class PianoQML : public GraphicMap
-    {
+    class PianoQML : public GraphicMap {
         Q_OBJECT
       public:
 
         PianoQML();
 
         void addOctave(int x, int y, int startingNote);
-
         void addNote(int x, int y, int note, bool hasBlack = false);
 
         Q_INVOKABLE void selectByAssociation(int ass);
@@ -54,13 +47,11 @@ namespace mtherapp {
 
     protected:
 
-        GraphicElement *findElementByAssociation(int ass);
+        GraphicElement* findElementByAssociation(int ass) const;
 
         int whiteKeyWidth, whiteKeyHeight, blackKeyWidth, blackKeyHeight;
     };
 
-    //There could be done midi recorder on this principle,
-    //also that midi recorder can record data from midi keyboard
 }
 
 #endif // GRAPHICMAP_H
