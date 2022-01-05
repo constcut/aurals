@@ -36,6 +36,12 @@ namespace mtherapp {
             Q_INVOKABLE void tapped(int idx);
             Q_INVOKABLE void saveTapsAsMidi(QString filename) const;
 
+
+            //TODO настройка разных нот для idx
+            //настройка разных инструментов и каналов для разных idx
+            //настройка коэфициента скорости
+            //настройки громкости
+
         private:
 
             std::vector<MouseEvent> _mouseEvents;
