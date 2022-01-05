@@ -45,9 +45,6 @@ void Tapper::saveAsMidi(QString filename) {
 
     MidiTrack track;
 
-    track.pushChangeInstrument(0, 0, 0);
-    track.pushChangePanoram(64, 0);
-    track.pushChangeVolume(64, 0);
 
     for (size_t i = 0; i < msIntervals.size(); ++i) {
         if (i % 2 == 0) {
