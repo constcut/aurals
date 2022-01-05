@@ -10,7 +10,7 @@ Item {
         id: tapper
     }
 
-    Rectangle { //TODO tap handler?
+    Rectangle {
         x: 0
         y: 0
         height: parent.height

@@ -12,15 +12,15 @@ NBytesInt::NBytesInt(std::uint32_t source) {
         return;
     }
 
-    std::vector<std::uint8_t> byteParts; //TODO reserve
+    std::vector<std::uint8_t> byteParts;
     while (source) {
         std::uint8_t nextByte = source % 128;
         byteParts.push_back(nextByte);
         source /= 128;
     }
 
-    for (int i = byteParts.size()-1; i >=0 ; --i)
-        push_back(byteParts[i]); ///TODO algo
+    for (int i = static_cast<int>(byteParts.size()) - 1; i >= 0 ; --i)
+        push_back(byteParts[i]);
 }
 
 std::uint32_t mtherapp::NBytesInt::readFromFile(std::ifstream& f) {

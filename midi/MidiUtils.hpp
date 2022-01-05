@@ -6,7 +6,7 @@
 
 namespace mtherapp {
 
-    template <typename T> //TODO moveout
+    template <typename T>
     T swapEndian(T u) {
         static_assert (CHAR_BIT == 8, "CHAR_BIT != 8");
         union {

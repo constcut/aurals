@@ -16,7 +16,7 @@ Item {
                 id: upperLayout
                 Text {
                     text: "Sample rate:"
-                    visible: false //TODO better look on mobile
+                    visible: false
                 }
                 ComboBox {
                     model: ["22050", "44100", "48000"]
@@ -54,7 +54,6 @@ Item {
                     text: "Load dump"
                     onClicked: audio.loadWavFile("rec.dump.wav")
                 }
-
                 //ToolButton {
                 //    text: "Request permission"
                 //    onClicked: audio.requestPermission()
@@ -123,7 +122,7 @@ Item {
                 onClicked: {
                     if (filesModel[filesModel.selected] === -1)
                         return
-                    //TODO dialog request
+                    //Возможно стоит открывать диалог, в котором вводить новое имя, и одновременно иметь возможность отменить действие
                     audio.renameRecord(filesModel.filename, filenameEdit.text)
                     audioHandlerItem.reload()
                     filesModel.selected = -1
@@ -273,7 +272,7 @@ Item {
         }
 
 
-        Rectangle { //TODO search box from aim
+        Rectangle { //DELAYED: поиск по записям
             id: mainRect
             width: 600
             height: audioHandlerItem.height - y - 10

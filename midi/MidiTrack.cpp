@@ -183,7 +183,7 @@ std::uint32_t mtherapp::MidiTrack::readFromFile(std::ifstream& f)
     f.read(_chunkId, 4);
     f.read((char *)&_trackSize, 4);
 
-    if ((_chunkId[0] != 'M') || (_chunkId[1] != 'T') || (_chunkId[2] != 'r') || (_chunkId[3] != 'k')) //TODO constexpr check
+    if ((_chunkId[0] != 'M') || (_chunkId[1] != 'T') || (_chunkId[2] != 'r') || (_chunkId[3] != 'k'))
     {
         if (enableMidiLog)
             qDebug() << "Error: Header of track corrupted "

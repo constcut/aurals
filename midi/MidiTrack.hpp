@@ -41,7 +41,7 @@ namespace mtherapp {
 
 
         protected:
-            char _chunkId[4]; //TODO as uint32_t = 'xxxx'
+            char _chunkId[4]; //DELAYED: as uint32_t = 'xxxx'?
             std::uint32_t _trackSize;
 
         private:

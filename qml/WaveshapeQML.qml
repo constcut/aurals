@@ -99,7 +99,7 @@ Item {
                     rmsGroup.text = "<b>{</b>";
                     var prev = waveShape.getRMS(mouseX/ rmsCoef)
 
-                    var dbLevelBorder = 9 //TODO settable params
+                    var dbLevelBorder = 9 //TODO настраивать параметры из QML для удобного отображения
                     var dbLevelBorderSmall = 6
 
                     var totalSize = waveShape.getRmsSize();
