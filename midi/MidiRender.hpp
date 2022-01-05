@@ -43,9 +43,8 @@ namespace mtherapp {
         qint64 getTotaMsSpent() { return _totalMsSpent; }
         double getRenderTimer() { return _msRendered; }
 
-        /*void setMono() { _mono = true; }
-        void setStereo() { _mono = false; }
-        bool isMono() { return _mono; }*/ //Mono gives issues yet
+        float getVolumeDb() { return _volume; }
+        double setVolumeDb(float newVol) { _volume = newVol; }
 
     protected:
 
@@ -67,6 +66,8 @@ namespace mtherapp {
         int _g_MidiChannelPreset[16];
         double _msRendered;
         qint64 _totalMsSpent;
+
+        float _volume = -6.0;
 
         bool _mono = false;
     };

@@ -45,7 +45,7 @@ bool MidiRender::openSoundFont(QString sfFilename)
     else
         mode = TSFOutputMode::TSF_STEREO_INTERLEAVED;
 
-    tsf_set_output(sf, mode, _sampleRate, -6.0f); //Volume -6 dB TODO set\get
+    tsf_set_output(sf, mode, _sampleRate, _volume); //Volume -6 dB TODO set\get
 
     _soundFont = sf;
     return true;
