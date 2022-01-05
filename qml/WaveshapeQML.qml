@@ -246,9 +246,9 @@ Item {
                     text: "Yin window size"
                 }
                 ComboBox {
-                    model : [1024, 2048, 3072, 4096, 6144, 8192]
+                    model : [1536, 2048, 3072, 4096, 6144, 8192, 16384]
                     currentIndex: 1
-                    onCurrentIndexChanged: {
+                    onCurrentTextChanged: {
                         waveShape.setYinWindowSize(parseInt(currentText))
                     }
                 }
