@@ -97,7 +97,7 @@ Item {
                     }
                 }
                 ComboBox { //TODO list loader
-                    model: ["epiano.sf2", "guitar.sf2", "fullset.sf2", "nylon_guitar.sf2", "piano.sf2", "drums.sf2", "el_guitar.sf2"]
+                    model: ["epiano.sf2", "guitar.sf2", "fullset.sf2", "eguitar.sf2", "nylon_guitar.sf2", "piano.sf2", "drums.sf2"]
                     currentIndex: 0
                     onCurrentTextChanged: {
                         audio.changeMidiSoundfont(currentText)

@@ -87,7 +87,7 @@ namespace mtherapp {
         bool _isRecording = false;
 
         double _midiVolumeDb = -6.0;
-        QString _soundfontFile = "piano.sf2";
+        QString _soundfontFile = "epiano.sf2";
 
         std::unique_ptr<QAudioOutput> _midiOutput;
         std::unique_ptr<AudioSpeaker> _midiPlayer;
