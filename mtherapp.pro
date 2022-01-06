@@ -98,11 +98,6 @@ HEADERS += \
     libs/fft/OscSinCos.hpp \
     libs/fft/def.h \
     libs/fft/fftreal_wrapper.h \
-    libs/stft/HannWindow.h \
-    libs/stft/Ooura_FFT.h \
-    libs/stft/PostProcessor.h \
-    libs/stft/STFT.h \
-    libs/stft/WAV.h \
     log.hpp \
     midi/MidiEngine.hpp \
     midi/MidiFile.hpp \
