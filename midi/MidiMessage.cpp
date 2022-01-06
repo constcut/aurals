@@ -106,7 +106,7 @@ std::uint32_t MidiMessage::readFromFile(std::ifstream& f) {
 
         for (std::uint32_t i = 0; i < bytesInMetaBufer; ++i) {
             std::uint8_t byteBufer;
-            f.read((char *)&byteBufer, 1);
+            f.read(reinterpret_cast<char*>(&byteBufer), 1);
             _metaBufer.push_back(byteBufer);
         }
         totalBytesRead += bytesInMetaBufer;
@@ -116,7 +116,7 @@ std::uint32_t MidiMessage::readFromFile(std::ifstream& f) {
     else {
         std::uint8_t eventType = getEventType();
         if (isNotSingleParamEvent(eventType)) {
-            f.read((char *)&_param2, 1);
+            f.read(reinterpret_cast<char*>(&_param2), 1);
             ++totalBytesRead;
         }
         if (enableMidiLog)

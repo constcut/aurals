@@ -13,7 +13,7 @@ namespace mtherapp {
     class MidiFile : public std::vector<MidiTrack> {
 
         public:
-            MidiFile();
+            MidiFile() = default;
             MidiFile(std::string_view filename);
 
             std::uint32_t calculateHeader(bool skipSomeMessages=false);
@@ -28,7 +28,7 @@ namespace mtherapp {
             void setBPM(std::uint16_t newBPM) { _bpm = newBPM; }
 
         protected:
-            std::uint16_t _bpm;
+            std::uint16_t _bpm = 120;
 
             char _chunkId[4];
             std::uint32_t _chunkSize;

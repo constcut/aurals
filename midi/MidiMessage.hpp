@@ -50,6 +50,11 @@ namespace mtherapp {
         EventTypeMask = 0xF0,
     };
 
+    enum MidiChange {
+        ChangeVolume = 0x7,
+        ChangePanoram = 0xA
+    };
+
     class MidiMessage
     {
     public:

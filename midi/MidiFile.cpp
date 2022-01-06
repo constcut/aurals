@@ -6,12 +6,6 @@
 using namespace mtherapp;
 
 
-
-mtherapp::MidiFile::MidiFile():_bpm(120)
-{
-}
-
-
 std::uint32_t mtherapp::MidiFile::calculateHeader(bool skipSomeMessages) {
 
     std::uint32_t totalBytesCalculated = 0;
@@ -53,10 +47,10 @@ std::uint32_t mtherapp::MidiFile::readFromFile(std::ifstream& f) {
     _timeDevisition = 0;
 
     f.read(&_chunkId[0], 4);
-    f.read((char*)&_chunkSize, 4); // << fails :(((
-    f.read((char*)&_formatType, 2);
-    f.read((char*)&_tracksCount, 2);
-    f .read((char*)&_timeDevisition, 2);
+    f.read(reinterpret_cast<char*>(&_chunkSize), 4); // << fails :(((
+    f.read(reinterpret_cast<char*>(&_formatType), 2);
+    f.read(reinterpret_cast<char*>(&_tracksCount), 2);
+    f .read(reinterpret_cast<char*>(&_timeDevisition), 2);
     totalBytesRead += 14;
 
     _chunkSize = swapEndian<std::uint32_t>(_chunkSize);
@@ -112,16 +106,11 @@ std::uint32_t mtherapp::MidiFile::writeToFile(std::ofstream& f, bool skipSomeMes
     std::uint16_t timeDInverted = swapEndian<std::uint16_t>(_timeDevisition);
 
     f.write(_chunkId, 4);
-    f.write((const char*)&sizeInverted, 4);
-    f.write((const char*)&formatInverted, 2);
-    f.write((const char*)&tracksNInverted, 2);
-    f.write((const char*)&timeDInverted, 2);
+    f.write(reinterpret_cast<const char*>(&sizeInverted), 4);
+    f.write(reinterpret_cast<const char*>(&formatInverted), 2);
+    f.write(reinterpret_cast<const char*>(&tracksNInverted), 2);
+    f.write(reinterpret_cast<const char*>(&timeDInverted), 2);
 
-    /*f << _chunkId; //This isn't works fine :(
-    f << sizeInverted;
-    f << formatInverted;
-    f << tracksNInverted;
-    f << timeDInverted;*/
     totalBytesWritten += 14;
 
     if (enableMidiLog)
