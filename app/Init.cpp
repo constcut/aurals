@@ -44,6 +44,17 @@ void checkMidiRegression() {
 }
 
 
+void copySoundfontsAndTests() {
+    if (QFile::exists("piano.sf2") == false)
+        QFile::copy(":/sf/piano.sf2", "piano.sf2");
+    if (QFile::exists("guitar.sf2") == false)
+        QFile::copy(":/sf/guitar.sf2", "guitar.sf2");
+    if (QFile::exists("el_guitar.sf2") == false)
+        QFile::copy(":/sf/el_guitar.sf2", "el_guitar.sf2");
+    if (QFile::exists("test1.mid") == false)
+        QFile::copy(":/sf/test1.mid", "test1.mid");
+}
+
 
 int mainInit(int argc, char *argv[]) {
 
@@ -60,10 +71,7 @@ int mainInit(int argc, char *argv[]) {
     Q_INIT_RESOURCE(fonts);
     Q_INIT_RESOURCE(soundfonts);
 
-    if (QFile::exists("instrument.sf2") == false)
-        QFile::copy(":/sf/instrument.sf2", "instrument.sf2");
-    if (QFile::exists("test1.mid") == false)
-        QFile::copy(":/sf/test1.mid", "test1.mid");
+    copySoundfontsAndTests();
     checkMidiRegression();
 
     qDebug() << "Current working path "<<QDir::currentPath();

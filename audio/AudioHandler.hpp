@@ -64,6 +64,9 @@ namespace mtherapp {
         Q_INVOKABLE void changeMidiRenderVolume(const double db);
         Q_INVOKABLE void changeMidiSoundfont(const QString filename);
 
+        Q_INVOKABLE QString getSoundfontFilename() const { return _soundfontFile; }
+        Q_INVOKABLE double getMidiVolume() const { return _midiVolumeDb; }
+
     private:
 
         void initRecorder();
@@ -88,7 +91,7 @@ namespace mtherapp {
 
         std::unique_ptr<MidiRender> _midiRender;
         double _midiVolumeDb = -6.0;
-        QString _soundfontFile = "instrument.sf2";
+        QString _soundfontFile = "piano.sf2";
 
         std::unique_ptr<QAudioOutput> _midiOutput;
         std::unique_ptr<AudioSpeaker> _midiPlayer;

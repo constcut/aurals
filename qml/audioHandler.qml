@@ -86,14 +86,21 @@ Item {
                     }
                 }
                 Text {
-                    text: "Midi volume"
+                    text: "Volume"
                 }
                 ComboBox {
-                    model : ["18.0", "12.0", "6.0", "0.0", "-6.0", "-12.0", "-18.0"]
-                    currentIndex: 4
+                    model : ["24.0", "18.0", "12.0", "6.0", "0.0", "-6.0", "-12.0"]
+                    currentIndex: 5
                     onCurrentValueChanged: {
                         var db = parseFloat(currentText)
                         audio.changeMidiRenderVolume(db)
+                    }
+                }
+                ComboBox {
+                    model: ["piano.sf2", "guitar.sf2", "el_guitar.sf2"]
+                    currentIndex: 0
+                    onCurrentValueChanged: {
+                        audio.changeMidiSoundfont(currentText)
                     }
                 }
             }

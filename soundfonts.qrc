@@ -1,7 +1,9 @@
 <RCC>
     <qresource prefix="/soundfonts"/>
     <qresource prefix="/">
-        <file>sf/instrument.sf2</file>
+        <file>sf/piano.sf2</file>
         <file>sf/test1.mid</file>
+        <file>sf/guitar.sf2</file>
+        <file>sf/el_guitar.sf2</file>
     </qresource>
 </RCC>

@@ -74,7 +74,7 @@ QByteArray MidiRender::renderShort(QString midiFilename)
 
     qint64 renderMidi = timer.elapsed();
 
-    qDebug() <<"For "<<_msRendered<<" rendered "<<loadingFiles<<" "<<renderMidi;
+    //qDebug() <<"For "<<_msRendered<<" rendered "<<loadingFiles<<" "<< renderMidi;
     _totalMsSpent += loadingFiles + renderMidi;
 
     return response;
@@ -86,8 +86,7 @@ QByteArray MidiRender::renderFloat(QString midiFilename)
         return QByteArray();
 
     QByteArray response;
-    _msRendered = 0.0; //rename to the milisecondsRendered
-    //nice to have also milisecondsTotal - to know% better
+    _msRendered = 0.0;
 
     while (_midiFile)
         response += renderFloatNext(_renderFrameSize);
