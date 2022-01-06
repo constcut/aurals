@@ -95,10 +95,9 @@ std::uint32_t MidiMessage::readFromFile(std::ifstream& f) {
 
     std::uint32_t totalBytesRead = 0;
     totalBytesRead += _timeStamp.readFromFile(f);
-    f.read((char*)&_typeAndChannel, 1);
-    ++totalBytesRead;
-    f.read((char*)&_param1, 1);
-    ++totalBytesRead;
+    f.read(reinterpret_cast<char*>(&_typeAndChannel), 1);
+    f.read(reinterpret_cast<char*>(&_param1), 1);
+    totalBytesRead += 2;
 
     if (isMetaEvent()) {
         totalBytesRead += _metaLen.readFromFile(f);
@@ -231,11 +230,9 @@ std::string MidiMessage::nameController(std::uint8_t controllerNumber) const
                                {126, "Mono Operation"},
                                {127, "Poly Operation"}};
 
-    //Exaluate as contexpr
-    for (size_t i = 0; i < (sizeof(names) / sizeof(controllesNames)); ++i) {
+    for (size_t i = 0; i < (sizeof(names) / sizeof(controllesNames)); ++i)
         if (names[i].index == controllerNumber)
             return names[i].name;
-    }
 
     return "Unknown_ControllerName";
 }
@@ -247,10 +244,8 @@ std::uint32_t MidiMessage::writeToFile(std::ofstream& f, bool skipSomeMessages) 
         return 0;
 
     totalBytesWritten += _timeStamp.writeToFile(f);
-    //f << _typeAndChannel;
-    //f << _param1; //TODO review on gtab works fine :(
-    f.write((const char*)&_typeAndChannel, 1);
-    f.write((const char*)&_param1, 1);
+    f << _typeAndChannel;
+    f << _param1;
     totalBytesWritten += 2;
 
     if (isMetaEvent()) {
@@ -260,7 +255,6 @@ std::uint32_t MidiMessage::writeToFile(std::ofstream& f, bool skipSomeMessages) 
                 << " total bytes " << totalBytesWritten << " " << f.tellp();
 
         totalBytesWritten += _metaLen.writeToFile(f);
-
         f.write(reinterpret_cast<const char*>(_metaBufer.data()), _metaBufer.size());
         totalBytesWritten += _metaBufer.size();
     }

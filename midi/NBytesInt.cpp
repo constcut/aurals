@@ -27,7 +27,7 @@ NBytesInt::NBytesInt(std::uint32_t source) {
 std::uint32_t mtherapp::NBytesInt::readFromFile(std::ifstream& f) {
     std::uint8_t lastByte = 0;
     do {
-        f.read((char*)&lastByte, 1);
+        f.read(reinterpret_cast<char*>(&lastByte), 1);
         push_back(lastByte & 127);
     } while (lastByte & 128);
 
@@ -45,7 +45,7 @@ std::uint32_t mtherapp::NBytesInt::writeToFile(std::ofstream& f) const {
         std::uint8_t anotherByte = operator [](i);
         if (i != size()-1)
             anotherByte |= 128;
-        f.write((char*)&anotherByte, 1);
+        f << anotherByte;
     }
     if (enableMidiLog) {
         for (size_t i = 0; i < size(); ++i)
