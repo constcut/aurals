@@ -45,7 +45,7 @@ bool MidiRender::openSoundFont(QString sfFilename)
     else
         mode = TSFOutputMode::TSF_STEREO_INTERLEAVED;
 
-    tsf_set_output(sf, mode, _sampleRate, _volume); //Volume -6 dB TODO set\get
+    tsf_set_output(sf, mode, _sampleRate, _volume);
 
     _soundFont = sf;
     return true;
@@ -116,26 +116,24 @@ QByteArray MidiRender::renderShortNext(int len)
 {
     tml_message* g_MidiMessage = _midiFile;
 
-    QByteArray result; //(const char*)data,len); - old way
-    result.resize(len);      //may have some tail in the end
-
+    QByteArray result;
+    result.resize(len);
     char *stream = result.data();
 
     int SampleBlock, SampleCount = (len / (2 * sizeof(short)));
-    //TSF_RENDER_EFFECTSAMPLEBLOCK
-    for (SampleBlock = 64; SampleCount; SampleCount -= SampleBlock, stream += (SampleBlock * (2 * sizeof(short))))
+    const int sampleBlockSize = 64;
+
+    for (SampleBlock = sampleBlockSize; SampleCount; SampleCount -= SampleBlock, stream += (SampleBlock * (2 * sizeof(short))))
     {
-        if (SampleBlock > SampleCount) SampleBlock = SampleCount; //this is a moment when would have tail can cut
+        if (SampleBlock > SampleCount)
+            SampleBlock = SampleCount;
 
         for (_msRendered += SampleBlock * (1000.0 / _sampleRate); g_MidiMessage && _msRendered>= g_MidiMessage->time;
              g_MidiMessage = g_MidiMessage->next)
         {
-
             switch (g_MidiMessage->type)
             {
-
-                case TML_PROGRAM_CHANGE: //channel program (preset) change
-
+                case TML_PROGRAM_CHANGE:
                     if (g_MidiMessage->channel != 9) {
                         _g_MidiChannelPreset[g_MidiMessage->channel] = tsf_get_presetindex(_soundFont, 0, g_MidiMessage->program);
                         if (_g_MidiChannelPreset[g_MidiMessage->channel] < 0)
@@ -149,26 +147,23 @@ QByteArray MidiRender::renderShortNext(int len)
                         if (_g_MidiChannelPreset[g_MidiMessage->channel] < 0)
                                 _g_MidiChannelPreset[g_MidiMessage->channel] = 0;
                     }
-
                     tsf_channel_set_presetnumber(_soundFont, g_MidiMessage->channel, g_MidiMessage->program, (g_MidiMessage->channel == 9));
                     break;
-                case TML_NOTE_ON: //play a note
+                case TML_NOTE_ON:
                     tsf_note_on(_soundFont, _g_MidiChannelPreset[g_MidiMessage->channel], g_MidiMessage->key, g_MidiMessage->velocity / 127.0f);
                     break;
-                case TML_NOTE_OFF: //stop a note
+                case TML_NOTE_OFF:
                     tsf_note_off(_soundFont, _g_MidiChannelPreset[g_MidiMessage->channel], g_MidiMessage->key);
                     break;
                 case TML_CONTROL_CHANGE:
                     tsf_channel_midi_control(_soundFont, g_MidiMessage->channel, g_MidiMessage->control, g_MidiMessage->control_value);
                     break;
-                case TML_PITCH_BEND: //pitch wheel modification
+                case TML_PITCH_BEND:
                     tsf_channel_set_pitchwheel(_soundFont, g_MidiMessage->channel, g_MidiMessage->pitch_bend);
                     break;
-
                 case TML_SET_TEMPO:
-                //Unhandled
+                    //Unhandled
                 break;
-
                 default:
                     qDebug() << "EVENT NOT HANDLED: " << static_cast<int>(g_MidiMessage->type);
             }
@@ -191,27 +186,52 @@ QByteArray MidiRender::renderFloatNext(int len)
 
     char *stream = result.data();
 
-    int SampleBlock, SampleCount = (len / (2 * sizeof(float)));
-    for (SampleBlock = 64; SampleCount; SampleCount -= SampleBlock, stream += (SampleBlock * (2 * sizeof(float))))
+    int SampleBlock, SampleCount = (len / (2 * sizeof(short)));
+    const int sampleBlockSize = 64;
+
+    for (SampleBlock = sampleBlockSize; SampleCount; SampleCount -= SampleBlock, stream += (SampleBlock * (2 * sizeof(short))))
     {
-        if (SampleBlock > SampleCount) SampleBlock = SampleCount; //this is a moment when would have tail can cut
+        if (SampleBlock > SampleCount)
+            SampleBlock = SampleCount;
 
-        for (_msRendered += SampleBlock * (1000.0 / _sampleRate); g_MidiMessage && _msRendered >= g_MidiMessage->time; g_MidiMessage = g_MidiMessage->next)
+        for (_msRendered += SampleBlock * (1000.0 / _sampleRate); g_MidiMessage && _msRendered>= g_MidiMessage->time;
+             g_MidiMessage = g_MidiMessage->next)
         {
-            //qDebug() << "Render message time "<<g_MidiMessage->time;
-
-            switch (g_MidiMessage->type)    //TODO обновить все процедуры генерации, чтобы они покрывали больше сообщений
+            switch (g_MidiMessage->type)
             {
-                case TML_PROGRAM_CHANGE: //channel program (preset) change
-                    _g_MidiChannelPreset[g_MidiMessage->channel] = tsf_get_presetindex(_soundFont, 0, g_MidiMessage->program);
-                    if (_g_MidiChannelPreset[g_MidiMessage->channel] < 0) _g_MidiChannelPreset[g_MidiMessage->channel] = 0;
+                case TML_PROGRAM_CHANGE:
+                    if (g_MidiMessage->channel != 9) {
+                        _g_MidiChannelPreset[g_MidiMessage->channel] = tsf_get_presetindex(_soundFont, 0, g_MidiMessage->program);
+                        if (_g_MidiChannelPreset[g_MidiMessage->channel] < 0)
+                                _g_MidiChannelPreset[g_MidiMessage->channel] = 0;
+                    }
+                    else {
+                        int preset_index;
+                        preset_index = tsf_get_presetindex(_soundFont, 128, g_MidiMessage->program);
+                        if (preset_index == -1) preset_index = tsf_get_presetindex(_soundFont, 128, 0);
+                        _g_MidiChannelPreset[g_MidiMessage->channel] = preset_index;
+                        if (_g_MidiChannelPreset[g_MidiMessage->channel] < 0)
+                                _g_MidiChannelPreset[g_MidiMessage->channel] = 0;
+                    }
+                    tsf_channel_set_presetnumber(_soundFont, g_MidiMessage->channel, g_MidiMessage->program, (g_MidiMessage->channel == 9));
                     break;
-                case TML_NOTE_ON: //play a note
+                case TML_NOTE_ON:
                     tsf_note_on(_soundFont, _g_MidiChannelPreset[g_MidiMessage->channel], g_MidiMessage->key, g_MidiMessage->velocity / 127.0f);
                     break;
-                case TML_NOTE_OFF: //stop a note
+                case TML_NOTE_OFF:
                     tsf_note_off(_soundFont, _g_MidiChannelPreset[g_MidiMessage->channel], g_MidiMessage->key);
                     break;
+                case TML_CONTROL_CHANGE:
+                    tsf_channel_midi_control(_soundFont, g_MidiMessage->channel, g_MidiMessage->control, g_MidiMessage->control_value);
+                    break;
+                case TML_PITCH_BEND:
+                    tsf_channel_set_pitchwheel(_soundFont, g_MidiMessage->channel, g_MidiMessage->pitch_bend);
+                    break;
+                case TML_SET_TEMPO:
+                    //Unhandled
+                break;
+                default:
+                    qDebug() << "EVENT NOT HANDLED: " << static_cast<int>(g_MidiMessage->type);
             }
         }
         tsf_render_float(_soundFont, (float*)stream, SampleBlock, 0);
@@ -222,7 +242,6 @@ QByteArray MidiRender::renderFloatNext(int len)
    return result;
 }
 
-//=================================Memory functions - what means midi file class usage=======================
 
 QByteArray MidiRender::renderFromMemoryShort(MidiTrack &track)
 {
@@ -257,38 +276,61 @@ QByteArray MidiRender::renderFromMemoryFloat(MidiTrack &track)
 }
 
 
-//Memory functions means usage of our MidiFile class - not loading file from hard disk
 QByteArray MidiRender::renderMemoryFloatNext(int len)
 {
     QByteArray result;
     result.resize(len);
     char *stream = result.data();
 
-
     int SampleBlock, SampleCount = (len / (2 * sizeof(float)));
-    for (SampleBlock = 64; SampleCount;
+    const int sampleBlockSize = 64;
+
+    for (SampleBlock = sampleBlockSize; SampleCount;
          SampleCount -= SampleBlock, stream += (SampleBlock * (2 * sizeof(float))))
     {
         if (SampleBlock > SampleCount) SampleBlock = SampleCount;
 
         for (_msRendered += SampleBlock * (1000.0 / _sampleRate);
-             (_trackPosition < _midiTrack->size()) && (_msRendered >= _midiTrack->at(_trackPosition).absoluteTime()); //REPLACE 0 with time from midi signals
+             (_trackPosition < _midiTrack->size()) && (_msRendered >= _midiTrack->at(_trackPosition).absoluteTime());
              ++_trackPosition)
         {
-            auto& signal = _midiTrack->at(_trackPosition); //later replace such place with ->at(i)
+            auto& signal = _midiTrack->at(_trackPosition);
 
             switch (signal.getTypeAndChannel() & 0xf0)
             {
                 case TML_PROGRAM_CHANGE:
-                    _g_MidiChannelPreset[signal.getChannel()] = tsf_get_presetindex(_soundFont, 0, signal.getParameter1());
-                    if (_g_MidiChannelPreset[signal.getChannel()] < 0) _g_MidiChannelPreset[signal.getChannel()] = 0;
+                    if (signal.getChannel() != 9) {
+                        _g_MidiChannelPreset[signal.getChannel()] = tsf_get_presetindex(_soundFont, 0, signal.getParameter1());
+                        if (_g_MidiChannelPreset[signal.getChannel()] < 0)
+                                _g_MidiChannelPreset[signal.getChannel()] = 0;
+                    }
+                    else {
+                        int preset_index;
+                        preset_index = tsf_get_presetindex(_soundFont, 128, signal.getChannel());
+                        if (preset_index == -1) preset_index = tsf_get_presetindex(_soundFont, 128, 0);
+                        _g_MidiChannelPreset[signal.getChannel()] = preset_index;
+                        if (_g_MidiChannelPreset[signal.getChannel()] < 0)
+                                _g_MidiChannelPreset[signal.getChannel()] = 0;
+                    }
+                    tsf_channel_set_presetnumber(_soundFont, signal.getChannel(), signal.getParameter1(), (signal.getChannel() == 9));
                     break;
-                case TML_NOTE_ON: //play a note
+                case TML_NOTE_ON:
                     tsf_note_on(_soundFont, _g_MidiChannelPreset[signal.getChannel()], signal.getParameter1(), signal.getParameter2() / 127.0f);
                     break;
-                case TML_NOTE_OFF: //stop a note
+                case TML_NOTE_OFF:
                     tsf_note_off(_soundFont, _g_MidiChannelPreset[signal.getChannel()], signal.getParameter1());
                     break;
+                case TML_CONTROL_CHANGE:
+                    tsf_channel_midi_control(_soundFont, signal.getChannel(), signal.getParameter1(), signal.getParameter2());
+                    break;
+                case TML_PITCH_BEND:
+                    tsf_channel_set_pitchwheel(_soundFont, signal.getChannel(), signal.getParameter1());
+                    break;
+                case TML_SET_TEMPO:
+                    //Unhandled
+                break;
+                default:
+                    qDebug() << "EVENT NOT HANDLED: " << static_cast<int>(signal.getEventType());
             }
 
         }
@@ -308,32 +350,55 @@ QByteArray MidiRender::renderMemoryShortNext(int len)
     result.resize(len);
     char *stream = result.data();
 
-    int SampleBlock, SampleCount = (len / (2 * sizeof(short)));
-    for (SampleBlock = 64; SampleCount;
+    int SampleBlock, SampleCount = (len / (2 * sizeof(float)));
+    const int sampleBlockSize = 64;
+
+    for (SampleBlock = sampleBlockSize; SampleCount;
          SampleCount -= SampleBlock, stream += (SampleBlock * (2 * sizeof(short))))
     {
         if (SampleBlock > SampleCount) SampleBlock = SampleCount;
 
         for (_msRendered += SampleBlock * (1000.0 / _sampleRate);
-             (_trackPosition < _midiTrack->size()) && (_msRendered >= _midiTrack->at(_trackPosition).absoluteTime()); //REPLACE 0 with time from midi signals
+             (_trackPosition < _midiTrack->size()) && (_msRendered >= _midiTrack->at(_trackPosition).absoluteTime());
              ++_trackPosition)
         {
-            auto& signal = _midiTrack->at(_trackPosition); //later replace such place with ->at(i)
-
-            qDebug() << "Render "<<signal.getTypeAndChannel()<<" "<<signal.absoluteTime();
+            auto& signal = _midiTrack->at(_trackPosition);
 
             switch (signal.getTypeAndChannel() & 0xf0)
             {
                 case TML_PROGRAM_CHANGE:
-                    _g_MidiChannelPreset[signal.getChannel()] = tsf_get_presetindex(_soundFont, 0, signal.getParameter1());
-                    if (_g_MidiChannelPreset[signal.getChannel()] < 0) _g_MidiChannelPreset[signal.getChannel()] = 0;
+                    if (signal.getChannel() != 9) {
+                        _g_MidiChannelPreset[signal.getChannel()] = tsf_get_presetindex(_soundFont, 0, signal.getParameter1());
+                        if (_g_MidiChannelPreset[signal.getChannel()] < 0)
+                                _g_MidiChannelPreset[signal.getChannel()] = 0;
+                    }
+                    else {
+                        int preset_index;
+                        preset_index = tsf_get_presetindex(_soundFont, 128, signal.getChannel());
+                        if (preset_index == -1) preset_index = tsf_get_presetindex(_soundFont, 128, 0);
+                        _g_MidiChannelPreset[signal.getChannel()] = preset_index;
+                        if (_g_MidiChannelPreset[signal.getChannel()] < 0)
+                                _g_MidiChannelPreset[signal.getChannel()] = 0;
+                    }
+                    tsf_channel_set_presetnumber(_soundFont, signal.getChannel(), signal.getParameter1(), (signal.getChannel() == 9));
                     break;
-                case TML_NOTE_ON: //play a note
+                case TML_NOTE_ON:
                     tsf_note_on(_soundFont, _g_MidiChannelPreset[signal.getChannel()], signal.getParameter1(), signal.getParameter2() / 127.0f);
                     break;
-                case TML_NOTE_OFF: //stop a note
+                case TML_NOTE_OFF:
                     tsf_note_off(_soundFont, _g_MidiChannelPreset[signal.getChannel()], signal.getParameter1());
                     break;
+                case TML_CONTROL_CHANGE:
+                    tsf_channel_midi_control(_soundFont, signal.getChannel(), signal.getParameter1(), signal.getParameter2());
+                    break;
+                case TML_PITCH_BEND:
+                    tsf_channel_set_pitchwheel(_soundFont, signal.getChannel(), signal.getParameter1());
+                    break;
+                case TML_SET_TEMPO:
+                    //Unhandled
+                break;
+                default:
+                    qDebug() << "EVENT NOT HANDLED: " << static_cast<int>(signal.getEventType());
             }
         }
 
