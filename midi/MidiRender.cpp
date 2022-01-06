@@ -24,6 +24,9 @@ bool MidiRender::openMidiFile(const QString midiFilename)
     if (midiMessages==0)
         return false;
 
+    if (_midiFile != nullptr)
+        free(_midiFile);
+
     _midiFile = midiMessages;
 
     return true;
@@ -37,7 +40,7 @@ bool MidiRender::openSoundFont(QString sfFilename)
     if (sf == nullptr)
         return false;
 
-    tsf_channel_set_bank_preset(sf, 9, 128, 0);
+    tsf_channel_set_bank_preset(sf, 9, 128, 0); //Configure, this is drum bank, isn't it?
 
     TSFOutputMode mode;
     if (_mono)
@@ -247,6 +250,7 @@ QByteArray MidiRender::renderFloatNext(int len)
 
 QByteArray MidiRender::renderFromMemoryShort(MidiTrack &track)
 {
+    //Another option is tml_load_memory
     QByteArray response;
     _msRendered = 0.0;
 
