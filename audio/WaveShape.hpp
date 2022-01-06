@@ -41,8 +41,11 @@
 #ifndef Waveshape_H
 #define Waveshape_H
 
+#include <utility>
+
 #include <QQuickPaintedItem>
 #include <QImage>
+#include <QList>
 
 #include "WaveContour.hpp"
 
@@ -58,7 +61,7 @@ namespace mtherapp {
         void paintWaveShape(QPainter& painter);
 
         double calculateWindowRmsDb();
-        double calculateWindowYin();
+        std::pair<double, double> calculateWindowYin();
 
     protected:
         WaveContour _waveContour;
@@ -107,7 +110,7 @@ namespace mtherapp {
         explicit WaveshapeQML() = default; //[[maybe_unused]] QQuickItem* parent = NULL OMG mingw fails in 2022
         ~WaveshapeQML() = default;
 
-        Q_INVOKABLE int getPixelsLength() { return _waveContour.getRMS_8().size();  } // TODO rewrite names
+        Q_INVOKABLE int getPixelsLength() { return _waveContour.getRMS_8().size();  } //Check isn't it pixels/2?
         Q_INVOKABLE qreal getRMS(int index) const { return _waveContour.getRMS()[index]; }
         Q_INVOKABLE int getRmsSize() const { return _waveContour.getRMS().size(); }
         Q_INVOKABLE int getRmsStep() const { return _waveContour.getRmsStep();}
@@ -134,7 +137,8 @@ namespace mtherapp {
         Q_INVOKABLE QByteArray getPCM(quint64 position, quint64 samples) { return _waveContour.getPCM(position, samples); }
 
         Q_INVOKABLE double getWindowRmsDb() { return calculateWindowRmsDb(); }
-        Q_INVOKABLE double getWindowYinF0() { return calculateWindowYin(); }
+
+        Q_INVOKABLE QList<qreal> getWindowYinF0() { auto y = calculateWindowYin(); return {y.first, y.second}; }
         Q_INVOKABLE qreal freqToMidi(qreal freq) const;
     };
 

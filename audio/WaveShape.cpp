@@ -177,7 +177,7 @@ double WaveshapePainter::calculateWindowRmsDb() {
 }
 
 
-double WaveshapePainter::calculateWindowYin() {
+std::pair<double, double> WaveshapePainter::calculateWindowYin() {
     double threshold = _waveContour.getYinThreshold();
     auto& samples = _waveContour.getFloatSamples();
     return calc_YinF0(&samples[_windowPosition], _windowWidth, threshold);

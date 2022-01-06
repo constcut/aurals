@@ -15,11 +15,10 @@ class Yin {
         void init(double sampleRate, size_t bufferSize);
         double getPitch(const float* buffer);
 
-        double getProbability() const;
         double getThreshold() const;
-
-        void setProbability(double newProb);
         void setThreshold(double newThresh);
+
+        size_t getTau() const;
 
     private:
 
@@ -33,7 +32,6 @@ class Yin {
         size_t _halfBufferSize;
         double _sampleRate;
         std::vector<float> _yinBuffer;
-        double _probability;
 
         size_t _currentTau;
     };

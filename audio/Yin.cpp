@@ -5,19 +5,14 @@ using namespace mtherapp;
 
 Yin::Yin() {
     _threshold = 0.15;
-    _probability = 0.0;
 }
 
-double Yin::getProbability() const {
-    return _probability;
+size_t Yin::getTau() const {
+    return _currentTau;
 }
 
 double Yin::getThreshold() const {
     return _threshold;
-}
-
-void Yin::setProbability(double newProb) {
-    _probability = newProb;
 }
 
 void Yin::setThreshold(double newThresh) {
@@ -99,9 +94,7 @@ bool Yin::absoluteThresholdFound(){
                 ++_currentTau;
             break;
         }
-    if (_currentTau == _halfBufferSize || _yinBuffer[_currentTau] >= _threshold) {
-        _probability = 0;
+    if (_currentTau == _halfBufferSize || _yinBuffer[_currentTau] >= _threshold)
         return false;
-    }
     return true;
 }

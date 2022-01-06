@@ -26,7 +26,7 @@ void WaveContour::calculateF0() {
         if (forLocalYin.empty())
             break;
         auto pitch = calc_YinF0(forLocalYin.data(), forLocalYin.size(), _yinTheshold);
-        _yinLine.push_back(pitch);
+        _yinLine.push_back(pitch.first);
     }
 }
 

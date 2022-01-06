@@ -31,9 +31,9 @@ double mtherapp::calc_MidiCents(double f0) {
 }
 
 
-double mtherapp::calc_YinF0(const float* data,  const size_t len, double threshold, double sampleRate) {
+std::pair<double, double> mtherapp::calc_YinF0(const float* data,  const size_t len, double threshold, double sampleRate) {
     static Yin yin;
     yin.init(sampleRate, len);
     yin.setThreshold(threshold);
-    return yin.getPitch(data);
+    return {yin.getPitch(data), yin.getTau()};
 }

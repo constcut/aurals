@@ -52,7 +52,7 @@ Item {
                     var winYinF0 = waveShape.getWindowYinF0()
 
                     windowInfo.text = "Window RMS = " + winRmsDb.toFixed(4)
-                    + "\nWindow Pitch = " + winYinF0.toFixed(3) // Хорошо бы добавлять ещё probability
+                    + "\nWin Pitch = " + winYinF0[0].toFixed(3) + " tau = " + winYinF0[1].toFixed(0)
                     + "\nMIDI# = " + waveShape.freqToMidi(winYinF0)
                     + "\nSpecPitch= " + spectrum.getSpectrumF0().toFixed(3)
                     + "\nTime = " + ((mouseX * minRmStep / 2.0) / 44100.0).toFixed(4)
