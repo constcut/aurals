@@ -91,7 +91,7 @@ Item {
                 ComboBox {
                     model : ["24.0", "18.0", "12.0", "6.0", "0.0", "-6.0", "-12.0"]
                     currentIndex: 5
-                    onCurrentValueChanged: {
+                    onCurrentTextChanged: {
                         var db = parseFloat(currentText)
                         audio.changeMidiRenderVolume(db)
                     }
@@ -99,7 +99,7 @@ Item {
                 ComboBox {
                     model: ["piano.sf2", "guitar.sf2", "el_guitar.sf2"]
                     currentIndex: 0
-                    onCurrentValueChanged: {
+                    onCurrentTextChanged: {
                         audio.changeMidiSoundfont(currentText)
                     }
                 }

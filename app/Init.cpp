@@ -22,37 +22,42 @@ using namespace std;
 
 
 void checkMidiRegression() {
-    mtherapp::MidiFile m;
-    m.readFromFile("test1.mid");
-    m.writeToFile("test1_regression.mid");
 
-    QFile original, resaved;
-    original.setFileName("test1.mid");
-    original.open(QIODevice::ReadOnly);
+    QList<QString> filesToCheck {"test1.mid", "test2.mid", "test3.mid", "test4.mid", "test5.mid"};
 
-    resaved.setFileName("test1_regression.mid");
-    resaved.open(QIODevice::ReadOnly);
+    for (auto& filename: filesToCheck) {
+        mtherapp::MidiFile m;
+        m.readFromFile(filename.toStdString());
 
-    auto origialBytes = original.readAll();
-    auto resavedBytes = resaved.readAll();
+        auto resavedFilename = "re_" + filename;
+        m.writeToFile(resavedFilename.toStdString());
 
-    if (origialBytes.size() == 0)
-        qDebug() << "ERROR! couldn't read original midi file";
+        QFile original, resaved;
+        original.setFileName(filename);
+        original.open(QIODevice::ReadOnly);
 
-    if (origialBytes != resavedBytes)
-        qDebug() << "ERROR! Midi regression detected!";
+        resaved.setFileName(resavedFilename);
+        resaved.open(QIODevice::ReadOnly);
+
+        auto origialBytes = original.readAll();
+        auto resavedBytes = resaved.readAll();
+
+        if (origialBytes.size() == 0)
+            qDebug() << "ERROR! couldn't read original midi file";
+
+        if (origialBytes != resavedBytes)
+            qDebug() << "ERROR! Midi regression detected!";
+    }
 }
 
 
 void copySoundfontsAndTests() {
-    if (QFile::exists("piano.sf2") == false)
-        QFile::copy(":/sf/piano.sf2", "piano.sf2");
-    if (QFile::exists("guitar.sf2") == false)
-        QFile::copy(":/sf/guitar.sf2", "guitar.sf2");
-    if (QFile::exists("el_guitar.sf2") == false)
-        QFile::copy(":/sf/el_guitar.sf2", "el_guitar.sf2");
-    if (QFile::exists("test1.mid") == false)
-        QFile::copy(":/sf/test1.mid", "test1.mid");
+    QList<QString> filesToCopy {"piano.sf2", "guitar.sf2", "el_guitar.sf2", "test1.mid",
+                               "test2.mid", "test3.mid", "test4.mid", "test5.mid"};
+
+    for (auto& file: filesToCopy)
+        if (QFile::exists(file) == false)
+            QFile::copy(":/sf/" + file, file);
 }
 
 

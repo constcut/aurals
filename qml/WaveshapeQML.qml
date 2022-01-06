@@ -11,7 +11,6 @@ Item {
 
     function reloadFile() {
         waveShape.loadFile(item.filename)
-        console.log("reload file of waveshape qml called ", filename)
     }
 
     ScrollView {
@@ -45,7 +44,7 @@ Item {
                 onClicked:{
                     var minRmStep = waveShape.getMinRmsStep()
                     waveShape.setWindowPosition(mouseX * minRmStep/2.0)
-                    //spectrum.loadSpectrum(item.filename,mouseX*minRmStep/2.0) //This version reloads file
+                    //If we need to load some file: spectrum.loadSpectrum(item.filename,mouseX*minRmStep/2.0) //This version reloads file
                     spectrum.loadByteArray(waveShape.getPCM(mouseX * minRmStep / 2.0, spectrum.getSamplesAmount()));
 
                     var winRmsDb = waveShape.getWindowRmsDb()
@@ -70,7 +69,7 @@ Item {
                 }
                 onDoubleClicked: {
                     var minRmStep = waveShape.getMinRmsStep()
-                    //audio.loadOnlyWindow(item.filename, mouseX * minRmStep / 2.0, spectrum.getSamplesAmount())
+                    //If we need to load some file: audio.loadOnlyWindow(item.filename, mouseX * minRmStep / 2.0, spectrum.getSamplesAmount())
                     audio.loadWindowPCM(waveShape.getPCM(mouseX * minRmStep / 2.0, spectrum.getSamplesAmount()))
                     audio.startPlayback()
                 }
@@ -184,7 +183,8 @@ Item {
                     model : [100, 200, 400, 600, 800, 1000]
                     currentIndex: 2
                     onCurrentTextChanged: {
-                        spectrum.changeBarsCount(parseInt(currentText))
+                        var barsCount = parseInt(currentText)
+                        spectrum.changeBarsCount(barsCount)
                     }
                 }
                 Text{
@@ -195,7 +195,8 @@ Item {
                     model: ["1000", "2000", "3000", "4000", "5000", "6000", "7000"]
                     currentIndex: 3
                     onCurrentTextChanged: {
-                        spectrum.changeHighFreq(parseInt(currentText))
+                        var highFreq = parseInt(currentText)
+                        spectrum.changeHighFreq(highFreq)
                     }
                 }
             }
@@ -208,7 +209,8 @@ Item {
                     model : ["2.0", "3.0", "4.0", "5.0", "6.0", "7.0"]
                     currentIndex: 2
                     onCurrentTextChanged: {
-                        waveShape.setPeakSence(parseFloat(currentText))
+                        var peaksSense = parseFloat(currentText)
+                        waveShape.setPeakSence(peaksSense)
                     }
                 }
                 Text {
@@ -218,7 +220,8 @@ Item {
                     model : ["125", "250", "500", "1000", "1500", "2000", "4000"]
                     currentIndex: 2
                     onCurrentTextChanged: {
-                        waveShape.setRmsStep(parseInt(currentText))
+                        var rmsStep = parseInt(currentText)
+                        waveShape.setRmsStep()
                     }
                 }
                 CheckBox {
@@ -249,7 +252,8 @@ Item {
                     model : [1536, 2048, 3072, 4096, 6144, 8192, 16384]
                     currentIndex: 1
                     onCurrentTextChanged: {
-                        waveShape.setYinWindowSize(parseInt(currentText))
+                        var yinWindow = parseInt(currentText)
+                        waveShape.setYinWindowSize(yinWindow)
                     }
                 }
             }

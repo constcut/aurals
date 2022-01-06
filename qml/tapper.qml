@@ -26,15 +26,9 @@ Item {
             onPressed: {
                 tapper.pressed(0);
                 leftTap.clickCount += 1
-                console.log("pressed triggered", leftTap.clickCount)
             }
             onReleased: {
                 tapper.released(0);
-                leftTap.releaseCount += 1
-                console.log("released triggered", leftTap.releaseCount)
-            }
-            onDoubleClicked: {
-                console.log("double click triggered")
             }
         }
     }
