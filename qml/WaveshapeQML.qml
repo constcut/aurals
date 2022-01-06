@@ -99,8 +99,8 @@ Item {
                     rmsGroup.text = "<b>{</b>";
                     var prev = waveShape.getRMS(mouseX/ rmsCoef)
 
-                    var dbLevelBorder = 9 //TODO настраивать параметры из QML для удобного отображения
-                    var dbLevelBorderSmall = 6
+                    var dbLevelBorder = parseInt(rmsLevel2.currentText)
+                    var dbLevelBorderSmall = parseInt(rmsLevel1.currentText)
 
                     var totalSize = waveShape.getRmsSize();
 
@@ -252,7 +252,24 @@ Item {
                         waveShape.setYinWindowSize(parseInt(currentText))
                     }
                 }
-
+            }
+            RowLayout {
+                Text {
+                    text: "RMS db small"
+                }
+                ComboBox {
+                    id: rmsLevel1
+                    model: [2,3,4,5,6,7,8,9,10,11,12]
+                    currentIndex: 4
+                }
+                Text {
+                    text: "RMS db big"
+                }
+                ComboBox {
+                    id: rmsLevel2
+                    model: [6,7,8,9,10,11,12,13,14,15,16,17,18]
+                    currentIndex: 3
+                }
             }
         }
     }
