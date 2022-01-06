@@ -51,7 +51,7 @@ ApplicationWindow {
 
 
     function requestWaveshape(filename) {
-        //TODO open many tabs, just like in athenum
+        //Delayed: open many tabs, just like in athenum
         mainLoader.setSource("qrc:/qml/WaveshapeQML.qml", {"filename": filename});
     }
 

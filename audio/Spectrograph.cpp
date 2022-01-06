@@ -237,12 +237,12 @@ void SpectrographPainter::updateBars()
     }
     _gapLevel = emptyBins / _bars.size();
     if (_gapLevel < 0.1)
-        classifySlope(); //TODO и ниже - возможно лучше считать не по барам, а по всему посчитанному спектру!
+        classifySlope();
     findPeaks();
 }
 
 
-void SpectrographPainter::findF0() { //Возможно проверять уже найденные пики findPeaks
+void SpectrographPainter::findF0() { //TODO findF0 classifySlope findPeaks использовать спектр, а не бары для отрисовки
     if (_bars.size() < 100)
         return;
 
@@ -340,8 +340,6 @@ void SpectrographPainter::findF0() { //Возможно проверять уж�
 
 
 void SpectrographPainter::findPeaks() {
-    //TODO использовать не корзины для отрисовки, а изначальный спектр
-
     std::vector<double> amps;
     for (auto& bar: _bars)
         amps.push_back(bar.value);

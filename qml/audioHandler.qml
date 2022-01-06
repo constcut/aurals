@@ -8,7 +8,7 @@ Item {
 
 
     Dialog {
-        id: settingsDialog
+        id: testAudioDialog
         ColumnLayout {
             spacing:  10
             RowLayout {
@@ -138,19 +138,18 @@ Item {
             ToolButton {
                 text: "Rename"
                 onClicked: {
-                    if (filesModel[filesModel.selected] === -1)
+                    if (filesModel.filename === "")
                         return
                     //Возможно стоит открывать диалог, в котором вводить новое имя, и одновременно иметь возможность отменить действие
                     audio.renameRecord(filesModel.filename, filenameEdit.text)
                     audioHandlerItem.reload()
-                    filesModel.selected = -1
                     filesModel.filename = ""
                 }
             }
             ToolButton {
                 text: "Remove"
                 onClicked: {
-                    if (filesModel[filesModel.selected] === -1)
+                    if (filesModel.filename === "")
                         return
                     confirmDialog.visible = true
                 }
@@ -158,7 +157,7 @@ Item {
             ToolButton {
                 text: "Show/Hide panel"
                 onClicked: {
-                    settingsDialog.visible = !settingsDialog.visible
+                    testAudioDialog.visible = !testAudioDialog.visible
                 }
             }
             ToolButton {
@@ -198,7 +197,6 @@ Item {
             onYes: {
                 audio.deleteRecord(filesModel.filename)
                 audioHandlerItem.reload()
-                filesModel.selected = -1
                 filesModel.filename = ""
             }
             visible: false
@@ -206,7 +204,6 @@ Item {
 
         ListModel {
             id: filesModel
-            property int selected: -1 //TODO maybe get rid
             property string filename: ""
         }
 
@@ -216,7 +213,7 @@ Item {
                 id: highlightBarRect
                 width: 200; height: 50
                 color: "#FFFF88"
-                y: filesList.currentItem.y;
+                y: filesList.currentItem == null ? 0 : filesList.currentItem.y
                 Behavior on y { SpringAnimation { spring: 2; damping: 0.3 } }
             }
         }
@@ -267,7 +264,7 @@ Item {
             id: filesMenu
             MenuItem {
                 text: "Play"
-                onTriggered: { //TODO functions to copy actions here and on pannel above
+                onTriggered: {
                     audio.resetBufer()
                     audio.loadWavFile("records/" + filenameEdit.text)
                     audio.startPlayback()
@@ -282,7 +279,7 @@ Item {
             MenuItem {
                 text: "Delete"
                 onTriggered: {
-                    if (filesModel[filesModel.selected] === -1)
+                    if (filesModel.filename === "")
                         return
                     confirmDialog.visible = true
                 }

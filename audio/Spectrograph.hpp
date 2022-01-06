@@ -93,7 +93,7 @@ namespace mtherapp {
 
         double _freqStep;
 
-        bool _gotClipping = false; //TODO сделать структуру с собирательными характеристиками для анализа шумов
+        bool _gotClipping = false;
         bool _spectrumGap = false;
         double _gapLevel = 0.0;
 
@@ -148,7 +148,7 @@ namespace mtherapp {
             updateBars();
         }
 
-        Q_INVOKABLE qreal getFreq1() const { return _barSelected * _freqStep; } //TODO barRange даёт смещение на 1, но наш вараинт кажется более правильным, проверить
+        Q_INVOKABLE qreal getFreq1() const { return _barSelected * _freqStep; } //Delayed: barRange даёт смещение на 1, но наш вараинт кажется более правильным, проверить
         Q_INVOKABLE qreal getFreq2() const { return (_barSelected + 1) * _freqStep; }
 
         Q_INVOKABLE qreal getValue() const { return _bars[_barSelected].value; }
