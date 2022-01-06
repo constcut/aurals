@@ -20,8 +20,7 @@ namespace mtherapp {
         explicit Clipboard(QObject *parent = nullptr) : QObject(parent)
         {}
 
-        Q_INVOKABLE bool copyImage(QString filename)
-        {
+        Q_INVOKABLE bool copyImage(const QString filename) const {
             QImage image(filename);
             QMimeData *data = new QMimeData;
             data->setImageData(image);
@@ -30,14 +29,13 @@ namespace mtherapp {
             return true;
         }
 
-        Q_INVOKABLE bool copyImageSrc(QVariant var)
-        {
+        Q_INVOKABLE bool copyImageSrc(const QVariant var) const {
             QImage img = var.value<QImage>();
             QGuiApplication::clipboard()->setImage(img);
             return true;
         }
 
-        Q_INVOKABLE bool copyText(QString text){
+        Q_INVOKABLE bool copyText(const QString text) const {
             QGuiApplication::clipboard()->setText(text);
             return true;
         }

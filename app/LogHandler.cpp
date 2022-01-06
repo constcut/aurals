@@ -41,7 +41,7 @@ LogHandler::LogHandler(QObject *parent) : QObject(parent)
 }
 
 
-void LogHandler::addLine(QString anotherLine)
+void LogHandler::addLine(const QString anotherLine)
 {
     if (logFileName.isEmpty() == false) {
         //DELAYED: logging in another thread + possible server loging

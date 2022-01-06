@@ -15,31 +15,29 @@ namespace mtherapp {
         Q_OBJECT
     public:
         explicit LogHandler(QObject *parent = nullptr);
-
         static LogHandler& getInstance();
 
-        void addLine(QString anotherLine);
+        void setFilename(const QString filename) { _logFileName = filename; }
 
-        QtMessageHandler oldHandler;
+        void addLine(const QString anotherLine);
+        QStringList getLines() const { return _logLines; }
 
-        QStringList getLines() { return logLines; }
-
-        void setFilename(QString filename) { logFileName = filename; }
+        QtMessageHandler getOldHandler() const { return _oldHandler;}
 
     protected:
-        QStringList logLines;
 
-        QString logFileName;
-
+        QStringList _logLines;
+        QString _logFileName;
+        QtMessageHandler _oldHandler;
     };
 
 
-    class ConsoleLogQML : public QQuickPaintedItem
-    {
+    class ConsoleLogQML : public QQuickPaintedItem {
         Q_OBJECT
+
       public:
-        ConsoleLogQML() {}
-        ~ConsoleLogQML() {}
+        ConsoleLogQML() = default;
+        ~ConsoleLogQML() = default;
 
         void paint(QPainter* painter);
     };
