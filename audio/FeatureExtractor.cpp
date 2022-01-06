@@ -25,9 +25,18 @@ double mtherapp::calc_dB(const float* data, const size_t len) {
 }
 
 
+double mtherapp::calc_MidiCentsCustom(const double f0, const double tuneFreq,
+                                      const int midiTune)
+{
+    double note = 12.0 * log2(f0 / tuneFreq) + midiTune;
+    return note * 100;
+}
+
+
 double mtherapp::calc_MidiCents(const double f0) {
-    double note = 69 + log(f0 / 440.f) * 17.31234; //TODO rewrite evil magic
-    return floor( 0.5f + note * 100 );
+    const double A1Freq = 440.0; //Note A of first octave = 440Hz
+    const int A1Midi = 69; //Midi note number for A of first octave = 69
+    return calc_MidiCentsCustom(f0, A1Freq, A1Midi);
 }
 
 

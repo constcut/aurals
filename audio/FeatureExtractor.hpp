@@ -11,6 +11,8 @@ namespace mtherapp {
     double calc_dB(const float* data, const size_t len);
 
     double calc_MidiCents(const double f0);
+    double calc_MidiCentsCustom(const double f0, const double tuneFreq = 440.0,
+                                const int midiTune = 69);
 
     //Returns pair F0, tau
     std::pair<double, double> calc_YinF0(const float* data, const size_t len,
