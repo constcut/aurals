@@ -7,16 +7,16 @@
 
 namespace mtherapp {
 
-    class NBytesInt : public std::deque<std::uint8_t> {
+    class NBytesInt : public std::deque<uint8_t> {
 
     public:
         NBytesInt(){}
         NBytesInt(uint32_t source);
 
-        std::uint32_t readFromFile(std::ifstream& f);
-        std::uint32_t writeToFile(std::ofstream& f) const;
+        uint32_t readFromFile(std::ifstream& f);
+        uint32_t writeToFile(std::ofstream& f) const;
 
-        std::uint32_t getValue() const;
+        uint32_t getValue() const;
     };
 }
 

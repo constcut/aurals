@@ -10,8 +10,8 @@ using namespace mtherapp;
 
 
 
-constexpr std::uint32_t returnChunkId(std::string_view str = "MTrk") { //DELAYED: inverse using c++20
-    std::uint32_t value = 0;
+constexpr uint32_t returnChunkId(std::string_view str = "MTrk") { //DELAYED: inverse using c++20
+    uint32_t value = 0;
     for (const auto &s : str) {
         value <<= 8;
         auto charId = s;
@@ -21,9 +21,9 @@ constexpr std::uint32_t returnChunkId(std::string_view str = "MTrk") { //DELAYED
 }
 
 
-std::uint32_t mtherapp::MidiTrack::calculateHeader(bool skipSomeMessages) {
+uint32_t mtherapp::MidiTrack::calculateHeader(bool skipSomeMessages) {
 
-    std::uint32_t calculatedSize = 0;
+    uint32_t calculatedSize = 0;
 
     for (std::size_t i = 0; i < size(); ++i)
         calculatedSize += operator[](i).calculateSize(skipSomeMessages);
@@ -63,7 +63,7 @@ void mtherapp::MidiTrack::pushMetricsSignature(const uint8_t numeration, const u
     MidiMessage metrics(MidiEvent::MetaEvent, MidiMetaTypes::ChangeTimeSignature, 0, timeShift);
     metrics.metaBufer().push_back(numeration);
 
-    std::uint8_t translatedDuration = std::log2(denumeration);
+    uint8_t translatedDuration = std::log2(denumeration);
     metrics.metaBufer().push_back(translatedDuration);
     metrics.metaBufer().push_back(metr);
     metrics.metaBufer().push_back(perQuat);
@@ -75,7 +75,7 @@ void mtherapp::MidiTrack::pushMetricsSignature(const uint8_t numeration, const u
 
 void mtherapp::MidiTrack::pushChangeBPM(const uint16_t bpm, const uint32_t timeShift) {
     MidiMessage changeTempo(MidiEvent::MetaEvent, MidiMetaTypes::ChangeTempo, 0, timeShift);
-    std::uint32_t nanoCount = 60000000 / bpm; //6e7 = amount of nanoseconds
+    uint32_t nanoCount = 60000000 / bpm; //6e7 = amount of nanoseconds
     changeTempo.metaBufer().push_back((nanoCount >> 16) & 0xff);
     changeTempo.metaBufer().push_back((nanoCount >> 8) & 0xff);
     changeTempo.metaBufer().push_back(nanoCount & 0xff);
@@ -98,12 +98,12 @@ void mtherapp::MidiTrack::pushChangePanoram(const uint8_t newPanoram, const uint
 
 
 void mtherapp::MidiTrack::pushVibration(const uint8_t channel, const uint8_t depth, const uint16_t step, const uint8_t stepsCount) {
-    const std::uint8_t middle = 64;
-    std::uint8_t shiftDown = middle - depth;
-    std::uint8_t shiftUp = middle + depth;
-    std::uint8_t signalKey = MidiMasks::PitchWheelMask + channel;
+    const uint8_t middle = 64;
+    uint8_t shiftDown = middle - depth;
+    uint8_t shiftUp = middle + depth;
+    uint8_t signalKey = MidiMasks::PitchWheelMask + channel;
 
-    for (std::uint32_t i = 0; i < stepsCount; ++i) {
+    for (uint32_t i = 0; i < stepsCount; ++i) {
         push_back(MidiMessage(signalKey, 0, shiftDown, step));
         push_back(MidiMessage(signalKey, 0, shiftUp, step));
     }
@@ -112,10 +112,10 @@ void mtherapp::MidiTrack::pushVibration(const uint8_t channel, const uint8_t dep
 
 
 void mtherapp::MidiTrack::pushSlideUp(const uint8_t channel, const uint8_t shift, const uint16_t step, const uint8_t stepsCount) {
-    const std::uint8_t middle = 64;
-    std::uint8_t pitchShift = middle;
-    std::uint8_t signalKey = MidiMasks::PitchWheelMask + channel;
-    for (std::uint32_t i = 0; i < stepsCount; ++i) {
+    const uint8_t middle = 64;
+    uint8_t pitchShift = middle;
+    uint8_t signalKey = MidiMasks::PitchWheelMask + channel;
+    for (uint32_t i = 0; i < stepsCount; ++i) {
         push_back(MidiMessage(signalKey, 0, pitchShift, step));
         pitchShift += shift;
     }
@@ -124,10 +124,10 @@ void mtherapp::MidiTrack::pushSlideUp(const uint8_t channel, const uint8_t shift
 
 
 void mtherapp::MidiTrack::pushSlideDown(const uint8_t channel, const uint8_t shift, const uint16_t step, const uint8_t stepsCount) {
-    const std::uint8_t middle = 64;
-    std::uint8_t pitchShift = middle;
-    std::uint8_t signalKey = MidiMasks::PitchWheelMask + channel;
-    for (std::uint32_t i = 0; i < stepsCount; ++i) {
+    const uint8_t middle = 64;
+    uint8_t pitchShift = middle;
+    uint8_t signalKey = MidiMasks::PitchWheelMask + channel;
+    for (uint32_t i = 0; i < stepsCount; ++i) {
         push_back(MidiMessage(signalKey, 0, pitchShift, step));
         pitchShift -= shift;
     }
@@ -136,9 +136,9 @@ void mtherapp::MidiTrack::pushSlideDown(const uint8_t channel, const uint8_t shi
 
 
 void mtherapp::MidiTrack::pushTremolo(const uint8_t channel, uint16_t offset) {
-    std::uint16_t slideStep = offset / 40;
-    const std::uint8_t middle = 64;
-    std::uint8_t pitchShift = middle;
+    uint16_t slideStep = offset / 40;
+    const uint8_t middle = 64;
+    uint8_t pitchShift = middle;
     for (int i = 0; i < 10; ++i) {
         push_back(MidiMessage(MidiMasks::PitchWheelMask | channel, 0, pitchShift, slideStep));
         pitchShift -= 3;
@@ -150,8 +150,8 @@ void mtherapp::MidiTrack::pushTremolo(const uint8_t channel, uint16_t offset) {
 
 
 void mtherapp::MidiTrack::pushFadeIn(const uint16_t offset, const uint8_t channel) {
-    std::uint8_t newVolume = 27;
-    std::uint16_t fadeInStep = offset / 20;
+    uint8_t newVolume = 27;
+    uint16_t fadeInStep = offset / 20;
     push_back(MidiMessage(MidiMasks::ControlChangeMask | channel, MidiChange::ChangeVolume, newVolume, 0));
     for (int i = 0; i < 20; ++i) {
         newVolume += 5;
@@ -166,8 +166,8 @@ void mtherapp::MidiTrack::pushEvent47() { //Emergency event
 }
 
 
-std::int16_t mtherapp::MidiTrack::calculateRhythmDetail(const uint8_t value, const int16_t offset) const {
-    std::uint16_t resultOffset = 0;
+int16_t mtherapp::MidiTrack::calculateRhythmDetail(const uint8_t value, const int16_t offset) const {
+    uint16_t resultOffset = 0;
     if (value == 3)
         resultOffset = (offset * 2) / 3;
     if (value == 5)
@@ -182,7 +182,7 @@ std::int16_t mtherapp::MidiTrack::calculateRhythmDetail(const uint8_t value, con
 }
 
 
-std::uint32_t mtherapp::MidiTrack::readFromFile(std::ifstream& f)
+uint32_t mtherapp::MidiTrack::readFromFile(std::ifstream& f)
 {
     f.read(_chunkId, 4);
     f.read(reinterpret_cast<char*>(&_trackSize), 4);
@@ -195,7 +195,7 @@ std::uint32_t mtherapp::MidiTrack::readFromFile(std::ifstream& f)
         return 8;
     }
 
-    _trackSize = swapEndian<std::uint32_t>(_trackSize);
+    _trackSize = swapEndian<uint32_t>(_trackSize);
 
     if (enableMidiLog)
         qDebug() << "Reading midi track " << _chunkId[0] << _chunkId[1] << _chunkId[2] << _chunkId[3] << _trackSize;
@@ -203,7 +203,7 @@ std::uint32_t mtherapp::MidiTrack::readFromFile(std::ifstream& f)
     double totalTime = 0.0;
     int beatsPerMinute = 120; //default value
 
-    std::uint32_t bytesRead = 0;
+    uint32_t bytesRead = 0;
     while (bytesRead < _trackSize) {
 
         MidiMessage midiMessage;
@@ -224,12 +224,12 @@ std::uint32_t mtherapp::MidiTrack::readFromFile(std::ifstream& f)
 }
 
 
-std::uint32_t mtherapp::MidiTrack::writeToFile(std::ofstream& f, bool skipSomeMessages) const {
-    std::uint32_t totalBytesWritten = 0;
+uint32_t mtherapp::MidiTrack::writeToFile(std::ofstream& f, bool skipSomeMessages) const {
+    uint32_t totalBytesWritten = 0;
     //f << _chunkId;
     f.write(_chunkId, 4);
 
-    std::uint32_t sizeInverted = swapEndian<std::uint32_t>(_trackSize);
+    uint32_t sizeInverted = swapEndian<uint32_t>(_trackSize);
     //f << sizeInverted;
     f.write(reinterpret_cast<const char*>(&sizeInverted), 4);
     totalBytesWritten += 8;
@@ -257,9 +257,9 @@ void mtherapp::MidiTrack::closeLetRing(const uint8_t stringN, const uint8_t chan
         return;
     }
 
-    std::uint8_t ringNote = _ringRay[stringN];
+    uint8_t ringNote = _ringRay[stringN];
     _ringRay[stringN]=255;
-    std::uint8_t ringVelocy=80;
+    uint8_t ringVelocy=80;
     if (ringNote != 255)
         pushNoteOff(ringNote,ringVelocy,channel);
 }

@@ -16,25 +16,25 @@ namespace mtherapp {
             MidiFile() = default;
             MidiFile(std::string_view filename);
 
-            std::uint32_t calculateHeader(bool skipSomeMessages=false);
+            uint32_t calculateHeader(bool skipSomeMessages=false);
 
-            std::uint32_t readFromFile(std::string_view filename);
-            std::uint32_t readFromFile(std::ifstream& file);
+            uint32_t readFromFile(std::string_view filename);
+            uint32_t readFromFile(std::ifstream& file);
 
-            std::uint32_t writeToFile(std::string_view filename, bool skipSomeMessages=false);
-            std::uint32_t writeToFile(std::ofstream& file, bool skipSomeMessages=false);
+            uint32_t writeToFile(std::string_view filename, bool skipSomeMessages=false);
+            uint32_t writeToFile(std::ofstream& file, bool skipSomeMessages=false);
 
-            std::uint16_t getBPM() const { return _bpm; }
-            void setBPM(const std::uint16_t newBPM) { _bpm = newBPM; }
+            uint16_t getBPM() const { return _bpm; }
+            void setBPM(const uint16_t newBPM) { _bpm = newBPM; }
 
         protected:
-            std::uint16_t _bpm = 120;
+            uint16_t _bpm = 120;
 
             char _chunkId[4];
-            std::uint32_t _chunkSize;
-            std::uint16_t _formatType;
-            std::uint16_t _tracksCount;
-            std::uint16_t _timeDevisition;
+            uint32_t _chunkSize;
+            uint16_t _formatType;
+            uint16_t _tracksCount;
+            uint16_t _timeDevisition;
     };
 
 }

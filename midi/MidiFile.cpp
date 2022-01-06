@@ -6,9 +6,9 @@
 using namespace mtherapp;
 
 
-std::uint32_t mtherapp::MidiFile::calculateHeader(bool skipSomeMessages) {
+uint32_t mtherapp::MidiFile::calculateHeader(bool skipSomeMessages) {
 
-    std::uint32_t totalBytesCalculated = 0;
+    uint32_t totalBytesCalculated = 0;
     _chunkId[0] = 'M';
     _chunkId[1] = 'T';
     _chunkId[2] = 'h';
@@ -30,7 +30,7 @@ mtherapp::MidiFile::MidiFile(std::string_view filename) {
     readFromFile(filename);
 }
 
-std::uint32_t mtherapp::MidiFile::readFromFile(std::string_view filename) {
+uint32_t mtherapp::MidiFile::readFromFile(std::string_view filename) {
     std::string strFileName {filename};
     std::ifstream file {strFileName, std::ios::binary};
     if (file.is_open())
@@ -38,9 +38,9 @@ std::uint32_t mtherapp::MidiFile::readFromFile(std::string_view filename) {
     return 0;
 }
 
-std::uint32_t mtherapp::MidiFile::readFromFile(std::ifstream& f) {
+uint32_t mtherapp::MidiFile::readFromFile(std::ifstream& f) {
 
-    std::uint32_t totalBytesRead = 0;
+    uint32_t totalBytesRead = 0;
     _chunkSize = 0;
     _formatType = 0;
     _tracksCount = 0;
@@ -53,10 +53,10 @@ std::uint32_t mtherapp::MidiFile::readFromFile(std::ifstream& f) {
     f .read(reinterpret_cast<char*>(&_timeDevisition), 2);
     totalBytesRead += 14;
 
-    _chunkSize = swapEndian<std::uint32_t>(_chunkSize);
-    _formatType = swapEndian<std::uint16_t>(_formatType);
-    _tracksCount = swapEndian<std::uint16_t>(_tracksCount);
-    _timeDevisition = swapEndian<std::uint16_t>(_timeDevisition);
+    _chunkSize = swapEndian<uint32_t>(_chunkSize);
+    _formatType = swapEndian<uint16_t>(_formatType);
+    _tracksCount = swapEndian<uint16_t>(_tracksCount);
+    _timeDevisition = swapEndian<uint16_t>(_timeDevisition);
 
 
     if ((_chunkId[0]!='M') || (_chunkId[1]!='T')
@@ -87,7 +87,7 @@ std::uint32_t mtherapp::MidiFile::readFromFile(std::ifstream& f) {
     return totalBytesRead;
 }
 
-std::uint32_t mtherapp::MidiFile::writeToFile(std::string_view filename, bool skipSomeMessages) {
+uint32_t mtherapp::MidiFile::writeToFile(std::string_view filename, bool skipSomeMessages) {
     std::string strFilename(filename);
     std::ofstream file(strFilename, std::ios::binary);
     return writeToFile(file, skipSomeMessages);
@@ -95,15 +95,15 @@ std::uint32_t mtherapp::MidiFile::writeToFile(std::string_view filename, bool sk
 
 
 
-std::uint32_t mtherapp::MidiFile::writeToFile(std::ofstream& f, bool skipSomeMessages) {
+uint32_t mtherapp::MidiFile::writeToFile(std::ofstream& f, bool skipSomeMessages) {
 
-    std::uint32_t totalBytesWritten=0;
+    uint32_t totalBytesWritten=0;
     calculateHeader(skipSomeMessages);
 
-    std::uint32_t sizeInverted = swapEndian<std::uint32_t>(_chunkSize);
-    std::uint16_t formatInverted = swapEndian<std::uint16_t>(_formatType);
-    std::uint16_t tracksNInverted = swapEndian<std::uint16_t>(_tracksCount);
-    std::uint16_t timeDInverted = swapEndian<std::uint16_t>(_timeDevisition);
+    uint32_t sizeInverted = swapEndian<uint32_t>(_chunkSize);
+    uint16_t formatInverted = swapEndian<uint16_t>(_formatType);
+    uint16_t tracksNInverted = swapEndian<uint16_t>(_tracksCount);
+    uint16_t timeDInverted = swapEndian<uint16_t>(_timeDevisition);
 
     f.write(_chunkId, 4);
     f.write(reinterpret_cast<const char*>(&sizeInverted), 4);

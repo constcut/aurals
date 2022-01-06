@@ -19,14 +19,14 @@ double MidiMessage::getSecondsLength(const double bpm) const {
 }
 
 
-std::uint8_t MidiMessage::getEventType() const {
-    std::uint8_t eventType = (_typeAndChannel & (MidiMasks::EventTypeMask)) >> 4; //name with enumeration byte blocks
+uint8_t MidiMessage::getEventType() const {
+    uint8_t eventType = (_typeAndChannel & (MidiMasks::EventTypeMask)) >> 4; //name with enumeration byte blocks
     return eventType;
 }
 
 
-std::uint8_t MidiMessage::getChannel() const {
-    std::int8_t midiChannel = _typeAndChannel & MidiMasks::ChannelMask; //name with enumeration byte blocks
+uint8_t MidiMessage::getChannel() const {
+    uint8_t midiChannel = _typeAndChannel & MidiMasks::ChannelMask; //name with enumeration byte blocks
     return midiChannel;
 }
 
@@ -43,8 +43,8 @@ bool MidiMessage::isNotSingleParamEvent(const uint8_t eventType) const {
 }
 
 
-std::uint32_t MidiMessage::calculateSize(const bool skipSomeMessages) const {
-    std::uint32_t messageSize = 0;
+uint32_t MidiMessage::calculateSize(const bool skipSomeMessages) const {
+    uint32_t messageSize = 0;
 
     if (skipSomeMessages == true)
         if (canSkipThat())
@@ -55,7 +55,7 @@ std::uint32_t MidiMessage::calculateSize(const bool skipSomeMessages) const {
 
     if (isMetaEvent() == false) {
         ++messageSize; //parameter 1
-        std::uint8_t eventType = getEventType();
+        uint8_t eventType = getEventType();
 
         if (isNotSingleParamEvent(eventType))
             ++messageSize;                                                                                                                                                                //parameter 2
@@ -82,7 +82,7 @@ bool MidiMessage::canSkipThat() const {
         return true;
     }
     else {
-        std::uint8_t eventType = getEventType();
+        uint8_t eventType = getEventType();
         if ((eventType == MidiEvent::NoteOff) || (eventType == MidiEvent::NoteOn))
             return false;
         return true;
@@ -91,9 +91,9 @@ bool MidiMessage::canSkipThat() const {
 }
 
 
-std::uint32_t MidiMessage::readFromFile(std::ifstream& f) {
+uint32_t MidiMessage::readFromFile(std::ifstream& f) {
 
-    std::uint32_t totalBytesRead = 0;
+    uint32_t totalBytesRead = 0;
     totalBytesRead += _timeStamp.readFromFile(f);
     f.read(reinterpret_cast<char*>(&_typeAndChannel), 1);
     f.read(reinterpret_cast<char*>(&_param1), 1);
@@ -101,11 +101,11 @@ std::uint32_t MidiMessage::readFromFile(std::ifstream& f) {
 
     if (isMetaEvent()) {
         totalBytesRead += _metaLen.readFromFile(f);
-        std::uint32_t bytesInMetaBufer = _metaLen.getValue();
+        uint32_t bytesInMetaBufer = _metaLen.getValue();
         _metaBufer.clear();
 
-        for (std::uint32_t i = 0; i < bytesInMetaBufer; ++i) {
-            std::uint8_t byteBufer;
+        for (uint32_t i = 0; i < bytesInMetaBufer; ++i) {
+            uint8_t byteBufer;
             f.read(reinterpret_cast<char*>(&byteBufer), 1);
             _metaBufer.push_back(byteBufer);
         }
@@ -114,7 +114,7 @@ std::uint32_t MidiMessage::readFromFile(std::ifstream& f) {
             qDebug() << "Midi meta mes read " << _typeAndChannel << _param1 << _metaLen.getValue() << _timeStamp.getValue() << " total bytes " << totalBytesRead << " " << f.tellg();
     }
     else {
-        std::uint8_t eventType = getEventType();
+        uint8_t eventType = getEventType();
         if (isNotSingleParamEvent(eventType)) {
             f.read(reinterpret_cast<char*>(&_param2), 1);
             ++totalBytesRead;
@@ -134,7 +134,7 @@ std::uint32_t MidiMessage::readFromFile(std::ifstream& f) {
 }
 
 
-std::string MidiMessage::nameEvent(const std::int8_t eventNumber) const {
+std::string MidiMessage::nameEvent(const uint8_t eventNumber) const {
     switch (eventNumber) {
         case MidiEvent::NoteOff:
             return "Note off";
@@ -155,10 +155,10 @@ std::string MidiMessage::nameEvent(const std::int8_t eventNumber) const {
 }
 
 
-std::string MidiMessage::nameController(const std::uint8_t controllerNumber) const
+std::string MidiMessage::nameController(const uint8_t controllerNumber) const
 {
     struct controllesNames {
-        std::uint8_t index;
+        uint8_t index;
         std::string name;
     };
 
@@ -237,9 +237,9 @@ std::string MidiMessage::nameController(const std::uint8_t controllerNumber) con
     return "Unknown_ControllerName";
 }
 
-std::uint32_t MidiMessage::writeToFile(std::ofstream& f, const bool skipSomeMessages) const {
+uint32_t MidiMessage::writeToFile(std::ofstream& f, const bool skipSomeMessages) const {
 
-    std::uint32_t totalBytesWritten = 0;
+    uint32_t totalBytesWritten = 0;
     if (skipSomeMessages && canSkipThat())
         return 0;
 
@@ -259,7 +259,7 @@ std::uint32_t MidiMessage::writeToFile(std::ofstream& f, const bool skipSomeMess
         totalBytesWritten += _metaBufer.size();
     }
     else {
-        std::uint8_t eventType = getEventType();
+        uint8_t eventType = getEventType();
         if (isNotSingleParamEvent(eventType)) {
             f << _param2;
             ++totalBytesWritten;

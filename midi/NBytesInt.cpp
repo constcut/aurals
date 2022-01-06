@@ -13,9 +13,9 @@ NBytesInt::NBytesInt(uint32_t source) {
         return;
     }
 
-    std::vector<std::uint8_t> byteParts;
+    std::vector<uint8_t> byteParts;
     while (source) {
-        std::uint8_t nextByte = source % 128;
+        uint8_t nextByte = source % 128;
         byteParts.push_back(nextByte);
         source /= 128;
     }
@@ -24,8 +24,8 @@ NBytesInt::NBytesInt(uint32_t source) {
         push_back(byteParts[i]);
 }
 
-std::uint32_t mtherapp::NBytesInt::readFromFile(std::ifstream& f) {
-    std::uint8_t lastByte = 0;
+uint32_t mtherapp::NBytesInt::readFromFile(std::ifstream& f) {
+    uint8_t lastByte = 0;
     do {
         f.read(reinterpret_cast<char*>(&lastByte), 1);
         push_back(lastByte & 127);
@@ -40,9 +40,9 @@ std::uint32_t mtherapp::NBytesInt::readFromFile(std::ifstream& f) {
     return size();
 }
 
-std::uint32_t mtherapp::NBytesInt::writeToFile(std::ofstream& f) const {
+uint32_t mtherapp::NBytesInt::writeToFile(std::ofstream& f) const {
     for (size_t i = 0; i < size(); ++i) {
-        std::uint8_t anotherByte = operator [](i);
+        uint8_t anotherByte = operator [](i);
         if (i != size()-1)
             anotherByte |= 128;
         f << anotherByte;
@@ -55,8 +55,8 @@ std::uint32_t mtherapp::NBytesInt::writeToFile(std::ofstream& f) const {
     return size();
 }
 
-std::uint32_t mtherapp::NBytesInt::getValue() const {
-    std::uint32_t value = 0;
+uint32_t mtherapp::NBytesInt::getValue() const {
+    uint32_t value = 0;
     int bytesToCollect = size() < 4 ? size() : 4;
 
     for (int i = 0; i < bytesToCollect; ++i) {
