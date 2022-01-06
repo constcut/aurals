@@ -10,5 +10,9 @@
         <file>sf/test3.mid</file>
         <file>sf/test2.mid</file>
         <file>sf/test6.mid</file>
+        <file>sf/nylon_guitar.sf2</file>
+        <file>sf/fullset.sf2</file>
+        <file>sf/epiano.sf2</file>
+        <file>sf/drums.sf2</file>
     </qresource>
 </RCC>

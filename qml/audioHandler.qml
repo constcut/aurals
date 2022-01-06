@@ -96,8 +96,8 @@ Item {
                         audio.changeMidiRenderVolume(db)
                     }
                 }
-                ComboBox {
-                    model: ["piano.sf2", "guitar.sf2", "el_guitar.sf2"]
+                ComboBox { //TODO list loader
+                    model: ["epiano.sf2", "guitar.sf2", "fullset.sf2", "nylon_guitar.sf2", "piano.sf2", "drums.sf2", "el_guitar.sf2"]
                     currentIndex: 0
                     onCurrentTextChanged: {
                         audio.changeMidiSoundfont(currentText)
