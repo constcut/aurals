@@ -15,9 +15,34 @@
 #include "audio/Spectrograph.hpp"
 #include "music/Tapper.h"
 //#include "music/graphicmap.h"
+#include "midi/MidiFile.hpp"
 
 
 using namespace std;
+
+
+void checkMidiRegression() {
+    mtherapp::MidiFile m;
+    m.readFromFile("test1.mid");
+    m.writeToFile("test1_regression.mid");
+
+    QFile original, resaved;
+    original.setFileName("test1.mid");
+    original.open(QIODevice::ReadOnly);
+
+    resaved.setFileName("test1_regression.mid");
+    resaved.open(QIODevice::ReadOnly);
+
+    auto origialBytes = original.readAll();
+    auto resavedBytes = resaved.readAll();
+
+    if (origialBytes.size() == 0)
+        qDebug() << "ERROR! couldn't read original midi file";
+
+    if (origialBytes != resavedBytes)
+        qDebug() << "ERROR! Midi regression detected!";
+}
+
 
 
 int mainInit(int argc, char *argv[]) {
@@ -39,6 +64,7 @@ int mainInit(int argc, char *argv[]) {
         QFile::copy(":/sf/instrument.sf2", "instrument.sf2");
     if (QFile::exists("test1.mid") == false)
         QFile::copy(":/sf/test1.mid", "test1.mid");
+    checkMidiRegression();
 
     qDebug() << "Current working path "<<QDir::currentPath();
     int fontId = QFontDatabase::addApplicationFont(":/fonts/prefont.ttf");

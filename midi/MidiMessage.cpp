@@ -14,7 +14,7 @@ MidiMessage::MidiMessage(std::uint8_t b0, std::uint8_t b1, std::uint8_t b2, std:
 
 
 double MidiMessage::getSecondsLength(double bpm) const {
-    double seconds = static_cast<double>(_timeStamp.getValue()) * (120.0 / bpm) / 960.0; //TODO перепроверить
+    double seconds = static_cast<double>(_timeStamp.getValue()) * (120.0 / bpm) / 960.0;
     return seconds;
 }
 
@@ -115,7 +115,7 @@ std::uint32_t MidiMessage::readFromFile(std::ifstream& f) {
             qDebug() << "Midi meta mes read " << _typeAndChannel << _param1 << _metaLen.getValue() << _timeStamp.getValue() << " total bytes " << totalBytesRead << " " << f.tellg();
     }
     else {
-        std::uint8_t eventType = getEventType();  //TODO ENUMERATION                                                                                                                                        
+        std::uint8_t eventType = getEventType();
         if (isNotSingleParamEvent(eventType)) {
             f.read((char *)&_param2, 1);
             ++totalBytesRead;
