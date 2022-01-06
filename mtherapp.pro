@@ -5,9 +5,11 @@ CONFIG += c++17
 linux:Debug:CONFIG += sanitizer sanitize_address sanitize_memory sanitize_undefined
 #sanitize_thread
 
+
 #CONFIG += no_keywords #was used only for python interpreter
 DEFINES += QT_DEPRECATED_WARNINGS
 QMAKE_CXXFLAGS += -std=c++17
+QMAKE_CXXFLAGS += -Wall
 
 android: QT += androidextras
 

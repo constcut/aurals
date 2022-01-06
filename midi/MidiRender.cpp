@@ -47,6 +47,9 @@ bool MidiRender::openSoundFont(QString sfFilename)
 
     tsf_set_output(sf, mode, _sampleRate, _volume);
 
+    if (_soundFont != nullptr)
+        free(_soundFont); //This is C-lib, God forgive me
+
     _soundFont = sf;
     return true;
 }

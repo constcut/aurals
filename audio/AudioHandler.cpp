@@ -24,6 +24,23 @@ AudioHandler::AudioHandler() {
     initRecorder();
     initPlayer();
     initMidiPlayer();
+    _midiRender = std::make_unique<MidiRender>();
+}
+
+
+void AudioHandler::loadSoundfont() {
+    _midiRender->setVolumeDb(_midiVolumeDb);
+    _midiRender->openSoundFont(_soundfontFile);
+}
+
+
+void AudioHandler::changeMidiRenderVolume(const double db) {
+    _midiVolumeDb = db;
+}
+
+
+void AudioHandler::changeMidiSoundfont(const QString filename) {
+    _soundfontFile = filename;
 }
 
 
@@ -248,13 +265,8 @@ void AudioHandler::checkMidi() {
 
 
 void AudioHandler::openMidiFile(const QString filename) {
-     static mtherapp::MidiRender render;
-     static bool loaded = false;
-     if (loaded == false) {
-         render.openSoundFont("instrument.sf2"); //TODO configurable
-         loaded = true;
-     }
-     _midiBufer = render.renderShort(filename);
+    loadSoundfont();
+    _midiBufer = _midiRender->renderShort(filename);
 }
 
 

@@ -85,6 +85,17 @@ Item {
                         audio.saveMidiToWav("midi_.wav")
                     }
                 }
+                Text {
+                    text: "Midi volume"
+                }
+                ComboBox {
+                    model : ["18.0", "12.0", "6.0", "0.0", "-6.0", "-12.0", "-18.0"]
+                    currentIndex: 4
+                    onCurrentValueChanged: {
+                        var db = parseFloat(currentText)
+                        audio.changeMidiRenderVolume(db)
+                    }
+                }
             }
         }
     }
