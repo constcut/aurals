@@ -113,7 +113,7 @@ void AudioHandler::resetBufer() {
     _prevBufferSize = 0;
 }
 
-void AudioHandler::loadOnlyWindow(QString filename, quint64 position, quint64 window) {
+void AudioHandler::loadOnlyWindow(const QString filename, const quint64 position, const quint64 window) {
     WavFile wav;
     if ( wav.open(filename) == false)
        return;
@@ -122,12 +122,12 @@ void AudioHandler::loadOnlyWindow(QString filename, quint64 position, quint64 wi
     _commonBufer = wav.read(window*2);
 }
 
-void AudioHandler::loadWindowPCM(QByteArray window) {
+void AudioHandler::loadWindowPCM(const QByteArray window) {
     _commonBufer = window;
 }
 
 
-void AudioHandler::loadFile(QString filename) {
+void AudioHandler::loadFile(const QString filename) {
     if (_isPlaying || _isRecording)
         return;
     QFile audioFile;
@@ -139,7 +139,7 @@ void AudioHandler::loadFile(QString filename) {
 }
 
 
-void AudioHandler::saveFile(QString filename) const {
+void AudioHandler::saveFile(const QString filename) const {
     QFile f;
     f.setFileName(filename);
     if (f.open(QIODevice::WriteOnly)) {
@@ -152,7 +152,7 @@ void AudioHandler::saveFile(QString filename) const {
 }
 
 
-void AudioHandler::setSampleRate(int newSampleRate) { //DELAYED: resampling
+void AudioHandler::setSampleRate(const int newSampleRate) { //DELAYED: resampling
     if (_isPlaying || _isRecording)
         return;
     _commonFormat.setSampleRate(newSampleRate);
@@ -193,7 +193,7 @@ void AudioHandler::saveRecordTimstamp() const {
 }
 
 
-void AudioHandler::saveWavFile(QString filename) const {
+void AudioHandler::saveWavFile(const QString filename) const {
     WavFile wav;
     wav.open(filename, QIODevice::WriteOnly);
     wav.writeHeader(_commonFormat.sampleRate(), _commonFormat.sampleSize(), _commonBufer.size(), _commonFormat.channelCount() == 2, false); //EH not float fuck stupid QT, not cute at all
@@ -201,7 +201,7 @@ void AudioHandler::saveWavFile(QString filename) const {
 }
 
 
-void AudioHandler::loadWavFile(QString filename) {
+void AudioHandler::loadWavFile(const QString filename) {
     if (_isPlaying || _isRecording)
         return;
     WavFile wav;
@@ -210,12 +210,12 @@ void AudioHandler::loadWavFile(QString filename) {
 }
 
 
-void AudioHandler::deleteRecord(QString filename) const {
+void AudioHandler::deleteRecord(const QString filename) const {
     QFile::remove("records/" + filename);
 }
 
 
-void AudioHandler::renameRecord(QString filename, QString newFilename) const {
+void AudioHandler::renameRecord(const QString filename, const QString newFilename) const {
     QFile::rename("records/" + filename, "records/" + newFilename);
 }
 
@@ -247,7 +247,7 @@ void AudioHandler::checkMidi() {
 }
 
 
-void AudioHandler::openMidiFile(QString filename) {
+void AudioHandler::openMidiFile(const QString filename) {
      static mtherapp::MidiRender render;
      static bool loaded = false;
      if (loaded == false) {
@@ -258,7 +258,7 @@ void AudioHandler::openMidiFile(QString filename) {
 }
 
 
-void AudioHandler::saveMidiToWav(QString filename) {
+void AudioHandler::saveMidiToWav(const QString filename) const {
     WavFile wav;
     wav.open(filename, QIODevice::WriteOnly);
     wav.writeHeader(_midiFormat.sampleRate(), _midiFormat.sampleSize(), _midiBufer.size(), _midiFormat.channelCount() == 2, false); //EH not float fuck stupid QT, not cute at all

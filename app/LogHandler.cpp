@@ -32,29 +32,29 @@ void newLogMessageHandler(QtMsgType type, const QMessageLogContext &context, con
 
     LogHandler::getInstance().addLine(logLine);
 
-    LogHandler::getInstance().oldHandler(type, context, logLine); //msg
+    LogHandler::getInstance().getOldHandler()(type, context, logLine); //msg
 }
 
 LogHandler::LogHandler(QObject *parent) : QObject(parent)
 {
-    oldHandler = qInstallMessageHandler(newLogMessageHandler);
+    _oldHandler = qInstallMessageHandler(newLogMessageHandler);
 }
 
 
 void LogHandler::addLine(const QString anotherLine)
 {
-    if (logFileName.isEmpty() == false) {
+    if (_logFileName.isEmpty() == false) {
         //DELAYED: logging in another thread + possible server loging
         QString closedLine = anotherLine + QString("\n\n");
-        QFile logFile(logFileName);
+        QFile logFile(_logFileName);
         logFile.open(QIODevice::Append);
         logFile.write(closedLine.toLocal8Bit());
         logFile.close();
     }
 
-    logLines << anotherLine;
-    if (logLines.size() > 200) //make configurable
-        logLines.removeAt(0);
+    _logLines << anotherLine;
+    if (_logLines.size() > 200) //make configurable
+        _logLines.removeAt(0);
 }
 
 

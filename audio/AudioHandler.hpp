@@ -24,12 +24,12 @@ namespace mtherapp {
         Q_INVOKABLE void stopPlayback();
         Q_INVOKABLE void resetBufer();
 
-        Q_INVOKABLE void loadFile(QString filename);
-        Q_INVOKABLE void saveFile(QString filename) const;
-        Q_INVOKABLE void loadWavFile(QString filename);
-        Q_INVOKABLE void saveWavFile(QString filename) const;
-        Q_INVOKABLE void loadOnlyWindow(QString filename, quint64 position, quint64 window);
-        Q_INVOKABLE void loadWindowPCM(QByteArray window);
+        Q_INVOKABLE void loadFile(const QString filename);
+        Q_INVOKABLE void saveFile(const QString filename) const;
+        Q_INVOKABLE void loadWavFile(const QString filename);
+        Q_INVOKABLE void saveWavFile(const QString filename) const;
+        Q_INVOKABLE void loadOnlyWindow(const QString filename, const quint64 position, const quint64 window);
+        Q_INVOKABLE void loadWindowPCM(const QByteArray window);
 
         Q_INVOKABLE int getSampleRate() const {
             return _commonFormat.sampleRate();
@@ -38,13 +38,13 @@ namespace mtherapp {
             return _commonFormat.sampleSize();
         }
 
-        Q_INVOKABLE void setSampleRate(int newSampleRate);
+        Q_INVOKABLE void setSampleRate(const int newSampleRate);
         Q_INVOKABLE void requestPermission() const;
 
         Q_INVOKABLE QStringList getRecords() const;
         Q_INVOKABLE void saveRecordTimstamp() const;
-        Q_INVOKABLE void deleteRecord(QString filename) const;
-        Q_INVOKABLE void renameRecord(QString filename, QString newFilename) const;
+        Q_INVOKABLE void deleteRecord(const QString filename) const;
+        Q_INVOKABLE void renameRecord(const QString filename, const QString newFilename) const;
 
         void requestStopRecord();
         void requestStopPlayback();
@@ -55,8 +55,8 @@ namespace mtherapp {
 
         Q_INVOKABLE void checkMidi();
 
-        Q_INVOKABLE void openMidiFile(QString filename);
-        Q_INVOKABLE void saveMidiToWav(QString filename);
+        Q_INVOKABLE void openMidiFile(const QString filename);
+        Q_INVOKABLE void saveMidiToWav(const QString filename) const;
 
     private:
 
