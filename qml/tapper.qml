@@ -10,17 +10,33 @@ Item {
         id: tapper
     }
 
+    TextField {
+        placeholderText: "Midi note 1"
+        x: 0
+        y: 5
+        id: firstMidiNoteField
+    }
+
     Rectangle {
         x: 0
-        y: 0
+        y: 50
         height: parent.height
         width: parent.width / 8
         color: "darkgray"
         id: leftTap
 
+        TapHandler {
+            acceptedButtons: Qt.AllButtons
+            onTapped: {
+                var midiNote = 60
+                if (firstMidiNoteField.text != "")
+                    midiNote = parseInt(firstMidiNoteField.text)
+                tapper.tapped(midiNote)
+            }
+        }
+        /*
         property int clickCount: 0
         property int releaseCount: 0
-
         MouseArea {
             anchors.fill: parent
             onPressed: {
@@ -30,11 +46,19 @@ Item {
             onReleased: {
                 tapper.released(0);
             }
-        }
+        }*/ //This is the way to capture also note duration, but then we fail on fast taps :(
     }
+
+    TextField {
+        placeholderText: "Midi note 2"
+        x: parent.width - width
+        y: 5
+        id: secondMidiNoteField
+    }
+
     Rectangle {
         x: parent.width - width
-        y: 0
+        y: 50
         height: parent.height
         width: parent.width / 8
         color: "darkgray"
@@ -43,8 +67,10 @@ Item {
         TapHandler {
             acceptedButtons: Qt.AllButtons
             onTapped: {
-                //console.log("Tap ", tapCount)
-                tapper.tapped(0)
+                var midiNote = 72
+                if (secondMidiNoteField.text != "")
+                    midiNote = parseInt(secondMidiNoteField.text)
+                tapper.tapped(midiNote)
             }
         }
     }
@@ -53,11 +79,12 @@ Item {
         id: resetButton
         text: "Reset"
         y: 5
-        x: leftTap.width + 10
+        x: leftTap.width + 100
         onClicked: {
             tapper.reset()
         }
     }
+    /*
     ToolButton {
         id: saveClicksButton
         text: "Save clicks"
@@ -66,12 +93,12 @@ Item {
         onClicked: {
             tapper.saveClicksAsMidi("tapper.mid")
         }
-    }
+    }*/ //Used in case above
     ToolButton {
         id: saveTapButton
         text: "Save taps"
         y: 5
-        x: saveClicksButton.x + saveClicksButton.width + 10
+        x: resetButton.x + resetButton.width + 10
         onClicked: {
             tapper.saveTapsAsMidi("tapper.mid")
         }
@@ -82,6 +109,7 @@ Item {
         y: 5
         x: saveTapButton.x + saveTapButton.width + 10
         onClicked: {
+            tapper.saveTapsAsMidi("tapper.mid")
             audio.openMidiFile("tapper.mid")
             audio.startMidiPlayer()
         }

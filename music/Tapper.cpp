@@ -82,25 +82,31 @@ void Tapper::saveTapsAsMidi(const QString filename) const {
     const double coef = 0.95; //Найти точную пропорцию времени
 
     moment prevMoment;
+    int prevNote = 0;
     for (size_t i = 0; i < _tapEvents.size(); ++i) {
         long fromPrevTap = 0;
+
         moment currentMoment = _tapEvents[i].time;
+        int currentNote = _tapEvents[i].idx;
+
+        qDebug() << "Current note " << currentNote;
+
         if (i != 0)
             fromPrevTap = chrono::duration_cast<chrono::milliseconds>(currentMoment - prevMoment).count();
-
-        //qDebug() << "From prev note " << fromPrevTap;
 
         double accurateValue = 2.0 * fromPrevTap * (480.0 / 500.0) * coef;
         if (i != 0) {
             track.accumulate(accurateValue);
-            track.pushNoteOff(60, 100, 0);
+            track.pushNoteOff(prevNote, 100, 0);
         }
-        //if (i != _tapEvents.size() - 1)
-        track.pushNoteOn(60, 100, 0);
+        qDebug() << i << " _ " << fromPrevTap << " " << prevNote << " " << currentNote;
+
+        track.pushNoteOn(currentNote, 100, 0);
         prevMoment = currentMoment;
+        prevNote = currentNote;
     }
     track.accumulate(480 * coef);
-    track.pushNoteOff(60, 100, 0);
+    track.pushNoteOff(prevNote, 100, 0);
     track.accumulate(2000 * coef);
     track.pushNoteOff(60, 100, 0); //Pause in the end:_)
     track.pushEvent47();
