@@ -11,7 +11,7 @@ namespace mtherapp {
 
     public:
         NBytesInt(){}
-        NBytesInt(std::uint32_t source);
+        NBytesInt(uint32_t source);
 
         std::uint32_t readFromFile(std::ifstream& f);
         std::uint32_t writeToFile(std::ofstream& f) const;

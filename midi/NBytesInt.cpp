@@ -7,7 +7,7 @@
 
 using namespace mtherapp;
 
-NBytesInt::NBytesInt(std::uint32_t source) {
+NBytesInt::NBytesInt(uint32_t source) {
     if (source == 0) {
         push_back(0);
         return;

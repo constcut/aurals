@@ -42,12 +42,12 @@ std::uint32_t mtherapp::MidiTrack::calculateHeader(bool skipSomeMessages) {
 }
 
 
-void mtherapp::MidiTrack::pushChangeInstrument(std::uint8_t newInstrument, std::uint8_t channel, std::uint32_t timeShift) {
+void mtherapp::MidiTrack::pushChangeInstrument(const uint8_t newInstrument, const uint8_t channel, const uint32_t timeShift) {
     push_back(MidiMessage(MidiMasks::PatchChangeMask | channel, newInstrument, 0, timeShift));
 }
 
 
-void mtherapp::MidiTrack::pushTrackName(std::string trackName) {
+void mtherapp::MidiTrack::pushTrackName(const std::string trackName) {
     MidiMessage nameTrack(MidiEvent::MetaEvent, MidiMetaTypes::TrackName);
     nameTrack.metaLen() = NBytesInt(trackName.size());
 
@@ -58,8 +58,8 @@ void mtherapp::MidiTrack::pushTrackName(std::string trackName) {
 }
 
 
-void mtherapp::MidiTrack::pushMetricsSignature(std::uint8_t numeration, std::uint8_t denumeration,
-                                     std::uint32_t timeShift, std::uint8_t metr, std::uint8_t perQuat) {
+void mtherapp::MidiTrack::pushMetricsSignature(const uint8_t numeration, const uint8_t denumeration,
+                                               const uint32_t timeShift, const uint8_t metr, const uint8_t perQuat) {
     MidiMessage metrics(MidiEvent::MetaEvent, MidiMetaTypes::ChangeTimeSignature, 0, timeShift);
     metrics.metaBufer().push_back(numeration);
 
@@ -73,7 +73,7 @@ void mtherapp::MidiTrack::pushMetricsSignature(std::uint8_t numeration, std::uin
 }
 
 
-void mtherapp::MidiTrack::pushChangeBPM(std::uint16_t bpm, std::uint32_t timeShift) {
+void mtherapp::MidiTrack::pushChangeBPM(const uint16_t bpm, const uint32_t timeShift) {
     MidiMessage changeTempo(MidiEvent::MetaEvent, MidiMetaTypes::ChangeTempo, 0, timeShift);
     std::uint32_t nanoCount = 60000000 / bpm; //6e7 = amount of nanoseconds
     changeTempo.metaBufer().push_back((nanoCount >> 16) & 0xff);
@@ -85,19 +85,19 @@ void mtherapp::MidiTrack::pushChangeBPM(std::uint16_t bpm, std::uint32_t timeShi
 }
 
 
-void mtherapp::MidiTrack::pushChangeVolume(std::uint8_t newVolume, std::uint8_t channel) {
+void mtherapp::MidiTrack::pushChangeVolume(const uint8_t newVolume, const uint8_t channel) {
     MidiMessage volumeChange(MidiMasks::ControlChangeMask | channel, MidiChange::ChangeVolume, newVolume > 127 ? 127 : newVolume, 0);
     push_back(volumeChange);
 }
 
 
-void mtherapp::MidiTrack::pushChangePanoram(std::uint8_t newPanoram, std::uint8_t channel) {
+void mtherapp::MidiTrack::pushChangePanoram(const uint8_t newPanoram, const uint8_t channel) {
     MidiMessage panoramChange(MidiMasks::ControlChangeMask | channel, MidiChange::ChangePanoram, newPanoram, 0);
     push_back(panoramChange);
 }
 
 
-void mtherapp::MidiTrack::pushVibration(std::uint8_t channel, std::uint8_t depth, std::uint16_t step, std::uint8_t stepsCount) {
+void mtherapp::MidiTrack::pushVibration(const uint8_t channel, const uint8_t depth, const uint16_t step, const uint8_t stepsCount) {
     const std::uint8_t middle = 64;
     std::uint8_t shiftDown = middle - depth;
     std::uint8_t shiftUp = middle + depth;
@@ -111,7 +111,7 @@ void mtherapp::MidiTrack::pushVibration(std::uint8_t channel, std::uint8_t depth
 }
 
 
-void mtherapp::MidiTrack::pushSlideUp(std::uint8_t channel, std::uint8_t shift, std::uint16_t step, std::uint8_t stepsCount) {
+void mtherapp::MidiTrack::pushSlideUp(const uint8_t channel, const uint8_t shift, const uint16_t step, const uint8_t stepsCount) {
     const std::uint8_t middle = 64;
     std::uint8_t pitchShift = middle;
     std::uint8_t signalKey = MidiMasks::PitchWheelMask + channel;
@@ -123,7 +123,7 @@ void mtherapp::MidiTrack::pushSlideUp(std::uint8_t channel, std::uint8_t shift, 
 }
 
 
-void mtherapp::MidiTrack::pushSlideDown(std::uint8_t channel, std::uint8_t shift, std::uint16_t step, std::uint8_t stepsCount) {
+void mtherapp::MidiTrack::pushSlideDown(const uint8_t channel, const uint8_t shift, const uint16_t step, const uint8_t stepsCount) {
     const std::uint8_t middle = 64;
     std::uint8_t pitchShift = middle;
     std::uint8_t signalKey = MidiMasks::PitchWheelMask + channel;
@@ -135,7 +135,7 @@ void mtherapp::MidiTrack::pushSlideDown(std::uint8_t channel, std::uint8_t shift
 }
 
 
-void mtherapp::MidiTrack::pushTremolo(std::uint8_t channel, std::uint16_t offset) {
+void mtherapp::MidiTrack::pushTremolo(const uint8_t channel, uint16_t offset) {
     std::uint16_t slideStep = offset / 40;
     const std::uint8_t middle = 64;
     std::uint8_t pitchShift = middle;
@@ -149,7 +149,7 @@ void mtherapp::MidiTrack::pushTremolo(std::uint8_t channel, std::uint16_t offset
 }
 
 
-void mtherapp::MidiTrack::pushFadeIn(std::uint16_t offset, std::uint8_t channel) {
+void mtherapp::MidiTrack::pushFadeIn(const uint16_t offset, const uint8_t channel) {
     std::uint8_t newVolume = 27;
     std::uint16_t fadeInStep = offset / 20;
     push_back(MidiMessage(MidiMasks::ControlChangeMask | channel, MidiChange::ChangeVolume, newVolume, 0));
@@ -166,7 +166,7 @@ void mtherapp::MidiTrack::pushEvent47() { //Emergency event
 }
 
 
-std::int16_t mtherapp::MidiTrack::calculateRhythmDetail(std::uint8_t value, std::int16_t offset) {
+std::int16_t mtherapp::MidiTrack::calculateRhythmDetail(const uint8_t value, const int16_t offset) const {
     std::uint16_t resultOffset = 0;
     if (value == 3)
         resultOffset = (offset * 2) / 3;
@@ -244,14 +244,14 @@ std::uint32_t mtherapp::MidiTrack::writeToFile(std::ofstream& f, bool skipSomeMe
 }
 
 
-void mtherapp::MidiTrack::closeLetRings(std::uint8_t channel) {
+void mtherapp::MidiTrack::closeLetRings(const uint8_t channel) {
     for (size_t i = 0; i < 10; ++i)
         if (_ringRay[i] != 255)
             closeLetRing(i, channel);
 }
 
 
-void mtherapp::MidiTrack::closeLetRing(std::uint8_t stringN, std::uint8_t channel) {
+void mtherapp::MidiTrack::closeLetRing(const uint8_t stringN, const uint8_t channel) {
     if (stringN > 8){
         qDebug() <<"String issue " << stringN;
         return;
@@ -265,8 +265,8 @@ void mtherapp::MidiTrack::closeLetRing(std::uint8_t stringN, std::uint8_t channe
 }
 
 
-void mtherapp::MidiTrack::openLetRing(std::uint8_t stringN, std::uint8_t midiNote,
-                                      std::uint8_t velocity, std::uint8_t channel) {
+void mtherapp::MidiTrack::openLetRing(const uint8_t stringN, const uint8_t midiNote,
+                                      const uint8_t velocity, const uint8_t channel) {
     if (stringN > 8){
         qDebug() <<"String issue "<<stringN;
         return;
@@ -289,14 +289,14 @@ void mtherapp::MidiTrack::finishIncomplete(short specialR) {
 }
 
 
-void mtherapp::MidiTrack::pushNoteOn(std::uint8_t midiNote, std::uint8_t velocity, std::uint8_t channel) {
+void mtherapp::MidiTrack::pushNoteOn(const uint8_t midiNote, const uint8_t velocity, const uint8_t channel) {
     MidiMessage msg(MidiMasks::NoteOnMask | channel, midiNote, velocity,_accum);
     flushAccum();
     push_back(msg);
 }
 
 
-void mtherapp::MidiTrack::pushNoteOff(std::uint8_t midiNote, std::uint8_t velocity, std::uint8_t channel) {
+void mtherapp::MidiTrack::pushNoteOff(const uint8_t midiNote, const uint8_t velocity, const uint8_t channel) {
     MidiMessage msg(MidiMasks::NoteOffMask | channel, midiNote, velocity,_accum);
     flushAccum();
     push_back(msg);

@@ -8,12 +8,12 @@ using namespace mtherapp;
 using namespace std;
 
 
-void Tapper::pressed(int idx) {
+void Tapper::pressed(const int idx) {
     _mouseEvents.push_back(MouseEvent{idx, true, std::chrono::high_resolution_clock::now()});
 }
 
 
-void Tapper::released(int idx) {
+void Tapper::released(const int idx) {
     _mouseEvents.push_back(MouseEvent{idx, false, std::chrono::high_resolution_clock::now()});
 }
 
@@ -24,7 +24,7 @@ void Tapper::reset() {
 }
 
 
-void Tapper::saveClicksAsMidi(QString filename) const {
+void Tapper::saveClicksAsMidi(const QString filename) const {
     //Для начала мы рассмотрим самый простой случай, одной единственной ноты
     //Тогда нам не нужно делать анализ какая нота начала звучать, а какая закончила
     if (_mouseEvents.size() % 2 != 0)
@@ -70,11 +70,12 @@ void Tapper::saveClicksAsMidi(QString filename) const {
 }
 
 
-void Tapper::tapped(int idx) {
+void Tapper::tapped(const int idx) {
     _tapEvents.push_back(TapEvent{idx, std::chrono::high_resolution_clock::now()});
 }
 
-void Tapper::saveTapsAsMidi(QString filename) const {
+
+void Tapper::saveTapsAsMidi(const QString filename) const {
 
     MidiTrack track;
     track.pushChangeBPM(240, 0); //somehow 240 is almost! realtime

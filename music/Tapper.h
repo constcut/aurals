@@ -29,12 +29,12 @@ namespace mtherapp {
 
             Q_INVOKABLE void reset();
 
-            Q_INVOKABLE void pressed(int idx);
-            Q_INVOKABLE void released(int idx);
-            Q_INVOKABLE void saveClicksAsMidi(QString filename) const;
+            Q_INVOKABLE void pressed(const int idx);
+            Q_INVOKABLE void released(const int idx);
+            Q_INVOKABLE void saveClicksAsMidi(const QString filename) const;
 
-            Q_INVOKABLE void tapped(int idx);
-            Q_INVOKABLE void saveTapsAsMidi(QString filename) const;
+            Q_INVOKABLE void tapped(const int idx);
+            Q_INVOKABLE void saveTapsAsMidi(const QString filename) const;
 
 
             //TODO настройка разных нот для idx

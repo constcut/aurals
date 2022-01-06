@@ -20,8 +20,9 @@ namespace mtherapp {
     public:
         GraphicMap() = default;
 
-        Q_INVOKABLE int getAssociation(int x, int y) const;
-        Q_INVOKABLE void addElement(int x, int y, int w, int h, QColor c, QColor hl, int association);
+        Q_INVOKABLE int getAssociation(const int x, const int y) const;
+        Q_INVOKABLE void addElement(const int x, const int y, const int w, const int h,
+                                    const QColor c, const QColor hl, const int association);
 
         void paint(QPainter *painter) override;
 
@@ -39,17 +40,20 @@ namespace mtherapp {
 
         PianoQML();
 
-        void addOctave(int x, int y, int startingNote);
-        void addNote(int x, int y, int note, bool hasBlack = false);
+        void addOctave(const int x, const int y, const int startingNote);
+        void addNote(const int x, const int y, const int note, const bool hasBlack = false);
 
-        Q_INVOKABLE void selectByAssociation(int ass);
-        Q_INVOKABLE void unSelectByAssociation(int ass);
+        Q_INVOKABLE void selectByAssociation(const int ass);
+        Q_INVOKABLE void unSelectByAssociation(const int ass);
 
     protected:
 
-        GraphicElement* findElementByAssociation(int ass);
+        GraphicElement* findElementByAssociation(const int ass);
 
-        int whiteKeyWidth, whiteKeyHeight, blackKeyWidth, blackKeyHeight;
+        int _whiteKeyWidth;
+        int _whiteKeyHeight;
+        int _blackKeyWidth;
+        int _blackKeyHeight;
     };
 
 }

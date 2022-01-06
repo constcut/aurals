@@ -5,7 +5,7 @@
 using namespace mtherapp;
 
 
-int GraphicMap::getAssociation(int x, int y) const{
+int GraphicMap::getAssociation(const int x, const int y) const{
 
     for (int i = elements.size()-1; i >= 0; --i) {
         int x2 = elements[i].w + elements[i].x;
@@ -16,7 +16,8 @@ int GraphicMap::getAssociation(int x, int y) const{
     return -1;
 }
 
-void GraphicMap::addElement(int x, int y, int w, int h, QColor c, QColor hl, int association) {
+void GraphicMap::addElement(const int x, const int y, const int w, const int h,
+                            const QColor c, const QColor hl, const int association) {
     GraphicElement el;
     el.x = x;
     el.y = y;
@@ -44,52 +45,52 @@ void GraphicMap::paint(QPainter *painter) {
 //================PianoQML====================================
 
 
-PianoQML::PianoQML() :whiteKeyWidth(30), whiteKeyHeight(110), blackKeyWidth(16), blackKeyHeight(80) {
+PianoQML::PianoQML() :_whiteKeyWidth(30), _whiteKeyHeight(110), _blackKeyWidth(16), _blackKeyHeight(80) {
 
     addNote(0, 0, 21, true);
-    addNote(whiteKeyWidth,0,23);
+    addNote(_whiteKeyWidth,0,23);
 
-    int offsetsOfFirstNotes = whiteKeyWidth*2;
-    int octaveWidth = whiteKeyWidth*7;
+    int offsetsOfFirstNotes = _whiteKeyWidth*2;
+    int octaveWidth = _whiteKeyWidth*7;
 
     for (int i = 0; i < 7; ++i)
         addOctave(octaveWidth * i + offsetsOfFirstNotes ,0,24 + 12 * i);
     addNote(octaveWidth * 7 + offsetsOfFirstNotes, 0, 108);
 }
 
-void PianoQML::addOctave(int x, int y, int startingNote) {
+void PianoQML::addOctave(int x, const int y, const int startingNote) {
     for (int i = 0; i < 7; ++i) {
         bool hasBlack = (i == 2 || i == 6) ? false : true;
         int subShift = (i + 1) / 4;
         int noteShift = 2 * i - subShift; //7 notes to 12
-        addNote(i * whiteKeyWidth + x, y, startingNote+noteShift,hasBlack);
+        addNote(i * _whiteKeyWidth + x, y, startingNote+noteShift,hasBlack);
     }
 }
 
-void PianoQML::addNote(int x, int y, int note, bool hasBlack) {
+void PianoQML::addNote(int x, const int y, const int note, const bool hasBlack) {
     GraphicElement whiteKey;
     whiteKey.association = note;
     whiteKey.x = x;
     whiteKey.y = y;
     whiteKey.color = QColor(Qt::white);
     whiteKey.hl = QColor(Qt::darkGreen);
-    whiteKey.w = whiteKeyWidth;
-    whiteKey.h = whiteKeyHeight;
+    whiteKey.w = _whiteKeyWidth;
+    whiteKey.h = _whiteKeyHeight;
 
     elements << whiteKey;
 
     if (hasBlack) {
         GraphicElement blackKey;
         blackKey.association = note + 1;
-        blackKey.x = x+ (whiteKeyWidth-blackKeyWidth);
+        blackKey.x = x+ (_whiteKeyWidth-_blackKeyWidth);
         blackKey.y = y;
-        blackKey.w = blackKeyWidth;
-        blackKey.h = blackKeyHeight;
+        blackKey.w = _blackKeyWidth;
+        blackKey.h = _blackKeyHeight;
         elements << blackKey;
     }
 }
 
-void PianoQML::selectByAssociation(int ass) {
+void PianoQML::selectByAssociation(const int ass) {
     GraphicElement *el = findElementByAssociation(ass);
     if (el) {
         el->selected = true;
@@ -97,7 +98,7 @@ void PianoQML::selectByAssociation(int ass) {
     }
 }
 
-void PianoQML::unSelectByAssociation(int ass) {
+void PianoQML::unSelectByAssociation(const int ass) {
     GraphicElement *el = findElementByAssociation(ass);
     if (el) {
         el->selected = false;
@@ -105,7 +106,7 @@ void PianoQML::unSelectByAssociation(int ass) {
     }
 }
 
-GraphicElement *PianoQML::findElementByAssociation(int ass) {
+GraphicElement *PianoQML::findElementByAssociation(const int ass) {
     for (auto& e: elements)
         if (e.association == ass)
             return &e;
