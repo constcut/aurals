@@ -23,7 +23,8 @@ using namespace std;
 
 void checkMidiRegression() {
 
-    QList<QString> filesToCheck {"test1.mid", "test2.mid", "test3.mid", "test4.mid", "test5.mid"};
+    QList<QString> filesToCheck {"test1.mid", "test2.mid", "test3.mid",
+                                 "test4.mid", "test5.mid", "test6.mid"};
 
     for (auto& filename: filesToCheck) {
         mtherapp::MidiFile m;
@@ -53,7 +54,7 @@ void checkMidiRegression() {
 
 void copySoundfontsAndTests() {
     QList<QString> filesToCopy {"piano.sf2", "guitar.sf2", "el_guitar.sf2", "test1.mid",
-                               "test2.mid", "test3.mid", "test4.mid", "test5.mid"};
+                               "test2.mid", "test3.mid", "test4.mid", "test5.mid", "test6.mid"};
 
     for (auto& file: filesToCopy)
         if (QFile::exists(file) == false)

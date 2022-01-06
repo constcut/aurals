@@ -254,7 +254,7 @@ void AudioHandler::stopMidiPlayer() {
 
 
 void AudioHandler::checkMidi() {
-    openMidiFile("test4.mid");
+    openMidiFile("test6.mid");
 }
 
 
