@@ -189,18 +189,18 @@ bool WavFile::readHeader() {
 
             if (qFromLittleEndian<quint32>(header.wave.descriptor.size) > sizeof(WAVEHeader)) {
                 quint16 extraFormatBytes;
-                if (peek((char*)&extraFormatBytes, sizeof(quint16)) != sizeof(quint16))
+                if (peek(reinterpret_cast<char*>(&extraFormatBytes), sizeof(quint16)) != sizeof(quint16))
                     return false;
                 const qint64 throwAwayBytes = sizeof(quint16) + qFromLittleEndian<quint16>(extraFormatBytes);
                 if (read(throwAwayBytes).size() != throwAwayBytes)
                     return false;
             }
 
-            if (read((char*)&dataHeader, sizeof(DATAHeader)) != sizeof(DATAHeader))
+            if (read(reinterpret_cast<char*>(&dataHeader), sizeof(DATAHeader)) != sizeof(DATAHeader))
                 return false;
 
             while (std::memcmp(&dataHeader.descriptor.id, "data",4) != 0)
-                if (read((char*)&dataHeader, sizeof(DATAHeader)) != sizeof(DATAHeader))
+                if (read(reinterpret_cast<char*>(&dataHeader), sizeof(DATAHeader)) != sizeof(DATAHeader))
                     return false;
 
             if (std::memcmp(&header.riff.descriptor.id, "RIFF", 4) == 0)

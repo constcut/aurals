@@ -114,7 +114,7 @@ vector<size_t> mtherapp::peakIndexesInData(const vector<double>& signal, const f
     float minMag = x[minMagIdx];
     float leftMin = minMag;
     
-    int len = (int) x.size();
+    int len = static_cast<int>(x.size());
     float tempMag = minMag;
     bool foundPeak = false;
     

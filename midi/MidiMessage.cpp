@@ -121,7 +121,7 @@ uint32_t MidiMessage::readFromFile(std::ifstream& f) {
         }
         if (enableMidiLog)
             qDebug() << "Midi message read " << nameEvent(eventType) << " ( " << eventType << getChannel() << " ) "
-                   << (int)_param1 << " " << (int)_param2 << " t: " << _timeStamp.getValue() << " total bytes " << totalBytesRead << " " << f.tellg();
+                   << static_cast<int>(_param1)  << " " << static_cast<int>(_param2) << " t: " << _timeStamp.getValue() << " total bytes " << totalBytesRead << " " << f.tellg();
         if (eventType == 0xB) {
             if (enableMidiLog)
                 qDebug() << "Controller name: " << nameController(_param1);
