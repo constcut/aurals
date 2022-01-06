@@ -18,8 +18,12 @@ namespace mtherapp {
     std::pair<double, double> calc_YinF0(const float* data, const size_t len,
                                          const double threshold=0.15, const double sampleRate=44100.0);
 
+    double calc_Mean(const double* data, const size_t len);
+    double calc_Median(const double* data, const size_t len);
+    double calc_Mode(const double* data, const size_t len);
+    std::pair<double, double> calc_Range(const double* data, const size_t len);
+
 }
 
-//TODO mean, median, envelop
 
 #endif // FEATUREEXTRACTOR_H

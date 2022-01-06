@@ -1,6 +1,8 @@
 #include "FeatureExtractor.hpp"
 
 #include <cmath>
+#include <algorithm>
+#include <unordered_map>
 
 #include <QDebug>
 
@@ -46,4 +48,48 @@ std::pair<double, double> mtherapp::calc_YinF0(const float* data,  const size_t 
     yin.init(sampleRate, len);
     yin.setThreshold(threshold);
     return {yin.getPitch(data), yin.getTau()};
+}
+
+
+double calc_Mean(const double* data, const size_t len) {
+    double summ = 0.0;
+    for (size_t i = 0; i < len; ++i)
+        summ += data[i];
+    return summ / len;
+}
+
+
+double calc_Median(const double* data, const size_t len) {
+    if (len == 0)
+        return -0.0;
+
+    std::vector<double> input(data, data + len);
+    std::sort(input.begin(), input.end());
+    size_t middlePosition = len/2;
+    return input[middlePosition];
+}
+
+
+double calc_Mode(const double* data, const size_t len) { //maybe need to add here epsilom? yet unused
+    if (len == 0)
+        return -0.0;
+
+    std::unordered_map<double, size_t> usedMap;
+    for (size_t i = 0; i < len; ++i) {
+        if (usedMap.count(data[i]))
+            usedMap[data[i]] += 1;
+        else
+            usedMap[data[i]] = 1;
+    }
+    std::vector<std::pair<double, size_t>> usedVec(usedMap.begin(), usedMap.end());
+    std::sort(usedVec.begin(), usedVec.end(), [](auto& lhs, auto& rhs){ return lhs.second > rhs.second; });
+    return usedVec[0].first;
+}
+
+
+std::pair<double, double> calc_Range(const double* data, const size_t len) {
+    if (len == 0)
+        return {0.0, 0.0};
+    const auto [min, max] = std::minmax_element(data, data + len);
+    return {*min, *max};
 }

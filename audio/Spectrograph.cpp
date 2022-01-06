@@ -251,6 +251,8 @@ void SpectrographPainter::findF0() { //Возможно проверять уж�
     std::unordered_map<int, double> table;
     std::unordered_map<int, std::vector<int>> sequences;
 
+    qDebug() << "_" << _freqStep;
+
     for (int i = 6; i < 100; ++i) { //TODO необходимо считать нижнюю границу исходя из частоты корзины и нижней анализируемой ноты, данный случай для 4096
         double summ = 0.0;
         std::vector<int> sequence;
