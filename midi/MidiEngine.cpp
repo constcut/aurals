@@ -43,7 +43,7 @@ void MidiEngine::printMMError(DWORD err) //beter return value
 #endif
 
 
-void MidiEngine::startFile(QString aliasName)
+void MidiEngine::startFile(const QString aliasName)
 {
     if (opened)
         freeInitials();
@@ -67,7 +67,7 @@ void MidiEngine::startFile(QString aliasName)
 }
 
 
-void MidiEngine::stopFile(QString aliasName)
+void MidiEngine::stopFile(const QString aliasName)
 {
     if (opened)
         freeInitials();
@@ -87,7 +87,7 @@ QByteArray stringBytes = commandString.toLocal8Bit();
 #endif
 }
 
-void MidiEngine::openFile(QString filename, QString aliasName)
+void MidiEngine::openFile(const QString filename, const QString aliasName)
 {
     if (opened)
         freeInitials();
@@ -187,7 +187,7 @@ MidiEngine::~MidiEngine()
     freeInitials();
 }
 
-void MidiEngine::playTrack(mtherapp::MidiTrack &track)
+void MidiEngine::playTrack(MidiTrack &track)
 {
     if (opened==false)
         init();
@@ -236,7 +236,7 @@ void MidiEngine::run()
     qDebug() << "Realtime play finished";
 }
 
-void MidiEngine::playTrackRealtime(mtherapp::MidiTrack &track, bool playNotes, bool emitSignal)
+void MidiEngine::playTrackRealtime(MidiTrack &track, const bool playNotes, const bool emitSignal)
 {
    _toPlay = &track;
    this->_playNotes = playNotes;
@@ -245,7 +245,7 @@ void MidiEngine::playTrackRealtime(mtherapp::MidiTrack &track, bool playNotes, b
    start();
 }
 
-void MidiEngine::sendSignal(mtherapp::MidiMessage &signal)
+void MidiEngine::sendSignal(const MidiMessage &signal)
 {
     if (opened==false)
         init();
@@ -256,7 +256,7 @@ void MidiEngine::sendSignal(mtherapp::MidiMessage &signal)
         sendSignalShort(signal.getTypeAndChannel() ,signal.getParameter1(),signal.getParameter2());
 }
 
-void MidiEngine::sendSignalShort([[maybe_unused]] uint8_t status, [[maybe_unused]] int byte1, [[maybe_unused]] int byte2)
+void MidiEngine::sendSignalShort([[maybe_unused]] const uint8_t status, [[maybe_unused]] const int byte1, [[maybe_unused]] const int byte2)
 {
     if (opened==false)
         init();
@@ -275,7 +275,7 @@ void MidiEngine::sendSignalShort([[maybe_unused]] uint8_t status, [[maybe_unused
 #endif
 }
 
-void MidiEngine::sendSignalLong([[maybe_unused]] mtherapp::MidiMessage& signal)
+void MidiEngine::sendSignalLong([[maybe_unused]] const MidiMessage &signal)
 {
     if (opened==false)
         init();
@@ -311,7 +311,7 @@ void MidiEngine::sendSignalShortWin(DWORD signal)
 
 #endif
 
-void MidiEngine::sendSignalShortDelay([[maybe_unused]] int msdelay, [[maybe_unused]] uint8_t status, [[maybe_unused]] int byte1, [[maybe_unused]] int byte2)
+void MidiEngine::sendSignalShortDelay([[maybe_unused]] const int msdelay, [[maybe_unused]] const uint8_t status, [[maybe_unused]] const int byte1, [[maybe_unused]] const int byte2)
 {
     if (opened==false)
         init();
@@ -341,7 +341,7 @@ void MidiEngine::sendSignalShortDelay([[maybe_unused]] int msdelay, [[maybe_unus
 #endif
 }
 
-void MidiEngine::setVolume([[maybe_unused]] int vol)
+void MidiEngine::setVolume([[maybe_unused]] const int vol)
 {
     if (opened==false)
         init();

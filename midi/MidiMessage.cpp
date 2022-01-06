@@ -9,11 +9,11 @@ using namespace mtherapp;
 MidiMessage::MidiMessage() : _typeAndChannel(0), _param1(0), _param2(0){}
 
 
-MidiMessage::MidiMessage(std::uint8_t b0, std::uint8_t b1, std::uint8_t b2, std::uint32_t timeShift)
+MidiMessage::MidiMessage(const uint8_t b0, const uint8_t b1, const uint8_t b2, const uint32_t timeShift)
 : _typeAndChannel(b0), _param1(b1), _param2(b2), _timeStamp(timeShift) {}
 
 
-double MidiMessage::getSecondsLength(double bpm) const {
+double MidiMessage::getSecondsLength(const double bpm) const {
     double seconds = static_cast<double>(_timeStamp.getValue()) * (120.0 / bpm) / 960.0;
     return seconds;
 }
@@ -35,7 +35,7 @@ bool MidiMessage::isMetaEvent() const {
     return _typeAndChannel == MidiEvent::MetaEvent;
 }
 
-bool MidiMessage::isNotSingleParamEvent(std::uint8_t eventType) const {
+bool MidiMessage::isNotSingleParamEvent(const uint8_t eventType) const {
     return (eventType != MidiEvent::PatchChange) && (eventType != MidiEvent::ChannelPressure) &&
             (eventType != MidiEvent::SystemCommonMessage2Bytes) && (eventType != MidiEvent::SystemCommonMessage3Bytes) &&
             (eventType != MidiEvent::SysExStartOrContinue) && (eventType != MidiEvent::SystemCommonMessage1Byte) &&
@@ -43,7 +43,7 @@ bool MidiMessage::isNotSingleParamEvent(std::uint8_t eventType) const {
 }
 
 
-std::uint32_t MidiMessage::calculateSize(bool skipSomeMessages) const {
+std::uint32_t MidiMessage::calculateSize(const bool skipSomeMessages) const {
     std::uint32_t messageSize = 0;
 
     if (skipSomeMessages == true)
@@ -134,7 +134,7 @@ std::uint32_t MidiMessage::readFromFile(std::ifstream& f) {
 }
 
 
-std::string MidiMessage::nameEvent(std::int8_t eventNumber) const {
+std::string MidiMessage::nameEvent(const std::int8_t eventNumber) const {
     switch (eventNumber) {
         case MidiEvent::NoteOff:
             return "Note off";
@@ -155,7 +155,7 @@ std::string MidiMessage::nameEvent(std::int8_t eventNumber) const {
 }
 
 
-std::string MidiMessage::nameController(std::uint8_t controllerNumber) const
+std::string MidiMessage::nameController(const std::uint8_t controllerNumber) const
 {
     struct controllesNames {
         std::uint8_t index;
@@ -237,7 +237,7 @@ std::string MidiMessage::nameController(std::uint8_t controllerNumber) const
     return "Unknown_ControllerName";
 }
 
-std::uint32_t MidiMessage::writeToFile(std::ofstream& f, bool skipSomeMessages) const {
+std::uint32_t MidiMessage::writeToFile(std::ofstream& f, const bool skipSomeMessages) const {
 
     std::uint32_t totalBytesWritten = 0;
     if (skipSomeMessages && canSkipThat())

@@ -16,7 +16,7 @@ MidiRender::MidiRender()
     _totalMsSpent = 0;
 }
 
-bool MidiRender::openMidiFile(QString midiFilename)
+bool MidiRender::openMidiFile(const QString midiFilename)
 {
     QByteArray fileNameBytes = midiFilename.toLocal8Bit();
     tml_message* midiMessages = tml_load_filename(fileNameBytes.constData());
@@ -94,7 +94,7 @@ QByteArray MidiRender::renderFloat(QString midiFilename)
     return response;
 }
 
-QByteArray MidiRender::renderShort(QString midiFilename, QString sfFilename)
+QByteArray MidiRender::renderShort(const QString midiFilename, const QString sfFilename)
 {
     if ((openSoundFont(sfFilename)==false))
         return QByteArray();
@@ -103,7 +103,7 @@ QByteArray MidiRender::renderShort(QString midiFilename, QString sfFilename)
 }
 
 
-QByteArray MidiRender::renderFloat(QString midiFilename, QString sfFilename)
+QByteArray MidiRender::renderFloat(QString midiFilename, const QString sfFilename)
 {
     if ((openSoundFont(sfFilename)==false))
         return QByteArray();
@@ -112,7 +112,7 @@ QByteArray MidiRender::renderFloat(QString midiFilename, QString sfFilename)
 }
 
 
-QByteArray MidiRender::renderShortNext(int len)
+QByteArray MidiRender::renderShortNext(const int len)
 {
     tml_message* g_MidiMessage = _midiFile;
 
@@ -276,7 +276,7 @@ QByteArray MidiRender::renderFromMemoryFloat(MidiTrack &track)
 }
 
 
-QByteArray MidiRender::renderMemoryFloatNext(int len)
+QByteArray MidiRender::renderMemoryFloatNext(const int len)
 {
     QByteArray result;
     result.resize(len);
@@ -344,7 +344,7 @@ QByteArray MidiRender::renderMemoryFloatNext(int len)
 }
 
 
-QByteArray MidiRender::renderMemoryShortNext(int len)
+QByteArray MidiRender::renderMemoryShortNext(const int len)
 {
     QByteArray result;
     result.resize(len);

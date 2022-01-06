@@ -25,7 +25,7 @@ namespace mtherapp {
             std::uint32_t writeToFile(std::ofstream& file, bool skipSomeMessages=false);
 
             std::uint16_t getBPM() const { return _bpm; }
-            void setBPM(std::uint16_t newBPM) { _bpm = newBPM; }
+            void setBPM(const std::uint16_t newBPM) { _bpm = newBPM; }
 
         protected:
             std::uint16_t _bpm = 120;

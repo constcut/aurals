@@ -47,22 +47,24 @@ namespace mtherapp {
 
         virtual void run() override;
 
-        static void sendSignal(mtherapp::MidiMessage &signal);
-        static void sendSignalShort(uint8_t status, int uint8_t1=-1, int uint8_t2=-1);
-        static void sendSignalLong(mtherapp::MidiMessage &signal);
+        static void sendSignal(const mtherapp::MidiMessage &signal);
+        static void sendSignalShort(const uint8_t status, const int uint8_t1=-1, const int uint8_t2=-1);
+        static void sendSignalLong(const mtherapp::MidiMessage &signal);
 
-        static void sendSignalShortDelay(int msdelay, uint8_t status, int uint8_t1=-1, int uint8_t2=-1);
+        static void sendSignalShortDelay(const int msdelay, const uint8_t status,
+                                         const int uint8_t1=-1, const int uint8_t2=-1);
 
-        static void setVolume(int vol);
+        static void setVolume(const int vol);
         static int getVolume();
 
-        static void startFile(QString aliasName = "mwmMidi");
-        static void stopFile(QString aliasName =  "mwmMidi");
-        static void openFile(QString filename, QString aliasName =  "mwmMidi");
-        static void closeFile(QString aliasName = "mwmMidi");
+        static void startFile(const QString aliasName = "mwmMidi");
+        static void stopFile(const QString aliasName =  "mwmMidi");
+        static void openFile(const QString filename, const QString aliasName =  "mwmMidi");
+        static void closeFile(const QString aliasName = "mwmMidi");
 
-        static void playTrack(mtherapp::MidiTrack &track);
-        void playTrackRealtime(mtherapp::MidiTrack &track, bool playNotes=true, bool emitSignal=false);
+        static void playTrack(MidiTrack &track);
+        void playTrackRealtime(MidiTrack &track, const bool playNotes=true,
+                               const bool emitSignal=false);
 
 
         //COVER WINDOWS DEFINE TOO

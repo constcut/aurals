@@ -2,61 +2,62 @@
 #define MIDITRACK_H
 
 #include "MidiMessage.hpp"
-#include <vector>
 
+#include <vector>
+#include <fstream>
 
 namespace mtherapp {
 
 
     class MidiTrack : public std::vector<MidiMessage> {
         public:
-        std::uint32_t calculateHeader(bool skipSomeMessages=false);
+        uint32_t calculateHeader(bool skipSomeMessages=false);
 
-        void pushChangeInstrument(std::uint8_t newInstrument, std::uint8_t channel,  std::uint32_t timeShift);
-        void pushMetricsSignature(std::uint8_t numeration, std::uint8_t denumeration,
-                                  std::uint32_t timeShift, std::uint8_t metr=24, std::uint8_t perQuat=8);
+        void pushChangeInstrument(uint8_t newInstrument, uint8_t channel,  uint32_t timeShift);
+        void pushMetricsSignature(uint8_t numeration, uint8_t denumeration,
+                                  uint32_t timeShift, uint8_t metr=24, uint8_t perQuat=8);
 
-        void pushChangeBPM(std::uint16_t bpm, std::uint32_t timeShift);
-        void pushChangeVolume(std::uint8_t newVolume, std::uint8_t channel);
-        void pushChangePanoram(std::uint8_t newPanoram, std::uint8_t channel);
-        void pushVibration(std::uint8_t channel, std::uint8_t depth, std::uint16_t step, std::uint8_t stepsCount=3);
-        void pushSlideUp(std::uint8_t channel, std::uint8_t shift, std::uint16_t step, std::uint8_t stepsCount=3);
-        void pushSlideDown(std::uint8_t channel, std::uint8_t shift, std::uint16_t step, std::uint8_t stepsCount=3);
-        void pushTremolo(std::uint8_t channel,std::uint16_t offset);
+        void pushChangeBPM(uint16_t bpm, uint32_t timeShift);
+        void pushChangeVolume(uint8_t newVolume, uint8_t channel);
+        void pushChangePanoram(uint8_t newPanoram, uint8_t channel);
+        void pushVibration(uint8_t channel, uint8_t depth, uint16_t step, uint8_t stepsCount=3);
+        void pushSlideUp(uint8_t channel, uint8_t shift, uint16_t step, uint8_t stepsCount=3);
+        void pushSlideDown(uint8_t channel, uint8_t shift, uint16_t step, uint8_t stepsCount=3);
+        void pushTremolo(uint8_t channel,uint16_t offset);
 
-        void pushFadeIn(std::uint16_t offset, std::uint8_t channel);
+        void pushFadeIn(uint16_t offset, uint8_t channel);
         void pushEvent47();
         void pushTrackName(std::string trackName);
 
-        std::int16_t calculateRhythmDetail(std::uint8_t value, std::int16_t offset);
+        int16_t calculateRhythmDetail(uint8_t value, int16_t offset);
 
-        void closeLetRings(std::uint8_t channel);//Those functions used for generation from tablature, in case we would bring tablatures there
-        void openLetRing(std::uint8_t stringN, std::uint8_t midiNote, std::uint8_t velocity, std::uint8_t channel);
-        void closeLetRing(std::uint8_t stringN, std::uint8_t channel);
+        void closeLetRings(uint8_t channel);//Those functions used for generation from tablature, in case we would bring tablatures there
+        void openLetRing(uint8_t stringN, uint8_t midiNote, uint8_t velocity, uint8_t channel);
+        void closeLetRing(uint8_t stringN, uint8_t channel);
         void finishIncomplete(short specialR);
 
-        void pushNoteOn(std::uint8_t midiNote, std::uint8_t velocity, std::uint8_t channel);
-        void pushNoteOff(std::uint8_t midiNote, std::uint8_t velocity, std::uint8_t channel);
+        void pushNoteOn(uint8_t midiNote, uint8_t velocity, uint8_t channel);
+        void pushNoteOff(uint8_t midiNote, uint8_t velocity, uint8_t channel);
 
 
         protected:
             char _chunkId[4]; //DELAYED: as uint32_t = 'xxxx'?
-            std::uint32_t _trackSize;
+            uint32_t _trackSize;
 
         private:
-            std::int32_t _accum = 0;
-            std::uint8_t _tunes[10];
-            std::uint8_t _ringRay[10];
+            int32_t _accum = 0;
+            uint8_t _tunes[10];
+            uint8_t _ringRay[10];
 
             double _timeLengthOnLoad; //Ms
 
        public:
-            std::int32_t accumulate(std::int32_t addition) { _accum += addition; return _accum; }
-            std::int32_t getAccum() const { return _accum; }
+            int32_t accumulate(int32_t addition) { _accum += addition; return _accum; }
+            int32_t getAccum() const { return _accum; }
             void flushAccum() { _accum = 0; }
 
-            std::uint32_t readFromFile(std::ifstream& f);
-            std::uint32_t writeToFile(std::ofstream& f, bool skipSomeMessages=false) const;
+            uint32_t readFromFile(std::ifstream& f);
+            uint32_t writeToFile(std::ofstream& f, bool skipSomeMessages=false) const;
     };
 
 }

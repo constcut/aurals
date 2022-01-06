@@ -20,39 +20,39 @@ namespace mtherapp {
 
     public:
 
-        void setSampleFreq(double newFreq) { _sampleRate = newFreq; } //ON REFACTORING MAKE SUCH THINGS AS A PROPERTY
-        double getSampleFreq() { return _sampleRate; }
+        void setSampleFreq(const double newFreq) { _sampleRate = newFreq; } //ON REFACTORING MAKE SUCH THINGS AS A PROPERTY
+        double getSampleFreq() const { return _sampleRate; }
 
-        void setFrameSize(quint32 newFrameSize)  { _renderFrameSize = newFrameSize; }
-        quint32 getFrameSize() { return _renderFrameSize; }
+        void setFrameSize(const quint32 newFrameSize)  { _renderFrameSize = newFrameSize; }
+        quint32 getFrameSize() const { return _renderFrameSize; }
 
         MidiRender();
 
-        QByteArray renderShort(QString midiFilename, QString sfFilename);
-        QByteArray renderFloat(QString midiFilename, QString sfFilename);
+        QByteArray renderShort(const QString midiFilename, const QString sfFilename);
+        QByteArray renderFloat(const QString midiFilename, const QString sfFilename);
 
-        QByteArray renderShort(QString midiFilename);
-        QByteArray renderFloat(QString midiFilename);
+        QByteArray renderShort(const QString midiFilename);
+        QByteArray renderFloat(const QString midiFilename);
 
-        QByteArray renderFromMemoryShort(MidiTrack& track);
+        QByteArray renderFromMemoryShort(MidiTrack &track);
         QByteArray renderFromMemoryFloat(MidiTrack& track);
 
-        bool openMidiFile(QString midiFilename);
-        bool openSoundFont(QString sfFilename);
+        bool openMidiFile(const QString midiFilename);
+        bool openSoundFont(const QString sfFilename);
 
-        qint64 getTotaMsSpent() { return _totalMsSpent; }
-        double getRenderTimer() { return _msRendered; }
+        qint64 getTotaMsSpent() const { return _totalMsSpent; }
+        double getRenderTimer() const { return _msRendered; }
 
-        float getVolumeDb() { return _volume; }
-        void setVolumeDb(float newVol) { _volume = newVol; }
+        float getVolumeDb() const { return _volume; }
+        void setVolumeDb(const float newVol) { _volume = newVol; }
 
     protected:
 
-        QByteArray renderShortNext(int len);
-        QByteArray renderFloatNext(int len);
+        QByteArray renderShortNext(const int len);
+        QByteArray renderFloatNext(const int len);
 
-        QByteArray renderMemoryFloatNext(int len);
-        QByteArray renderMemoryShortNext(int len); //refact to quint32 etc
+        QByteArray renderMemoryFloatNext(const int len);
+        QByteArray renderMemoryShortNext(const int len);
 
         tml_message* _midiFile = nullptr;
         tsf* _soundFont = nullptr;
@@ -68,7 +68,6 @@ namespace mtherapp {
         qint64 _totalMsSpent;
 
         float _volume = -6.0;
-
         bool _mono = false;
     };
 
