@@ -221,7 +221,7 @@ Item {
                     currentIndex: 2
                     onCurrentTextChanged: {
                         var rmsStep = parseInt(currentText)
-                        waveShape.setRmsStep()
+                        waveShape.setRmsStep(rmsStep)
                     }
                 }
                 CheckBox {

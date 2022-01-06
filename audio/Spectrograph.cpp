@@ -213,8 +213,7 @@ void SpectrographPainter::updateBars()
     for ( ; i != end; ++i) {
         const FrequencySpectrum::Element e = *i;
         if (e.frequency >= _lowFreq && e.frequency < _highFreq && count < static_cast<size_t>(_bars.size())) {
-            //auto idx = barIndex(e.frequency); //Точный размер
-            Bar &bar = _bars[count];
+            Bar &bar = _bars[count]; //Если перенести на std можно делать поиск оптимальней
             bar.value = qMax(bar.value, e.amplitude);
             bar.clipped |= e.clipped;
             _gotClipping |= e.clipped;
@@ -251,9 +250,10 @@ void SpectrographPainter::findF0() { //Возможно проверять уж�
     std::unordered_map<int, double> table;
     std::unordered_map<int, std::vector<int>> sequences;
 
-    qDebug() << "_" << _freqStep;
+    const double lowestFreq = 20.0;
+    const int lowBorder = (lowestFreq / _freqStep) + 1.0;
 
-    for (int i = 6; i < 100; ++i) { //TODO необходимо считать нижнюю границу исходя из частоты корзины и нижней анализируемой ноты, данный случай для 4096
+    for (int i = lowBorder; i < 100; ++i) {
         double summ = 0.0;
         std::vector<int> sequence;
 
@@ -267,7 +267,7 @@ void SpectrographPainter::findF0() { //Возможно проверять уж�
                 double localMax = _bars[currentPosition].value;
                 int index = currentPosition;
 
-                if (_bars[currentPosition - 1].value > localMax) {
+                if (_bars[currentPosition - 1].value > localMax) { //Можно оформить лямбдами
                     localMax = _bars[currentPosition - 1].value;
                     index = currentPosition - 1;
                 }
@@ -295,9 +295,6 @@ void SpectrographPainter::findF0() { //Возможно проверять уж�
     std::vector<std::pair<int,double>> sortedTable(table.begin(), table.end());
     std::sort(sortedTable.begin(), sortedTable.end(), [](auto lhs, auto rhs){ return lhs.second > rhs.second;});
 
-    //_binTable.clear();
-    //_binSumm.clear();
-
     size_t count = 0;
     for (auto& [n, summ]: sortedTable) {
         if (count < 2) {
@@ -306,9 +303,8 @@ void SpectrographPainter::findF0() { //Возможно проверять уж�
         }
         if (++count > 20)
             break;
-        //_binTable.push_back(n);
-        //_binSumm.push_back(summ);
     }
+
     //Нужно сохранять дополнительную информацию - какой пик из +- был максимальным
     //Нужно сохранять процент не пустых пиков, так как например если субгармоника содержит все гармоники, но и пропуски - её рейтинг должен падать
     _spectrumPitch = (sortedTable[0].first + 0.5) * _freqStep;
@@ -336,7 +332,7 @@ void SpectrographPainter::findF0() { //Возможно проверять уж�
         //Вместо этого элемента использовать глобальный поиск, нужен ещё 1 контейнер для хранения череды
         //MAP[n] = {n*2, n*3 - 1, n*4 +1};
     }
-    //Другой случай если первые 2 очеь рядом
+    //Другой случай если первые 2 очень рядом
     if (highBin - lowBin == 1) {
         _specPitchAprox = ((lowBin + highBin + 1.0) / 2.0) * _freqStep;
     }
