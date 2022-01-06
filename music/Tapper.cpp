@@ -89,7 +89,8 @@ void Tapper::saveTapsAsMidi(const QString filename) const {
         moment currentMoment = _tapEvents[i].time;
         int currentNote = _tapEvents[i].idx;
 
-        qDebug() << "Current note " << currentNote;
+        //qDebug() << "Current note " << currentNote;
+        //qDebug() << i << " _ " << fromPrevTap << " " << prevNote << " " << currentNote;
 
         if (i != 0)
             fromPrevTap = chrono::duration_cast<chrono::milliseconds>(currentMoment - prevMoment).count();
@@ -99,7 +100,6 @@ void Tapper::saveTapsAsMidi(const QString filename) const {
             track.accumulate(accurateValue);
             track.pushNoteOff(prevNote, 100, 0);
         }
-        qDebug() << i << " _ " << fromPrevTap << " " << prevNote << " " << currentNote;
 
         track.pushNoteOn(currentNote, 100, 0);
         prevMoment = currentMoment;

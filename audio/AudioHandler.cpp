@@ -24,14 +24,8 @@ AudioHandler::AudioHandler() {
     initRecorder();
     initPlayer();
     initMidiPlayer();
-    _midiRender = std::make_unique<MidiRender>();
 }
 
-
-void AudioHandler::loadSoundfont() {
-    _midiRender->setVolumeDb(_midiVolumeDb);
-    _midiRender->openSoundFont(_soundfontFile);
-}
 
 
 void AudioHandler::changeMidiRenderVolume(const double db) {
@@ -260,13 +254,15 @@ void AudioHandler::stopMidiPlayer() {
 
 
 void AudioHandler::checkMidi() {
-    openMidiFile("test1.mid");
+    openMidiFile("test4.mid");
 }
 
 
 void AudioHandler::openMidiFile(const QString filename) {
-    loadSoundfont();
-    _midiBufer = _midiRender->renderShort(filename);
+    static mtherapp::MidiRender render;
+    render.setVolumeDb(_midiVolumeDb);
+    render.openSoundFont(_soundfontFile);
+    _midiBufer = render.renderShort(filename);
 }
 
 

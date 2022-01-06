@@ -7,7 +7,6 @@
 
 #include "AudioReceiver.hpp"
 #include "AudioSpeaker.hpp"
-#include "midi/MidiRender.hpp"
 
 
 namespace mtherapp {
@@ -73,8 +72,6 @@ namespace mtherapp {
         void initPlayer();
         void initMidiPlayer();
 
-        void loadSoundfont();
-
         std::unique_ptr<QAudioInput> _audioInput;
         std::unique_ptr<AudioReceiver> _audioReceiver;
 
@@ -89,7 +86,6 @@ namespace mtherapp {
         bool _isPlaying = false;
         bool _isRecording = false;
 
-        std::unique_ptr<MidiRender> _midiRender;
         double _midiVolumeDb = -6.0;
         QString _soundfontFile = "piano.sf2";
 

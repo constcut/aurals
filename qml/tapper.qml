@@ -109,7 +109,7 @@ Item {
         y: 5
         x: saveTapButton.x + saveTapButton.width + 10
         onClicked: {
-            tapper.saveTapsAsMidi("tapper.mid")
+            tapper.saveTapsAsMidi("tapper.mid") //tapper.mid
             audio.openMidiFile("tapper.mid")
             audio.startMidiPlayer()
         }
