@@ -60,18 +60,18 @@ namespace mtherapp {
         SpectrographPainter();
         ~SpectrographPainter() = default;
 
-        void paintSpectr(QPainter &painter, QRect &rect) const;
-        void setParams(int numBars, qreal lowFreq, qreal highFreq);
+        void paintSpectr(QPainter &painter, const QRect &rect) const;
+        void setParams(const int numBars, const qreal lowFreq, const qreal highFreq);
 
     protected:
-        int barIndex(qreal frequency) const;
-        QPair<qreal, qreal> barRange(int barIndex) const;
+        int barIndex(const qreal frequency) const;
+        QPair<qreal, qreal> barRange(const int barIndex) const;
 
         virtual void updateBars();
 
-        void prepareBackground(QPainter &painter, QRect &rect) const;
-        void paintBars(QPainter &painter, QRect &rect) const;
-        void paintSlope(QPainter &painter, QRect &rect) const;
+        void prepareBackground(QPainter &painter, const QRect &rect) const;
+        void paintBars(QPainter &painter, const QRect &rect) const;
+        void paintSlope(QPainter &painter, const QRect &rect) const;
 
         void findPeaks();
         void findF0();
@@ -124,26 +124,26 @@ namespace mtherapp {
 
         virtual void updateBars();
 
-        Q_INVOKABLE void setSamplesAmount(int newNumSamples){
+        Q_INVOKABLE void setSamplesAmount(const int newNumSamples){
             _analyser.setSamplesAmount(newNumSamples);
             _samplesAmount = newNumSamples;
         }
 
-        Q_INVOKABLE int getSamplesAmount() {
+        Q_INVOKABLE int getSamplesAmount() const {
             return _analyser.getSamplesAmount();
         }
 
-        Q_INVOKABLE void setParamsFromQML(int numBars, qreal lowFreq, qreal highFreq) {
-            setParams(numBars,lowFreq,highFreq);
+        Q_INVOKABLE void setParamsFromQML(const int numBars, const qreal lowFreq, const qreal highFreq) {
+            setParams(numBars, lowFreq, highFreq);
         }
 
-        Q_INVOKABLE void changeBarsCount(int barsCount){
+        Q_INVOKABLE void changeBarsCount(const int barsCount){
             Q_ASSERT(barsCount > 0);
             _bars.resize(barsCount);
             updateBars();
         }
 
-        Q_INVOKABLE void changeHighFreq(qreal newFreq) {
+        Q_INVOKABLE void changeHighFreq(const qreal newFreq) {
             _highFreq = newFreq;
             updateBars();
         }
@@ -163,13 +163,13 @@ namespace mtherapp {
         Q_INVOKABLE bool gotGap() const { return _spectrumGap; }
         Q_INVOKABLE qreal gapLevel() const { return _gapLevel;  }
 
-        Q_INVOKABLE void onPress(int xPress, int yPress, int width, int height);
+        Q_INVOKABLE void onPress(const int xPress, const int yPress, const int width, const int height);
 
-        Q_INVOKABLE bool loadSpectrum(QString filename, quint64 position);
+        Q_INVOKABLE bool loadSpectrum(QString filename, const quint64 position);
         Q_INVOKABLE bool loadByteArray(QByteArray analyseData);
 
-        Q_INVOKABLE void setFFTLimit(int limit) { _analyser.setFFTLimit(limit); };
-        Q_INVOKABLE void setWindowFunction(bool turnedOn) {
+        Q_INVOKABLE void setFFTLimit(const int limit) { _analyser.setFFTLimit(limit); };
+        Q_INVOKABLE void setWindowFunction(const bool turnedOn) {
             if (turnedOn)
                 _analyser.setWindowFunction(WindowFunction::HannWindow);
             else
@@ -177,7 +177,7 @@ namespace mtherapp {
         }
 
     public slots:
-        void spectrumChanged(qint64 position, qint64 length,
+        void spectrumChanged(const qint64 position, const qint64 length,
                              const FrequencySpectrum &spectrum);
 
         void spectrumChanged(const FrequencySpectrum &spectrum);
@@ -188,7 +188,7 @@ namespace mtherapp {
     protected:
 
         int _samplesAmount;
-        void selectBar(int index);
+        void selectBar(const int index);
 
         SpectrumAnalyser _analyser;
     };

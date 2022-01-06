@@ -70,7 +70,7 @@ namespace mtherapp {
         ~SpectrumAnalyserThread() = default;
 
         void setSamplesAmount(int newNumSamples) { _numSamples = newNumSamples; }
-        int getSamplesAmount() { return _numSamples; }
+        int getSamplesAmount() const { return _numSamples; }
 
         void setFFTLimit(int newLimit) { _fftLimit = newLimit; }
 
@@ -113,7 +113,7 @@ namespace mtherapp {
             if (_thread)
                 _thread->setSamplesAmount(newNumSamples);
         }
-        int getSamplesAmount() {
+        int getSamplesAmount() const {
             if (_thread)
                 return _thread->getSamplesAmount();
             return 0;

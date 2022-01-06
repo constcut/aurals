@@ -57,11 +57,11 @@ namespace mtherapp {
     public:
         WaveshapePainter():_windowPosition(0),_windowWidth(4096){}
 
-        void loadContour(QString filename);
+        void loadContour(const QString filename);
         void paintWaveShape(QPainter& painter);
 
-        double calculateWindowRmsDb();
-        std::pair<double, double> calculateWindowYin();
+        double calculateWindowRmsDb() const;
+        std::pair<double, double> calculateWindowYin() const;
 
     protected:
         WaveContour _waveContour;
@@ -139,7 +139,7 @@ namespace mtherapp {
         Q_INVOKABLE double getWindowRmsDb() { return calculateWindowRmsDb(); }
 
         Q_INVOKABLE QList<qreal> getWindowYinF0() { auto y = calculateWindowYin(); return {y.first, y.second}; }
-        Q_INVOKABLE qreal freqToMidi(qreal freq) const;
+        Q_INVOKABLE qreal freqToMidi(const qreal freq) const;
     };
 
 }

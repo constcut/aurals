@@ -12,11 +12,11 @@ class Yin {
     public:
         Yin();
 
-        void init(double sampleRate, size_t bufferSize);
+        void init(const double sampleRate, const size_t bufferSize);
         double getPitch(const float* buffer);
 
         double getThreshold() const;
-        void setThreshold(double newThresh);
+        void setThreshold(const double newThresh);
 
         size_t getTau() const;
 

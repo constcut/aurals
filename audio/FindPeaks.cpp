@@ -78,7 +78,7 @@ vector<int> signVector(const vector<double>& data){
 }
 
 
-vector<size_t> mtherapp::peakIndexesInData(const vector<double>& signal, float sensitivity){
+vector<size_t> mtherapp::peakIndexesInData(const vector<double>& signal, const float sensitivity) {
     
     vector<size_t> peakIndexes;
     if (signal.size() < 2) {

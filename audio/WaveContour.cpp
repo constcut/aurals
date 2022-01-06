@@ -32,7 +32,7 @@ void WaveContour::calculateF0() {
 
 
 
-bool WaveContour::loadWavFile(QString filename) {
+bool WaveContour::loadWavFile(const QString filename) {
     WavFile wav;
     wav.open(filename);
     QByteArray samplesBytes = wav.readAll();
@@ -78,7 +78,7 @@ void WaveContour::calculateRms() {
 
 
 
-QByteArray WaveContour::getPCM(quint64 position, quint64 samples) {
+QByteArray WaveContour::getPCM(const quint64 position, const quint64 samples) {
     std::vector<quint16> intSamples(samples, 0); //Научить спекрограф получасть сразу float сэмплы
     for (size_t i = position; i < position + samples; ++i) {
        if (i >= _floatSamples.size())

@@ -19,7 +19,7 @@ namespace mtherapp {
         void stop();
 
         qint64 readData(char *data, const qint64 maxlen);
-        qint64 writeData(const char *data, qint64 len);
+        qint64 writeData(const char *data,const qint64 len);
         qint64 bytesAvailable() const;
 
     private:

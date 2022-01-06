@@ -19,8 +19,8 @@ namespace mtherapp {
 
         qreal normLevel() const { return _level; }
 
-        qint64 readData(char *data, qint64 maxlen);
-        qint64 writeData(const char *data, qint64 len);
+        qint64 readData(char *data, const qint64 maxlen);
+        qint64 writeData(const char *data, const qint64 len);
 
 
     private:

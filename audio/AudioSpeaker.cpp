@@ -41,7 +41,7 @@ qint64 AudioSpeaker::readData(char *data, const qint64 len)
 }
 
 
-qint64 AudioSpeaker::writeData(const char *data, qint64 len)
+qint64 AudioSpeaker::writeData(const char *data, const qint64 len)
 {
     Q_UNUSED(data);
     Q_UNUSED(len);

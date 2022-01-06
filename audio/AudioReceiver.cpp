@@ -74,14 +74,14 @@ void AudioReceiver::stop() {
 }
 
 
-qint64 AudioReceiver::readData(char *data, qint64 maxlen)
+qint64 AudioReceiver::readData(char *data, const qint64 maxlen)
 {   Q_UNUSED(data)
     Q_UNUSED(maxlen)
     return 0;
 }
 
 
-qint64 AudioReceiver::writeData(const char *data, qint64 len) {
+qint64 AudioReceiver::writeData(const char *data, const qint64 len) {
     _bufer += QByteArray(data,len);
     return len;
 }

@@ -10,10 +10,11 @@ namespace mtherapp {
     double calc_RMS(const float* data, const size_t len);
     double calc_dB(const float* data, const size_t len);
 
-    double calc_MidiCents(double f0);
+    double calc_MidiCents(const double f0);
 
     //Returns pair F0, tau
-    std::pair<double, double> calc_YinF0(const float* data, const size_t len, double threshold=0.15, double sampleRate=44100.0);
+    std::pair<double, double> calc_YinF0(const float* data, const size_t len,
+                                         const double threshold=0.15, const double sampleRate=44100.0);
 
 }
 

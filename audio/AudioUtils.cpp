@@ -43,12 +43,12 @@
 
 using namespace mtherapp;
 
-qint64 mtherapp::audioDuration(const QAudioFormat &format, qint64 bytes) {
+qint64 mtherapp::audioDuration(const QAudioFormat &format, const qint64 bytes) {
     return (bytes * 1000000) /
         (format.sampleRate() * format.channelCount() * (format.sampleSize() / 8));
 }
 
-qint64 mtherapp::audioLength(const QAudioFormat &format, qint64 microSeconds) {
+qint64 mtherapp::audioLength(const QAudioFormat &format, const qint64 microSeconds) {
    qint64 result = (format.sampleRate() * format.channelCount() * (format.sampleSize() / 8))
        * microSeconds / 1000000;
    result -= result % (format.channelCount() * format.sampleSize());
@@ -122,10 +122,10 @@ bool mtherapp::isPCMS16LE(const QAudioFormat &format) {
 const qint16  PCMS16MaxValue     =  32767;
 const quint16 PCMS16MaxAmplitude =  32768; // because minimum is -32768
 
-qreal mtherapp::pcmToReal(qint16 pcm) {
+qreal mtherapp::pcmToReal(const qint16 pcm) {
     return qreal(pcm) / PCMS16MaxAmplitude;
 }
 
-qint16 mtherapp::realToPcm(qreal real) {
+qint16 mtherapp::realToPcm(const qreal real) {
     return real * PCMS16MaxValue;
 }

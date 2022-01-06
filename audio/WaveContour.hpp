@@ -9,7 +9,7 @@ namespace mtherapp {
 
     public:
         WaveContour(QString filename);
-        WaveContour() {}
+        WaveContour() = default;
         ~WaveContour() = default;
 
         const std::vector<float>& getFloatSamples() const { return _floatSamples; }
@@ -36,14 +36,14 @@ namespace mtherapp {
 
         void calculateF0();
         const std::vector<double>& getPitch() const { return _yinLine; }
-        void changeYinTheshold(double threshold) { _yinTheshold = threshold; }
+        void changeYinTheshold(const double threshold) { _yinTheshold = threshold; }
         double getYinThreshold() const { return _yinTheshold; }
 
         QAudioFormat getAudioFormat() { return _audioFormat; }
-        QByteArray getPCM(quint64 position, quint64 samples);
+        QByteArray getPCM(const quint64 position, const quint64 samples);
 
-        void setYinWindowSize(size_t newSize) { _yinWindowSize = newSize; }
-        size_t getYinWindowSize() { return _yinWindowSize; }
+        void setYinWindowSize(const size_t newSize) { _yinWindowSize = newSize; }
+        size_t getYinWindowSize() const { return _yinWindowSize; }
 
     protected:
 
@@ -63,10 +63,10 @@ namespace mtherapp {
         size_t _yinWindowSize = 2048;
         std::vector<double> _yinLine;
 
-        QAudioFormat _audioFormat;
+        QAudioFormat _audioFormat; //Если избавиться от этого компонента и переписать WavFile - можно сделать класс pure C++
 
     private:
-        bool loadWavFile(QString filename); //The only left qt part, only beacuse of WaveFile
+        bool loadWavFile(const QString filename);
 
         void calculateRms();
     };

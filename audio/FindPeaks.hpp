@@ -9,7 +9,7 @@
 
 namespace mtherapp {
 
-    std::vector<size_t> peakIndexesInData(const std::vector<double>& signal, float sensitivity = 2.f);
+    std::vector<size_t> peakIndexesInData(const std::vector<double>& signal, const float sensitivity = 2.f);
 
 }
 

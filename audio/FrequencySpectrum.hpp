@@ -68,8 +68,8 @@ namespace mtherapp {
         void reset();
 
         int count() const;
-        Element& operator[](int index);
-        const Element& operator[](int index) const;
+        Element& operator[](const int index);
+        const Element& operator[](const int index) const;
 
         iterator begin();
         iterator end();

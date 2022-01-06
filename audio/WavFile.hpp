@@ -56,8 +56,8 @@ namespace mtherapp {
         const QAudioFormat &audioFormat() const;
         qint64 headerLength() const;
 
-        void writeHeader(unsigned int sampleRate, unsigned int bitRate,
-                         unsigned long dataSize, bool stereo=false, bool floatFormat=false);
+        void writeHeader(const quint32 sampleRate, const quint32 bitRate,
+                         const quint32 dataSize, bool stereo=false, bool floatFormat=false);
 
     private:
         bool readHeader();

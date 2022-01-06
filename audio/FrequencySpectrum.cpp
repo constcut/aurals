@@ -59,12 +59,12 @@ int FrequencySpectrum::count() const {
 }
 
 
-FrequencySpectrum::Element &FrequencySpectrum::operator[](int index) {
+FrequencySpectrum::Element &FrequencySpectrum::operator[](const int index) {
     return _elements[index];
 }
 
 
-const FrequencySpectrum::Element &FrequencySpectrum::operator[](int index) const {
+const FrequencySpectrum::Element &FrequencySpectrum::operator[](const int index) const {
     return _elements[index];
 }
 

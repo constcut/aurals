@@ -25,13 +25,14 @@ double mtherapp::calc_dB(const float* data, const size_t len) {
 }
 
 
-double mtherapp::calc_MidiCents(double f0) {
+double mtherapp::calc_MidiCents(const double f0) {
     double note = 69 + log(f0 / 440.f) * 17.31234; //TODO rewrite evil magic
     return floor( 0.5f + note * 100 );
 }
 
 
-std::pair<double, double> mtherapp::calc_YinF0(const float* data,  const size_t len, double threshold, double sampleRate) {
+std::pair<double, double> mtherapp::calc_YinF0(const float* data,  const size_t len,
+                                               const double threshold, const double sampleRate) {
     static Yin yin;
     yin.init(sampleRate, len);
     yin.setThreshold(threshold);

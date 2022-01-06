@@ -15,11 +15,11 @@ double Yin::getThreshold() const {
     return _threshold;
 }
 
-void Yin::setThreshold(double newThresh) {
+void Yin::setThreshold(const double newThresh) {
     _threshold = newThresh;
 }
 
-void Yin::init(double yinSampleRate, size_t yinBufferSize) {
+void Yin::init(double yinSampleRate, const size_t yinBufferSize) {
     if (yinSampleRate != _sampleRate)
         _sampleRate = yinSampleRate;
     if (_bufferSize == yinBufferSize)

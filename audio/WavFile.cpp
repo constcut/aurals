@@ -117,7 +117,7 @@ qint64 WavFile::headerLength() const {
 }
 
 
-void WavFile::writeHeader(unsigned int sampleRate, unsigned int bitRate, unsigned long dataSize, bool stereo, bool floatFormat)
+void WavFile::writeHeader(const quint32 sampleRate, const quint32 bitRate, const quint32 dataSize, bool stereo, bool floatFormat)
 {
     CombinedHeader header;
     header.riff.descriptor.id[0] = 'R';

@@ -166,23 +166,23 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
 
 
 
-void WaveshapePainter::loadContour(QString filename) {
+void WaveshapePainter::loadContour(const QString filename) {
     _waveContour = WaveContour(filename);
 }
 
 
-double WaveshapePainter::calculateWindowRmsDb() {
+double WaveshapePainter::calculateWindowRmsDb() const {
     auto& samples = _waveContour.getFloatSamples();
     return calc_dB(&samples[_windowPosition], _windowWidth);
 }
 
 
-std::pair<double, double> WaveshapePainter::calculateWindowYin() {
+std::pair<double, double> WaveshapePainter::calculateWindowYin() const {
     double threshold = _waveContour.getYinThreshold();
     auto& samples = _waveContour.getFloatSamples();
     return calc_YinF0(&samples[_windowPosition], _windowWidth, threshold);
 }
 
-qreal WaveshapeQML::freqToMidi(qreal freq) const {
+qreal WaveshapeQML::freqToMidi(const qreal freq) const {
     return calc_MidiCents(freq) / 100.0;
 }

@@ -48,13 +48,13 @@ QT_FORWARD_DECLARE_CLASS(QAudioFormat)
 
 namespace mtherapp {
 
-    qint64 audioDuration(const QAudioFormat &format, qint64 bytes);
-    qint64 audioLength(const QAudioFormat &format, qint64 microSeconds);
+    qint64 audioDuration(const QAudioFormat &format, const qint64 bytes);
+    qint64 audioLength(const QAudioFormat &format, const qint64 microSeconds);
 
     QString formatToString(const QAudioFormat &format);
 
-    qreal pcmToReal(qint16 pcm); // Scale PCM value to [-1.0, 1.0]
-    qint16 realToPcm(qreal real); // Scale real value in [-1.0, 1.0] to PCM
+    qreal pcmToReal(const qint16 pcm); // Scale PCM value to [-1.0, 1.0]
+    qint16 realToPcm(const qreal real); // Scale real value in [-1.0, 1.0] to PCM
 
     bool isPCM(const QAudioFormat &format); // Check whether the audio format is PCM
     bool isPCMS16LE(const QAudioFormat &format); // Check whether the audio format is signed, little-endian, 16-bit PCM

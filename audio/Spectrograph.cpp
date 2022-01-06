@@ -60,7 +60,7 @@ SpectrographPainter::SpectrographPainter() : _barSelected(-1),
 }
 
 
-void SpectrographPainter::prepareBackground(QPainter &painter, QRect &rect) const {
+void SpectrographPainter::prepareBackground(QPainter &painter, const QRect &rect) const {
     painter.fillRect(rect, Qt::black);
     const int numBars = _bars.count();
     const double barWidth = rect.width()/( static_cast<double>(numBars) );
@@ -109,7 +109,7 @@ void SpectrographPainter::prepareBackground(QPainter &painter, QRect &rect) cons
 }
 
 
-void SpectrographPainter::paintBars(QPainter &painter, QRect &rect) const {
+void SpectrographPainter::paintBars(QPainter &painter, const QRect &rect) const {
 
     const int numBars = _bars.count();
     const double barWidth = rect.width()/( static_cast<double>(numBars) );
@@ -141,7 +141,7 @@ void SpectrographPainter::paintBars(QPainter &painter, QRect &rect) const {
 }
 
 
-void SpectrographPainter::paintSlope(QPainter &painter, QRect &rect) const {
+void SpectrographPainter::paintSlope(QPainter &painter, const QRect &rect) const {
 
     const int numBars = _bars.count();
     const double barWidth = rect.width()/( static_cast<double>(numBars) );
@@ -154,7 +154,7 @@ void SpectrographPainter::paintSlope(QPainter &painter, QRect &rect) const {
 }
 
 
-void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect) const {
+void SpectrographPainter::paintSpectr(QPainter &painter, const QRect &rect) const {
     prepareBackground(painter, rect);
 
     if (_bars.count()) {
@@ -167,7 +167,7 @@ void SpectrographPainter::paintSpectr(QPainter &painter, QRect &rect) const {
 }
 
 
-void SpectrographPainter::setParams(int numBars, qreal lowFreq, qreal highFreq) {
+void SpectrographPainter::setParams(int numBars, const qreal lowFreq, const qreal highFreq) {
     Q_ASSERT(numBars > 0);
     Q_ASSERT(highFreq > lowFreq);
     _bars.resize(numBars);
@@ -466,7 +466,7 @@ void SpectrographQML::updateBars() {
     update();
 }
 
-void SpectrographQML::spectrumChanged([[maybe_unused]] qint64 position, [[maybe_unused]] qint64 length,
+void SpectrographQML::spectrumChanged([[maybe_unused]] const qint64 position, [[maybe_unused]] const qint64 length,
                                       const FrequencySpectrum &spectrum) {
     _spectrum = spectrum;
     SpectrographQML::updateBars();
@@ -479,14 +479,14 @@ void SpectrographQML::spectrumChanged(const FrequencySpectrum &spectrum) {
 }
 
 
-void SpectrographQML::selectBar(int index) {
+void SpectrographQML::selectBar(const int index) {
     Q_ASSERT(index >= 0 && index < _bars.count());
     _barSelected = index;
     update();
 }
 
 
-void SpectrographQML::onPress(int xPress, [[maybe_unused]] int yPress, int width, int height) {
+void SpectrographQML::onPress(const int xPress, [[maybe_unused]]const  int yPress, const  int width, const  int height) {
     QRect rect(0,0,width,height);
     qreal barWidth = static_cast<double>(width) / _bars.count();
     const int index = (static_cast<double>(xPress) / barWidth);
@@ -494,7 +494,7 @@ void SpectrographQML::onPress(int xPress, [[maybe_unused]] int yPress, int width
 }
 
 
-bool SpectrographQML::loadSpectrum(QString filename, quint64 position) {
+bool SpectrographQML::loadSpectrum(const QString filename, const quint64 position) {
     WavFile wav;
     if ( wav.open(filename) == false)
        return false;
