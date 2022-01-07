@@ -5,7 +5,7 @@ This application was developed with Qt 5.15.2 using QML. Tested on linux/android
 
 Current status is pre-alpha, no releases yet.
 
-# Features
+## Features
 
 * Audio recording, audio playing (from file or recorder)
 * MIDI files loading, saving, generating
@@ -15,4 +15,16 @@ Current status is pre-alpha, no releases yet.
 * Spectrograph component using fast fourier transform with various parameters
 * Tapping componet, to tap rhythm using mouse\mobile device screen with export to midi\pcm
 
+## Screenshots
 
+Wave view and spectrograph:
+
+![mtherapp screenshot](info/screenshots/wave_and_spectrum.png)
+
+Wave view claps start end detection (blue is start, red is end):
+
+![mtherapp screenshot](info/screenshots/claps.png)
+
+Wave view with f0 diplay (red line below)
+
+![mtherapp screenshot](info/screenshots/wave_f0.png)
