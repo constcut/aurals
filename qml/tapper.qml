@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQml 2.15
 import QtQuick.Controls 2.15
+import QtQuick.Dialogs 1.1
 import mther.app 1.0
 
 Item {
@@ -8,6 +9,41 @@ Item {
 
     Tapper {
         id: tapper
+    }
+
+    FileDialog {
+        id: saveMidiFileDialog
+        title: "Export tapper midi file"
+        folder: shortcuts.home
+        selectExisting: false
+        selectMultiple: false
+        onAccepted: {
+            tapper.saveTapsAsMidi(saveMidiFileDialog.fileUrls[0].substring(7))
+            saveMidiFileDialog.visible = false
+        }
+        onRejected: {
+            saveMidiFileDialog.visible = false
+        }
+        nameFilters: [ "Midi file (*.mid)" ]
+    }
+
+    FileDialog {
+        id: saveWavFileDialog
+        title: "Export tapper into wav file"
+        folder: shortcuts.home
+        selectExisting: false
+        selectMultiple: false
+        onAccepted: {
+            tapper.saveTapsAsMidi("tapper.mid")
+            audio.openMidiFile("tapper.mid")
+            var filename = saveWavFileDialog.fileUrls[0].substring(7)
+            audio.saveMidiToWav(filename)
+            saveWavFileDialog.visible = false
+        }
+        onRejected: {
+            saveWavFileDialog.visible = false
+        }
+        nameFilters: [ "Wav file (*.wav)" ]
     }
 
     TextField {
@@ -127,7 +163,7 @@ Item {
     }
     Slider {
         y: 5
-        x: saveAudioButton.x + saveAudioButton.width + 10
+        x: saveAudioButton.x + saveAudioButton.width + 10 //TODO rowlayout
         from: 0.25
         to: 4.0
         stepSize: 0.05
@@ -141,6 +177,19 @@ Item {
         onValueChanged: {
             tapper.setSpeedCoef(value)
         }
+    }
+    ToolButton {
+        id: exportMidiButton
+        y: 5
+        x: speedCoefSlider.x + speedCoefSlider.width + 10
+        text: "Export midi file"
+        onClicked: saveMidiFileDialog.open()
+    }
+    ToolButton {
+        y: 5
+        x: exportMidiButton.x + exportMidiButton.width + 10
+        text: "Export wav file"
+        onClicked: saveWavFileDialog.open()
     }
 
     MidiRenderSettings {

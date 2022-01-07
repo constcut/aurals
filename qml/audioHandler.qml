@@ -174,6 +174,7 @@ Item {
             onRejected: {
                 fileDialog.visible = false
             }
+            nameFilters: [ "Wav file (*.wav)" ]
         }
 
         MessageDialog {

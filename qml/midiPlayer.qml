@@ -11,17 +11,35 @@ Item {
     id: midiPlayerItem
 
     FileDialog {
-        id: fileDialog
+        id: openFileDialog
         title: "Please choose a midi file"
         folder: shortcuts.home
+        selectMultiple: false
         onAccepted: {
-            audio.openMidiFile(fileDialog.fileUrls[0].substring(7))
+            audio.openMidiFile(openFileDialog.fileUrls[0].substring(7))
             audio.startMidiPlayer()
-            fileDialog.visible = false
+            openFileDialog.visible = false
         }
         onRejected: {
-            fileDialog.visible = false
+            openFileDialog.visible = false
         }
+        nameFilters: [ "Midi file (*.mid *.midi)" ]
+    }
+
+    FileDialog {
+        id: saveFileDialog
+        title: "Save midi file to wav"
+        folder: shortcuts.home
+        selectExisting: false
+        selectMultiple: false
+        onAccepted: {
+            audio.saveMidiToWav(saveFileDialog.fileUrls[0].substring(7))
+            saveFileDialog.visible = false
+        }
+        onRejected: {
+            saveFileDialog.visible = false
+        }
+        nameFilters: [ "Wav file (*.wav)" ]
     }
 
 
@@ -63,8 +81,12 @@ Item {
                 onClicked: audio.startMidiPlayer()
             }
             ToolButton {
-                text: "Load from file"
-                onClicked: fileDialog.visible = true
+                text: "Load and play from file"
+                onClicked: openFileDialog.visible = true
+            }
+            ToolButton {
+                text: "Export pcm"
+                onClicked: saveFileDialog.visible = true
             }
         }
     }
