@@ -260,8 +260,8 @@ void AudioHandler::checkMidi() {
 
 
 void AudioHandler::openMidiFile(const QString filename) {
-    render.openSoundFont(_soundfontFile);
-    _midiBufer = render.renderShort(filename);
+    _render.openSoundFont();
+    _midiBufer = _render.renderShort(filename);
 }
 
 

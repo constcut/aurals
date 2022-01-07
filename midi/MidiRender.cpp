@@ -16,6 +16,7 @@ MidiRender::MidiRender()
     _totalMsSpent = 0;
 }
 
+
 bool MidiRender::openMidiFile(const QString midiFilename)
 {
     QByteArray fileNameBytes = midiFilename.toLocal8Bit();
@@ -32,9 +33,16 @@ bool MidiRender::openMidiFile(const QString midiFilename)
     return true;
 }
 
-bool MidiRender::openSoundFont(QString sfFilename)
+
+bool MidiRender::openSoundFont(QString sfFilename) {
+    setSoundFont(sfFilename);
+    return openSoundFont();
+}
+
+
+bool MidiRender::openSoundFont()
 {
-    QByteArray fileNameBytes = sfFilename.toLocal8Bit();
+    QByteArray fileNameBytes = _soundfontFile.toLocal8Bit();
     tsf*  sf  = tsf_load_filename(fileNameBytes.constData());
 
     if (sf == nullptr)
@@ -56,6 +64,12 @@ bool MidiRender::openSoundFont(QString sfFilename)
     _soundFont = sf;
     return true;
 }
+
+
+void MidiRender::setSoundFont(const QString sfFilename) {
+    _soundfontFile = sfFilename;
+}
+
 
 QByteArray MidiRender::renderShort(QString midiFilename)
 {

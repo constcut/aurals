@@ -39,6 +39,9 @@ namespace mtherapp {
 
         bool openMidiFile(const QString midiFilename);
         bool openSoundFont(const QString sfFilename);
+        bool openSoundFont();
+        void setSoundFont(const QString sfFilename);
+        QString getSoundFont() const { return _soundfontFile; }
 
         qint64 getTotaMsSpent() const { return _totalMsSpent; }
         double getRenderTimer() const { return _msRendered; }
@@ -58,17 +61,17 @@ namespace mtherapp {
         tml_message* _midiFile = nullptr;
         tsf* _soundFont = nullptr;
 
-        MidiTrack* _midiTrack;
+        MidiTrack* _midiTrack = nullptr;
         quint32 _trackPosition;
 
         int _renderFrameSize;
         double _sampleRate;
+        float _volume = -6.0;
+        QString _soundfontFile = "epiano.sf2";
 
         int _g_MidiChannelPreset[16];
         double _msRendered;
         qint64 _totalMsSpent;
-
-        float _volume = -6.0;
         bool _mono = false;
     };
 
