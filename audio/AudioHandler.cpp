@@ -4,7 +4,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QDateTime>
-#include <QTimer>
+
 
 #include "app/AndroidTools.hpp"
 #include "WavFile.hpp"
@@ -70,9 +70,13 @@ void AudioHandler::startPlayback() {
     const double bytesPerSample = bitRate / 8.0;
     const double msInSecond = 1000.0;
     const double ms = static_cast<double>(_commonBufer.size()) / (bytesPerSample * sampleRate / msInSecond);
+    _audioStopRequestTimer.setInterval(ms);
+    _audioStopRequestTimer.setSingleShot(true); //Возможно эту строчку и строчку ниже можно вынести на этап инициализации в конструкторе TODO
+    QObject::connect(&_audioStopRequestTimer, &QTimer::timeout, this, &AudioHandler::requestStopPlayback);
+
     _audioPlayer->start();
     _audioOutput->start(_audioPlayer.get());
-    QTimer::singleShot(ms, this, &AudioHandler::requestStopPlayback);
+    _audioStopRequestTimer.start();
 }
 
 
@@ -80,6 +84,7 @@ void AudioHandler::stopPlayback() {
     _audioPlayer->stop();
     _audioOutput->stop();
     _isPlaying = false;
+    _audioStopRequestTimer.stop();
 }
 
 
@@ -240,9 +245,14 @@ void AudioHandler::startMidiPlayer() {
     const double msInSecond = 1000.0;
     const double channels = 2.0;
     const double ms = static_cast<double>(_midiBufer.size()) / (channels * bytesPerSample * sampleRate / msInSecond);
+
+    _midiStopRequestTimer.setInterval(ms);
+    _midiStopRequestTimer.setSingleShot(true); //Возможно эту строчку и строчку ниже можно вынести на этап инициализации в конструкторе TODO
+    QObject::connect(&_midiStopRequestTimer, &QTimer::timeout, this, &AudioHandler::requestStopMidi);
+
     _midiPlayer->start();
     _midiOutput->start(_midiPlayer.get());
-    QTimer::singleShot(ms, this, &AudioHandler::requestStopMidi);
+    _midiStopRequestTimer.start();
 }
 
 
@@ -250,6 +260,7 @@ void AudioHandler::stopMidiPlayer() {
     _midiPlayer->stop();
     _midiOutput->stop();
     //_isPlaying = false;
+    _midiStopRequestTimer.stop();
 }
 
 

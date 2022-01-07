@@ -1,9 +1,11 @@
 #ifndef AUDIOHANDLER_H
 #define AUDIOHANDLER_H
 
+#include <memory>
+
 #include <QAudioOutput>
 #include <QAudioInput>
-#include <memory>
+#include <QTimer>
 
 #include "AudioReceiver.hpp"
 #include "AudioSpeaker.hpp"
@@ -58,7 +60,7 @@ namespace mtherapp {
             _midiFormat.setSampleRate(sr);
             initMidiPlayer();
         }
-        Q_INVOKABLE double getMidiPlayerSampleRate() const { _midiFormat.sampleRate(); }
+        Q_INVOKABLE double getMidiPlayerSampleRate() const { return _midiFormat.sampleRate(); }
 
         Q_INVOKABLE void checkMidi();
 
@@ -84,6 +86,7 @@ namespace mtherapp {
 
         std::unique_ptr<QAudioOutput> _audioOutput;
         std::unique_ptr<AudioSpeaker> _audioPlayer;
+        QTimer _audioStopRequestTimer;
 
         QByteArray _commonBufer;
         QAudioFormat _commonFormat;
@@ -99,6 +102,7 @@ namespace mtherapp {
 
         std::unique_ptr<QAudioOutput> _midiOutput;
         std::unique_ptr<AudioSpeaker> _midiPlayer;
+        QTimer _midiStopRequestTimer;
 
         QByteArray _midiBufer;
         QAudioFormat _midiFormat;
