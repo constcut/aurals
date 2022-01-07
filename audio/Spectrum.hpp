@@ -68,9 +68,6 @@ namespace mtherapp {
         qt_assert_x(Q_FUNC_INFO, "CHECKED_CONNECT failed", __FILE__, __LINE__);
 
 
-#ifdef DISABLE_WAVEFORM
-#undef SUPERIMPOSE_PROGRESS_ON_WAVEFORM
-#endif
 
 #endif // SPECTRUM_H
 
