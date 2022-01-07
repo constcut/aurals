@@ -55,7 +55,7 @@ inline void	FFTRealUseTrigo <0>::prepare ([[maybe_unused]]OscType &osc)
 
 
 template <int ALGO>
-void	FFTRealUseTrigo <ALGO>::iterate (OscType &osc, DataType &c, DataType &s, const DataType cos_ptr [], long index_c, long index_s)
+void	FFTRealUseTrigo <ALGO>::iterate (OscType &osc, DataType &c, DataType &s, [[maybe_unused]] const DataType cos_ptr [], [[maybe_unused]] long index_c, [[maybe_unused]] long index_s)
 {
 	osc.step ();
 	c = osc.get_cos ();

@@ -35,7 +35,7 @@ namespace ffft
 
 
 template <int P>
-float *	FFTRealSelect <P>::sel_bin (float *e_ptr, float *o_ptr)
+float *	FFTRealSelect <P>::sel_bin ([[maybe_unused]] float *e_ptr, float *o_ptr)
 {
 	return (o_ptr);
 }

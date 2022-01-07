@@ -46,7 +46,7 @@ namespace mtherapp {
 
         private:
             int32_t _accum = 0;
-            uint8_t _tunes[10];
+            //uint8_t _tunes[10];
             uint8_t _ringRay[10];
 
             double _timeLengthOnLoad; //Ms
