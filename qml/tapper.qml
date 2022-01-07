@@ -1,7 +1,7 @@
 import QtQuick 2.15
-import QtQml 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Dialogs 1.1
+import QtQuick.Layouts 1.15
 import mther.app 1.0
 
 Item {
@@ -45,6 +45,8 @@ Item {
         }
         nameFilters: [ "Wav file (*.wav)" ]
     }
+
+
 
     TextField {
         placeholderText: "Midi note 1"
@@ -111,89 +113,66 @@ Item {
         }
     }
 
-    ToolButton {
-        id: resetButton
-        text: "Reset"
+    RowLayout {
+        id : buttonsLayout
         y: 5
-        x: leftTap.width + 100
-        onClicked: {
-            tapper.reset()
+        x: leftTap.width + (parent.width - leftTap.width - rightTap.width - width) / 2
+        spacing: 10
+        ToolButton {
+            text: "Reset"
+            onClicked: {
+                tapper.reset()
+            }
         }
-    }
-    /*
-    ToolButton {
-        id: saveClicksButton
-        text: "Save clicks"
-        y: 5
-        x: resetButton.x + resetButton.width + 10
-        onClicked: {
-            tapper.saveClicksAsMidi("tapper.mid")
+        /*
+        ToolButton {
+            id: saveClicksButton
+            text: "Save clicks"
+            y: 5
+            x: resetButton.x + resetButton.width + 10
+            onClicked: {
+                tapper.saveClicksAsMidi("tapper.mid")
+            }
+        }*/ //Used in case above
+        ToolButton {
+            text: "Play"
+            onClicked: {
+                tapper.saveTapsAsMidi("tapper.mid") //tapper.mid
+                audio.openMidiFile("tapper.mid")
+                audio.startMidiPlayer()
+            }
         }
-    }*/ //Used in case above
-    ToolButton {
-        id: saveTapButton
-        text: "Save taps"
-        y: 5
-        x: resetButton.x + resetButton.width + 10
-        onClicked: {
-            tapper.saveTapsAsMidi("tapper.mid")
+        ToolButton{
+            text: "Stop"
+            onCanceled: audio.stopMidiPlayer()
         }
-    }
-    ToolButton {
-        id: playButton
-        text: "Play"
-        y: 5
-        x: saveTapButton.x + saveTapButton.width + 10
-        onClicked: {
-            tapper.saveTapsAsMidi("tapper.mid") //tapper.mid
-            audio.openMidiFile("tapper.mid")
-            audio.startMidiPlayer()
+        Slider {
+            from: 0.25
+            to: 4.0
+            stepSize: 0.05
+            value: 1.0
+            id: speedCoefSlider
+            ToolTip {
+                parent: speedCoefSlider.handle
+                visible: speedCoefSlider.hovered
+                text: speedCoefSlider.value.toFixed(2)
+            }
+            onValueChanged: {
+                tapper.setSpeedCoef(value)
+            }
         }
-    }
-    ToolButton {
-        id: saveAudioButton
-        y: 5
-        x: playButton.x + playButton.width + 10
-        text: "Save taps audio"
-        onClicked: {
-            tapper.saveTapsAsMidi("tapper.mid")
-            audio.openMidiFile("tapper.mid")
-            audio.saveMidiToWav("tapper.wav")
+        ToolButton {
+            text: "Export midi file"
+            onClicked: saveMidiFileDialog.open()
         }
-    }
-    Slider {
-        y: 5
-        x: saveAudioButton.x + saveAudioButton.width + 10 //TODO rowlayout
-        from: 0.25
-        to: 4.0
-        stepSize: 0.05
-        value: 1.0
-        id: speedCoefSlider
-        ToolTip {
-            parent: speedCoefSlider.handle
-            visible: speedCoefSlider.hovered
-            text: speedCoefSlider.value.toFixed(2)
+        ToolButton {
+            text: "Export wav file"
+            onClicked: saveWavFileDialog.open()
         }
-        onValueChanged: {
-            tapper.setSpeedCoef(value)
-        }
-    }
-    ToolButton {
-        id: exportMidiButton
-        y: 5
-        x: speedCoefSlider.x + speedCoefSlider.width + 10
-        text: "Export midi file"
-        onClicked: saveMidiFileDialog.open()
-    }
-    ToolButton {
-        y: 5
-        x: exportMidiButton.x + exportMidiButton.width + 10
-        text: "Export wav file"
-        onClicked: saveWavFileDialog.open()
     }
 
     MidiRenderSettings {
-        y: 50
+        y: buttonsLayout.y + buttonsLayout.height + 10
         x: leftTap.width + 10
     }
 
