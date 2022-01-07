@@ -10,6 +10,7 @@
 #include "AudioReceiver.hpp"
 #include "AudioSpeaker.hpp"
 
+#include "midi/MidiRender.hpp"
 
 namespace mtherapp {
 
@@ -67,13 +68,13 @@ namespace mtherapp {
         Q_INVOKABLE void openMidiFile(const QString filename);
         Q_INVOKABLE void saveMidiToWav(const QString filename) const;
 
-        Q_INVOKABLE void changeMidiRenderVolume(const double db);
-        Q_INVOKABLE void changeMidiSoundfont(const QString filename);
-        Q_INVOKABLE void changeMidiSampleRate(const double sr) { _midiSampleRate = sr;}
+        Q_INVOKABLE void changeMidiRenderVolume(const double db) { render.setVolumeDb(db); }
+        Q_INVOKABLE void changeMidiSoundfont(const QString filename) { _soundfontFile = filename; }
+        Q_INVOKABLE void changeMidiSampleRate(const double sr) { render.setSampleRate(sr);}
 
         Q_INVOKABLE QString getSoundfontFilename() const { return _soundfontFile; }
-        Q_INVOKABLE double getMidiVolume() const { return _midiVolumeDb; }
-        Q_INVOKABLE double getMidiSampleRate() const { return _midiSampleRate; }
+        Q_INVOKABLE double getMidiVolume() const { return render.getVolumeDb(); }
+        Q_INVOKABLE double getMidiSampleRate() const { return render.getSampleRate(); }
 
     private:
 
@@ -98,9 +99,7 @@ namespace mtherapp {
         bool _isPlaying = false;
         bool _isRecording = false;
 
-        double _midiVolumeDb = -6.0;
-        QString _soundfontFile = "epiano.sf2";
-        double _midiSampleRate = 44100.0;
+        QString _soundfontFile = "epiano.sf2"; //Отправить его жить в render перегрузить openSoundfont() TODO
 
         std::unique_ptr<QAudioOutput> _midiOutput;
         std::unique_ptr<AudioSpeaker> _midiPlayer;
@@ -108,6 +107,8 @@ namespace mtherapp {
 
         QByteArray _midiBufer;
         QAudioFormat _midiFormat;
+
+        MidiRender render;
     };
 
 }

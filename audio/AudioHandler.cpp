@@ -5,11 +5,10 @@
 #include <QDir>
 #include <QDateTime>
 
-
 #include "app/AndroidTools.hpp"
 #include "WavFile.hpp"
 
-#include "midi/MidiRender.hpp"
+//#include "midi/MidiRender.hpp"
 
 using namespace mtherapp;
 
@@ -42,15 +41,6 @@ void AudioHandler::initAudioHandler() {
 }
 
 
-
-void AudioHandler::changeMidiRenderVolume(const double db) {
-    _midiVolumeDb = db;
-}
-
-
-void AudioHandler::changeMidiSoundfont(const QString filename) {
-    _soundfontFile = filename;
-}
 
 
 void AudioHandler::startRecord() {
@@ -270,10 +260,6 @@ void AudioHandler::checkMidi() {
 
 
 void AudioHandler::openMidiFile(const QString filename) {
-    static mtherapp::MidiRender render;
-    //TODO конечно намного лучше было бы не копировать в audioHandler значений, а использовать их только в MidiRender
-    render.setSampleRate(_midiSampleRate);
-    render.setVolumeDb(_midiVolumeDb);
     render.openSoundFont(_soundfontFile);
     _midiBufer = render.renderShort(filename);
 }
