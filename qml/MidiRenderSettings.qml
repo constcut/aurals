@@ -24,7 +24,7 @@ Item {
         Text {
             text: "Soundfont"
         }
-        ComboBox { //TODO list loader
+        ComboBox {
             model: ["epiano.sf2", "guitar.sf2", "fullset.sf2", "eguitar.sf2", "nylon_guitar.sf2", "piano.sf2", "drums.sf2"]
             currentIndex: 0
             onCurrentTextChanged: {

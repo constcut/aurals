@@ -138,7 +138,7 @@ void WaveshapePainter::drawPitch(QPainter &painter, int height) {
 
 
 void WaveshapePainter::drawNoteStartEnd([[maybe_unused]] QPainter &painter, [[maybe_unused]] int height) {
-    //TODO вначале отобразить точки найденные RMS но позволить их двигать, чтобы повышать точность
+    //Delayed: вначале отобразить точки найденные RMS но позволить их двигать, чтобы повышать точность
 }
 
 

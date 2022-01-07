@@ -53,6 +53,9 @@ void checkMidiRegression() {
 
 
 void copySoundfontsAndTests() {
+    //Delayed: разделить на 2 разных списка, складывать в разные папки
+    //Для возможности добавления собственный sf2
+
     QList<QString> filesToCopy {"epiano.sf2", "guitar.sf2", "fullset.sf2", "nylon_guitar.sf2",
                                 "piano.sf2", "drums.sf2", "eguitar.sf2", "test1.mid",
                                 "test2.mid", "test3.mid", "test4.mid", "test5.mid", "test6.mid"};

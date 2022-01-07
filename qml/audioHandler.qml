@@ -6,7 +6,6 @@ import QtQuick.Dialogs 1.1
 Item {
     id: audioHandlerItem
 
-
     Dialog {
         id: testAudioDialog
         ColumnLayout {
