@@ -442,8 +442,8 @@ void SpectrographPainter::classifySlope() {
 
 SpectrographQML::SpectrographQML([[maybe_unused]] QQuickItem* parent) :  _samplesAmount(4096) {
     setParams(SpectrumNumBands, SpectrumLowFreq, SpectrumHighFreq);
-    QObject::connect(&_analyser,SIGNAL(spectrumChanged(FrequencySpectrum)),
-                     this,SLOT(spectrumChanged(FrequencySpectrum)));
+    QObject::connect(&_analyser,SIGNAL(spectrumChanged(mtherapp::FrequencySpectrum)),
+                     this,SLOT(spectrumChanged(mtherapp::FrequencySpectrum)));
 }
 
 

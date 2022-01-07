@@ -136,8 +136,8 @@ SpectrumAnalyser::SpectrumAnalyser(QObject *parent)
     ,   _thread(new SpectrumAnalyserThread(this))
     ,   _state(Idle)
 {
-    CHECKED_CONNECT(_thread, SIGNAL(calculationComplete(FrequencySpectrum)),
-                    this, SLOT(calculationComplete(FrequencySpectrum)));
+    CHECKED_CONNECT(_thread, SIGNAL(calculationComplete(mtherapp::FrequencySpectrum)),
+                    this, SLOT(calculationComplete(mtherapp::FrequencySpectrum)));
 }
 
 
