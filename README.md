@@ -33,3 +33,18 @@ Wave view claps start end detection (blue is start, red is end):
 Wave view with f0 diplay (red line below)
 
 ![mtherapp screenshot](info/screenshots/wave_f0.png)
+
+
+## Libraries
+
+Project uses 2 libraries:
+
+* TinySoundFont
+
+https://github.com/schellingb/TinySoundFont
+
+* FFTReal
+
+https://github.com/cyrilcode/fft-real
+
+Both libraries have permissing MIT license, that help use same license for this project.
