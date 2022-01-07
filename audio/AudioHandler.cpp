@@ -260,6 +260,8 @@ void AudioHandler::checkMidi() {
 
 void AudioHandler::openMidiFile(const QString filename) {
     static mtherapp::MidiRender render;
+    //TODO конечно намного лучше было бы не копировать в audioHandler значений, а использовать их только в MidiRender
+    render.setSampleRate(_midiSampleRate);
     render.setVolumeDb(_midiVolumeDb);
     render.openSoundFont(_soundfontFile);
     _midiBufer = render.renderShort(filename);

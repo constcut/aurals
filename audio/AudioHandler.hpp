@@ -62,9 +62,11 @@ namespace mtherapp {
 
         Q_INVOKABLE void changeMidiRenderVolume(const double db);
         Q_INVOKABLE void changeMidiSoundfont(const QString filename);
+        Q_INVOKABLE void changeMidiSampleRate(const double sr) { _midiSampleRate = sr;}
 
         Q_INVOKABLE QString getSoundfontFilename() const { return _soundfontFile; }
         Q_INVOKABLE double getMidiVolume() const { return _midiVolumeDb; }
+        Q_INVOKABLE double getMidiSampleRate() const { return _midiSampleRate; }
 
     private:
 
@@ -88,6 +90,7 @@ namespace mtherapp {
 
         double _midiVolumeDb = -6.0;
         QString _soundfontFile = "epiano.sf2";
+        double _midiSampleRate = 44100.0;
 
         std::unique_ptr<QAudioOutput> _midiOutput;
         std::unique_ptr<AudioSpeaker> _midiPlayer;

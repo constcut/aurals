@@ -85,23 +85,10 @@ Item {
                         audio.saveMidiToWav("midi_.wav")
                     }
                 }
-                Text {
-                    text: "Volume"
-                }
-                ComboBox {
-                    model : ["24.0", "18.0", "12.0", "6.0", "0.0", "-6.0", "-12.0"]
-                    currentIndex: 5
-                    onCurrentTextChanged: {
-                        var db = parseFloat(currentText)
-                        audio.changeMidiRenderVolume(db)
-                    }
-                }
-                ComboBox { //TODO list loader
-                    model: ["epiano.sf2", "guitar.sf2", "fullset.sf2", "eguitar.sf2", "nylon_guitar.sf2", "piano.sf2", "drums.sf2"]
-                    currentIndex: 0
-                    onCurrentTextChanged: {
-                        audio.changeMidiSoundfont(currentText)
-                    }
+            }
+            RowLayout {
+                MidiRenderSettings {
+                    id: midiSettings
                 }
             }
         }

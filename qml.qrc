@@ -6,5 +6,6 @@
         <file>qml/audioHandler.qml</file>
         <file>qml/WaveshapeQML.qml</file>
         <file>qml/tapper.qml</file>
+        <file>qml/MidiRenderSettings.qml</file>
     </qresource>
 </RCC>

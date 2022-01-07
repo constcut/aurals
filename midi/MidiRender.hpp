@@ -20,8 +20,8 @@ namespace mtherapp {
 
     public:
 
-        void setSampleFreq(const double newFreq) { _sampleRate = newFreq; } //ON REFACTORING MAKE SUCH THINGS AS A PROPERTY
-        double getSampleFreq() const { return _sampleRate; }
+        void setSampleRate(const double newFreq) { _sampleRate = newFreq; } //ON REFACTORING MAKE SUCH THINGS AS A PROPERTY
+        double getSampleRate() const { return _sampleRate; }
 
         void setFrameSize(const quint32 newFrameSize)  { _renderFrameSize = newFrameSize; }
         quint32 getFrameSize() const { return _renderFrameSize; }
