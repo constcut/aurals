@@ -80,8 +80,8 @@ void AudioHandler::startPlayback() {
     const double msInSecond = 1000.0;
     const double ms = static_cast<double>(_commonBufer.size()) / (bytesPerSample * sampleRate / msInSecond);
     _audioPlayer->start();
-    _audioOutput->start(_audioPlayer.get());
     _audioStopRequestTimer.start(ms);
+    _audioOutput->start(_audioPlayer.get());
 }
 
 
@@ -251,8 +251,8 @@ void AudioHandler::startMidiPlayer() {
     const double channels = 2.0;
     const double ms = static_cast<double>(_midiBufer.size()) / (channels * bytesPerSample * sampleRate / msInSecond);
     _midiPlayer->start();
-    _midiOutput->start(_midiPlayer.get());
     _midiStopRequestTimer.start(ms);
+    _midiOutput->start(_midiPlayer.get());
 }
 
 
