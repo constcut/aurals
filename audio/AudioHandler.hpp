@@ -54,6 +54,11 @@ namespace mtherapp {
 
         Q_INVOKABLE void startMidiPlayer();
         Q_INVOKABLE void stopMidiPlayer();
+        Q_INVOKABLE void setMidiPlayerSampleRate(const double sr) {
+            _midiFormat.setSampleRate(sr);
+            initMidiPlayer();
+        }
+        Q_INVOKABLE double getMidiPlayerSampleRate() const { _midiFormat.sampleRate(); }
 
         Q_INVOKABLE void checkMidi();
 

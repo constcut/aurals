@@ -4,15 +4,16 @@ import QtQuick.Layouts 1.15
 
 Item {
 
-    height: volumeComboBox.height
+    height: midiSampleRate.height
+    width: midiRenderLayout.width
 
     RowLayout {
+        id: midiRenderLayout
         spacing:  10
         Text {
             text: "Volume"
         }
         ComboBox {
-            id: volumeComboBox
             model : ["24.0", "18.0", "12.0", "6.0", "0.0", "-6.0", "-12.0"]
             currentIndex: 5
             onCurrentTextChanged: {
@@ -34,12 +35,30 @@ Item {
             text: "Sample Rate"
         }
         ComboBox {
+            id: midiSampleRate
             model: [8000, 11025, 16000, 22050, 44100, 48000]
             currentIndex: 4
             onCurrentTextChanged: {
-                var sr = parseFloat(currentText)
-                audio.changeMidiSampleRate(sr)
+                midiRenderLayout.updateSampleRates()
             }
+        }
+        Text {
+            text: "Speed"
+        }
+        ComboBox {
+            id: midiSpeedCoef
+            model : [0.5, 1.0, 2.0, 4.0]
+            currentIndex: 1
+            onCurrentTextChanged: {
+                midiRenderLayout.updateSampleRates()
+            }
+        }
+        function updateSampleRates() {
+            var coef = parseFloat(midiSpeedCoef.currentText)
+            var playerSR = parseFloat(midiSampleRate.currentText)
+            var renderSR = playerSR / coef
+            audio.setMidiPlayerSampleRate(playerSR)
+            audio.changeMidiSampleRate(renderSR)
         }
     }
 }

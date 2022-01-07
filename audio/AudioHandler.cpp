@@ -21,6 +21,12 @@ AudioHandler::AudioHandler() {
     _commonFormat.setSampleType(QAudioFormat::SignedInt);
     _commonFormat.setByteOrder(QAudioFormat::LittleEndian);
     _commonFormat.setCodec("audio/pcm");
+    _midiFormat.setSampleRate(44100);
+    _midiFormat.setChannelCount(2);
+    _midiFormat.setSampleSize(16);
+    _midiFormat.setSampleType(QAudioFormat::SignedInt);
+    _midiFormat.setByteOrder(QAudioFormat::LittleEndian);
+    _midiFormat.setCodec("audio/pcm");
     initRecorder();
     initPlayer();
     initMidiPlayer();
@@ -78,12 +84,6 @@ void AudioHandler::stopPlayback() {
 
 
 void AudioHandler::initMidiPlayer() {
-    _midiFormat.setSampleRate(44100);
-    _midiFormat.setChannelCount(2);
-    _midiFormat.setSampleSize(16);
-    _midiFormat.setSampleType(QAudioFormat::SignedInt);
-    _midiFormat.setByteOrder(QAudioFormat::LittleEndian);
-    _midiFormat.setCodec("audio/pcm");
     _midiPlayer = std::make_unique<AudioSpeaker>(_midiFormat, this, _midiBufer);
     _midiOutput = std::make_unique<QAudioOutput>(QAudioDeviceInfo::defaultOutputDevice(), _midiFormat, nullptr);
 }
