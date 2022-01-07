@@ -15,6 +15,11 @@ using namespace mtherapp;
 
 
 AudioHandler::AudioHandler() {
+    initAudioHandler();
+}
+
+
+void AudioHandler::initAudioHandler() {
     _commonFormat.setSampleRate(44100);
     _commonFormat.setChannelCount(1);
     _commonFormat.setSampleSize(16); //The only format old Qt accepts on android :(
@@ -30,6 +35,10 @@ AudioHandler::AudioHandler() {
     initRecorder();
     initPlayer();
     initMidiPlayer();
+    _audioStopRequestTimer.setSingleShot(true);
+    QObject::connect(&_audioStopRequestTimer, &QTimer::timeout, this, &AudioHandler::requestStopPlayback);
+    _midiStopRequestTimer.setSingleShot(true);
+    QObject::connect(&_midiStopRequestTimer, &QTimer::timeout, this, &AudioHandler::requestStopMidi);
 }
 
 
@@ -70,13 +79,9 @@ void AudioHandler::startPlayback() {
     const double bytesPerSample = bitRate / 8.0;
     const double msInSecond = 1000.0;
     const double ms = static_cast<double>(_commonBufer.size()) / (bytesPerSample * sampleRate / msInSecond);
-    _audioStopRequestTimer.setInterval(ms);
-    _audioStopRequestTimer.setSingleShot(true); //Возможно эту строчку и строчку ниже можно вынести на этап инициализации в конструкторе TODO
-    QObject::connect(&_audioStopRequestTimer, &QTimer::timeout, this, &AudioHandler::requestStopPlayback);
-
     _audioPlayer->start();
     _audioOutput->start(_audioPlayer.get());
-    _audioStopRequestTimer.start();
+    _audioStopRequestTimer.start(ms);
 }
 
 
@@ -245,14 +250,9 @@ void AudioHandler::startMidiPlayer() {
     const double msInSecond = 1000.0;
     const double channels = 2.0;
     const double ms = static_cast<double>(_midiBufer.size()) / (channels * bytesPerSample * sampleRate / msInSecond);
-
-    _midiStopRequestTimer.setInterval(ms);
-    _midiStopRequestTimer.setSingleShot(true); //Возможно эту строчку и строчку ниже можно вынести на этап инициализации в конструкторе TODO
-    QObject::connect(&_midiStopRequestTimer, &QTimer::timeout, this, &AudioHandler::requestStopMidi);
-
     _midiPlayer->start();
     _midiOutput->start(_midiPlayer.get());
-    _midiStopRequestTimer.start();
+    _midiStopRequestTimer.start(ms);
 }
 
 

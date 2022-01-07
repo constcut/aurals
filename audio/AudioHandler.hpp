@@ -77,6 +77,8 @@ namespace mtherapp {
 
     private:
 
+        void initAudioHandler();
+
         void initRecorder();
         void initPlayer();
         void initMidiPlayer();
