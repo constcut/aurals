@@ -35,6 +35,10 @@ ApplicationWindow {
                 onClicked: mainLoader.setSource("audioHandler.qml")
             }
             ToolButton {
+                text: "Midi"
+                onClicked: mainLoader.setSource("midiPlayer.qml")
+            }
+            ToolButton {
                 text: "Tap"
                 onClicked: mainLoader.setSource("tapper.qml")
             }
