@@ -115,6 +115,7 @@ Item {
         }
     }
     ToolButton {
+        id: saveAudioButton
         y: 5
         x: playButton.x + playButton.width + 10
         text: "Save taps audio"
@@ -123,6 +124,28 @@ Item {
             audio.openMidiFile("tapper.mid")
             audio.saveMidiToWav("tapper.wav")
         }
+    }
+    Slider {
+        y: 5
+        x: saveAudioButton.x + saveAudioButton.width + 10
+        from: 0.25
+        to: 4.0
+        stepSize: 0.05
+        value: 1.0
+        id: speedCoefSlider
+        ToolTip {
+            parent: speedCoefSlider.handle
+            visible: speedCoefSlider.hovered
+            text: speedCoefSlider.value.toFixed(2)
+        }
+        onValueChanged: {
+            tapper.setSpeedCoef(value)
+        }
+    }
+
+    MidiRenderSettings {
+        y: 50
+        x: leftTap.width + 10
     }
 
 }

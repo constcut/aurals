@@ -36,16 +36,15 @@ namespace mtherapp {
             Q_INVOKABLE void tapped(const int idx);
             Q_INVOKABLE void saveTapsAsMidi(const QString filename) const;
 
+            Q_INVOKABLE void setSpeedCoef(double coef) { _speedCoef = coef; }
 
-            //TODO
-            //настройка разных инструментов и каналов для разных idx
-            //настройка коэфициента скорости
-            //настройки громкости
 
         private:
 
             std::vector<MouseEvent> _mouseEvents;
             std::vector<TapEvent> _tapEvents;
+
+            double _speedCoef = 1.0;
     };
 
 }
