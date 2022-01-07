@@ -93,11 +93,7 @@ QString mtherapp::formatToString(const QAudioFormat &format) {
             }
 
             result = QString("%1 Hz %2 bit %3 %4 %5")
-                .arg(format.sampleRate())
-                .arg(format.sampleSize())
-                .arg(formatType)
-                .arg(formatEndian)
-                .arg(formatChannels);
+                .arg(format.sampleRate(), format.sampleSize()).arg(formatType, formatEndian, formatChannels);
         } else {
             result = format.codec();
         }

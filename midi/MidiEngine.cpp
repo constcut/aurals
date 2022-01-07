@@ -43,16 +43,16 @@ void MidiEngine::printMMError(DWORD err) //beter return value
 #endif
 
 
-void MidiEngine::startFile(const QString aliasName)
+void MidiEngine::startFile([[maybe_unused]] const QString aliasName)
 {
     if (opened)
         freeInitials();
 
-
- QString commandString = "play " + aliasName;
- QByteArray stringBytes = commandString.toLocal8Bit();
-
 #ifdef WIN32
+
+    QString commandString = "play " + aliasName;
+    QByteArray stringBytes = commandString.toLocal8Bit();
+
      DWORD error = mciSendStringA(stringBytes.constData(),0,0,0);
      if (error != 0)
      {
@@ -67,15 +67,17 @@ void MidiEngine::startFile(const QString aliasName)
 }
 
 
-void MidiEngine::stopFile(const QString aliasName)
+void MidiEngine::stopFile([[maybe_unused]] const QString aliasName)
 {
     if (opened)
         freeInitials();
 
-QString commandString = "stop " + aliasName;
-QByteArray stringBytes = commandString.toLocal8Bit();
 
 #ifdef WIN32
+
+   QString commandString = "stop " + aliasName;
+   QByteArray stringBytes = commandString.toLocal8Bit();
+
    DWORD error = mciSendStringA(stringBytes.constData(),0,0,0);
    if (error != 0) {
        qDebug() <<"Stop midi error "<<error;
@@ -87,15 +89,16 @@ QByteArray stringBytes = commandString.toLocal8Bit();
 #endif
 }
 
-void MidiEngine::openFile(const QString filename, const QString aliasName)
+void MidiEngine::openFile([[maybe_unused]] const QString filename, [[maybe_unused]] const QString aliasName)
 {
     if (opened)
         freeInitials();
 
+#ifdef WIN32
+
     QString commandString = "close " + lastAlias;
     QByteArray stringBytes = commandString.toLocal8Bit();
 
-#ifdef WIN32
     if (lastAlias.isEmpty() == false)
         mciSendStringA(stringBytes.constData(),0,0,0);
     //it can give error
@@ -109,13 +112,15 @@ void MidiEngine::openFile(const QString filename, const QString aliasName)
     return;
 #endif
 
+
+#ifdef WIN32
+
     QString openCommand = "open " + filename + " type sequencer alias " + aliasName;
     QByteArray openCommandBytes = openCommand.toLocal8Bit();
     lastAlias = aliasName;
 
     qDebug () << openCommand;
 
-#ifdef WIN32
     DWORD error = mciSendStringA(openCommandBytes.constData(),0,0,0);
     if (error != 0) {
         qDebug() <<"Open midi error "<<error;
@@ -125,15 +130,17 @@ void MidiEngine::openFile(const QString filename, const QString aliasName)
 
 }
 
-void MidiEngine::closeFile(QString aliasName)
+void MidiEngine::closeFile([[maybe_unused]] QString aliasName)
 {
     if (opened)
         freeInitials();
 
+    #ifdef WIN32
+
     QString commandString = "close " + aliasName;  //maybe will need some transform of path here in case of full path in WIN
     QByteArray stringBytes = commandString.toLocal8Bit();
 
-    #ifdef WIN32
+
     DWORD error = mciSendStringA(stringBytes.constData(),0,0,0);
     if (error != 0) {
         qDebug() <<"Close file error"<<error;

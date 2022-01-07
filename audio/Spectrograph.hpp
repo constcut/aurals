@@ -178,9 +178,9 @@ namespace mtherapp {
 
     public slots:
         void spectrumChanged(const qint64 position, const qint64 length,
-                             const FrequencySpectrum &spectrum);
+                             const mtherapp::FrequencySpectrum &spectrum);
 
-        void spectrumChanged(const FrequencySpectrum &spectrum);
+        void spectrumChanged(const mtherapp::FrequencySpectrum &spectrum);
 
     signals:
         void spectrumCalculated();

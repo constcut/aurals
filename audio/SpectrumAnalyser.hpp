@@ -75,13 +75,13 @@ namespace mtherapp {
         void setFFTLimit(int newLimit) { _fftLimit = newLimit; }
 
     public slots:
-        void setWindowFunction(WindowFunction type);
+        void setWindowFunction(mtherapp::WindowFunction type);
         void calculateSpectrum(const QByteArray &buffer,
                                int inputFrequency,
                                int bytesPerSample);
 
     signals:
-        void calculationComplete(const FrequencySpectrum &spectrum);
+        void calculationComplete(const mtherapp::FrequencySpectrum &spectrum);
 
     private:
         void calculateWindow();
@@ -127,10 +127,10 @@ namespace mtherapp {
         void setFFTLimit(int newLimit) { _fftLimit = newLimit; }
 
     signals:
-        void spectrumChanged(const FrequencySpectrum &spectrum);
+        void spectrumChanged(const mtherapp::FrequencySpectrum &spectrum);
 
     private slots:
-        void calculationComplete(const FrequencySpectrum &spectrum);
+        void calculationComplete(const mtherapp::FrequencySpectrum &spectrum);
 
     private:
         void calculateWindow();

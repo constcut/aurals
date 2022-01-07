@@ -280,7 +280,7 @@ void SpectrographPainter::findF0() { //TODO findF0 classifySlope findPeaks ис�
                     index = currentPosition - 2;
                 }
                 if (_bars.size() > currentPosition + 2 && _bars[currentPosition + 2].value > localMax) {
-                    localMax = _bars[currentPosition + 2].value;
+                    //localMax = _bars[currentPosition + 2].value; //Use only if continue checking +-3
                     index = currentPosition + 2;
                 }
                 summ += _bars[index].value;
@@ -463,13 +463,13 @@ void SpectrographQML::updateBars() {
 }
 
 void SpectrographQML::spectrumChanged([[maybe_unused]] const qint64 position, [[maybe_unused]] const qint64 length,
-                                      const FrequencySpectrum &spectrum) {
+                                      const mtherapp::FrequencySpectrum &spectrum) {
     _spectrum = spectrum;
     SpectrographQML::updateBars();
 }
 
 
-void SpectrographQML::spectrumChanged(const FrequencySpectrum &spectrum) {
+void SpectrographQML::spectrumChanged(const mtherapp::FrequencySpectrum &spectrum) {
     _spectrum = spectrum;
     SpectrographQML::updateBars();
 }
@@ -482,8 +482,7 @@ void SpectrographQML::selectBar(const int index) {
 }
 
 
-void SpectrographQML::onPress(const int xPress, [[maybe_unused]]const  int yPress, const  int width, const  int height) {
-    QRect rect(0,0,width,height);
+void SpectrographQML::onPress(const int xPress, [[maybe_unused]]const  int yPress, const  int width, [[maybe_unused]] const int height) {
     qreal barWidth = static_cast<double>(width) / _bars.count();
     const int index = (static_cast<double>(xPress) / barWidth);
     selectBar(index);

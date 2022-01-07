@@ -65,7 +65,7 @@ SpectrumAnalyserThread::SpectrumAnalyserThread(QObject *parent)
     calculateWindow();
 }
 
-void SpectrumAnalyserThread::setWindowFunction(WindowFunction type) {
+void SpectrumAnalyserThread::setWindowFunction(mtherapp::WindowFunction type) {
     _windowFunction = type;
     calculateWindow();
 }
@@ -186,7 +186,7 @@ void SpectrumAnalyser::cancelCalculation() {
 }
 
 
-void SpectrumAnalyser::calculationComplete(const FrequencySpectrum &spectrum)
+void SpectrumAnalyser::calculationComplete(const mtherapp::FrequencySpectrum &spectrum)
 {
     Q_ASSERT(Idle != _state);
     if (Busy == _state)

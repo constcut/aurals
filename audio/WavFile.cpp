@@ -117,7 +117,7 @@ qint64 WavFile::headerLength() const {
 }
 
 
-void WavFile::writeHeader(const quint32 sampleRate, const quint32 bitRate, const quint32 dataSize, bool stereo, bool floatFormat)
+bool WavFile::writeHeader(const quint32 sampleRate, const quint32 bitRate, const quint32 dataSize, bool stereo, bool floatFormat)
 {
     CombinedHeader header;
     header.riff.descriptor.id[0] = 'R';
@@ -171,6 +171,7 @@ void WavFile::writeHeader(const quint32 sampleRate, const quint32 bitRate, const
         result &= write(reinterpret_cast<char*>(&fact), sizeof(FACTHeader));
     }
     result &= write(reinterpret_cast<char*>(&dataHeader), sizeof(DATAHeader));
+    return result;
 }
 
 
