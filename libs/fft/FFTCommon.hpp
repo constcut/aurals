@@ -7,6 +7,10 @@
 #include <cmath>
 #include <type_traits>
 
+const double PI = 3.1415926535897932384626433832795;
+const double SQRT2 = 1.41421356237309514547462185873883;
+
+
 
 template <class T>
 class DynArray //TODO try compare uint\int on many cycles

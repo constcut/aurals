@@ -103,7 +103,7 @@ public:
 
 
 
-template <int P, class T>
+template <class T, int P>
 class FFTRealSelect
 {
 
@@ -122,19 +122,379 @@ public:
 
 
 
-//FFRealSelect
 
-template <int P, class T>
-T*	FFTRealSelect <P, T>::sel_bin ([[maybe_unused]] T *e_ptr, T *o_ptr) {
-    return (o_ptr);
+template <class T, int ALGO>
+class FFTRealUseTrigo
+{
+
+public:
+
+    using OscType =	OscSinCos<T>;
+
+    inline static void prepare (OscType &osc);
+    inline static void iterate (OscType &osc, T &c, T &s,
+                                const T cos_ptr [], long index_c, long index_s);
+
+    FFTRealUseTrigo () = delete;
+    ~FFTRealUseTrigo () = delete;
+    FFTRealUseTrigo (const FFTRealUseTrigo &other) = delete;
+    FFTRealUseTrigo& operator = (const FFTRealUseTrigo &other) = delete;
+    bool operator == (const FFTRealUseTrigo &other) = delete;
+    bool operator != (const FFTRealUseTrigo &other) = delete;
+
+};	// class FFTRealUseTrigo
+
+
+
+
+
+//FFRealSelect impl
+
+template <class T, int P>
+T*	FFTRealSelect <T, P>::sel_bin ([[maybe_unused]] T *e_ptr, T *o_ptr) {
+    return o_ptr;
 }
 
 
 
 template <>
-inline class T* FFTRealSelect <0, T>::sel_bin (T *e_ptr, [[maybe_unused]] T *o_ptr) {
-    return (e_ptr);
+inline class T* FFTRealSelect <T, 0>::sel_bin (T *e_ptr, [[maybe_unused]] T *o_ptr) {
+    return e_ptr;
 }
+
+
+
+//F invers impl
+
+
+template <class T, int PASS>
+void FFTRealPassInverse <T, PASS>::process (long len, T dest_ptr [], T src_ptr [],
+                const T f_ptr [], const T cos_ptr [], long cos_len, const long br_ptr [], OscType osc_list [])
+{
+    process_internal (
+        len,
+        dest_ptr,
+        f_ptr,
+        cos_ptr,
+        cos_len,
+        br_ptr,
+        osc_list
+    );
+    FFTRealPassInverse <T, PASS - 1>::process_rec (
+        len,
+        src_ptr,
+        dest_ptr,
+        cos_ptr,
+        cos_len,
+        br_ptr,
+        osc_list
+    );
+}
+
+
+
+template <class T, int PASS>
+void FFTRealPassInverse <T, PASS>::process_rec (long len, T dest_ptr [], T src_ptr [],
+                                const T cos_ptr [], long cos_len, const long br_ptr [], OscType osc_list [])
+{
+    process_internal (
+        len,
+        dest_ptr,
+        src_ptr,
+        cos_ptr,
+        cos_len,
+        br_ptr,
+        osc_list
+    );
+    FFTRealPassInverse <T, PASS - 1>::process_rec (
+        len,
+        src_ptr,
+        dest_ptr,
+        cos_ptr,
+        cos_len,
+        br_ptr,
+        osc_list
+    );
+}
+
+
+
+template <>
+inline void	FFTRealPassInverse <T, 0>::process_rec ([[maybe_unused]] long len, [[maybe_unused]] T dest_ptr [],
+    [[maybe_unused]] T src_ptr [], [[maybe_unused]] const T cos_ptr [], [[maybe_unused]] long cos_len,
+    [[maybe_unused]] const long br_ptr [], [[maybe_unused]] OscType osc_list [])
+{
+} // Stops recursion
+
+
+
+template <class T, int PASS>
+void FFTRealPassInverse <T, PASS>::process_internal (long len, T dest_ptr [], const T src_ptr [], const T cos_ptr [],
+                                                  long cos_len, [[maybe_unused]] const long br_ptr [], OscType osc_list [])
+{
+    const long dist = 1L << (PASS - 1);
+    const long c1_r = 0;
+    const long c1_i = dist;
+    const long c2_r = dist * 2;
+    const long c2_i = dist * 3;
+    const long cend = dist * 4;
+    const long table_step = cos_len >> (PASS - 1);
+
+    const uint32_t TRIGO_OSC = PASS - 12; //FFTRealFixLenParam::TRIGO_BD_LIMIT TODO to FFTCommon
+    const uint32_t TRIGO_DIRECT = (TRIGO_OSC >= 0) ? 1 : 0;
+
+    long coef_index = 0;
+
+    do
+    {
+        const T* const sf = src_ptr + coef_index;
+        T* const df = dest_ptr + coef_index;
+
+        df [c1_r] = sf [c1_r] + sf [c2_r]; // Extreme coefficients are always real
+        df [c2_r] = sf [c1_r] - sf [c2_r];
+        df [c1_i] = sf [c1_i] * 2;
+        df [c2_i] = sf [c2_i] * 2;
+
+        FFTRealUseTrigo <T, TRIGO_DIRECT>::prepare (osc_list [TRIGO_OSC]);
+
+        for (long i = 1; i < dist; ++ i) // Others are conjugate complex numbers
+        {
+            df [c1_r + i] = sf [c1_r + i] + sf [c2_r - i];
+            df [c1_i + i] = sf [c2_r + i] - sf [cend - i];
+
+            T c;
+            T s;
+            FFTRealUseTrigo <T, TRIGO_DIRECT>::iterate (
+                osc_list [TRIGO_OSC],
+                c, s, cos_ptr, i * table_step,
+                (dist - i) * table_step
+            );
+
+            const T vr = sf [c1_r + i] - sf [c2_r - i];
+            const T vi = sf [c2_r + i] + sf [cend - i];
+
+            df [c2_r + i] = vr * c + vi * s;
+            df [c2_i + i] = vi * c - vr * s;
+        }
+
+        coef_index += cend;
+    }
+    while (coef_index < len);
+}
+
+
+/*
+template<>
+inline void	FFTRealPassInverse <T, 2>::process_internal (long len, T dest_ptr [], const T src_ptr [],
+                    [[maybe_unused]] const T cos_ptr [], [[maybe_unused]] long cos_len,
+                    [[maybe_unused]] const long br_ptr [], [[maybe_unused]] OscType osc_list [])
+{
+    // Antepenultimate pass
+    const T sqrt2_2 = SQRT2 * 0.5;
+
+    long				coef_index = 0;
+    do
+    {
+        dest_ptr [coef_index    ] = src_ptr [coef_index] + src_ptr [coef_index + 4];
+        dest_ptr [coef_index + 4] = src_ptr [coef_index] - src_ptr [coef_index + 4];
+        dest_ptr [coef_index + 2] = src_ptr [coef_index + 2] * 2;
+        dest_ptr [coef_index + 6] = src_ptr [coef_index + 6] * 2;
+
+        dest_ptr [coef_index + 1] = src_ptr [coef_index + 1] + src_ptr [coef_index + 3];
+        dest_ptr [coef_index + 3] = src_ptr [coef_index + 5] - src_ptr [coef_index + 7];
+
+        const T	vr = src_ptr [coef_index + 1] - src_ptr [coef_index + 3];
+        const T	vi = src_ptr [coef_index + 5] + src_ptr [coef_index + 7];
+
+        dest_ptr [coef_index + 5] = (vr + vi) * sqrt2_2;
+        dest_ptr [coef_index + 7] = (vi - vr) * sqrt2_2;
+
+        coef_index += 8;
+    }
+    while (coef_index < len);
+}
+
+
+template <>
+inline void	FFTRealPassInverse <T, 1>::process_internal (long len, T dest_ptr [], const T src_ptr [],
+                        [[maybe_unused]] const T cos_ptr [], [[maybe_unused]] long cos_len, const long br_ptr [],
+                        [[maybe_unused]] OscType osc_list [])
+{
+    // Penultimate and last pass at once
+    const long qlen = len >> 2;
+    long coef_index = 0;
+
+    do
+    {
+        const long ri_0 = br_ptr [coef_index >> 2];
+
+        const T	b_0 = src_ptr [coef_index    ] + src_ptr [coef_index + 2];
+        const T	b_2 = src_ptr [coef_index    ] - src_ptr [coef_index + 2];
+        const T	b_1 = src_ptr [coef_index + 1] * 2;
+        const T	b_3 = src_ptr [coef_index + 3] * 2;
+
+        dest_ptr [ri_0           ] = b_0 + b_1;
+        dest_ptr [ri_0 + 2 * qlen] = b_0 - b_1;
+        dest_ptr [ri_0 + 1 * qlen] = b_2 + b_3;
+        dest_ptr [ri_0 + 3 * qlen] = b_2 - b_3;
+
+        coef_index += 4;
+    }
+    while (coef_index < len);
+}
+*/
+
+//Failed yet to implement <> functions
+
+template <class T, int PASS>
+void FFTRealPassDirect <T, PASS>::process (long len, T dest_ptr [], T src_ptr [], const T x_ptr [],
+                            const T cos_ptr [], long cos_len, const long br_ptr [], OscType osc_list [])
+{
+    // Executes "previous" passes first. Inverts source and destination buffers
+    FFTRealPassDirect <T, PASS - 1>::process (
+        len,
+        src_ptr,
+        dest_ptr,
+        x_ptr,
+        cos_ptr,
+        cos_len,
+        br_ptr,
+        osc_list
+    );
+
+    const long dist = 1L << (PASS - 1);
+    const long c1_r = 0;
+    const long c1_i = dist;
+    const long c2_r = dist * 2;
+    const long c2_i = dist * 3;
+    const long cend = dist * 4;
+    const long table_step = cos_len >> (PASS - 1);
+
+    const uint32_t TRIGO_OSC = PASS - 12; //TODO const
+    const uint32_t TRIGO_DIRECT	= (TRIGO_OSC >= 0) ? 1 : 0;
+
+    long				coef_index = 0;
+    do
+    {
+        const T* const sf = src_ptr + coef_index;
+        T* const df = dest_ptr + coef_index;
+
+
+        df [c1_r] = sf [c1_r] + sf [c2_r]; // Extreme coefficients are always real
+        df [c2_r] = sf [c1_r] - sf [c2_r];
+        df [c1_i] = sf [c1_i];
+        df [c2_i] = sf [c2_i];
+
+        FFTRealUseTrigo <T, TRIGO_DIRECT>::prepare (osc_list [TRIGO_OSC]);
+
+        for (long i = 1; i < dist; ++ i) // Others are conjugate complex numbers
+        {
+            T c;
+            T s;
+            FFTRealUseTrigo <T, TRIGO_DIRECT>::iterate (
+                osc_list [TRIGO_OSC],
+                c, s, cos_ptr, i * table_step,
+                (dist - i) * table_step
+            );
+
+            const T sf_r_i = sf [c1_r + i];
+            const T sf_i_i = sf [c1_i + i];
+
+            const T v1 = sf [c2_r + i] * c - sf [c2_i + i] * s;
+            df [c1_r + i] = sf_r_i + v1;
+            df [c2_r - i] = sf_r_i - v1;
+
+            const T v2 = sf [c2_r + i] * s + sf [c2_i + i] * c;
+            df [c2_r + i] = v2 + sf_i_i;
+            df [cend - i] = v2 - sf_i_i;
+        }
+
+        coef_index += cend;
+    }
+    while (coef_index < len);
+}
+
+
+
+
+/*
+template <>
+inline void	FFTRealPassDirect <T, 1>::process (long len, T dest_ptr [], [[maybe_unused]] T src_ptr [],
+            const T x_ptr [], [[maybe_unused]] const T cos_ptr [],
+            [[maybe_unused]] long cos_len, const long br_ptr [], [[maybe_unused]] OscType osc_list [])
+{
+    // First and second pass at once
+    const long		qlen = len >> 2;
+
+    long				coef_index = 0;
+    do
+    {
+        // To do: unroll the loop (2x).
+        const long		ri_0 = br_ptr [coef_index >> 2];
+        const long		ri_1 = ri_0 + 2 * qlen;	// bit_rev_lut_ptr [coef_index + 1];
+        const long		ri_2 = ri_0 + 1 * qlen;	// bit_rev_lut_ptr [coef_index + 2];
+        const long		ri_3 = ri_0 + 3 * qlen;	// bit_rev_lut_ptr [coef_index + 3];
+
+        T	* const	df2 = dest_ptr + coef_index;
+        df2 [1] = x_ptr [ri_0] - x_ptr [ri_1];
+        df2 [3] = x_ptr [ri_2] - x_ptr [ri_3];
+
+        const T	sf_0 = x_ptr [ri_0] + x_ptr [ri_1];
+        const T	sf_2 = x_ptr [ri_2] + x_ptr [ri_3];
+
+        df2 [0] = sf_0 + sf_2;
+        df2 [2] = sf_0 - sf_2;
+
+        coef_index += 4;
+    }
+    while (coef_index < len);
+}
+
+
+template <>
+inline void	FFTRealPassDirect <T, 2>::process (long len, T dest_ptr [], T src_ptr [], const T x_ptr [], const T cos_ptr [],
+                                               long cos_len, const long br_ptr [], OscType osc_list [])
+{
+    // Executes "previous" passes first. Inverts source and destination buffers
+    FFTRealPassDirect <1>::process (
+        len,
+        src_ptr,
+        dest_ptr,
+        x_ptr,
+        cos_ptr,
+        cos_len,
+        br_ptr,
+        osc_list
+    );
+
+    // Third pass
+    const T	sqrt2_2 = T (SQRT2 * 0.5);
+
+    long				coef_index = 0;
+    do
+    {
+        dest_ptr [coef_index    ] = src_ptr [coef_index] + src_ptr [coef_index + 4];
+        dest_ptr [coef_index + 4] = src_ptr [coef_index] - src_ptr [coef_index + 4];
+        dest_ptr [coef_index + 2] = src_ptr [coef_index + 2];
+        dest_ptr [coef_index + 6] = src_ptr [coef_index + 6];
+
+        T v;
+
+        v = (src_ptr [coef_index + 5] - src_ptr [coef_index + 7]) * sqrt2_2;
+        dest_ptr [coef_index + 1] = src_ptr [coef_index + 1] + v;
+        dest_ptr [coef_index + 3] = src_ptr [coef_index + 1] - v;
+
+        v = (src_ptr [coef_index + 5] + src_ptr [coef_index + 7]) * sqrt2_2;
+        dest_ptr [coef_index + 5] = v + src_ptr [coef_index + 3];
+        dest_ptr [coef_index + 7] = v - src_ptr [coef_index + 3];
+
+        coef_index += 8;
+    }
+    while (coef_index < len);
+}
+
+*/
+
 
 
 

@@ -3,10 +3,6 @@
 
 #include "FFTCommon.hpp"
 
-
-const double	PI		= 3.1415926535897932384626433832795;
-const double	SQRT2	= 1.41421356237309514547462185873883;
-
 //TODO check in FFT class is typename float std::is_float<T>
 //TODO rename fields and functions
 
