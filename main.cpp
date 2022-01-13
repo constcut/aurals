@@ -6,7 +6,7 @@
 #include "libs/fft/FFTRealFixLen.h"
 
 #include "libs/fft/FFTunreal.hpp"
-//#include "libs/fft/FFTurealfix.hpp"
+#include "libs/fft/FFTurealfix.hpp"
 
 #include <vector>
 #include <chrono>
@@ -21,7 +21,8 @@ void benchmarkFFT() {
     ffft::FFTRealFixLen<bits> fftFixed;
 
     FFTReal<float> fftUn(size);
-    //FFTRealFixLen<float, bits> fftUnf;
+
+    FFTRealFixLen<float, bits> fftUnf;
 
     std::vector<float> testVector(size, 0);
     std::vector<float> output(size, 0);
@@ -59,7 +60,6 @@ void benchmarkFFT() {
         }
     }
 
-    /*
     bench(fftFixed, "Dyn");
     output2 = std::vector<float>(output.begin(), output.end());
 
@@ -73,7 +73,7 @@ void benchmarkFFT() {
         }
     }
 
-    exit(0);*/
+    exit(0);
 
 
     for (size_t i = 0; i < 10000; ++i) {
