@@ -26,7 +26,7 @@ class Yin {
         double parabolicInterpolation() const;
         bool absoluteThresholdFound();
         void accMeanNormDifference();
-        void halvesDifference(const float *buffer);
+        void differenceFunction(const float *buffer);
 
         double _threshold;
         size_t _bufferSize;

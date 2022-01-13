@@ -31,38 +31,47 @@ void Yin::init(double yinSampleRate, const size_t yinBufferSize) {
 
 
 double Yin::getPitch(const float *buffer) {
-    halvesDifference(buffer);
-    accMeanNormDifference();
-    if (absoluteThresholdFound())
-        return _sampleRate / parabolicInterpolation();
-    return -1.0; //Not found case
+    //1. Autocorrelation ?
+    differenceFunction(buffer); //2. Difference function
+    accMeanNormDifference(); //3. Cumulative mean normalized difference function
+    if (absoluteThresholdFound()) //4. Absolute threshold
+        return _sampleRate / parabolicInterpolation(); //5.Parabolic interpolation
+    return -1.0;
+    //6. Best local estimate ?
 }
 
 
-double Yin::parabolicInterpolation() const {
+void Yin::differenceFunction(const float* buffer) {
+    float delta = 0.f;
+    for(size_t tau = 0 ; tau < _halfBufferSize; tau++)
+        for(size_t index = 0; index < _halfBufferSize; index++){
+            delta = buffer[index] - buffer[index + tau];
+            _yinBuffer[tau] += delta * delta; //Что если здесь сделать 4ую степень но потом взять от всего корень? Эксперименты!
+        }
+}
+
+
+double Yin::parabolicInterpolation() const { //TODO сравнить с другим результатом
 
     size_t start = _currentTau ? _currentTau - 1 : _currentTau;
     size_t finish = _currentTau + 1 < _halfBufferSize ? _currentTau + 1 : _currentTau;
 
-    ///TODO find nice lambda
-    if (start == _currentTau) {
-        if (_yinBuffer[_currentTau] <= _yinBuffer[finish])
+    auto borderResult = [this](size_t idx) {
+        if (_yinBuffer[_currentTau] <= _yinBuffer[idx])
             return _currentTau;
         else
-            return finish;
-    }
+            return idx;
+    };
 
-    if (finish == _currentTau) {
-        if (_yinBuffer[_currentTau] <= _yinBuffer[start])
-            return _currentTau;
-        else
-            return start;
-    }
+    if (start == _currentTau)
+        return borderResult(finish);
+    if (finish == _currentTau)
+        return borderResult(start);
 
     double begin = _yinBuffer[start];
     double middle = _yinBuffer[_currentTau];
     double end = _yinBuffer[finish];
-    return _currentTau + (end - begin) / (2 * (2 * middle - end - begin));
+    return _currentTau + (end - begin) / (2.0 * (2.0 * middle - end - begin));
 }
 
 
@@ -77,14 +86,7 @@ void Yin::accMeanNormDifference(){
 }
 
 
-void Yin::halvesDifference(const float* buffer) {
-    float delta = 0.f;
-    for(size_t tau = 0 ; tau < _halfBufferSize; tau++)
-        for(size_t index = 0; index < _halfBufferSize; index++){
-            delta = buffer[index] - buffer[index + tau];
-            _yinBuffer[tau] += delta * delta; //Playe there sqrt etc
-        }
-}
+
 
 
 bool Yin::absoluteThresholdFound(){

@@ -95,8 +95,8 @@ int main(int argc, char *argv[])
 
     LogHandler::getInstance().setFilename("log.txt");
 
-    benchmarkFFT();
-    exit(0);
+    //benchmarkFFT();
+    //exit(0);
 
     qDebug() << "Starting application";
     return mainInit(argc,argv);
