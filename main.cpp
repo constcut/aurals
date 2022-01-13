@@ -6,6 +6,7 @@
 #include "libs/fft/FFTRealFixLen.h"
 
 #include "libs/fft/FFTunreal.hpp"
+//#include "libs/fft/FFTurealfix.hpp"
 
 #include <vector>
 #include <chrono>
@@ -20,6 +21,7 @@ void benchmarkFFT() {
     ffft::FFTRealFixLen<bits> fftFixed;
 
     FFTReal<float> fftUn(size);
+    //FFTRealFixLen<float, bits> fftUnf;
 
     std::vector<float> testVector(size, 0);
     std::vector<float> output(size, 0);
@@ -40,14 +42,16 @@ void benchmarkFFT() {
     unsigned long dynCount = 0;
     unsigned long fixCount = 0;
     unsigned long unCount = 0;
+    unsigned long unfCount = 0;
 
 
 
     bench(fftDynamic, "Dyn");
-
     std::vector<float> output2(output.begin(), output.end());
+
     output = std::vector<float>(size, 0);
     bench(fftUn, "UN");
+
     for (size_t i = 0; i < size; ++i) {
         if (output[i] != output2[i]) {
             qDebug() << "I suck :(  " << output[i] << " " << output2[i];
@@ -55,19 +59,21 @@ void benchmarkFFT() {
         }
     }
 
-    //Compare fix to fix
     /*
+    bench(fftFixed, "Dyn");
+    output2 = std::vector<float>(output.begin(), output.end());
+
     output = std::vector<float>(size, 0);
-    bench(fftFixed, "UN");
+    bench(fftUnf, "UN");
+
     for (size_t i = 0; i < size; ++i) {
         if (output[i] != output2[i]) {
-
-            if (i > 10)
-                break;
-            qDebug() << "FIX suck :(  " << output[i] << " " << output2[i];
-            //break;
+            qDebug() << "Fix I suck :(  " << output[i] << " " << output2[i];
+            break;
         }
-    }*/
+    }
+
+    exit(0);*/
 
 
     for (size_t i = 0; i < 10000; ++i) {
@@ -79,12 +85,14 @@ void benchmarkFFT() {
         dynCount += bench(fftDynamic, "Dyn");
         fixCount += bench(fftFixed, "Fix");
         unCount += bench(fftUn, "UN");
+        //unfCount += bench(fftUnf, "UNf");
 
     }
 
     qDebug() << "Total dyn: " << dynCount / 1000.0;
     qDebug() << "Total fixed: " << fixCount / 1000.0;
     qDebug() << "Total un: " << unCount / 1000.0;
+    //qDebug() << "Total un fixed: " << unCount / 1000.0;
 
 }
 
