@@ -565,13 +565,15 @@ void	FFTReal <DT>::init_trigo_lut ()
         for (int level = 3; level < _nbr_bits; ++level)
         {
             const long		level_len = 1L << (level - 1);
+
             DT	* const	level_ptr =
                 &_trigo_lut [get_trigo_level_index (level)];
+
             const double	mul = PI / (level_len << 1);
 
             for (long i = 0; i < level_len; ++ i)
             {
-                level_ptr [i] = static_cast <DT> (cos (i * mul));
+                level_ptr [i] = std::cos (i * mul);
             }
         }
     }
@@ -867,7 +869,7 @@ void	FFTReal <DT>::compute_ifft_general (const DT f [], DT x []) const
     assert (x != use_buffer ());
     assert (x != f);
 
-    DT *		sf = const_cast <DT *> (f); //TODO!
+    const DT *		sf = f; // const_cast <DT *> (f); //TODO!
     DT *		df;
     DT *		df_temp;
 
