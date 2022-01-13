@@ -82,6 +82,7 @@ HEADERS += \
     libs/fft/Array.hpp \
     libs/fft/DynArray.h \
     libs/fft/DynArray.hpp \
+    libs/fft/FFTCommon.hpp \
     libs/fft/FFTReal.h \
     libs/fft/FFTReal.hpp \
     libs/fft/FFTRealFixLen.h \
@@ -96,6 +97,7 @@ HEADERS += \
     libs/fft/FFTRealUseTrigo.h \
     libs/fft/FFTRealUseTrigo.hpp \
     libs/fft/FFTunreal.hpp \
+    libs/fft/FFTurealfix.hpp \
     libs/fft/OscSinCos.h \
     libs/fft/OscSinCos.hpp \
     libs/fft/def.h \
