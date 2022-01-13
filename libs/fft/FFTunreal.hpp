@@ -39,7 +39,7 @@ public:
 private:
 
     T* _data_ptr;
-    long _len;
+    uint32_t _len;
 
 };
 

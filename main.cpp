@@ -13,7 +13,7 @@
 
 void benchmarkFFT() {
 
-    const int bits = 18;
+    const int bits = 16;
     const int size = 2 << (bits-1);
 
     ffft::FFTReal<float> fftDynamic(size);
@@ -42,11 +42,12 @@ void benchmarkFFT() {
     unsigned long unCount = 0;
 
 
+
     bench(fftDynamic, "Dyn");
+
     std::vector<float> output2(output.begin(), output.end());
     output = std::vector<float>(size, 0);
     bench(fftUn, "UN");
-
     for (size_t i = 0; i < size; ++i) {
         if (output[i] != output2[i]) {
             qDebug() << "I suck :(  " << output[i] << " " << output2[i];
@@ -54,15 +55,30 @@ void benchmarkFFT() {
         }
     }
 
+    /*
+    output = std::vector<float>(size, 0);
+    bench(fftFixed, "UN");
+    for (size_t i = 0; i < size; ++i) {
+        if (output[i] != output2[i]) {
+
+            if (i > 10)
+                break;
+            qDebug() << "FIX suck :(  " << output[i] << " " << output2[i];
+            //break;
+        }
+    }*/
+
 
     for (size_t i = 0; i < 10000; ++i) {
 
         for (auto& sample: testVector)
             sample = (rand() % 30000) / 30000.0f;
 
+
         dynCount += bench(fftDynamic, "Dyn");
         fixCount += bench(fftFixed, "Fix");
         unCount += bench(fftUn, "UN");
+
     }
 
     qDebug() << "Total dyn: " << dynCount / 1000.0;
