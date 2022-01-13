@@ -134,7 +134,7 @@ private:
 
 
     const uint32_t _length;
-    const int _nbr_bits;
+    const int _number_bits;
     DynArray <uint32_t> _br_lut;
     DynArray <T> _trigo_lut;
     mutable DynArray <T> _buffer;
@@ -266,11 +266,10 @@ static inline bool	FFTReal_is_pow2 (long x) {
 }
 
 
-
-static inline int	FFTReal_get_next_pow2 (long x)
+static inline int	FFTReal_get_next_pow2 (long x) //TODO rechec constexpr
 {
     --x;
-    int				p = 0;
+    int p = 0;
     while ((x & ~0xFFFFL) != 0) {
         p += 16;
         x >>= 16;
@@ -283,7 +282,7 @@ static inline int	FFTReal_get_next_pow2 (long x)
         ++p;
         x >>= 1;
     }
-    return (p);
+    return p;
 }
 
 
@@ -302,17 +301,17 @@ Throws: std::bad_alloc
 ==============================================================================
 */
 
-template <class DT>
-FFTReal <DT>::FFTReal (long length)
-:	_length (length)
-,	_nbr_bits (FFTReal_get_next_pow2 (length))
-,	_br_lut ()
-,	_trigo_lut ()
-,	_buffer (length)
-,	_trigo_osc ()
+template <class T>
+FFTReal <T>::FFTReal (long length)
+    :	_length (length)
+    ,	_number_bits (FFTReal_get_next_pow2 (length))
+    ,	_br_lut ()
+    ,	_trigo_lut ()
+    ,	_buffer (length)
+    ,	_trigo_osc ()
 {
     assert (FFTReal_is_pow2 (length));
-    assert (_nbr_bits <= MAX_BIT_DEPTH);
+    assert (_number_bits <= MAX_BIT_DEPTH);
 
     init_br_lut ();
     init_trigo_lut ();
@@ -331,12 +330,10 @@ Throws: Nothing
 ==============================================================================
 */
 
-template <class DT>
-uint32_t FFTReal<DT>::get_length() const
-{
+template <class T>
+uint32_t FFTReal<T>::get_length() const {
     return (_length);
 }
-
 
 
 /*
@@ -355,8 +352,8 @@ Throws: Nothing
 ==============================================================================
 */
 
-template <class DT>
-void	FFTReal <DT>::do_fft (DT f [], const DT x []) const
+template <class T>
+void FFTReal <T>::do_fft (T f [], const T x []) const
 {
     assert (f != 0);
     assert (f != use_buffer ());
@@ -364,37 +361,24 @@ void	FFTReal <DT>::do_fft (DT f [], const DT x []) const
     assert (x != use_buffer ());
     assert (x != f);
 
-    // General case
-    if (_nbr_bits > 2)
-    {
+    if (_number_bits > 2) // General case
         compute_fft_general (f, x);
-    }
-
-    // 4-point FFT
-    else if (_nbr_bits == 2)
+    else if (_number_bits == 2) // 4-point FFT
     {
         f [1] = x [0] - x [2];
         f [3] = x [1] - x [3];
-
-        const DT	b_0 = x [0] + x [2];
-        const DT	b_2 = x [1] + x [3];
-
+        const T b_0 = x [0] + x [2];
+        const T b_2 = x [1] + x [3];
         f [0] = b_0 + b_2;
         f [2] = b_0 - b_2;
     }
-
-    // 2-point FFT
-    else if (_nbr_bits == 1)
+    else if (_number_bits == 1) // 2-point FFT
     {
         f [0] = x [0] + x [1];
         f [1] = x [0] - x [1];
     }
-
-    // 1-point FFT
     else
-    {
-        f [0] = x [0];
-    }
+        f [0] = x [0]; // 1-point FFT
 }
 
 
@@ -416,8 +400,8 @@ Throws: Nothing
 ==============================================================================
 */
 
-template <class DT>
-void	FFTReal <DT>::do_ifft (const DT f [], DT x []) const
+template <class T>
+void FFTReal <T>::do_ifft (const T f [], T x []) const
 {
     assert (f != 0);
     assert (f != use_buffer ());
@@ -425,36 +409,25 @@ void	FFTReal <DT>::do_ifft (const DT f [], DT x []) const
     assert (x != use_buffer ());
     assert (x != f);
 
-    // General case
-    if (_nbr_bits > 2)
-    {
+    if (_number_bits > 2) // General case
         compute_ifft_general (f, x);
-    }
-
-    // 4-point IFFT
-    else if (_nbr_bits == 2)
+    else if (_number_bits == 2) // 4-point IFFT
     {
-        const DT	b_0 = f [0] + f [2];
-        const DT	b_2 = f [0] - f [2];
+        const T	b_0 = f [0] + f [2];
+        const T	b_2 = f [0] - f [2];
 
         x [0] = b_0 + f [1] * 2;
         x [2] = b_0 - f [1] * 2;
         x [1] = b_2 + f [3] * 2;
         x [3] = b_2 - f [3] * 2;
     }
-
-    // 2-point IFFT
-    else if (_nbr_bits == 1)
+    else if (_number_bits == 1) // 2-point IFFT
     {
         x [0] = f [0] + f [1];
         x [1] = f [0] - f [1];
     }
-
-    // 1-point IFFT
-    else
-    {
+    else // 1-point IFFT
         x [0] = f [0];
-    }
 }
 
 
@@ -471,30 +444,25 @@ Throws: Nothing
 ==============================================================================
 */
 
-template <class DT>
-void	FFTReal <DT>::rescale (DT x []) const
+template <class T>
+void FFTReal <T>::rescale (T x []) const
 {
-    const DT mul = DT (1.0 / _length); //TODO
+    const T mul = 1.0 / _length;
 
     if (_length < 4)
     {
-        long				i = _length - 1;
-        do
-        {
+        long i = _length - 1;
+        do {
             x [i] *= mul;
             --i;
         }
         while (i >= 0);
     }
-
     else
     {
         assert ((_length & 3) == 0);
-
-        // Could be optimized with SIMD instruction sets (needs alignment check)
-        long				i = _length - 4;
-        do
-        {
+        long i = _length - 4; // Could be optimized with SIMD instruction sets (needs alignment check)
+        do {
             x [i + 0] *= mul;
             x [i + 1] *= mul;
             x [i + 2] *= mul;
@@ -522,79 +490,67 @@ Throws: Nothing
 ==============================================================================
 */
 
-template <class DT>
-DT*	FFTReal <DT>::use_buffer () const {
+template <class T>
+T*	FFTReal <T>::use_buffer () const {
     return (&_buffer [0]);
 }
 
 
 
-template <class DT>
-void	FFTReal <DT>::init_br_lut ()
+template <class T>
+void FFTReal <T>::init_br_lut ()
 {
-    const long		length = 1L << _nbr_bits;
+    const long length = 1L << _number_bits;
+
     _br_lut.resize (length);
-
     _br_lut [0] = 0;
-    long				br_index = 0;
-    for (long cnt = 1; cnt < length; ++cnt)
-    {
-        // ++br_index (bit reversed)
-        long				bit = length >> 1;
-        while (((br_index ^= bit) & bit) == 0)
-        {
-            bit >>= 1;
-        }
 
+    long br_index = 0;
+    for (long cnt = 1; cnt < length; ++cnt) {
+        long bit = length >> 1;
+        while (((br_index ^= bit) & bit) == 0)
+            bit >>= 1;
         _br_lut [cnt] = br_index;
     }
 }
 
 
 
-template <class DT>
-void	FFTReal <DT>::init_trigo_lut ()
+template <class T>
+void FFTReal <T>::init_trigo_lut ()
 {
-    using namespace std;
-
-    if (_nbr_bits > 3)
+    if (_number_bits > 3)
     {
-        const long		total_len = (1L << (_nbr_bits - 1)) - 4;
+        const long total_len = (1L << (_number_bits - 1)) - 4;
         _trigo_lut.resize (total_len);
 
-        for (int level = 3; level < _nbr_bits; ++level)
+        for (int level = 3; level < _number_bits; ++level)
         {
-            const long		level_len = 1L << (level - 1);
+            const long level_len = 1L << (level - 1);
+            T* const level_ptr = &_trigo_lut [get_trigo_level_index (level)];
 
-            DT	* const	level_ptr =
-                &_trigo_lut [get_trigo_level_index (level)];
-
-            const double	mul = PI / (level_len << 1);
-
+            const double mul = PI / (level_len << 1);
             for (long i = 0; i < level_len; ++ i)
-            {
                 level_ptr [i] = std::cos (i * mul);
-            }
         }
     }
 }
 
 
 
-template <class DT>
-void	FFTReal <DT>::init_trigo_osc ()
+template <class T>
+void FFTReal <T>::init_trigo_osc ()
 {
-    const int		nbr_osc = _nbr_bits - TRIGO_BD_LIMIT;
+    const int nbr_osc = _number_bits - TRIGO_BD_LIMIT;
     if (nbr_osc > 0)
     {
         _trigo_osc.resize (nbr_osc);
 
         for (int osc_cnt = 0; osc_cnt < nbr_osc; ++osc_cnt)
         {
-            OscType &		osc = _trigo_osc [osc_cnt];
-
-            const long		len = 1L << (TRIGO_BD_LIMIT + osc_cnt);
-            const double	mul = (0.5 * PI) / len;
+            OscType& osc = _trigo_osc [osc_cnt];
+            const long len = 1L << (TRIGO_BD_LIMIT + osc_cnt);
+            const double mul = (0.5 * PI) / len;
             osc.set_step (mul);
         }
     }
@@ -602,24 +558,23 @@ void	FFTReal <DT>::init_trigo_osc ()
 
 
 
-template <class DT>
-const uint32_t *FFTReal<DT>::get_br_ptr() const
-{
-    return (&_br_lut [0]);
+template <class T>
+const uint32_t* FFTReal<T>::get_br_ptr() const {
+    return &_br_lut [0]; //TODO make another function just to access ptr
 }
 
 
 
-template <class DT>
-const DT*	FFTReal <DT>::get_trigo_ptr (int level) const {
+template <class T>
+const T* FFTReal <T>::get_trigo_ptr (int level) const {
     assert (level >= 3);
-    return (&_trigo_lut [get_trigo_level_index (level)]);
+    return (&_trigo_lut [get_trigo_level_index (level)]);//TODO make another function just to access ptr
 }
 
 
 
-template <class DT>
-uint32_t FFTReal<DT>::get_trigo_level_index(int level) const {
+template <class T>
+uint32_t FFTReal<T>::get_trigo_level_index(int level) const {
     assert (level >= 3);
     return ((1L << (level - 1)) - 4);
 }
@@ -627,8 +582,8 @@ uint32_t FFTReal<DT>::get_trigo_level_index(int level) const {
 
 
 // Transform in several passes
-template <class DT>
-void	FFTReal <DT>::compute_fft_general (DT f [], const DT x []) const
+template <class T>
+void FFTReal <T>::compute_fft_general (T f [], const T x []) const
 {
     assert (f != 0);
     assert (f != use_buffer ());
@@ -636,16 +591,14 @@ void	FFTReal <DT>::compute_fft_general (DT f [], const DT x []) const
     assert (x != use_buffer ());
     assert (x != f);
 
-    DT *		sf;
-    DT *		df;
+    T* sf;
+    T* df;
 
-    if ((_nbr_bits & 1) != 0)
-    {
+    if ((_number_bits & 1) != 0) {
         df = use_buffer ();
         sf = f;
     }
-    else
-    {
+    else {
         df = f;
         sf = use_buffer ();
     }
@@ -653,11 +606,11 @@ void	FFTReal <DT>::compute_fft_general (DT f [], const DT x []) const
     compute_direct_pass_1_2 (df, x);
     compute_direct_pass_3 (sf, df);
 
-    for (int pass = 3; pass < _nbr_bits; ++ pass)
+    for (int pass = 3; pass < _number_bits; ++ pass)
     {
         compute_direct_pass_n (df, sf, pass);
 
-        DT * const	temp_ptr = df;
+        T* const temp_ptr = df;
         df = sf;
         sf = temp_ptr;
     }
@@ -665,8 +618,8 @@ void	FFTReal <DT>::compute_fft_general (DT f [], const DT x []) const
 
 
 
-template <class DT>
-void	FFTReal <DT>::compute_direct_pass_1_2 (DT df [], const DT x []) const
+template <class T>
+void FFTReal <T>::compute_direct_pass_1_2 (T df [], const T x []) const
 {
     assert (df != 0);
     assert (x != 0);
@@ -681,12 +634,12 @@ void	FFTReal <DT>::compute_direct_pass_1_2 (DT df [], const DT x []) const
         const uint32_t		rev_index_2 = bit_rev_lut_ptr [coef_index + 2];
         const uint32_t		rev_index_3 = bit_rev_lut_ptr [coef_index + 3];
 
-        DT	* const	df2 = df + coef_index;
+        T	* const	df2 = df + coef_index;
         df2 [1] = x [rev_index_0] - x [rev_index_1];
         df2 [3] = x [rev_index_2] - x [rev_index_3];
 
-        const DT	sf_0 = x [rev_index_0] + x [rev_index_1];
-        const DT	sf_2 = x [rev_index_2] + x [rev_index_3];
+        const T	sf_0 = x [rev_index_0] + x [rev_index_1];
+        const T	sf_2 = x [rev_index_2] + x [rev_index_3];
 
         df2 [0] = sf_0 + sf_2;
         df2 [2] = sf_0 - sf_2;
@@ -698,17 +651,17 @@ void	FFTReal <DT>::compute_direct_pass_1_2 (DT df [], const DT x []) const
 
 
 
-template <class DT>
-void	FFTReal <DT>::compute_direct_pass_3 (DT df [], const DT sf []) const
+template <class T>
+void	FFTReal <T>::compute_direct_pass_3 (T df [], const T sf []) const
 {
     assert (df != 0);
     assert (sf != 0);
     assert (df != sf);
 
-    const DT	sqrt2_2 = SQRT2 * 0.5;
+    const T	sqrt2_2 = SQRT2 * 0.5;
     long coef_index = 0;
-    DT v;
 
+    T v;
     do
     {
         df [coef_index] = sf [coef_index] + sf [coef_index + 4];
@@ -732,65 +685,57 @@ void	FFTReal <DT>::compute_direct_pass_3 (DT df [], const DT sf []) const
 
 
 template <class DT>
-void	FFTReal <DT>::compute_direct_pass_n (DT df [], const DT sf [], int pass) const
+void FFTReal <DT>::compute_direct_pass_n (DT df [], const DT sf [], int pass) const
 {
     assert (df != 0);
     assert (sf != 0);
     assert (df != sf);
     assert (pass >= 3);
-    assert (pass < _nbr_bits);
+    assert (pass < _number_bits);
 
     if (pass <= TRIGO_BD_LIMIT)
-    {
         compute_direct_pass_n_lut (df, sf, pass);
-    }
     else
-    {
         compute_direct_pass_n_osc (df, sf, pass);
-    }
 }
 
 
 
-template <class DT>
-void	FFTReal <DT>::compute_direct_pass_n_lut (DT df [], const DT sf [], int pass) const
+template <class T>
+void FFTReal <T>::compute_direct_pass_n_lut (T df [], const T sf [], int pass) const
 {
     assert (df != 0);
     assert (sf != 0);
     assert (df != sf);
     assert (pass >= 3);
-    assert (pass < _nbr_bits);
+    assert (pass < _number_bits);
 
-    const long		nbr_coef = 1 << pass;
-    const long		h_nbr_coef = nbr_coef >> 1;
-    const long		d_nbr_coef = nbr_coef << 1;
-    long				coef_index = 0;
-    const DT	* const	cos_ptr = get_trigo_ptr (pass);
+    const long nbr_coef = 1 << pass;
+    const long h_nbr_coef = nbr_coef >> 1;
+    const long d_nbr_coef = nbr_coef << 1;
+    long coef_index = 0;
+    const T* const cos_ptr = get_trigo_ptr (pass);
 
-    DT	 		v;
-
+    T v;
     do
     {
-        const DT	* const	sf1r = sf + coef_index;
-        const DT	* const	sf2r = sf1r + nbr_coef;
-        DT			* const	dfr = df + coef_index;
-        DT			* const	dfi = dfr + nbr_coef;
+        const T* const sf1r = sf + coef_index;
+        const T* const sf2r = sf1r + nbr_coef;
+        T* const dfr = df + coef_index;
+        T* const dfi = dfr + nbr_coef;
 
-        // Extreme coefficients are always real
-        dfr [0] = sf1r [0] + sf2r [0];
+        dfr [0] = sf1r [0] + sf2r [0];  // Extreme coefficients are always real
         dfi [0] = sf1r [0] - sf2r [0];	// dfr [nbr_coef] =
         dfr [h_nbr_coef] = sf1r [h_nbr_coef];
         dfi [h_nbr_coef] = sf2r [h_nbr_coef];
 
-        // Others are conjugate complex numbers
-        const DT * const	sf1i = sf1r + h_nbr_coef;
-        const DT * const	sf2i = sf1i + nbr_coef;
-
+        const T* const	sf1i = sf1r + h_nbr_coef; // Others are conjugate complex numbers
+        const T* const	sf2i = sf1i + nbr_coef;
 
         for (long i = 1; i < h_nbr_coef; ++ i)
         {
-            const DT	c = cos_ptr [i];					// cos (i*PI/nbr_coef);
-            const DT	s = cos_ptr [h_nbr_coef - i];	// sin (i*PI/nbr_coef);
+            const T	c = cos_ptr [i];					// cos (i*PI/nbr_coef);
+            const T	s = cos_ptr [h_nbr_coef - i];	// sin (i*PI/nbr_coef);
 
             v = sf2r [i] * c - sf2i [i] * s;
             dfr [i] = sf1r [i] + v;
@@ -808,48 +753,43 @@ void	FFTReal <DT>::compute_direct_pass_n_lut (DT df [], const DT sf [], int pass
 
 
 
-template <class DT>
-void	FFTReal <DT>::compute_direct_pass_n_osc (DT df [], const DT sf [], int pass) const
+template <class T>
+void FFTReal <T>::compute_direct_pass_n_osc (T df [], const T sf [], int pass) const
 {
     assert (df != 0);
     assert (sf != 0);
     assert (df != sf);
     assert (pass > TRIGO_BD_LIMIT);
-    assert (pass < _nbr_bits);
+    assert (pass < _number_bits);
 
-    const long		nbr_coef = 1 << pass;
-    const long		h_nbr_coef = nbr_coef >> 1;
-    const long		d_nbr_coef = nbr_coef << 1;
-    long				coef_index = 0;
-    OscType &		osc = _trigo_osc [pass - (TRIGO_BD_LIMIT + 1)];
+    const long nbr_coef = 1 << pass;
+    const long h_nbr_coef = nbr_coef >> 1;
+    const long d_nbr_coef = nbr_coef << 1;
+    long coef_index = 0;
+    OscType& osc = _trigo_osc [pass - (TRIGO_BD_LIMIT + 1)];
 
-    DT	 		v;
-
+    T v;
     do
     {
-        const DT	* const	sf1r = sf + coef_index;
-        const DT	* const	sf2r = sf1r + nbr_coef;
-        DT			* const	dfr = df + coef_index;
-        DT			* const	dfi = dfr + nbr_coef;
-
+        const T* const sf1r = sf + coef_index;
+        const T* const sf2r = sf1r + nbr_coef;
+        T* const dfr = df + coef_index;
+        T* const dfi = dfr + nbr_coef;
         osc.clear_buffers ();
 
-        // Extreme coefficients are always real
         dfr [0] = sf1r [0] + sf2r [0];
-        dfi [0] = sf1r [0] - sf2r [0];	// dfr [nbr_coef] =
+        dfi [0] = sf1r [0] - sf2r [0];
         dfr [h_nbr_coef] = sf1r [h_nbr_coef];
         dfi [h_nbr_coef] = sf2r [h_nbr_coef];
 
-        // Others are conjugate complex numbers
-        const DT * const	sf1i = sf1r + h_nbr_coef;
-        const DT * const	sf2i = sf1i + nbr_coef;
-
+        const T* const sf1i = sf1r + h_nbr_coef;
+        const T* const sf2i = sf1i + nbr_coef;
 
         for (long i = 1; i < h_nbr_coef; ++ i)
         {
             osc.step ();
-            const DT	c = osc.get_cos ();
-            const DT	s = osc.get_sin ();
+            const T	c = osc.get_cos ();
+            const T	s = osc.get_sin ();
 
             v = sf2r [i] * c - sf2i [i] * s;
             dfr [i] = sf1r [i] + v;
@@ -859,7 +799,6 @@ void	FFTReal <DT>::compute_direct_pass_n_osc (DT df [], const DT sf [], int pass
             dfi [i] = v + sf1i [i];
             dfi [nbr_coef - i] = v - sf1i [i];
         }
-
         coef_index += d_nbr_coef;
     }
     while (coef_index < _length);
@@ -868,8 +807,8 @@ void	FFTReal <DT>::compute_direct_pass_n_osc (DT df [], const DT sf [], int pass
 
 
 // Transform in several pass
-template <class DT>
-void	FFTReal <DT>::compute_ifft_general (const DT f [], DT x []) const
+template <class T>
+void FFTReal <T>::compute_ifft_general (const T f [], T x []) const
 {
     assert (f != 0);
     assert (f != use_buffer ());
@@ -877,28 +816,26 @@ void	FFTReal <DT>::compute_ifft_general (const DT f [], DT x []) const
     assert (x != use_buffer ());
     assert (x != f);
 
-    const DT *		sf = f; // const_cast <DT *> (f); //TODO!
-    DT *		df;
-    DT *		df_temp;
+    const T* sf = f; // const_cast <DT *> (f); //TODO!
+    T* df;
+    T* df_temp;
 
-    if (_nbr_bits & 1)
-    {
+    if (_number_bits & 1) {
         df = use_buffer ();
         df_temp = x;
     }
-    else
-    {
+    else {
         df = x;
         df_temp = use_buffer ();
     }
 
-    for (int pass = _nbr_bits - 1; pass >= 3; -- pass)
+    for (int pass = _number_bits - 1; pass >= 3; -- pass)
     {
         compute_inverse_pass_n (df, sf, pass);
 
-        if (pass < _nbr_bits - 1)
+        if (pass < _number_bits - 1)
         {
-            DT	* const	temp_ptr = df;
+            T* const temp_ptr = df;
             df = sf;
             sf = temp_ptr;
         }
@@ -915,71 +852,65 @@ void	FFTReal <DT>::compute_ifft_general (const DT f [], DT x []) const
 
 
 
-template <class DT>
-void	FFTReal <DT>::compute_inverse_pass_n (DT df [], const DT sf [], int pass) const
+template <class T>
+void FFTReal <T>::compute_inverse_pass_n (T df [], const T sf [], int pass) const
 {
     assert (df != 0);
     assert (sf != 0);
     assert (df != sf);
     assert (pass >= 3);
-    assert (pass < _nbr_bits);
+    assert (pass < _number_bits);
 
     if (pass <= TRIGO_BD_LIMIT)
-    {
         compute_inverse_pass_n_lut (df, sf, pass);
-    }
     else
-    {
         compute_inverse_pass_n_osc (df, sf, pass);
-    }
 }
 
 
 
-template <class DT>
-void	FFTReal <DT>::compute_inverse_pass_n_lut (DT df [], const DT sf [], int pass) const
+template <class T>
+void FFTReal <T>::compute_inverse_pass_n_lut (T df [], const T sf [], int pass) const
 {
     assert (df != 0);
     assert (sf != 0);
     assert (df != sf);
     assert (pass >= 3);
-    assert (pass < _nbr_bits);
+    assert (pass < _number_bits);
 
-    const long		nbr_coef = 1 << pass;
-    const long		h_nbr_coef = nbr_coef >> 1;
-    const long		d_nbr_coef = nbr_coef << 1;
-    long				coef_index = 0;
-    const DT * const	cos_ptr = get_trigo_ptr (pass);
+    const long nbr_coef = 1 << pass;
+    const long h_nbr_coef = nbr_coef >> 1;
+    const long d_nbr_coef = nbr_coef << 1;
+    long coef_index = 0;
+    const T* const cos_ptr = get_trigo_ptr (pass);
     do
     {
-        const DT	* const	sfr = sf + coef_index;
-        const DT	* const	sfi = sfr + nbr_coef;
-        DT			* const	df1r = df + coef_index;
-        DT			* const	df2r = df1r + nbr_coef;
+        const T* const sfr = sf + coef_index;
+        const T* const sfi = sfr + nbr_coef;
+        T* const df1r = df + coef_index;
+        T* const df2r = df1r + nbr_coef;
 
-        // Extreme coefficients are always real
-        df1r [0] = sfr [0] + sfi [0];		// + sfr [nbr_coef]
-        df2r [0] = sfr [0] - sfi [0];		// - sfr [nbr_coef]
+
+        df1r [0] = sfr [0] + sfi [0];   // Extreme coefficients are always real // + sfr [nbr_coef]
+        df2r [0] = sfr [0] - sfi [0];   // - sfr [nbr_coef]
         df1r [h_nbr_coef] = sfr [h_nbr_coef] * 2;
         df2r [h_nbr_coef] = sfi [h_nbr_coef] * 2;
 
-        // Others are conjugate complex numbers
-        DT * const	df1i = df1r + h_nbr_coef;
-        DT * const	df2i = df1i + nbr_coef;
+        T* const df1i = df1r + h_nbr_coef; // Others are conjugate complex numbers
+        T* const df2i = df1i + nbr_coef;
         for (long i = 1; i < h_nbr_coef; ++ i)
         {
             df1r [i] = sfr [i] + sfi [-i];		// + sfr [nbr_coef - i]
             df1i [i] = sfi [i] - sfi [nbr_coef - i];
 
-            const DT	c = cos_ptr [i];					// cos (i*PI/nbr_coef);
-            const DT	s = cos_ptr [h_nbr_coef - i];	// sin (i*PI/nbr_coef);
-            const DT	vr = sfr [i] - sfi [-i];		// - sfr [nbr_coef - i]
-            const DT	vi = sfi [i] + sfi [nbr_coef - i];
+            const T c = cos_ptr [i];					// cos (i*PI/nbr_coef);
+            const T s = cos_ptr [h_nbr_coef - i];	// sin (i*PI/nbr_coef);
+            const T vr = sfr [i] - sfi [-i];		// - sfr [nbr_coef - i]
+            const T vi = sfi [i] + sfi [nbr_coef - i];
 
             df2r [i] = vr * c + vi * s;
             df2i [i] = vi * c - vr * s;
         }
-
         coef_index += d_nbr_coef;
     }
     while (coef_index < _length);
@@ -987,51 +918,48 @@ void	FFTReal <DT>::compute_inverse_pass_n_lut (DT df [], const DT sf [], int pas
 
 
 
-template <class DT>
-void	FFTReal <DT>::compute_inverse_pass_n_osc (DT df [], const DT sf [], int pass) const
+template <class T>
+void FFTReal <T>::compute_inverse_pass_n_osc (T df [], const T sf [], int pass) const
 {
     assert (df != 0);
     assert (sf != 0);
     assert (df != sf);
     assert (pass > TRIGO_BD_LIMIT);
-    assert (pass < _nbr_bits);
+    assert (pass < _number_bits);
 
-    const long		nbr_coef = 1 << pass;
-    const long		h_nbr_coef = nbr_coef >> 1;
-    const long		d_nbr_coef = nbr_coef << 1;
-    long				coef_index = 0;
-    OscType &		osc = _trigo_osc [pass - (TRIGO_BD_LIMIT + 1)];
+    const long nbr_coef = 1 << pass;
+    const long h_nbr_coef = nbr_coef >> 1;
+    const long d_nbr_coef = nbr_coef << 1;
+    long coef_index = 0;
+    OscType& osc = _trigo_osc [pass - (TRIGO_BD_LIMIT + 1)];
     do
     {
-        const DT	* const	sfr = sf + coef_index;
-        const DT	* const	sfi = sfr + nbr_coef;
-        DT			* const	df1r = df + coef_index;
-        DT			* const	df2r = df1r + nbr_coef;
+        const T* const sfr = sf + coef_index;
+        const T* const sfi = sfr + nbr_coef;
+        T* const df1r = df + coef_index;
+        T* const df2r = df1r + nbr_coef;
 
-        osc.clear_buffers ();
-
-        // Extreme coefficients are always real
-        df1r [0] = sfr [0] + sfi [0];		// + sfr [nbr_coef]
-        df2r [0] = sfr [0] - sfi [0];		// - sfr [nbr_coef]
+        df1r [0] = sfr [0] + sfi [0];   // Extreme coefficients are always real	// + sfr [nbr_coef]
+        df2r [0] = sfr [0] - sfi [0];   // - sfr [nbr_coef]
         df1r [h_nbr_coef] = sfr [h_nbr_coef] * 2;
         df2r [h_nbr_coef] = sfi [h_nbr_coef] * 2;
 
-        // Others are conjugate complex numbers
-        DT * const	df1i = df1r + h_nbr_coef;
-        DT * const	df2i = df1i + nbr_coef;
+        osc.clear_buffers ();
+        T* const df1i = df1r + h_nbr_coef; // Others are conjugate complex numbers
+        T* const df2i = df1i + nbr_coef;
         for (long i = 1; i < h_nbr_coef; ++ i)
         {
             df1r [i] = sfr [i] + sfi [-i];		// + sfr [nbr_coef - i]
             df1i [i] = sfi [i] - sfi [nbr_coef - i];
 
             osc.step ();
-            const DT	c = osc.get_cos ();
-            const DT	s = osc.get_sin ();
-            const DT	vr = sfr [i] - sfi [-i];		// - sfr [nbr_coef - i]
-            const DT	vi = sfi [i] + sfi [nbr_coef - i];
+            const T c = osc.get_cos ();
+            const T s = osc.get_sin ();
+            const T vr = sfr [i] - sfi [-i];		// - sfr [nbr_coef - i]
+            const T vi = sfi [i] + sfi [nbr_coef - i];
 
-            df2r [i] = vr * c + vi * s;
-            df2i [i] = vi * c - vr * s;
+            df2r[i] = vr * c + vi * s;
+            df2i[i] = vi * c - vr * s;
         }
 
         coef_index += d_nbr_coef;
@@ -1041,30 +969,30 @@ void	FFTReal <DT>::compute_inverse_pass_n_osc (DT df [], const DT sf [], int pas
 
 
 
-template <class DT>
-void	FFTReal <DT>::compute_inverse_pass_3 (DT df [], const DT sf []) const
+template <class T>
+void FFTReal <T>::compute_inverse_pass_3 (T df [], const T sf []) const
 {
     assert (df != 0);
     assert (sf != 0);
     assert (df != sf);
 
-    const DT	sqrt2_2 = SQRT2 * 0.5;
-    long				coef_index = 0;
+    const T sqrt2_2 = SQRT2 * 0.5;
+    long coef_index = 0;
     do
     {
-        df [coef_index] = sf [coef_index] + sf [coef_index + 4];
-        df [coef_index + 4] = sf [coef_index] - sf [coef_index + 4];
-        df [coef_index + 2] = sf [coef_index + 2] * 2;
-        df [coef_index + 6] = sf [coef_index + 6] * 2;
+        df[coef_index] = sf[coef_index] + sf[coef_index + 4];
+        df[coef_index + 4] = sf[coef_index] - sf[coef_index + 4];
+        df[coef_index + 2] = sf[coef_index + 2] * 2.0; //TODO is_same
+        df[coef_index + 6] = sf[coef_index + 6] * 2.0;
 
-        df [coef_index + 1] = sf [coef_index + 1] + sf [coef_index + 3];
-        df [coef_index + 3] = sf [coef_index + 5] - sf [coef_index + 7];
+        df[coef_index + 1] = sf [coef_index + 1] + sf[coef_index + 3];
+        df[coef_index + 3] = sf [coef_index + 5] - sf[coef_index + 7];
 
-        const DT	vr = sf [coef_index + 1] - sf [coef_index + 3];
-        const DT	vi = sf [coef_index + 5] + sf [coef_index + 7];
+        const T vr = sf[coef_index + 1] - sf [coef_index + 3];
+        const T vi = sf[coef_index + 5] + sf [coef_index + 7];
 
-        df [coef_index + 5] = (vr + vi) * sqrt2_2;
-        df [coef_index + 7] = (vi - vr) * sqrt2_2;
+        df[coef_index + 5] = (vr + vi) * sqrt2_2;
+        df[coef_index + 7] = (vi - vr) * sqrt2_2;
 
         coef_index += 8;
     }
@@ -1073,39 +1001,39 @@ void	FFTReal <DT>::compute_inverse_pass_3 (DT df [], const DT sf []) const
 
 
 
-template <class DT>
-void	FFTReal <DT>::compute_inverse_pass_1_2 (DT x [], const DT sf []) const
+template <class T>
+void FFTReal <T>::compute_inverse_pass_1_2 (T x [], const T sf []) const
 {
     assert (x != 0);
     assert (sf != 0);
     assert (x != sf);
 
-    const long *	bit_rev_lut_ptr = get_br_ptr ();
-    const DT *	sf2 = sf;
-    long				coef_index = 0;
+    const long* bit_rev_lut_ptr = get_br_ptr ();
+    const T* sf2 = sf;
+    long coef_index = 0;
     do
     {
         {
-            const DT	b_0 = sf2 [0] + sf2 [2];
-            const DT	b_2 = sf2 [0] - sf2 [2];
-            const DT	b_1 = sf2 [1] * 2;
-            const DT	b_3 = sf2 [3] * 2;
+            const T b_0 = sf2 [0] + sf2 [2];
+            const T b_2 = sf2 [0] - sf2 [2];
+            const T b_1 = sf2 [1] * 2;
+            const T b_3 = sf2 [3] * 2;
 
-            x [bit_rev_lut_ptr [0]] = b_0 + b_1;
-            x [bit_rev_lut_ptr [1]] = b_0 - b_1;
-            x [bit_rev_lut_ptr [2]] = b_2 + b_3;
-            x [bit_rev_lut_ptr [3]] = b_2 - b_3;
+            x[bit_rev_lut_ptr [0]] = b_0 + b_1;
+            x[bit_rev_lut_ptr [1]] = b_0 - b_1;
+            x[bit_rev_lut_ptr [2]] = b_2 + b_3;
+            x[bit_rev_lut_ptr [3]] = b_2 - b_3;
         }
         {
-            const DT	b_0 = sf2 [4] + sf2 [6];
-            const DT	b_2 = sf2 [4] - sf2 [6];
-            const DT	b_1 = sf2 [5] * 2;
-            const DT	b_3 = sf2 [7] * 2;
+            const T b_0 = sf2 [4] + sf2 [6];
+            const T b_2 = sf2 [4] - sf2 [6];
+            const T b_1 = sf2 [5] * 2;
+            const T b_3 = sf2 [7] * 2;
 
-            x [bit_rev_lut_ptr [4]] = b_0 + b_1;
-            x [bit_rev_lut_ptr [5]] = b_0 - b_1;
-            x [bit_rev_lut_ptr [6]] = b_2 + b_3;
-            x [bit_rev_lut_ptr [7]] = b_2 - b_3;
+            x[bit_rev_lut_ptr [4]] = b_0 + b_1;
+            x[bit_rev_lut_ptr [5]] = b_0 - b_1;
+            x[bit_rev_lut_ptr [6]] = b_2 + b_3;
+            x[bit_rev_lut_ptr [7]] = b_2 - b_3;
         }
 
         sf2 += 8;
@@ -1114,8 +1042,6 @@ void	FFTReal <DT>::compute_inverse_pass_1_2 (DT x [], const DT sf []) const
     }
     while (coef_index < _length);
 }
-
-
 
 
 
