@@ -97,11 +97,11 @@ public:
     T* use_buffer () const;
 
 
-    FFTReal ();
-    FFTReal (const FFTReal &other);
-    FFTReal& operator = (const FFTReal &other);
-    bool operator == (const FFTReal &other);
-    bool operator != (const FFTReal &other);
+    FFTReal () =  delete;
+    FFTReal (const FFTReal &other) = delete;
+    FFTReal& operator = (const FFTReal &other) = delete;
+    bool operator == (const FFTReal &other) = delete;
+    bool operator != (const FFTReal &other) = delete;
 
 
 private:
@@ -766,6 +766,9 @@ void	FFTReal <DT>::compute_direct_pass_n_lut (DT df [], const DT sf [], int pass
     const long		d_nbr_coef = nbr_coef << 1;
     long				coef_index = 0;
     const DT	* const	cos_ptr = get_trigo_ptr (pass);
+
+    DT	 		v;
+
     do
     {
         const DT	* const	sf1r = sf + coef_index;
@@ -783,7 +786,7 @@ void	FFTReal <DT>::compute_direct_pass_n_lut (DT df [], const DT sf [], int pass
         const DT * const	sf1i = sf1r + h_nbr_coef;
         const DT * const	sf2i = sf1i + nbr_coef;
 
-        DT	 		v;
+
         for (long i = 1; i < h_nbr_coef; ++ i)
         {
             const DT	c = cos_ptr [i];					// cos (i*PI/nbr_coef);
@@ -819,6 +822,9 @@ void	FFTReal <DT>::compute_direct_pass_n_osc (DT df [], const DT sf [], int pass
     const long		d_nbr_coef = nbr_coef << 1;
     long				coef_index = 0;
     OscType &		osc = _trigo_osc [pass - (TRIGO_BD_LIMIT + 1)];
+
+    DT	 		v;
+
     do
     {
         const DT	* const	sf1r = sf + coef_index;
@@ -837,7 +843,7 @@ void	FFTReal <DT>::compute_direct_pass_n_osc (DT df [], const DT sf [], int pass
         // Others are conjugate complex numbers
         const DT * const	sf1i = sf1r + h_nbr_coef;
         const DT * const	sf2i = sf1i + nbr_coef;
-        DT	 		v;
+
 
         for (long i = 1; i < h_nbr_coef; ++ i)
         {
