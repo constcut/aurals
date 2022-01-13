@@ -22,7 +22,7 @@ void benchmarkFFT() {
 
     FFTReal<float> fftUn(size);
 
-    FFTRealFixLen<float, bits> fftUnf;
+    FFTRealFixLen<bits> fftUnf;
 
     std::vector<float> testVector(size, 0);
     std::vector<float> output(size, 0);
@@ -73,7 +73,7 @@ void benchmarkFFT() {
         }
     }
 
-    exit(0);
+    //exit(0);
 
 
     for (size_t i = 0; i < 10000; ++i) {
@@ -85,14 +85,14 @@ void benchmarkFFT() {
         dynCount += bench(fftDynamic, "Dyn");
         fixCount += bench(fftFixed, "Fix");
         unCount += bench(fftUn, "UN");
-        //unfCount += bench(fftUnf, "UNf");
+        unfCount += bench(fftUnf, "UNf");
 
     }
 
     qDebug() << "Total dyn: " << dynCount / 1000.0;
     qDebug() << "Total fixed: " << fixCount / 1000.0;
     qDebug() << "Total un: " << unCount / 1000.0;
-    //qDebug() << "Total un fixed: " << unCount / 1000.0;
+    qDebug() << "Total un fixed: " << unCount / 1000.0;
 
 }
 

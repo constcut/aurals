@@ -4,196 +4,55 @@
 #include "FFTCommon.hpp"
 
 
-template <class T, int LL2>
-class FFTRealFixLen
-{
-    typedef	int	CompileTimeCheck1 [(LL2 >=  0) ? 1 : -1];
-    typedef	int	CompileTimeCheck2 [(LL2 <= 30) ? 1 : -1];
+#define DataType float
 
-    using OscType =	OscSinCos<T>;
-
-public:
-
-    static const uint32_t FFT_LEN_L2 = LL2;
-    static const uint32_t FFT_LEN = 1 << FFT_LEN_L2;
-
-    FFTRealFixLen ();
-
-    inline long get_length () const;
-    void do_fft (T f [], const T x []);
-    void do_ifft (const T f [], T x []);
-    void rescale (T x []) const;
-
-    FFTRealFixLen (const FFTRealFixLen &other) = delete;
-    FFTRealFixLen& operator = (const FFTRealFixLen &other) = delete;
-    bool operator == (const FFTRealFixLen &other) = delete;
-    bool operator != (const FFTRealFixLen &other) = delete;
-
-private:
-
-    static const uint32_t TRIGO_BD_LIMIT = 12; //TODO into common
-
-    static const uint32_t BR_ARR_SIZE_L2 = ((FFT_LEN_L2 - 3) < 0) ? 0 : (FFT_LEN_L2 - 2); //TODO rename all
-    static const uint32_t BR_ARR_SIZE = 1 << BR_ARR_SIZE_L2;
-    static const uint32_t TRIGO_BD	= ((FFT_LEN_L2 - TRIGO_BD_LIMIT) < 0) ? (int)FFT_LEN_L2 : (int)TRIGO_BD_LIMIT;
-    static const uint32_t TRIGO_TABLE_ARR_SIZE_L2	= (LL2 < 4) ? 0 : (TRIGO_BD - 2);
-    static const uint32_t TRIGO_TABLE_ARR_SIZE	= 1 << TRIGO_TABLE_ARR_SIZE_L2;
-    static const uint32_t NBR_TRIGO_OSC = FFT_LEN_L2 - TRIGO_BD;
-    static const uint32_t TRIGO_OSC_ARR_SIZE = (NBR_TRIGO_OSC > 0) ? NBR_TRIGO_OSC : 1;
-
-    void build_br_lut();
-    void build_trigo_lut();
-    void build_trigo_osc();
-
-    DynArray<T> _buffer;
-    DynArray<long> _br_data;
-    DynArray<T> _trigo_data;
-    Array<OscType, TRIGO_OSC_ARR_SIZE> _trigo_osc;
-
-};	// class FFTRealFixLen
+//First just fast copy
 
 
-
-
-template <class T, int PASS>
-class FFTRealPassDirect
-{
-
-public:
-    using OscType =	OscSinCos<T>;
-
-    inline static void process (long len, T dest_ptr [], T src_ptr [], const T x_ptr [],
-        const T cos_ptr [], long cos_len, const long br_ptr [], OscType osc_list []);
-
-    FFTRealPassDirect () = delete;
-    FFTRealPassDirect (const FFTRealPassDirect& other) = delete;
-    FFTRealPassDirect& operator = (const FFTRealPassDirect& other) = delete;
-    bool operator == (const FFTRealPassDirect& other) = delete;
-    bool operator != (const FFTRealPassDirect& other) = delete;
-};
-
-
-
-
-template <class T, int PASS>
-class FFTRealPassInverse
-{
-
-public:
-
-    using OscType =	OscSinCos<T>;
-
-    inline static void process (long len, T dest_ptr [], T src_ptr [], const T f_ptr [],
-                        const T cos_ptr [], long cos_len, const long br_ptr [], OscType osc_list []);
-
-    inline static void process_rec (long len, T dest_ptr [], T src_ptr [],
-                        const T cos_ptr [], long cos_len, const long br_ptr [], OscType osc_list []);
-
-    inline static void process_internal (long len, T dest_ptr [], const T src_ptr [], const T cos_ptr [],
-                                          long cos_len, const long br_ptr [], OscType osc_list []);
-
-    FFTRealPassInverse () = delete;
-    FFTRealPassInverse (const FFTRealPassInverse &other) = delete;
-    FFTRealPassInverse& operator = (const FFTRealPassInverse &other) = delete;
-    bool operator == (const FFTRealPassInverse &other) = delete;
-    bool operator != (const FFTRealPassInverse &other) = delete;
-
-};	// class FFTRealPassInverse
-
-
-
-
-template <class T, int P>
-class FFTRealSelect
-{
-
-public:
-
-    inline static T* sel_bin(T* e_ptr, T* o_ptr);
-
-    FFTRealSelect () = delete;
-    ~FFTRealSelect () = delete;
-    FFTRealSelect (const FFTRealSelect& other) = delete;
-    FFTRealSelect& operator = (const FFTRealSelect& other) = delete;
-    bool operator == (const FFTRealSelect& other) = delete;
-    bool operator != (const FFTRealSelect& other) = delete;
-
-};	// class FFTRealSelect
-
-
-
-
-template <class T, int ALGO>
+template <int ALGO>
 class FFTRealUseTrigo
 {
 
 public:
 
-    using OscType =	OscSinCos<T>;
+    typedef	OscSinCos <DataType>	OscType;
 
-    inline static void prepare (OscType &osc);
-    inline static void iterate (OscType &osc, T &c, T &s,
-                                const T cos_ptr [], long index_c, long index_s);
+    inline static void
+                        prepare (OscType &osc);
+    inline	static void
+                        iterate (OscType &osc, DataType &c, DataType &s, const DataType cos_ptr [], long index_c, long index_s);
 
-    FFTRealUseTrigo () = delete;
-    ~FFTRealUseTrigo () = delete;
-    FFTRealUseTrigo (const FFTRealUseTrigo &other) = delete;
-    FFTRealUseTrigo& operator = (const FFTRealUseTrigo &other) = delete;
-    bool operator == (const FFTRealUseTrigo &other) = delete;
-    bool operator != (const FFTRealUseTrigo &other) = delete;
+private:
+
+                        FFTRealUseTrigo ();
+                        ~FFTRealUseTrigo ();
+                        FFTRealUseTrigo (const FFTRealUseTrigo &other);
+    FFTRealUseTrigo &
+                        operator = (const FFTRealUseTrigo &other);
+    bool				operator == (const FFTRealUseTrigo &other);
+    bool				operator != (const FFTRealUseTrigo &other);
 
 };	// class FFTRealUseTrigo
 
 
 
 
-
-//FFRealSelect impl
-
-template <class T, int P>
-T*	FFTRealSelect <T, P>::sel_bin ([[maybe_unused]] T *e_ptr, T *o_ptr) {
-    return o_ptr;
-}
-
-
-template <>
-inline float* FFTRealSelect <float, 0>::sel_bin (float *e_ptr, [[maybe_unused]] float *o_ptr) {
-    return e_ptr;
-}
-
-
-template <>
-inline float* FFTRealSelect <float, 1>::sel_bin (float *e_ptr, [[maybe_unused]] float *o_ptr) {
-    return e_ptr;
-}
-
-
-//Trianglo
-
-
-template <class T, int ALGO>
-void	FFTRealUseTrigo <T, ALGO>::prepare (OscType &osc)
+template <int ALGO>
+void	FFTRealUseTrigo <ALGO>::prepare (OscType &osc)
 {
     osc.clear_buffers ();
 }
 
 template <>
-inline void	FFTRealUseTrigo <float, 0>::prepare ([[maybe_unused]]OscType &osc)
+inline void	FFTRealUseTrigo <0>::prepare ([[maybe_unused]]OscType &osc)
 {
     // Nothing
 }
 
-template <>
-inline void	FFTRealUseTrigo <float, 1>::prepare ([[maybe_unused]]OscType &osc)
-{
-
-}
 
 
-
-template <class T, int ALGO>
-void	FFTRealUseTrigo <T, ALGO>::iterate (OscType &osc, T &c, T &s, [[maybe_unused]] const T cos_ptr [],
-    [[maybe_unused]] long index_c, [[maybe_unused]] long index_s)
+template <int ALGO>
+void	FFTRealUseTrigo <ALGO>::iterate (OscType &osc, DataType &c, DataType &s, [[maybe_unused]] const DataType cos_ptr [], [[maybe_unused]] long index_c, [[maybe_unused]] long index_s)
 {
     osc.step ();
     c = osc.get_cos ();
@@ -201,8 +60,7 @@ void	FFTRealUseTrigo <T, ALGO>::iterate (OscType &osc, T &c, T &s, [[maybe_unuse
 }
 
 template <>
-inline void	FFTRealUseTrigo <float, 0>::iterate ([[maybe_unused]] OscType &osc, float &c,
-    float &s, const float cos_ptr [], long index_c, long index_s)
+inline void	FFTRealUseTrigo <0>::iterate ([[maybe_unused]] OscType &osc, DataType &c, DataType &s, const DataType cos_ptr [], long index_c, long index_s)
 {
     c = cos_ptr [index_c];
     s = cos_ptr [index_s];
@@ -211,13 +69,77 @@ inline void	FFTRealUseTrigo <float, 0>::iterate ([[maybe_unused]] OscType &osc, 
 
 
 
+template <int P>
+class FFTRealSelect
+{
 
-//F invers impl
+public:
+
+    inline static float *
+                        sel_bin (float *e_ptr, float *o_ptr);
+
+private:
+
+                        FFTRealSelect ();
+                        ~FFTRealSelect ();
+                        FFTRealSelect (const FFTRealSelect &other);
+    FFTRealSelect&	operator = (const FFTRealSelect &other);
+    bool				operator == (const FFTRealSelect &other);
+    bool				operator != (const FFTRealSelect &other);
+
+};	// class FFTRealSelect
 
 
-template <class T, int PASS>
-void FFTRealPassInverse <T, PASS>::process (long len, T dest_ptr [], T src_ptr [],
-                const T f_ptr [], const T cos_ptr [], long cos_len, const long br_ptr [], OscType osc_list [])
+
+
+template <int P>
+float *	FFTRealSelect <P>::sel_bin ([[maybe_unused]] float *e_ptr, float *o_ptr)
+{
+    return (o_ptr);
+}
+
+
+
+template <>
+inline float *	FFTRealSelect <0>::sel_bin (float *e_ptr, [[maybe_unused]] float *o_ptr)
+{
+    return (e_ptr);
+}
+
+
+
+
+template <int PASS>
+class FFTRealPassInverse
+{
+
+public:
+
+
+    typedef	OscSinCos <DataType>	OscType;
+
+    inline static void
+                        process (long len, DataType dest_ptr [], DataType src_ptr [], const DataType f_ptr [], const DataType cos_ptr [], long cos_len, const long br_ptr [], OscType osc_list []);
+    inline static void
+                        process_rec (long len, DataType dest_ptr [], DataType src_ptr [], const DataType cos_ptr [], long cos_len, const long br_ptr [], OscType osc_list []);
+    inline static void
+                        process_internal (long len, DataType dest_ptr [], const DataType src_ptr [], const DataType cos_ptr [], long cos_len, const long br_ptr [], OscType osc_list []);
+
+
+private:
+
+                        FFTRealPassInverse ();
+                        FFTRealPassInverse (const FFTRealPassInverse &other);
+    FFTRealPassInverse &
+                        operator = (const FFTRealPassInverse &other);
+    bool				operator == (const FFTRealPassInverse &other);
+    bool				operator != (const FFTRealPassInverse &other);
+
+};	// class FFTRealPassInverse
+
+
+template <int PASS>
+void	FFTRealPassInverse <PASS>::process (long len, DataType dest_ptr [], DataType src_ptr [], const DataType f_ptr [], const DataType cos_ptr [], long cos_len, const long br_ptr [], OscType osc_list [])
 {
     process_internal (
         len,
@@ -228,7 +150,7 @@ void FFTRealPassInverse <T, PASS>::process (long len, T dest_ptr [], T src_ptr [
         br_ptr,
         osc_list
     );
-    FFTRealPassInverse <T, PASS - 1>::process_rec (
+    FFTRealPassInverse <PASS - 1>::process_rec (
         len,
         src_ptr,
         dest_ptr,
@@ -241,9 +163,8 @@ void FFTRealPassInverse <T, PASS>::process (long len, T dest_ptr [], T src_ptr [
 
 
 
-template <class T, int PASS>
-void FFTRealPassInverse <T, PASS>::process_rec (long len, T dest_ptr [], T src_ptr [],
-                                const T cos_ptr [], long cos_len, const long br_ptr [], OscType osc_list [])
+template <int PASS>
+void	FFTRealPassInverse <PASS>::process_rec (long len, DataType dest_ptr [], DataType src_ptr [], const DataType cos_ptr [], long cos_len, const long br_ptr [], OscType osc_list [])
 {
     process_internal (
         len,
@@ -254,7 +175,7 @@ void FFTRealPassInverse <T, PASS>::process_rec (long len, T dest_ptr [], T src_p
         br_ptr,
         osc_list
     );
-    FFTRealPassInverse <T, PASS - 1>::process_rec (
+    FFTRealPassInverse <PASS - 1>::process_rec (
         len,
         src_ptr,
         dest_ptr,
@@ -265,61 +186,61 @@ void FFTRealPassInverse <T, PASS>::process_rec (long len, T dest_ptr [], T src_p
     );
 }
 
-
-
 template <>
-inline void	FFTRealPassInverse <float, 0>::process_rec ([[maybe_unused]] long len, [[maybe_unused]] float dest_ptr [],
-    [[maybe_unused]] float src_ptr [], [[maybe_unused]] const float cos_ptr [], [[maybe_unused]] long cos_len,
-    [[maybe_unused]] const long br_ptr [], [[maybe_unused]] OscType osc_list [])
+inline void	FFTRealPassInverse <0>::process_rec ([[maybe_unused]] long len, [[maybe_unused]] DataType dest_ptr [], [[maybe_unused]] DataType src_ptr [], [[maybe_unused]] const DataType cos_ptr [], [[maybe_unused]] long cos_len, [[maybe_unused]] const long br_ptr [], [[maybe_unused]] OscType osc_list [])
 {
-} // Stops recursion
+    // Stops recursion
+}
 
 
 
-template <class T, int PASS>
-void FFTRealPassInverse <T, PASS>::process_internal (long len, T dest_ptr [], const T src_ptr [], const T cos_ptr [],
-                                                  long cos_len, [[maybe_unused]] const long br_ptr [], OscType osc_list [])
+template <int PASS>
+void	FFTRealPassInverse <PASS>::process_internal (long len, DataType dest_ptr [], const DataType src_ptr [], const DataType cos_ptr [], long cos_len, [[maybe_unused]] const long br_ptr [], OscType osc_list [])
 {
-    const long dist = 1L << (PASS - 1);
-    const long c1_r = 0;
-    const long c1_i = dist;
-    const long c2_r = dist * 2;
-    const long c2_i = dist * 3;
-    const long cend = dist * 4;
-    const long table_step = cos_len >> (PASS - 1);
+    const long		dist = 1L << (PASS - 1);
+    const long		c1_r = 0;
+    const long		c1_i = dist;
+    const long		c2_r = dist * 2;
+    const long		c2_i = dist * 3;
+    const long		cend = dist * 4;
+    const long		table_step = cos_len >> (PASS - 1);
 
-    const uint32_t TRIGO_OSC = PASS - 12; //FFTRealFixLenParam::TRIGO_BD_LIMIT TODO to FFTCommon
-    const uint32_t TRIGO_DIRECT = (TRIGO_OSC >= 0) ? 1 : 0;
+   enum {	TRIGO_OSC		= PASS - 12	};
+    enum {	TRIGO_DIRECT	= (TRIGO_OSC >= 0) ? 1 : 0	};
 
-    long coef_index = 0;
-
+    long				coef_index = 0;
     do
     {
-        const T* const sf = src_ptr + coef_index;
-        T* const df = dest_ptr + coef_index;
+        const DataType	* const	sf = src_ptr + coef_index;
+        DataType			* const	df = dest_ptr + coef_index;
 
-        df [c1_r] = sf [c1_r] + sf [c2_r]; // Extreme coefficients are always real
+        // Extreme coefficients are always real
+        df [c1_r] = sf [c1_r] + sf [c2_r];
         df [c2_r] = sf [c1_r] - sf [c2_r];
         df [c1_i] = sf [c1_i] * 2;
         df [c2_i] = sf [c2_i] * 2;
 
-        FFTRealUseTrigo <T, TRIGO_DIRECT>::prepare (osc_list [TRIGO_OSC]);
+        FFTRealUseTrigo <TRIGO_DIRECT>::prepare (osc_list [TRIGO_OSC]);
 
-        for (long i = 1; i < dist; ++ i) // Others are conjugate complex numbers
+        // Others are conjugate complex numbers
+        for (long i = 1; i < dist; ++ i)
         {
             df [c1_r + i] = sf [c1_r + i] + sf [c2_r - i];
             df [c1_i + i] = sf [c2_r + i] - sf [cend - i];
 
-            T c;
-            T s;
-            FFTRealUseTrigo <T, TRIGO_DIRECT>::iterate (
+            DataType			c;
+            DataType			s;
+            FFTRealUseTrigo <TRIGO_DIRECT>::iterate (
                 osc_list [TRIGO_OSC],
-                c, s, cos_ptr, i * table_step,
+                c,
+                s,
+                cos_ptr,
+                i * table_step,
                 (dist - i) * table_step
             );
 
-            const T vr = sf [c1_r + i] - sf [c2_r - i];
-            const T vi = sf [c2_r + i] + sf [cend - i];
+            const DataType	vr = sf [c1_r + i] - sf [c2_r - i];
+            const DataType	vi = sf [c2_r + i] + sf [cend - i];
 
             df [c2_r + i] = vr * c + vi * s;
             df [c2_i + i] = vi * c - vr * s;
@@ -330,15 +251,11 @@ void FFTRealPassInverse <T, PASS>::process_internal (long len, T dest_ptr [], co
     while (coef_index < len);
 }
 
-
-
-template<> //INSTACE DOUBLE TOO
-inline void	FFTRealPassInverse <float, 2>::process_internal (long len, float dest_ptr [], const float src_ptr [],
-                    [[maybe_unused]] const float cos_ptr [], [[maybe_unused]] long cos_len,
-                    [[maybe_unused]] const long br_ptr [], [[maybe_unused]] OscType osc_list [])
+template <>
+inline void	FFTRealPassInverse <2>::process_internal (long len, DataType dest_ptr [], const DataType src_ptr [], [[maybe_unused]] const DataType cos_ptr [], [[maybe_unused]] long cos_len, [[maybe_unused]] const long br_ptr [], [[maybe_unused]] OscType osc_list [])
 {
     // Antepenultimate pass
-    const float sqrt2_2 = SQRT2 * 0.5;
+    const DataType	sqrt2_2 = DataType (SQRT2 * 0.5);
 
     long				coef_index = 0;
     do
@@ -351,8 +268,8 @@ inline void	FFTRealPassInverse <float, 2>::process_internal (long len, float des
         dest_ptr [coef_index + 1] = src_ptr [coef_index + 1] + src_ptr [coef_index + 3];
         dest_ptr [coef_index + 3] = src_ptr [coef_index + 5] - src_ptr [coef_index + 7];
 
-        const float	vr = src_ptr [coef_index + 1] - src_ptr [coef_index + 3];
-        const float	vi = src_ptr [coef_index + 5] + src_ptr [coef_index + 7];
+        const DataType	vr = src_ptr [coef_index + 1] - src_ptr [coef_index + 3];
+        const DataType	vi = src_ptr [coef_index + 5] + src_ptr [coef_index + 7];
 
         dest_ptr [coef_index + 5] = (vr + vi) * sqrt2_2;
         dest_ptr [coef_index + 7] = (vi - vr) * sqrt2_2;
@@ -362,24 +279,21 @@ inline void	FFTRealPassInverse <float, 2>::process_internal (long len, float des
     while (coef_index < len);
 }
 
-
 template <>
-inline void	FFTRealPassInverse <float, 1>::process_internal (long len, float dest_ptr [], const float src_ptr [],
-                        [[maybe_unused]] const float cos_ptr [], [[maybe_unused]] long cos_len, const long br_ptr [],
-                        [[maybe_unused]] OscType osc_list [])
+inline void	FFTRealPassInverse <1>::process_internal (long len, DataType dest_ptr [], const DataType src_ptr [], [[maybe_unused]] const DataType cos_ptr [], [[maybe_unused]] long cos_len, const long br_ptr [], [[maybe_unused]] OscType osc_list [])
 {
     // Penultimate and last pass at once
-    const long qlen = len >> 2;
-    long coef_index = 0;
+    const long		qlen = len >> 2;
 
+    long				coef_index = 0;
     do
     {
-        const long ri_0 = br_ptr [coef_index >> 2];
+        const long		ri_0 = br_ptr [coef_index >> 2];
 
-        const float	b_0 = src_ptr [coef_index    ] + src_ptr [coef_index + 2];
-        const float	b_2 = src_ptr [coef_index    ] - src_ptr [coef_index + 2];
-        const float	b_1 = src_ptr [coef_index + 1] * 2;
-        const float	b_3 = src_ptr [coef_index + 3] * 2;
+        const DataType	b_0 = src_ptr [coef_index    ] + src_ptr [coef_index + 2];
+        const DataType	b_2 = src_ptr [coef_index    ] - src_ptr [coef_index + 2];
+        const DataType	b_1 = src_ptr [coef_index + 1] * 2;
+        const DataType	b_3 = src_ptr [coef_index + 3] * 2;
 
         dest_ptr [ri_0           ] = b_0 + b_1;
         dest_ptr [ri_0 + 2 * qlen] = b_0 - b_1;
@@ -392,86 +306,39 @@ inline void	FFTRealPassInverse <float, 1>::process_internal (long len, float des
 }
 
 
-//Failed yet to implement <> functions
 
-template <class T, int PASS>
-void FFTRealPassDirect <T, PASS>::process (long len, T dest_ptr [], T src_ptr [], const T x_ptr [],
-                            const T cos_ptr [], long cos_len, const long br_ptr [], OscType osc_list [])
+
+template <int PASS>
+class FFTRealPassDirect
 {
-    // Executes "previous" passes first. Inverts source and destination buffers
+
+/*\\\ PUBLIC \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*/
+
+public:
+
+    typedef	OscSinCos <DataType>	OscType;
+
+    inline static void
+                        process (long len, DataType dest_ptr [], DataType src_ptr [], const DataType x_ptr [], const DataType cos_ptr [], long cos_len, const long br_ptr [], OscType osc_list []);
 
 
-    FFTRealPassDirect <T, PASS - 1>::process (
-        len,
-        src_ptr,
-        dest_ptr,
-        x_ptr,
-        cos_ptr,
-        cos_len,
-        br_ptr,
-        osc_list
-    );
+private:
 
-    const long dist = 1L << (PASS - 1);
-    const long c1_r = 0;
-    const long c1_i = dist;
-    const long c2_r = dist * 2;
-    const long c2_i = dist * 3;
-    const long cend = dist * 4;
-    const long table_step = cos_len >> (PASS - 1);
+                        FFTRealPassDirect ();
+                        FFTRealPassDirect (const FFTRealPassDirect &other);
+    FFTRealPassDirect &
+                        operator = (const FFTRealPassDirect &other);
+    bool				operator == (const FFTRealPassDirect &other);
+    bool				operator != (const FFTRealPassDirect &other);
 
-    const uint32_t TRIGO_OSC = PASS - 12; //TODO const
-    const uint32_t TRIGO_DIRECT	= (TRIGO_OSC >= 0) ? 1 : 0;
-
-    long				coef_index = 0;
-    do
-    {
-        const T* const sf = src_ptr + coef_index;
-        T* const df = dest_ptr + coef_index;
-
-
-        df [c1_r] = sf [c1_r] + sf [c2_r]; // Extreme coefficients are always real
-        df [c2_r] = sf [c1_r] - sf [c2_r];
-        df [c1_i] = sf [c1_i];
-        df [c2_i] = sf [c2_i];
-
-        FFTRealUseTrigo <T, TRIGO_DIRECT>::prepare (osc_list [TRIGO_OSC]);
-
-        for (long i = 1; i < dist; ++ i) // Others are conjugate complex numbers
-        {
-            T c;
-            T s;
-            FFTRealUseTrigo <T, TRIGO_DIRECT>::iterate (
-                osc_list [TRIGO_OSC],
-                c, s, cos_ptr, i * table_step,
-                (dist - i) * table_step
-            );
-
-            const T sf_r_i = sf [c1_r + i];
-            const T sf_i_i = sf [c1_i + i];
-
-            const T v1 = sf [c2_r + i] * c - sf [c2_i + i] * s;
-            df [c1_r + i] = sf_r_i + v1;
-            df [c2_r - i] = sf_r_i - v1;
-
-            const T v2 = sf [c2_r + i] * s + sf [c2_i + i] * c;
-            df [c2_r + i] = v2 + sf_i_i;
-            df [cend - i] = v2 - sf_i_i;
-        }
-
-        coef_index += cend;
-    }
-    while (coef_index < len);
-}
+};	// class FFTRealPassDirect
 
 
 
 
 
 template <>
-inline void	FFTRealPassDirect <float, 1>::process (long len, float dest_ptr [], [[maybe_unused]] float src_ptr [],
-            const float x_ptr [], [[maybe_unused]] const float cos_ptr [],
-            [[maybe_unused]] long cos_len, const long br_ptr [], [[maybe_unused]] OscType osc_list [])
+inline void	FFTRealPassDirect <1>::process (long len, DataType dest_ptr [], [[maybe_unused]] DataType src_ptr [], const DataType x_ptr [], [[maybe_unused]] const DataType cos_ptr [], [[maybe_unused]] long cos_len, const long br_ptr [], [[maybe_unused]] OscType osc_list [])
 {
     // First and second pass at once
     const long		qlen = len >> 2;
@@ -485,12 +352,12 @@ inline void	FFTRealPassDirect <float, 1>::process (long len, float dest_ptr [], 
         const long		ri_2 = ri_0 + 1 * qlen;	// bit_rev_lut_ptr [coef_index + 2];
         const long		ri_3 = ri_0 + 3 * qlen;	// bit_rev_lut_ptr [coef_index + 3];
 
-        float	* const	df2 = dest_ptr + coef_index;
+        DataType	* const	df2 = dest_ptr + coef_index;
         df2 [1] = x_ptr [ri_0] - x_ptr [ri_1];
         df2 [3] = x_ptr [ri_2] - x_ptr [ri_3];
 
-        const float	sf_0 = x_ptr [ri_0] + x_ptr [ri_1];
-        const float	sf_2 = x_ptr [ri_2] + x_ptr [ri_3];
+        const DataType	sf_0 = x_ptr [ri_0] + x_ptr [ri_1];
+        const DataType	sf_2 = x_ptr [ri_2] + x_ptr [ri_3];
 
         df2 [0] = sf_0 + sf_2;
         df2 [2] = sf_0 - sf_2;
@@ -500,13 +367,11 @@ inline void	FFTRealPassDirect <float, 1>::process (long len, float dest_ptr [], 
     while (coef_index < len);
 }
 
-
 template <>
-inline void	FFTRealPassDirect <float, 2>::process (long len, float dest_ptr [], float src_ptr [], const float x_ptr [], const float cos_ptr [],
-                                               long cos_len, const long br_ptr [], OscType osc_list [])
+inline void	FFTRealPassDirect <2>::process (long len, DataType dest_ptr [], DataType src_ptr [], const DataType x_ptr [], const DataType cos_ptr [], long cos_len, const long br_ptr [], OscType osc_list [])
 {
     // Executes "previous" passes first. Inverts source and destination buffers
-    FFTRealPassDirect <float, 1>::process (
+    FFTRealPassDirect <1>::process (
         len,
         src_ptr,
         dest_ptr,
@@ -518,7 +383,7 @@ inline void	FFTRealPassDirect <float, 2>::process (long len, float dest_ptr [], 
     );
 
     // Third pass
-    const float	sqrt2_2 = float (SQRT2 * 0.5);
+    const DataType	sqrt2_2 = DataType (SQRT2 * 0.5);
 
     long				coef_index = 0;
     do
@@ -528,7 +393,7 @@ inline void	FFTRealPassDirect <float, 2>::process (long len, float dest_ptr [], 
         dest_ptr [coef_index + 2] = src_ptr [coef_index + 2];
         dest_ptr [coef_index + 6] = src_ptr [coef_index + 6];
 
-        float v;
+        DataType			v;
 
         v = (src_ptr [coef_index + 5] - src_ptr [coef_index + 7]) * sqrt2_2;
         dest_ptr [coef_index + 1] = src_ptr [coef_index + 1] + v;
@@ -543,14 +408,164 @@ inline void	FFTRealPassDirect <float, 2>::process (long len, float dest_ptr [], 
     while (coef_index < len);
 }
 
+template <int PASS>
+void	FFTRealPassDirect <PASS>::process (long len, DataType dest_ptr [], DataType src_ptr [], const DataType x_ptr [], const DataType cos_ptr [], long cos_len, const long br_ptr [], OscType osc_list [])
+{
+    // Executes "previous" passes first. Inverts source and destination buffers
+    FFTRealPassDirect <PASS - 1>::process (
+        len,
+        src_ptr,
+        dest_ptr,
+        x_ptr,
+        cos_ptr,
+        cos_len,
+        br_ptr,
+        osc_list
+    );
+
+    const long		dist = 1L << (PASS - 1);
+    const long		c1_r = 0;
+    const long		c1_i = dist;
+    const long		c2_r = dist * 2;
+    const long		c2_i = dist * 3;
+    const long		cend = dist * 4;
+    const long		table_step = cos_len >> (PASS - 1);
+
+   enum {	TRIGO_OSC		= PASS - 12	};
+    enum {	TRIGO_DIRECT	= (TRIGO_OSC >= 0) ? 1 : 0	};
+
+    long				coef_index = 0;
+    do
+    {
+        const DataType	* const	sf = src_ptr + coef_index;
+        DataType			* const	df = dest_ptr + coef_index;
+
+        // Extreme coefficients are always real
+        df [c1_r] = sf [c1_r] + sf [c2_r];
+        df [c2_r] = sf [c1_r] - sf [c2_r];
+        df [c1_i] = sf [c1_i];
+        df [c2_i] = sf [c2_i];
+
+        FFTRealUseTrigo <TRIGO_DIRECT>::prepare (osc_list [TRIGO_OSC]);
+
+        // Others are conjugate complex numbers
+        for (long i = 1; i < dist; ++ i)
+        {
+            DataType			c;
+            DataType			s;
+            FFTRealUseTrigo <TRIGO_DIRECT>::iterate (
+                osc_list [TRIGO_OSC],
+                c,
+                s,
+                cos_ptr,
+                i * table_step,
+                (dist - i) * table_step
+            );
+
+            const DataType	sf_r_i = sf [c1_r + i];
+            const DataType	sf_i_i = sf [c1_i + i];
+
+            const DataType	v1 = sf [c2_r + i] * c - sf [c2_i + i] * s;
+            df [c1_r + i] = sf_r_i + v1;
+            df [c2_r - i] = sf_r_i - v1;
+
+            const DataType	v2 = sf [c2_r + i] * s + sf [c2_i + i] * c;
+            df [c2_r + i] = v2 + sf_i_i;
+            df [cend - i] = v2 - sf_i_i;
+        }
+
+        coef_index += cend;
+    }
+    while (coef_index < len);
+}
 
 
-template <class T, int LL2>
-FFTRealFixLen <T, LL2>::FFTRealFixLen ()
-    :	_buffer (FFT_LEN)
-    ,	_br_data (BR_ARR_SIZE)
-    ,	_trigo_data (TRIGO_TABLE_ARR_SIZE)
-    ,	_trigo_osc ()
+
+
+
+template <int LL2>
+class FFTRealFixLen
+{
+    typedef	int	CompileTimeCheck1 [(LL2 >=  0) ? 1 : -1];
+    typedef	int	CompileTimeCheck2 [(LL2 <= 30) ? 1 : -1];
+
+/*\\\ PUBLIC \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*/
+
+public:
+
+    typedef	OscSinCos <DataType>	OscType;
+
+    enum {			FFT_LEN_L2	= LL2	};
+    enum {			FFT_LEN		= 1 << FFT_LEN_L2	};
+
+                        FFTRealFixLen ();
+
+    inline long		get_length () const;
+    void				do_fft (DataType f [], const DataType x []);
+    void				do_ifft (const DataType f [], DataType x []);
+    void				rescale (DataType x []) const;
+
+
+
+/*\\\ PROTECTED \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*/
+
+protected:
+
+
+
+/*\\\ PRIVATE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*/
+
+private:
+
+    enum {			TRIGO_BD_LIMIT	= 12	};
+
+    enum {			BR_ARR_SIZE_L2	= ((FFT_LEN_L2 - 3) < 0) ? 0 : (FFT_LEN_L2 - 2)	};
+    enum {			BR_ARR_SIZE		= 1 << BR_ARR_SIZE_L2	};
+
+   enum {			TRIGO_BD			=   ((FFT_LEN_L2 - TRIGO_BD_LIMIT) < 0)
+                                              ? (int)FFT_LEN_L2
+                                              : (int)TRIGO_BD_LIMIT };
+    enum {			TRIGO_TABLE_ARR_SIZE_L2	= (LL2 < 4) ? 0 : (TRIGO_BD - 2)	};
+    enum {			TRIGO_TABLE_ARR_SIZE	= 1 << TRIGO_TABLE_ARR_SIZE_L2	};
+
+    enum {			NBR_TRIGO_OSC			= FFT_LEN_L2 - TRIGO_BD	};
+    enum {			TRIGO_OSC_ARR_SIZE	=	(NBR_TRIGO_OSC > 0) ? NBR_TRIGO_OSC : 1	};
+
+    void				build_br_lut ();
+    void				build_trigo_lut ();
+    void				build_trigo_osc ();
+
+    DynArray <DataType>
+                        _buffer;
+    DynArray <long>
+                        _br_data;
+    DynArray <DataType>
+                        _trigo_data;
+   Array <OscType, TRIGO_OSC_ARR_SIZE>
+                        _trigo_osc;
+
+
+
+/*\\\ FORBIDDEN MEMBER FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*/
+
+private:
+
+                        FFTRealFixLen (const FFTRealFixLen &other);
+    FFTRealFixLen&	operator = (const FFTRealFixLen &other);
+    bool				operator == (const FFTRealFixLen &other);
+    bool				operator != (const FFTRealFixLen &other);
+
+};	// class FFTRealFixLen
+
+
+
+
+template <int LL2>
+FFTRealFixLen <LL2>::FFTRealFixLen ()
+:	_buffer (FFT_LEN)
+,	_br_data (BR_ARR_SIZE)
+,	_trigo_data (TRIGO_TABLE_ARR_SIZE)
+,	_trigo_osc ()
 {
     build_br_lut ();
     build_trigo_lut ();
@@ -559,16 +574,17 @@ FFTRealFixLen <T, LL2>::FFTRealFixLen ()
 
 
 
-template <class T, int LL2>
-long	FFTRealFixLen <T, LL2>::get_length () const {
-    return FFT_LEN;
+template <int LL2>
+long	FFTRealFixLen <LL2>::get_length () const
+{
+    return (FFT_LEN);
 }
 
 
 
 // General case
-template <class T, int LL2>
-void	FFTRealFixLen <T, LL2>::do_fft (T f [], const T x [])
+template <int LL2>
+void	FFTRealFixLen <LL2>::do_fft (DataType f [], const DataType x [])
 {
     assert (f != 0);
     assert (x != 0);
@@ -576,10 +592,10 @@ void	FFTRealFixLen <T, LL2>::do_fft (T f [], const T x [])
     assert (FFT_LEN_L2 >= 3);
 
     // Do the transform in several passes
-    const T* cos_ptr = &_trigo_data [0];
-    const long* br_ptr = &_br_data [0];
+    const DataType	*	cos_ptr = &_trigo_data [0];
+    const long *	br_ptr = &_br_data [0];
 
-    FFTRealPassDirect <T, FFT_LEN_L2 - 1>::process (
+    FFTRealPassDirect <FFT_LEN_L2 - 1>::process (
         FFT_LEN,
         f,
         &_buffer [0],
@@ -591,10 +607,9 @@ void	FFTRealFixLen <T, LL2>::do_fft (T f [], const T x [])
     );
 }
 
-
 // 4-point FFT
 template <>
-inline void	FFTRealFixLen <float, 2>::do_fft (float f [], const float x [])
+inline void	FFTRealFixLen <2>::do_fft (DataType f [], const DataType x [])
 {
     assert (f != 0);
     assert (x != 0);
@@ -603,8 +618,8 @@ inline void	FFTRealFixLen <float, 2>::do_fft (float f [], const float x [])
     f [1] = x [0] - x [2];
     f [3] = x [1] - x [3];
 
-    const float	b_0 = x [0] + x [2];
-    const float	b_2 = x [1] + x [3];
+    const DataType	b_0 = x [0] + x [2];
+    const DataType	b_2 = x [1] + x [3];
 
     f [0] = b_0 + b_2;
     f [2] = b_0 - b_2;
@@ -612,7 +627,7 @@ inline void	FFTRealFixLen <float, 2>::do_fft (float f [], const float x [])
 
 // 2-point FFT
 template <>
-inline void	FFTRealFixLen <float, 1>::do_fft (float f [], const float x [])
+inline void	FFTRealFixLen <1>::do_fft (DataType f [], const DataType x [])
 {
     assert (f != 0);
     assert (x != 0);
@@ -624,7 +639,7 @@ inline void	FFTRealFixLen <float, 1>::do_fft (float f [], const float x [])
 
 // 1-point FFT
 template <>
-inline void	FFTRealFixLen <float, 0>::do_fft (float f [], const float x [])
+inline void	FFTRealFixLen <0>::do_fft (DataType f [], const DataType x [])
 {
     assert (f != 0);
     assert (x != 0);
@@ -635,42 +650,44 @@ inline void	FFTRealFixLen <float, 0>::do_fft (float f [], const float x [])
 
 
 // General case
-template <class T, int LL2>
-void	FFTRealFixLen <T, LL2>::do_ifft (const T f [], T x [])
+template <int LL2>
+void	FFTRealFixLen <LL2>::do_ifft (const DataType f [], DataType x [])
 {
     assert (f != 0);
     assert (x != 0);
     assert (x != f);
     assert (FFT_LEN_L2 >= 3);
 
-    if (LL2 == 2) {
-        ;
-    }
+    // Do the transform in several passes
+    DataType *		s_ptr =
+        FFTRealSelect <FFT_LEN_L2 & 1>::sel_bin (&_buffer [0], x);
+    DataType *		d_ptr =
+        FFTRealSelect <FFT_LEN_L2 & 1>::sel_bin (x, &_buffer [0]);
+    const DataType	*	cos_ptr = &_trigo_data [0];
+    const long *	br_ptr = &_br_data [0];
 
-    T* s_ptr = FFTRealSelect <T, FFT_LEN_L2 & 1>::sel_bin (&_buffer [0], x); // Do the transform in several passes
-    T* d_ptr = FFTRealSelect <T, FFT_LEN_L2 & 1>::sel_bin (x, &_buffer [0]);
-    const T* cos_ptr = &_trigo_data [0];
-    const long* br_ptr = &_br_data [0];
-
-    FFTRealPassInverse <T, FFT_LEN_L2 - 1>::process (
-        FFT_LEN, d_ptr, s_ptr,
-        f, cos_ptr,
+    FFTRealPassInverse <FFT_LEN_L2 - 1>::process (
+        FFT_LEN,
+        d_ptr,
+        s_ptr,
+        f,
+        cos_ptr,
         TRIGO_TABLE_ARR_SIZE,
-        br_ptr, &_trigo_osc [0]
+        br_ptr,
+        &_trigo_osc [0]
     );
 }
 
-
 // 4-point IFFT
 template <>
-inline void	FFTRealFixLen <float, 2>::do_ifft (const float f [], float x [])
+inline void	FFTRealFixLen <2>::do_ifft (const DataType f [], DataType x [])
 {
     assert (f != 0);
     assert (x != 0);
     assert (x != f);
 
-    const float	b_0 = f [0] + f [2];
-    const float	b_2 = f [0] - f [2];
+    const DataType	b_0 = f [0] + f [2];
+    const DataType	b_2 = f [0] - f [2];
 
     x [0] = b_0 + f [1] * 2;
     x [2] = b_0 - f [1] * 2;
@@ -680,7 +697,7 @@ inline void	FFTRealFixLen <float, 2>::do_ifft (const float f [], float x [])
 
 // 2-point IFFT
 template <>
-inline void	FFTRealFixLen <float, 1>::do_ifft (const float f [], float x [])
+inline void	FFTRealFixLen <1>::do_ifft (const DataType f [], DataType x [])
 {
     assert (f != 0);
     assert (x != 0);
@@ -692,7 +709,7 @@ inline void	FFTRealFixLen <float, 1>::do_ifft (const float f [], float x [])
 
 // 1-point IFFT
 template <>
-inline void	FFTRealFixLen <float, 0>::do_ifft (const float f [], float x [])
+inline void	FFTRealFixLen <0>::do_ifft (const DataType f [], DataType x [])
 {
     assert (f != 0);
     assert (x != 0);
@@ -703,17 +720,19 @@ inline void	FFTRealFixLen <float, 0>::do_ifft (const float f [], float x [])
 
 
 
-template <class T, int LL2>
-void	FFTRealFixLen <T, LL2>::rescale (T x []) const
+
+template <int LL2>
+void	FFTRealFixLen <LL2>::rescale (DataType x []) const
 {
     assert (x != 0);
 
-    const T	mul = 1.0 / FFT_LEN;
+    const DataType	mul = DataType (1.0 / FFT_LEN);
 
     if (FFT_LEN < 4)
     {
-        long i = FFT_LEN - 1;
-        do {
+        long				i = FFT_LEN - 1;
+        do
+        {
             x [i] *= mul;
             --i;
         }
@@ -723,7 +742,9 @@ void	FFTRealFixLen <T, LL2>::rescale (T x []) const
     else
     {
         assert ((FFT_LEN & 3) == 0);
-        long i = FFT_LEN - 4;
+
+        // Could be optimized with SIMD instruction sets (needs alignment check)
+        long				i = FFT_LEN - 4;
         do
         {
             x [i + 0] *= mul;
@@ -738,22 +759,30 @@ void	FFTRealFixLen <T, LL2>::rescale (T x []) const
 
 
 
+/*\\\ PROTECTED \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*/
 
-template <class T, int LL2>
-void	FFTRealFixLen <T, LL2>::build_br_lut ()
+
+
+/*\\\ PRIVATE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*/
+
+
+
+template <int LL2>
+void	FFTRealFixLen <LL2>::build_br_lut ()
 {
     _br_data [0] = 0;
     for (long cnt = 1; cnt < BR_ARR_SIZE; ++cnt)
     {
-        long index = cnt << 2;
-        long br_index = 0;
+        long				index = cnt << 2;
+        long				br_index = 0;
 
-        int bit_cnt = FFT_LEN_L2;
+        int				bit_cnt = FFT_LEN_L2;
         do
         {
             br_index <<= 1;
             br_index += (index & 1);
             index >>= 1;
+
             -- bit_cnt;
         }
         while (bit_cnt > 0);
@@ -764,27 +793,32 @@ void	FFTRealFixLen <T, LL2>::build_br_lut ()
 
 
 
-template <class T, int LL2>
-void FFTRealFixLen <T, LL2>::build_trigo_lut ()
+template <int LL2>
+void	FFTRealFixLen <LL2>::build_trigo_lut ()
 {
-    const double mul = (0.5 * PI) / TRIGO_TABLE_ARR_SIZE;
+    const double	mul = (0.5 * PI) / TRIGO_TABLE_ARR_SIZE;
     for (long i = 0; i < TRIGO_TABLE_ARR_SIZE; ++ i)
-        _trigo_data [i] = std::cos (i * mul);
-}
+    {
+        using namespace std;
 
-
-
-template <class T, int LL2>
-void FFTRealFixLen <T, LL2>::build_trigo_osc ()
-{
-    for (int i = 0; i < NBR_TRIGO_OSC; ++i) {
-        OscType& osc = _trigo_osc [i];
-        const long len = static_cast <long> (TRIGO_TABLE_ARR_SIZE) << (i + 1);
-        const double mul = (0.5 * PI) / len;
-        osc.set_step (mul);
+        _trigo_data [i] = DataType (cos (i * mul));
     }
 }
 
+
+
+template <int LL2>
+void	FFTRealFixLen <LL2>::build_trigo_osc ()
+{
+    for (int i = 0; i < NBR_TRIGO_OSC; ++i)
+    {
+        OscType &		osc = _trigo_osc [i];
+
+        const long		len = static_cast <long> (TRIGO_TABLE_ARR_SIZE) << (i + 1);
+        const double	mul = (0.5 * PI) / len;
+        osc.set_step (mul);
+    }
+}
 
 
 
