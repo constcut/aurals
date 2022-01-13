@@ -17,7 +17,7 @@
 **
 ***************************************************************************/
 #include "fftreal_wrapper.h"
-#include "FFTRealFixLen.h"
+
 
 FFTRealWrapper::FFTRealWrapper()
     :   m_private(new FFTRealWrapperPrivate)

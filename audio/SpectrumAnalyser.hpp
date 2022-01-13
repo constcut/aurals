@@ -50,7 +50,6 @@
 #include "FrequencySpectrum.hpp"
 #include "Spectrum.hpp"
 
-#include "libs/fft/FFTRealFixLenParam.h"
 #include "libs/fft/fftreal_wrapper.h"
 
 QT_FORWARD_DECLARE_CLASS(QAudioFormat)
@@ -88,15 +87,14 @@ namespace mtherapp {
 
         int _fftLimit = 4096;
 
-        std::unique_ptr<FFTRealWrapper> _fft;
+        std::unique_ptr<FFTRealWrapper> _fft; //TODO replace
         int _numSamples;
         WindowFunction _windowFunction;
 
-        typedef ffft::FFTRealFixLenParam::DataType DataType;
 
-        QVector<DataType> _window;
-        QVector<DataType> _input;
-        QVector<DataType> _output;
+        QVector<float> _window;
+        QVector<float> _input;
+        QVector<float> _output;
         FrequencySpectrum _spectrum;
     };
 

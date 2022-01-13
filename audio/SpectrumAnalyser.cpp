@@ -72,7 +72,7 @@ void SpectrumAnalyserThread::setWindowFunction(mtherapp::WindowFunction type) {
 
 void SpectrumAnalyserThread::calculateWindow() {
     for (int i=0; i<_numSamples; ++i) {
-        DataType x = 0.0;
+        float x = 0.0;
         switch (_windowFunction) {
         case NoWindow:
             x = 1.0;
@@ -107,7 +107,13 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
         ptr += bytesPerSample;
     }
 
+    auto start = std::chrono::high_resolution_clock::now();
     _fft->calculateFFT(_output.data(), _input.data()); //m_noWindowInput m_input
+    auto end = std::chrono::high_resolution_clock::now();
+    auto durationMs = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+
+    qDebug() << "FFT done for " << durationMs;
+
 
     for (int i=0; i<=_numSamples/2; ++i) {
         _spectrum[i].frequency = qreal(i * inputFrequency) / (_numSamples);

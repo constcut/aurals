@@ -6,6 +6,7 @@ linux:Debug:CONFIG += sanitizer sanitize_address sanitize_memory sanitize_undefi
 #sanitize_thread
 
 
+
 #CONFIG += no_keywords #was used only for python interpreter
 DEFINES += QT_DEPRECATED_WARNINGS
 QMAKE_CXXFLAGS += -std=c++17
@@ -77,23 +78,11 @@ HEADERS += \
     audio/WaveContour.hpp \
     audio/WaveShape.hpp \
     audio/Yin.hpp \
-    libs/fft/Array.h \
-    libs/fft/Array.hpp \
     libs/fft/DynArray.h \
     libs/fft/DynArray.hpp \
     libs/fft/FFTReal.h \
     libs/fft/FFTReal.hpp \
-    libs/fft/FFTRealFixLen.h \
-    libs/fft/FFTRealFixLen.hpp \
-    libs/fft/FFTRealFixLenParam.h \
-    libs/fft/FFTRealPassDirect.h \
-    libs/fft/FFTRealPassDirect.hpp \
-    libs/fft/FFTRealPassInverse.h \
-    libs/fft/FFTRealPassInverse.hpp \
-    libs/fft/FFTRealSelect.h \
-    libs/fft/FFTRealSelect.hpp \
-    libs/fft/FFTRealUseTrigo.h \
-    libs/fft/FFTRealUseTrigo.hpp \
+    libs/fft/FFTunreal.hpp \
     libs/fft/OscSinCos.h \
     libs/fft/OscSinCos.hpp \
     libs/fft/def.h \
@@ -129,8 +118,6 @@ DISTFILES += \
     libs/fft/license.txt \
     libs/fft/readme.txt \
     main.qml \
-    math/cutoffs \
-    current \
     qml/ConsoleLog.qml \
     qml/PianoMap.qml \
     qml/WaveshapeQML.qml \

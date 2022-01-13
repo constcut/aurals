@@ -3,7 +3,7 @@
 using namespace mtherapp;
 
 
-Yin::Yin() {
+Yin::Yin() { //TODO template
     _threshold = 0.15;
 }
 
@@ -44,6 +44,7 @@ double Yin::parabolicInterpolation() const {
     size_t start = _currentTau ? _currentTau - 1 : _currentTau;
     size_t finish = _currentTau + 1 < _halfBufferSize ? _currentTau + 1 : _currentTau;
 
+    ///TODO find nice lambda
     if (start == _currentTau) {
         if (_yinBuffer[_currentTau] <= _yinBuffer[finish])
             return _currentTau;
@@ -81,7 +82,7 @@ void Yin::halvesDifference(const float* buffer) {
     for(size_t tau = 0 ; tau < _halfBufferSize; tau++)
         for(size_t index = 0; index < _halfBufferSize; index++){
             delta = buffer[index] - buffer[index + tau];
-            _yinBuffer[tau] += delta * delta;
+            _yinBuffer[tau] += delta * delta; //Playe there sqrt etc
         }
 }
 

@@ -27,9 +27,9 @@ http://sam.zoy.org/wtfpl/COPYING for more details.
 
 /*\\\ INCLUDE FILES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*/
 
-#include	"fft/def.h"
-#include	"fft/DynArray.h"
-#include	"fft/OscSinCos.h"
+#include	"def.h"
+#include	"DynArray.h"
+#include	"OscSinCos.h"
 
 
 
@@ -109,7 +109,7 @@ private:
 						_trigo_lut;
 	mutable DynArray <DataType>
 						_buffer;
-   mutable DynArray <OscType>
+    mutable DynArray <OscType>
 						_trigo_osc;
 
 
@@ -132,7 +132,7 @@ private:
 
 
 
-#include	"fft/FFTReal.hpp"
+#include	"FFTReal.hpp"
 
 
 

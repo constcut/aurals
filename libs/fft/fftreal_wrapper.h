@@ -28,7 +28,9 @@
 #  define FFTREAL_EXPORT Q_DECL_IMPORT
 #endif
 
-#include "libs/fft/FFTRealFixLen.h"
+//#include "libs/fft/FFTRealFixLen.h"
+
+#include "FFTReal.h"
 #include "audio/Spectrum.hpp"
 
 // Each pass of the FFT processes 2^X samples, where X is the
@@ -36,8 +38,12 @@
 
 
 class FFTRealWrapperPrivate {
+
 public:
-    ffft::FFTRealFixLen<mtherapp::FFTLengthPowerOfTwo> m_fft;
+
+    FFTRealWrapperPrivate(): m_fft(4096) {}
+
+    ffft::FFTReal<float> m_fft;
 };
 
 
@@ -64,6 +70,8 @@ public:
     void calculateInverseFFT(DataType in[], DataType out[]);
 
     void rescale(DataType data[]);
+
+
 
 private:
     FFTRealWrapperPrivate*  m_private;
