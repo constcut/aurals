@@ -705,12 +705,12 @@ void	FFTReal <DT>::compute_direct_pass_3 (DT df [], const DT sf []) const
     assert (sf != 0);
     assert (df != sf);
 
-    const DT	sqrt2_2 = DT (SQRT2 * 0.5);
-    long				coef_index = 0;
+    const DT	sqrt2_2 = SQRT2 * 0.5;
+    long coef_index = 0;
+    DT v;
+
     do
     {
-        DT			v;
-
         df [coef_index] = sf [coef_index] + sf [coef_index + 4];
         df [coef_index + 4] = sf [coef_index] - sf [coef_index + 4];
         df [coef_index + 2] = sf [coef_index + 2];
@@ -782,11 +782,12 @@ void	FFTReal <DT>::compute_direct_pass_n_lut (DT df [], const DT sf [], int pass
         // Others are conjugate complex numbers
         const DT * const	sf1i = sf1r + h_nbr_coef;
         const DT * const	sf2i = sf1i + nbr_coef;
+
+        DT	 		v;
         for (long i = 1; i < h_nbr_coef; ++ i)
         {
             const DT	c = cos_ptr [i];					// cos (i*PI/nbr_coef);
             const DT	s = cos_ptr [h_nbr_coef - i];	// sin (i*PI/nbr_coef);
-            DT	 		v;
 
             v = sf2r [i] * c - sf2i [i] * s;
             dfr [i] = sf1r [i] + v;
@@ -836,12 +837,13 @@ void	FFTReal <DT>::compute_direct_pass_n_osc (DT df [], const DT sf [], int pass
         // Others are conjugate complex numbers
         const DT * const	sf1i = sf1r + h_nbr_coef;
         const DT * const	sf2i = sf1i + nbr_coef;
+        DT	 		v;
+
         for (long i = 1; i < h_nbr_coef; ++ i)
         {
             osc.step ();
             const DT	c = osc.get_cos ();
             const DT	s = osc.get_sin ();
-            DT	 		v;
 
             v = sf2r [i] * c - sf2i [i] * s;
             dfr [i] = sf1r [i] + v;
@@ -1040,7 +1042,7 @@ void	FFTReal <DT>::compute_inverse_pass_3 (DT df [], const DT sf []) const
     assert (sf != 0);
     assert (df != sf);
 
-    const DT	sqrt2_2 = DT (SQRT2 * 0.5);
+    const DT	sqrt2_2 = SQRT2 * 0.5;
     long				coef_index = 0;
     do
     {
