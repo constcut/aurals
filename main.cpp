@@ -46,7 +46,7 @@ void benchmarkFFT() {
     unsigned long unfCount = 0;
 
 
-
+    /*
     bench(fftDynamic, "Dyn");
     std::vector<float> output2(output.begin(), output.end());
 
@@ -73,7 +73,7 @@ void benchmarkFFT() {
         }
     }
 
-    //exit(0);
+    //exit(0); */
 
 
     for (size_t i = 0; i < 10000; ++i) {
@@ -92,7 +92,7 @@ void benchmarkFFT() {
     qDebug() << "Total dyn: " << dynCount / 1000.0;
     qDebug() << "Total fixed: " << fixCount / 1000.0;
     qDebug() << "Total un: " << unCount / 1000.0;
-    qDebug() << "Total un fixed: " << unCount / 1000.0;
+    qDebug() << "Total un fixed: " << unfCount / 1000.0;
 
 }
 

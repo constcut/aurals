@@ -197,18 +197,18 @@ inline void	FFTRealPassInverse <0>::process_rec ([[maybe_unused]] long len, [[ma
 template <int PASS>
 void	FFTRealPassInverse <PASS>::process_internal (long len, DataType dest_ptr [], const DataType src_ptr [], const DataType cos_ptr [], long cos_len, [[maybe_unused]] const long br_ptr [], OscType osc_list [])
 {
-    const long		dist = 1L << (PASS - 1);
-    const long		c1_r = 0;
-    const long		c1_i = dist;
-    const long		c2_r = dist * 2;
-    const long		c2_i = dist * 3;
-    const long		cend = dist * 4;
-    const long		table_step = cos_len >> (PASS - 1);
+    const uint32_t		dist = 1L << (PASS - 1);
+    const uint32_t		c1_r = 0;
+    const uint32_t		c1_i = dist;
+    const uint32_t		c2_r = dist * 2;
+    const uint32_t		c2_i = dist * 3;
+    const uint32_t		cend = dist * 4;
+    const uint32_t		table_step = cos_len >> (PASS - 1);
 
    enum {	TRIGO_OSC		= PASS - 12	};
     enum {	TRIGO_DIRECT	= (TRIGO_OSC >= 0) ? 1 : 0	};
 
-    long				coef_index = 0;
+    uint32_t				coef_index = 0;
     do
     {
         const DataType	* const	sf = src_ptr + coef_index;
@@ -223,7 +223,7 @@ void	FFTRealPassInverse <PASS>::process_internal (long len, DataType dest_ptr []
         FFTRealUseTrigo <TRIGO_DIRECT>::prepare (osc_list [TRIGO_OSC]);
 
         // Others are conjugate complex numbers
-        for (long i = 1; i < dist; ++ i)
+        for (uint32_t i = 1; i < dist; ++ i)
         {
             df [c1_r + i] = sf [c1_r + i] + sf [c2_r - i];
             df [c1_i + i] = sf [c2_r + i] - sf [cend - i];
@@ -257,7 +257,7 @@ inline void	FFTRealPassInverse <2>::process_internal (long len, DataType dest_pt
     // Antepenultimate pass
     const DataType	sqrt2_2 = DataType (SQRT2 * 0.5);
 
-    long				coef_index = 0;
+    uint32_t				coef_index = 0;
     do
     {
         dest_ptr [coef_index    ] = src_ptr [coef_index] + src_ptr [coef_index + 4];
@@ -283,12 +283,12 @@ template <>
 inline void	FFTRealPassInverse <1>::process_internal (long len, DataType dest_ptr [], const DataType src_ptr [], [[maybe_unused]] const DataType cos_ptr [], [[maybe_unused]] long cos_len, const long br_ptr [], [[maybe_unused]] OscType osc_list [])
 {
     // Penultimate and last pass at once
-    const long		qlen = len >> 2;
+    const uint32_t		qlen = len >> 2;
 
-    long				coef_index = 0;
+    uint32_t				coef_index = 0;
     do
     {
-        const long		ri_0 = br_ptr [coef_index >> 2];
+        const uint32_t		ri_0 = br_ptr [coef_index >> 2];
 
         const DataType	b_0 = src_ptr [coef_index    ] + src_ptr [coef_index + 2];
         const DataType	b_2 = src_ptr [coef_index    ] - src_ptr [coef_index + 2];
@@ -319,7 +319,8 @@ public:
     typedef	OscSinCos <DataType>	OscType;
 
     inline static void
-                        process (long len, DataType dest_ptr [], DataType src_ptr [], const DataType x_ptr [], const DataType cos_ptr [], long cos_len, const long br_ptr [], OscType osc_list []);
+                        process (long len, DataType dest_ptr [], DataType src_ptr [], const DataType x_ptr [],
+                                 const DataType cos_ptr [], long cos_len, const uint32_t br_ptr [], OscType osc_list []);
 
 
 private:
@@ -338,19 +339,20 @@ private:
 
 
 template <>
-inline void	FFTRealPassDirect <1>::process (long len, DataType dest_ptr [], [[maybe_unused]] DataType src_ptr [], const DataType x_ptr [], [[maybe_unused]] const DataType cos_ptr [], [[maybe_unused]] long cos_len, const long br_ptr [], [[maybe_unused]] OscType osc_list [])
+inline void	FFTRealPassDirect <1>::process (long len, DataType dest_ptr [], [[maybe_unused]] DataType src_ptr [],
+const DataType x_ptr [], [[maybe_unused]] const DataType cos_ptr [], [[maybe_unused]] long cos_len, const uint32_t br_ptr [], [[maybe_unused]] OscType osc_list [])
 {
     // First and second pass at once
-    const long		qlen = len >> 2;
+    const uint32_t		qlen = len >> 2;
 
-    long				coef_index = 0;
+    uint32_t				coef_index = 0;
     do
     {
         // To do: unroll the loop (2x).
-        const long		ri_0 = br_ptr [coef_index >> 2];
-        const long		ri_1 = ri_0 + 2 * qlen;	// bit_rev_lut_ptr [coef_index + 1];
-        const long		ri_2 = ri_0 + 1 * qlen;	// bit_rev_lut_ptr [coef_index + 2];
-        const long		ri_3 = ri_0 + 3 * qlen;	// bit_rev_lut_ptr [coef_index + 3];
+        const uint32_t		ri_0 = br_ptr [coef_index >> 2];
+        const uint32_t		ri_1 = ri_0 + 2 * qlen;	// bit_rev_lut_ptr [coef_index + 1];
+        const uint32_t		ri_2 = ri_0 + 1 * qlen;	// bit_rev_lut_ptr [coef_index + 2];
+        const uint32_t		ri_3 = ri_0 + 3 * qlen;	// bit_rev_lut_ptr [coef_index + 3];
 
         DataType	* const	df2 = dest_ptr + coef_index;
         df2 [1] = x_ptr [ri_0] - x_ptr [ri_1];
@@ -368,7 +370,9 @@ inline void	FFTRealPassDirect <1>::process (long len, DataType dest_ptr [], [[ma
 }
 
 template <>
-inline void	FFTRealPassDirect <2>::process (long len, DataType dest_ptr [], DataType src_ptr [], const DataType x_ptr [], const DataType cos_ptr [], long cos_len, const long br_ptr [], OscType osc_list [])
+inline void	FFTRealPassDirect <2>::process (long len, DataType dest_ptr [], DataType src_ptr [],
+                                            const DataType x_ptr [], const DataType cos_ptr [],
+                                            long cos_len, const uint32_t br_ptr [], OscType osc_list [])
 {
     // Executes "previous" passes first. Inverts source and destination buffers
     FFTRealPassDirect <1>::process (
@@ -383,17 +387,16 @@ inline void	FFTRealPassDirect <2>::process (long len, DataType dest_ptr [], Data
     );
 
     // Third pass
-    const DataType	sqrt2_2 = DataType (SQRT2 * 0.5);
+    const DataType	sqrt2_2 = SQRT2 * 0.5;
+    DataType v;
 
-    long				coef_index = 0;
+    uint32_t				coef_index = 0;
     do
     {
         dest_ptr [coef_index    ] = src_ptr [coef_index] + src_ptr [coef_index + 4];
         dest_ptr [coef_index + 4] = src_ptr [coef_index] - src_ptr [coef_index + 4];
         dest_ptr [coef_index + 2] = src_ptr [coef_index + 2];
         dest_ptr [coef_index + 6] = src_ptr [coef_index + 6];
-
-        DataType			v;
 
         v = (src_ptr [coef_index + 5] - src_ptr [coef_index + 7]) * sqrt2_2;
         dest_ptr [coef_index + 1] = src_ptr [coef_index + 1] + v;
@@ -409,7 +412,9 @@ inline void	FFTRealPassDirect <2>::process (long len, DataType dest_ptr [], Data
 }
 
 template <int PASS>
-void	FFTRealPassDirect <PASS>::process (long len, DataType dest_ptr [], DataType src_ptr [], const DataType x_ptr [], const DataType cos_ptr [], long cos_len, const long br_ptr [], OscType osc_list [])
+void	FFTRealPassDirect <PASS>::process (long len, DataType dest_ptr [], DataType src_ptr [],
+                                           const DataType x_ptr [], const DataType cos_ptr [],
+                                           long cos_len, const uint32_t br_ptr [], OscType osc_list [])
 {
     // Executes "previous" passes first. Inverts source and destination buffers
     FFTRealPassDirect <PASS - 1>::process (
@@ -423,18 +428,18 @@ void	FFTRealPassDirect <PASS>::process (long len, DataType dest_ptr [], DataType
         osc_list
     );
 
-    const long		dist = 1L << (PASS - 1);
-    const long		c1_r = 0;
-    const long		c1_i = dist;
-    const long		c2_r = dist * 2;
-    const long		c2_i = dist * 3;
-    const long		cend = dist * 4;
-    const long		table_step = cos_len >> (PASS - 1);
+    const uint32_t		dist = 1L << (PASS - 1);
+    const uint32_t		c1_r = 0;
+    const uint32_t		c1_i = dist;
+    const uint32_t		c2_r = dist * 2;
+    const uint32_t		c2_i = dist * 3;
+    const uint32_t		cend = dist * 4;
+    const uint32_t		table_step = cos_len >> (PASS - 1);
 
    enum {	TRIGO_OSC		= PASS - 12	};
     enum {	TRIGO_DIRECT	= (TRIGO_OSC >= 0) ? 1 : 0	};
 
-    long				coef_index = 0;
+    uint32_t				coef_index = 0;
     do
     {
         const DataType	* const	sf = src_ptr + coef_index;
@@ -449,7 +454,7 @@ void	FFTRealPassDirect <PASS>::process (long len, DataType dest_ptr [], DataType
         FFTRealUseTrigo <TRIGO_DIRECT>::prepare (osc_list [TRIGO_OSC]);
 
         // Others are conjugate complex numbers
-        for (long i = 1; i < dist; ++ i)
+        for (uint32_t i = 1; i < dist; ++ i)
         {
             DataType			c;
             DataType			s;
@@ -500,7 +505,7 @@ public:
 
                         FFTRealFixLen ();
 
-    inline long		get_length () const;
+    inline uint32_t		get_length () const;
     void				do_fft (DataType f [], const DataType x []);
     void				do_ifft (const DataType f [], DataType x []);
     void				rescale (DataType x []) const;
@@ -537,7 +542,7 @@ private:
 
     DynArray <DataType>
                         _buffer;
-    DynArray <long>
+    DynArray <uint32_t>
                         _br_data;
     DynArray <DataType>
                         _trigo_data;
@@ -575,7 +580,7 @@ FFTRealFixLen <LL2>::FFTRealFixLen ()
 
 
 template <int LL2>
-long	FFTRealFixLen <LL2>::get_length () const
+uint32_t FFTRealFixLen<LL2>::get_length() const
 {
     return (FFT_LEN);
 }
@@ -593,7 +598,7 @@ void	FFTRealFixLen <LL2>::do_fft (DataType f [], const DataType x [])
 
     // Do the transform in several passes
     const DataType	*	cos_ptr = &_trigo_data [0];
-    const long *	br_ptr = &_br_data [0];
+    const uint32_t *	br_ptr = &_br_data [0];
 
     FFTRealPassDirect <FFT_LEN_L2 - 1>::process (
         FFT_LEN,
@@ -664,7 +669,7 @@ void	FFTRealFixLen <LL2>::do_ifft (const DataType f [], DataType x [])
     DataType *		d_ptr =
         FFTRealSelect <FFT_LEN_L2 & 1>::sel_bin (x, &_buffer [0]);
     const DataType	*	cos_ptr = &_trigo_data [0];
-    const long *	br_ptr = &_br_data [0];
+    const uint32_t *	br_ptr = &_br_data [0];
 
     FFTRealPassInverse <FFT_LEN_L2 - 1>::process (
         FFT_LEN,
@@ -726,7 +731,7 @@ void	FFTRealFixLen <LL2>::rescale (DataType x []) const
 {
     assert (x != 0);
 
-    const DataType	mul = DataType (1.0 / FFT_LEN);
+    const DataType	mul = 1.0 / FFT_LEN;
 
     if (FFT_LEN < 4)
     {
@@ -771,10 +776,10 @@ template <int LL2>
 void	FFTRealFixLen <LL2>::build_br_lut ()
 {
     _br_data [0] = 0;
-    for (long cnt = 1; cnt < BR_ARR_SIZE; ++cnt)
+    for (uint32_t cnt = 1; cnt < BR_ARR_SIZE; ++cnt)
     {
-        long				index = cnt << 2;
-        long				br_index = 0;
+        uint32_t				index = cnt << 2;
+        uint32_t				br_index = 0;
 
         int				bit_cnt = FFT_LEN_L2;
         do
@@ -797,7 +802,7 @@ template <int LL2>
 void	FFTRealFixLen <LL2>::build_trigo_lut ()
 {
     const double	mul = (0.5 * PI) / TRIGO_TABLE_ARR_SIZE;
-    for (long i = 0; i < TRIGO_TABLE_ARR_SIZE; ++ i)
+    for (uint32_t i = 0; i < TRIGO_TABLE_ARR_SIZE; ++ i)
     {
         using namespace std;
 
@@ -814,7 +819,7 @@ void	FFTRealFixLen <LL2>::build_trigo_osc ()
     {
         OscType &		osc = _trigo_osc [i];
 
-        const long		len = static_cast <long> (TRIGO_TABLE_ARR_SIZE) << (i + 1);
+        const uint32_t		len =  (TRIGO_TABLE_ARR_SIZE) << (i + 1);
         const double	mul = (0.5 * PI) / len;
         osc.set_step (mul);
     }
