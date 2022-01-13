@@ -88,7 +88,6 @@ void Yin::accMeanNormDifference(){
 
 
 
-
 bool Yin::absoluteThresholdFound(){
     for (_currentTau = 2; _currentTau < _halfBufferSize ; _currentTau++)
         if (_yinBuffer[_currentTau] < _threshold) {
