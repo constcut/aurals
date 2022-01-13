@@ -4,6 +4,9 @@
 
 #include "libs/fft/FFTReal.h"
 #include "libs/fft/FFTRealFixLen.h"
+
+#include "libs/fft/FFTunreal.hpp"
+
 #include <vector>
 #include <chrono>
 #include <iostream>
@@ -15,6 +18,8 @@ void benchmarkFFT() {
 
     ffft::FFTReal<float> fftDynamic(size);
     ffft::FFTRealFixLen<bits> fftFixed;
+
+    FFTReal<float> fftUn(size);
 
     std::vector<float> testVector(size, 0);
     std::vector<float> output(size, 0);
@@ -33,19 +38,22 @@ void benchmarkFFT() {
 
     unsigned long dynCount = 0;
     unsigned long fixCount = 0;
-    for (size_t i = 0; i < 1000; ++i) {
+    unsigned long unCount = 0;
+
+    for (size_t i = 0; i < 10000; ++i) {
 
         for (auto& sample: testVector)
             sample = (rand() % 30000) / 30000.0f;
 
         dynCount += bench(fftDynamic, "Dyn");
         fixCount += bench(fftFixed, "Fix");
+        unCount += bench(fftUn, "UN");
     }
 
-    std::cout << "Total dyn: " << dynCount / 1000.0 << std::endl;
-    std::cout << "Total fixed: " << fixCount / 1000.0 << std::endl;
+    qDebug() << "Total dyn: " << dynCount / 1000.0;
+    qDebug() << "Total fixed: " << fixCount / 1000.0;
+    qDebug() << "Total un: " << unCount / 1000.0;
 
-    exit(0);
 }
 
 
@@ -53,10 +61,11 @@ using namespace mtherapp;
 
 int main(int argc, char *argv[])
 {
-    //benchmarkFFT();
-
 
     LogHandler::getInstance().setFilename("log.txt");
+
+    benchmarkFFT();
+
     qDebug() << "Starting application";
     return mainInit(argc,argv);
 }
