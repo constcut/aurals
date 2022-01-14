@@ -4,6 +4,8 @@
 
 #include "libs/fft/FFTurealfix.hpp"
 
+#include "FindPeaks.hpp"
+
 using namespace mtherapp;
 
 
@@ -42,8 +44,14 @@ double Yin::getPitch(const float *buffer) {
     differenceFunction(buffer); //2. Difference function
     accMeanNormDifference(); //3. Cumulative mean normalized difference function
     if (absoluteThresholdFound())  {//4. Absolute threshold {
-        qDebug() << "Olderst " << _sampleRate / _currentTau;
-        return _sampleRate / parabolicInterpolation(); //5.Parabolic interpolation
+
+        //qDebug() << "Olderst " << _sampleRate / _currentTau << " " << _currentTau;
+
+        size_t _new = parabolicInterpolation();
+
+        //qDebug() << "Next " << _sampleRate / _new << " pa "  << _new;
+
+        return _sampleRate / _new; //5.Parabolic interpolation
     }
     return -1.0;
     //6. Best local estimate ?
@@ -123,46 +131,6 @@ bool Yin::absoluteThresholdFound(){
 
 //Better Yin
 
-//TODO buffers must be reseted every time!!!
-
-
-size_t findTau(std::vector<float>& v, size_t W) {
-
-    v[0] = 1;
-    float runningSum = 0;
-    for (size_t tau = 1; tau < W; tau++) {
-        runningSum += v[tau];
-        v[tau] *= tau / runningSum;
-    }
-
-    double minValue = 5000.;
-    size_t minTau = 0;
-    size_t _currentTau = 0;
-
-
-    for (_currentTau = 2; _currentTau < W ; _currentTau++)
-
-        if (v[_currentTau] < 0.15) {
-            while (_currentTau + 1 < W &&
-                   v[_currentTau + 1] < v[_currentTau])
-                ++_currentTau;
-            break;
-        }
-        else if (v[_currentTau] < minValue) {
-            minValue = v[_currentTau];
-            minTau =_currentTau;
-        }
-
-    if (_currentTau == W) {
-        qDebug() << "Not found";
-        _currentTau = minTau;
-        //On my experience its sub octave
-    }
-    //return _currentTau, minTau, if same == not found
-
-    return _currentTau;
-}
-
 
 double YinPP::process(const float* buffer) {
 
@@ -174,20 +142,91 @@ double YinPP::process(const float* buffer) {
     accMeanDiff(_yinBuffer1);
     accMeanDiff(_yinBuffer2);
 
+    auto maxE = std::max_element(_yinBuffer1.begin(), _yinBuffer1.end());
+    float maxVal = *maxE;
+
+    auto minE = std::min_element(_yinBuffer1.begin(), _yinBuffer1.end());
+    float minVal = *minE;
+
+    std::vector<double> invBuffer(_yinBuffer1.size(), 0);
+    for (size_t i = 0; i < invBuffer.size(); ++i)
+        invBuffer[i] = maxVal - _yinBuffer1[i];
+
+    //Find best ways to find local minima
+
+    auto idx = peakIndexesInData(invBuffer);
+
+    qDebug() << "_";
+    for (auto id: idx) {
+        if (_yinBuffer1[id] > minVal*5) { //TODO K mean
+            //qDebug() << "Sub place";
+        }
+        else
+            qDebug() << id << " one of ids " << _yinBuffer1[id];
+    }
+
+
     size_t tNew = absThreshNew(_yinBuffer1);
     size_t tOld = absThreshOld(_yinBuffer2);
 
     double preF1 = _sampleRate / tNew;
     double preF2 = _sampleRate / tOld;
 
-    qDebug() << "Pre " << preF1 << " " << preF2;
+    //qDebug() << "Pre " << preF1 << " " << preF2;
 
-    size_t t1 = parabOld(preF1, _yinBuffer1); //TODO replace with new
-    size_t t2 = parabOld(preF2, _yinBuffer2);
+    size_t t1 = parabNew(tNew, _yinBuffer1); //TODO replace with new
+    size_t t2 = parabOld(tOld, _yinBuffer2);
+
+    //qDebug() << "Para new " << t1 << " para old " << t2;
+
+    qDebug() << "And found is " << t1;
+
+    //for (auto ts: tSet)
+        //qDebug() << "Th set " << ts;
+
+    //TODO estimate
 
     double foundPitch = _sampleRate / t1;
     return foundPitch;
 }
+
+
+
+
+size_t YinPP::absThreshNew(std::vector<float>& v) {
+    double minValue = 5000.;
+    size_t minTau = 0;
+    size_t found = 0;
+
+
+    tSet.clear();
+
+    for (found = 2; found < v.size() ; found++) {
+        if (v[found] < 0.15) {
+            while (found + 1 < v.size() && v[found + 1] < v[found])
+                ++found;
+            //qDebug() << "Found adding " << found << " " << v[found];
+            tSet.push_back(found);
+        }
+
+        if (v[found] < minValue) {
+            minValue = v[found];
+            minTau = found;
+        }
+    }
+
+    if (tSet.empty())
+        tSet.push_back(minTau); //Usually sub octave
+
+    if (minTau != tSet[0]) {
+        qDebug() << "Difference " << minTau << " and " << tSet[0];
+        qDebug() << "_" << _sampleRate / minTau << " " << _sampleRate / tSet[0];
+        qDebug() << "_";
+    }
+
+    return tSet[0];
+}
+
 
 
 size_t YinPP::parabOld(size_t t, std::vector<float>& v) {
@@ -213,6 +252,27 @@ size_t YinPP::parabOld(size_t t, std::vector<float>& v) {
 }
 
 
+size_t YinPP::parabNew(size_t t, std::vector<float>& v) {
+    if (t == v.size())
+        return t;
+
+    size_t betterTau = 0.f;
+    if (t > 0 && t < v.size() - 1) {
+        float s0 = v[t - 1];
+        float s1 = v[t];
+        float s2 = v[t + 1];
+        float adjustment = (s2 - s0) / (2.f * (2.f * s1 - s2 - s0));
+        if (abs(adjustment) > 1.f)
+            adjustment = 0.f;
+        betterTau = t + adjustment;
+    }
+    else
+        betterTau =  t;
+
+    return betterTau;
+}
+
+
 size_t YinPP::absThreshOld(std::vector<float>& v) {
 
     size_t found = 0;
@@ -227,29 +287,6 @@ size_t YinPP::absThreshOld(std::vector<float>& v) {
     return found;
 }
 
-
-size_t YinPP::absThreshNew(std::vector<float>& v) {
-    double minValue = 5000.;
-    size_t minTau = 0;
-    size_t found = 0;
-
-
-    for (found = 2; found < v.size() ; found++)
-        if (v[found] < 0.15) {
-            while (found + 1 < v.size() &&
-                   v[found + 1] < v[found])
-                ++found;
-            break;
-        }
-        else if (v[found] < minValue) {
-            minValue = v[found];
-            minTau = found;
-        }
-
-    if (found == v.size())
-        found = minTau;
-    return found;
-}
 
 
 
@@ -392,5 +429,5 @@ void YinPP::compareBuffers() {
             //qDebug() << i << "is fine" << _yinBuffer1[i];
     }
 
-    qDebug() << "Maybe equal!";
+    //qDebug() << "Maybe equal!";
 }

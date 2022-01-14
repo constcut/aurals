@@ -75,6 +75,8 @@ class Yin {
         std::vector<float> _yinBuffer1;
         std::vector<float> _yinBuffer2;
 
+        std::vector<size_t> tSet;
+
         //STEP1:
         //TODO autocorrelation FFT method
 

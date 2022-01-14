@@ -48,18 +48,21 @@ std::pair<double, double> mtherapp::calc_YinF0(const float* data,  const size_t 
     yin.init(sampleRate, len);
     yin.setThreshold(threshold);
     //return {yin.getPitch(data), yin.getTau()};
+    auto p1 = yin.getPitch(data);
+
 
     static YinPP yin2;
     yin2.init(sampleRate, len);
     auto p = yin2.process(data);
 
-    auto p1 = yin.getPitch(data);
-
+    /*
     if (p != p1)
         qDebug() << "Pitch diff " << p1 << ' ' << p;
+    else
+        qDebug() << "Pitch equal"; */
 
     //return {p, 0}; //Todo found flag
-    return {yin.getPitch(data), yin.getTau()};
+    return {p1, yin.getTau()};
 
 }
 

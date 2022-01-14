@@ -112,7 +112,7 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
     auto end = std::chrono::high_resolution_clock::now();
     auto durationMs = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 
-    qDebug() << "FFT done for " << durationMs;
+    //qDebug() << "FFT done for " << durationMs;
 
 
     for (int i=0; i<=_numSamples/2; ++i) {

@@ -429,7 +429,7 @@ void SpectrographPainter::classifySlope() {
     double hK = x2 - x1;
     double angle1 = atan(vK/hK)  * 180.0 / 3.141592653;
     double angle2 = atan(hK/vK)  * 180.0 / 3.141592653;
-    qDebug() << " Vertial katet "<< vK << " horizontal katet " << hK << " angle1 " << angle1 << " angle2 " << angle2;
+    //qDebug() << " Vertial katet "<< vK << " horizontal katet " << hK << " angle1 " << angle1 << " angle2 " << angle2;
     //Использовать -k чтобы получить ту же картинку, т.к. одна из осей перевернута
     //Возможно сделать расчёт по всем корзинам, и наблюдать как меняется угол
     //Вначале больше похоже на розовый шум, потом на белый
