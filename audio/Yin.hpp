@@ -46,11 +46,14 @@ class Yin {
             _sampleRate = sampleRate;
             _bufferSize = bufferSize;
             _threshold = 0.2;
+            //TODO remove size we have buffer but todo -f
             _yinBuffer1 = std::vector<float>(_bufferSize/2.0, 0.f);
             _yinBuffer2 = std::vector<float>(_bufferSize/2.0, 0.f);
         }
 
         void compareBuffers();
+
+        void process(const float* buffer);
 
         //TODO access to buffers for visualization + mode to save all the results
 
@@ -59,8 +62,8 @@ class Yin {
 
         void autoCorrelationFast(const float* buffer);
 
-        void diffSlow();
-        void diffFast();
+        void diffSlow(const float* yinBuf, size_t W);
+        void diffFast(const float* yinBuf, size_t W);
 
 
     private:
@@ -73,12 +76,9 @@ class Yin {
         std::vector<float> _yinBuffer2;
 
         //STEP1:
-        //TODO autocorrelation formula 1
-        //TODO autocorrelation formula 2
         //TODO autocorrelation FFT method
 
         //STEP2:
-        //TODO diff function slow
         //TODO diff function on acf
 
         //STEP3:

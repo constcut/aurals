@@ -50,11 +50,14 @@ double Yin::getPitch(const float *buffer) {
 
 void Yin::differenceFunction(const float* buffer) {
     float delta = 0.f;
-    for(size_t tau = 0 ; tau < _halfBufferSize; tau++)
+    for(size_t tau = 0 ; tau < _halfBufferSize; tau++) {
         for(size_t index = 0; index < _halfBufferSize; index++){
             delta = buffer[index] - buffer[index + tau];
             _yinBuffer[tau] += delta * delta; //Что если здесь сделать 4ую степень но потом взять от всего корень? Эксперименты!
         }
+        if (tau < 15)
+            qDebug() << "Slow t " << tau << " " << _yinBuffer[tau];
+    }
 }
 
 
@@ -113,28 +116,111 @@ bool Yin::absoluteThresholdFound(){
 //Better Yin
 
 //TODO buffers must be reseted every time!!!
+
+
+void YinPP::process(const float* buffer) {
+
+    //size_t W = std::ceil(_sampleRate/40.0); // Integration window is dependent on the lowest frequency to be detected
+
+    _yinBuffer1 = std::vector<float>(_bufferSize/2.0, 0.f);
+    _yinBuffer2 = std::vector<float>(_bufferSize/2.0, 0.f);
+
+    size_t W = _bufferSize / 2;
+
+    autoCorrelateionSlow1(buffer, 0, W);
+    autoCorrelateionSlow2(buffer, 0, W);
+
+    //TODO fast
+
+    compareBuffers();
+
+    //diffFast(buffer, W);
+    diffSlow(buffer, W);
+
+    //compareBuffers();
+
+    _yinBuffer1[0] = 1;
+    float runningSum = 0;
+    for (size_t tau = 1; tau < W; tau++) {
+        runningSum += _yinBuffer1[tau];
+        _yinBuffer1[tau] *= tau / runningSum;
+    }
+
+    size_t _currentTau = 0;
+    for (_currentTau = 2; _currentTau < W ; _currentTau++)
+        if (_yinBuffer1[_currentTau] < 0.2) {
+            while (_currentTau + 1 < W &&
+                   _yinBuffer1[_currentTau + 1] < _yinBuffer1[_currentTau])
+                ++_currentTau;
+            break;
+        }
+
+    //TODO parabolic also
+    double foundPitch = _sampleRate / _currentTau;
+    qDebug() << "New way pitch " << foundPitch;
+}
+
+
+
 void YinPP::autoCorrelateionSlow1(const float* buffer, size_t tau, size_t W) {
     const size_t n = _bufferSize / 2;
 
-    for (size_t j = 0; j < n; j++)
+    for (size_t t = 0; t < n; t++) {
 
-        for (size_t i = 0; i < n; i++) //TODO review it may be wrong
+        _yinBuffer1[t] = 0;
 
-            _yinBuffer1[j] += buffer[i] * buffer[(n + i - j) % n]; //TODO std complex -> conj etc
+        for (size_t j = t + 1; j < (t + W); j++) {
+            _yinBuffer1[t] += buffer[j] * buffer[j + tau];
+        }
+    }
 
 }
 
 void YinPP::autoCorrelateionSlow2(const float* buffer, size_t tau, size_t W) {
     const size_t n = _bufferSize / 2;
+    //TODO buffer must be zeroes
+    for (size_t t = 0; t < n; t++)
+        for (size_t j = t + 1; j < (t + W - tau); j++)
+            _yinBuffer2[t] += buffer[j] * buffer[j + tau];
+
+}
+
+void YinPP::diffSlow(const float* yinBuf, size_t W) {
+
+    const size_t n = _bufferSize / 2; //Or w??
+
+    for(size_t tau = 0 ; tau < n; tau++) {
+
+        _yinBuffer1[tau] = 0;
+
+        for(size_t j = 0; j < n; j++)
+        {
+            auto delta = yinBuf[j] - yinBuf[j + tau];
+            _yinBuffer1[tau] += delta * delta;
+        }
+
+        if (tau < 15)
+            qDebug() << "Slow " << _yinBuffer1[tau];
+    }
+}//Что если здесь сделать 4ую степень но потом взять от всего корень? Эксперименты!
 
 
+void YinPP::diffFast(const float* buffer, size_t W) {
 
-    for (size_t j = 0; j < n; j++)
+    const size_t n = _bufferSize / 2; //Or w??
 
-        for (size_t i = 0; i < n; i++) //TODO review it may be wrong
+    auto first = _yinBuffer1[0];
 
-            _yinBuffer2[j] += buffer[i] * buffer[(n + i - j) % n]; //TODO std complex -> conj etc
+    for(size_t tau = 0 ; tau < n; tau++) {
 
+        float second = 0.f;
+        for (size_t j = 1; j < W; j++)
+            second += buffer[j] * buffer[j + tau];
+
+         _yinBuffer2[tau] = first + second - _yinBuffer1[tau];
+
+         //qDebug() << "Fast t " << tau << " " << _yinBuffer2[tau];
+    }
 }
 
 
@@ -174,14 +260,14 @@ void YinPP::compareBuffers() {
     for (size_t i = 0; i < n; i++) {
         if (std::abs(_yinBuffer1[i] - _yinBuffer2[i]) > eps) {
 
-            auto secondH = _yinBuffer2[i + n];
+            qDebug() << i << " unequal " << _yinBuffer1[i] << " " << _yinBuffer2[i];
 
-            qDebug() << i << " unequal " << _yinBuffer1[i] << " " << _yinBuffer2[i]
-                        << " and SH = " << secondH;
             ++failesCount;
-            if (failesCount > 10)
-                break;
+            //if (failesCount > 10)
+                //break;
         }
+        //else
+            //qDebug() << i << "is fine" << _yinBuffer1[i];
     }
 
     qDebug() << "Maybe equal!";
