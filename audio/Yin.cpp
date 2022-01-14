@@ -112,27 +112,39 @@ bool Yin::absoluteThresholdFound(){
 
 //Better Yin
 
-void YinPP::autoCorrelateionSlow(const float* buffer) {
-
-    //TODO buffers must be reseted every time!!!
+//TODO buffers must be reseted every time!!!
+void YinPP::autoCorrelateionSlow1(const float* buffer, size_t tau, size_t W) {
     const size_t n = _bufferSize / 2;
 
     for (size_t j = 0; j < n; j++)
 
-        for (size_t i = 0; i < n; i++)
+        for (size_t i = 0; i < n; i++) //TODO review it may be wrong
 
             _yinBuffer1[j] += buffer[i] * buffer[(n + i - j) % n]; //TODO std complex -> conj etc
 
 }
 
+void YinPP::autoCorrelateionSlow2(const float* buffer, size_t tau, size_t W) {
+    const size_t n = _bufferSize / 2;
+
+
+
+    for (size_t j = 0; j < n; j++)
+
+        for (size_t i = 0; i < n; i++) //TODO review it may be wrong
+
+            _yinBuffer2[j] += buffer[i] * buffer[(n + i - j) % n]; //TODO std complex -> conj etc
+
+}
+
+
 
 void YinPP::autoCorrelationFast(const float* buffer) {
     static FFTRealFixLen<12> _fft;
 
-    //first no optimization, just make it work:
+    //TODO review with fftw!
 
-    auto buf = std::vector<float>(_bufferSize, 0.f);
-
+    auto buf = std::vector<float>(_bufferSize , 0.f);
 
     _fft.do_fft(buf.data(), buffer); //TODO make inplace version
 
@@ -140,8 +152,10 @@ void YinPP::autoCorrelationFast(const float* buffer) {
 
     for (size_t i = 0; i < n; ++i) { //conjugate
         buf[i] = buf[i] * buf[i];
-        buf[n + i] = buf[n + i] * buf[n * i];
+        buf[n + i] = buf[n + i] * buf[n + i];
     }
+
+    _yinBuffer2 = std::vector<float>(_bufferSize, 0.f);
 
     _fft.do_ifft(buf.data(), _yinBuffer2.data());
     _fft.rescale(_yinBuffer2.data());
@@ -159,12 +173,16 @@ void YinPP::compareBuffers() {
 
     for (size_t i = 0; i < n; i++) {
         if (std::abs(_yinBuffer1[i] - _yinBuffer2[i]) > eps) {
-            qDebug() << i << " unequal " << _yinBuffer1[i] << " " << _yinBuffer2[i];
+
+            auto secondH = _yinBuffer2[i + n];
+
+            qDebug() << i << " unequal " << _yinBuffer1[i] << " " << _yinBuffer2[i]
+                        << " and SH = " << secondH;
             ++failesCount;
             if (failesCount > 10)
                 break;
         }
     }
 
-
+    qDebug() << "Maybe equal!";
 }

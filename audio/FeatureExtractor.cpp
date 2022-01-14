@@ -47,13 +47,17 @@ std::pair<double, double> mtherapp::calc_YinF0(const float* data,  const size_t 
     static Yin yin;
     yin.init(sampleRate, len);
     yin.setThreshold(threshold);
-    return {yin.getPitch(data), yin.getTau()};
+    //return {yin.getPitch(data), yin.getTau()};
+
+    /*
 
     static YinPP yin2;
     yin2.init(sampleRate, len);
     yin2.autoCorrelateionSlow(data);
     yin2.autoCorrelationFast(data);
-    yin2.compareBuffers();
+    yin2.compareBuffers(); */
+
+    return {yin.getPitch(data), yin.getTau()};
 
 }
 

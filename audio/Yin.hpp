@@ -54,8 +54,13 @@ class Yin {
 
         //TODO access to buffers for visualization + mode to save all the results
 
-        void autoCorrelateionSlow(const float* buffer);
+        void autoCorrelateionSlow1(const float* buffer, size_t tau, size_t W);
+        void autoCorrelateionSlow2(const float* buffer, size_t tau, size_t W);
+
         void autoCorrelationFast(const float* buffer);
+
+        void diffSlow();
+        void diffFast();
 
 
     private:
@@ -67,7 +72,27 @@ class Yin {
         std::vector<float> _yinBuffer1;
         std::vector<float> _yinBuffer2;
 
+        //STEP1:
+        //TODO autocorrelation formula 1
+        //TODO autocorrelation formula 2
+        //TODO autocorrelation FFT method
 
+        //STEP2:
+        //TODO diff function slow
+        //TODO diff function on acf
+
+        //STEP3:
+        //TODO accMeanNormDifference
+
+        //STEP4:
+        //TODO threshold
+
+        //STEP5: parabolic inerpolation
+
+        //STEP6: estimate
+
+        //+ Amp vatiation implementation
+        //+ F0 variation implementation
 
     };
 
