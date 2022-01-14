@@ -119,11 +119,14 @@ public:
     typedef	OscSinCos <DataType>	OscType;
 
     inline static void
-                        process (long len, DataType dest_ptr [], DataType src_ptr [], const DataType f_ptr [], const DataType cos_ptr [], long cos_len, const long br_ptr [], OscType osc_list []);
+                        process (long len, DataType dest_ptr [], DataType src_ptr [], const DataType f_ptr [], const DataType cos_ptr [],
+                                 long cos_len, const uint32_t br_ptr [], OscType osc_list []);
     inline static void
-                        process_rec (long len, DataType dest_ptr [], DataType src_ptr [], const DataType cos_ptr [], long cos_len, const long br_ptr [], OscType osc_list []);
+                        process_rec (long len, DataType dest_ptr [], DataType src_ptr [], const DataType cos_ptr [],
+                                     long cos_len, const uint32_t br_ptr [], OscType osc_list []);
     inline static void
-                        process_internal (long len, DataType dest_ptr [], const DataType src_ptr [], const DataType cos_ptr [], long cos_len, const long br_ptr [], OscType osc_list []);
+                        process_internal (long len, DataType dest_ptr [], const DataType src_ptr [], const DataType cos_ptr [],
+                                          long cos_len, const uint32_t br_ptr [], OscType osc_list []);
 
 
 private:
@@ -139,7 +142,9 @@ private:
 
 
 template <int PASS>
-void	FFTRealPassInverse <PASS>::process (long len, DataType dest_ptr [], DataType src_ptr [], const DataType f_ptr [], const DataType cos_ptr [], long cos_len, const long br_ptr [], OscType osc_list [])
+void	FFTRealPassInverse <PASS>::process (long len, DataType dest_ptr [], DataType src_ptr [],
+                                            const DataType f_ptr [], const DataType cos_ptr [], long cos_len,
+                                            const uint32_t br_ptr [], OscType osc_list [])
 {
     process_internal (
         len,
@@ -164,7 +169,8 @@ void	FFTRealPassInverse <PASS>::process (long len, DataType dest_ptr [], DataTyp
 
 
 template <int PASS>
-void	FFTRealPassInverse <PASS>::process_rec (long len, DataType dest_ptr [], DataType src_ptr [], const DataType cos_ptr [], long cos_len, const long br_ptr [], OscType osc_list [])
+void	FFTRealPassInverse <PASS>::process_rec (long len, DataType dest_ptr [], DataType src_ptr [],
+                                                const DataType cos_ptr [], long cos_len, const uint32_t br_ptr [], OscType osc_list [])
 {
     process_internal (
         len,
@@ -187,7 +193,9 @@ void	FFTRealPassInverse <PASS>::process_rec (long len, DataType dest_ptr [], Dat
 }
 
 template <>
-inline void	FFTRealPassInverse <0>::process_rec ([[maybe_unused]] long len, [[maybe_unused]] DataType dest_ptr [], [[maybe_unused]] DataType src_ptr [], [[maybe_unused]] const DataType cos_ptr [], [[maybe_unused]] long cos_len, [[maybe_unused]] const long br_ptr [], [[maybe_unused]] OscType osc_list [])
+inline void	FFTRealPassInverse <0>::process_rec ([[maybe_unused]] long len, [[maybe_unused]]
+DataType dest_ptr [], [[maybe_unused]] DataType src_ptr [], [[maybe_unused]] const DataType cos_ptr [],
+[[maybe_unused]] long cos_len, [[maybe_unused]] const uint32_t br_ptr [], [[maybe_unused]] OscType osc_list [])
 {
     // Stops recursion
 }
@@ -195,7 +203,9 @@ inline void	FFTRealPassInverse <0>::process_rec ([[maybe_unused]] long len, [[ma
 
 
 template <int PASS>
-void	FFTRealPassInverse <PASS>::process_internal (long len, DataType dest_ptr [], const DataType src_ptr [], const DataType cos_ptr [], long cos_len, [[maybe_unused]] const long br_ptr [], OscType osc_list [])
+void	FFTRealPassInverse <PASS>::process_internal (long len, DataType dest_ptr [], const DataType src_ptr [],
+                                                     const DataType cos_ptr [], long cos_len,
+                                                     [[maybe_unused]] const uint32_t br_ptr [], OscType osc_list [])
 {
     const uint32_t		dist = 1L << (PASS - 1);
     const uint32_t		c1_r = 0;
@@ -252,7 +262,9 @@ void	FFTRealPassInverse <PASS>::process_internal (long len, DataType dest_ptr []
 }
 
 template <>
-inline void	FFTRealPassInverse <2>::process_internal (long len, DataType dest_ptr [], const DataType src_ptr [], [[maybe_unused]] const DataType cos_ptr [], [[maybe_unused]] long cos_len, [[maybe_unused]] const long br_ptr [], [[maybe_unused]] OscType osc_list [])
+inline void	FFTRealPassInverse <2>::process_internal (long len, DataType dest_ptr [], const DataType src_ptr [],
+                                                      [[maybe_unused]] const DataType cos_ptr [],
+        [[maybe_unused]] long cos_len, [[maybe_unused]] const uint32_t br_ptr [], [[maybe_unused]] OscType osc_list [])
 {
     // Antepenultimate pass
     const DataType	sqrt2_2 = DataType (SQRT2 * 0.5);
@@ -280,7 +292,9 @@ inline void	FFTRealPassInverse <2>::process_internal (long len, DataType dest_pt
 }
 
 template <>
-inline void	FFTRealPassInverse <1>::process_internal (long len, DataType dest_ptr [], const DataType src_ptr [], [[maybe_unused]] const DataType cos_ptr [], [[maybe_unused]] long cos_len, const long br_ptr [], [[maybe_unused]] OscType osc_list [])
+inline void	FFTRealPassInverse <1>::process_internal (long len, DataType dest_ptr [], const DataType src_ptr [],
+                                                      [[maybe_unused]] const DataType cos_ptr [], [[maybe_unused]] long cos_len,
+    const uint32_t br_ptr [], [[maybe_unused]] OscType osc_list [])
 {
     // Penultimate and last pass at once
     const uint32_t		qlen = len >> 2;
