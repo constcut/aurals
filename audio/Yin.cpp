@@ -41,8 +41,10 @@ double Yin::getPitch(const float *buffer) {
     //1. Autocorrelation ?
     differenceFunction(buffer); //2. Difference function
     accMeanNormDifference(); //3. Cumulative mean normalized difference function
-    if (absoluteThresholdFound()) //4. Absolute threshold
+    if (absoluteThresholdFound())  {//4. Absolute threshold {
+        qDebug() << "Olderst " << _sampleRate / _currentTau;
         return _sampleRate / parabolicInterpolation(); //5.Parabolic interpolation
+    }
     return -1.0;
     //6. Best local estimate ?
 }
@@ -55,8 +57,6 @@ void Yin::differenceFunction(const float* buffer) {
             delta = buffer[index] - buffer[index + tau];
             _yinBuffer[tau] += delta * delta; //Что если здесь сделать 4ую степень но потом взять от всего корень? Эксперименты!
         }
-        if (tau < 15)
-            qDebug() << "Slow t " << tau << " " << _yinBuffer[tau];
     }
 }
 
@@ -99,15 +99,23 @@ void Yin::accMeanNormDifference(){
 
 
 bool Yin::absoluteThresholdFound(){
+
+
     for (_currentTau = 2; _currentTau < _halfBufferSize ; _currentTau++)
+
         if (_yinBuffer[_currentTau] < _threshold) {
+
             while (_currentTau + 1 < _halfBufferSize &&
                    _yinBuffer[_currentTau + 1] < _yinBuffer[_currentTau])
+
                 ++_currentTau;
+
             break;
         }
+
     if (_currentTau == _halfBufferSize || _yinBuffer[_currentTau] >= _threshold)
-        return false;
+        return false; //ELSE find min
+
     return true;
 }
 
@@ -118,49 +126,168 @@ bool Yin::absoluteThresholdFound(){
 //TODO buffers must be reseted every time!!!
 
 
-void YinPP::process(const float* buffer) {
+size_t findTau(std::vector<float>& v, size_t W) {
 
-    //size_t W = std::ceil(_sampleRate/40.0); // Integration window is dependent on the lowest frequency to be detected
-
-    _yinBuffer1 = std::vector<float>(_bufferSize/2.0, 0.f);
-    _yinBuffer2 = std::vector<float>(_bufferSize/2.0, 0.f);
-
-    size_t W = _bufferSize / 2;
-
-    autoCorrelateionSlow1(buffer, 0, W);
-    autoCorrelateionSlow2(buffer, 0, W);
-
-    //TODO fast
-
-    compareBuffers();
-
-    //diffFast(buffer, W);
-    diffSlow(buffer, W);
-
-    //compareBuffers();
-
-    _yinBuffer1[0] = 1;
+    v[0] = 1;
     float runningSum = 0;
     for (size_t tau = 1; tau < W; tau++) {
-        runningSum += _yinBuffer1[tau];
-        _yinBuffer1[tau] *= tau / runningSum;
+        runningSum += v[tau];
+        v[tau] *= tau / runningSum;
     }
 
+    double minValue = 5000.;
+    size_t minTau = 0;
     size_t _currentTau = 0;
+
+
     for (_currentTau = 2; _currentTau < W ; _currentTau++)
-        if (_yinBuffer1[_currentTau] < 0.2) {
+
+        if (v[_currentTau] < 0.15) {
             while (_currentTau + 1 < W &&
-                   _yinBuffer1[_currentTau + 1] < _yinBuffer1[_currentTau])
+                   v[_currentTau + 1] < v[_currentTau])
                 ++_currentTau;
             break;
         }
+        else if (v[_currentTau] < minValue) {
+            minValue = v[_currentTau];
+            minTau =_currentTau;
+        }
 
-    //TODO parabolic also
-    double foundPitch = _sampleRate / _currentTau;
-    qDebug() << "New way pitch " << foundPitch;
+    if (_currentTau == W) {
+        qDebug() << "Not found";
+        _currentTau = minTau;
+        //On my experience its sub octave
+    }
+    //return _currentTau, minTau, if same == not found
+
+    return _currentTau;
 }
 
 
+double YinPP::process(const float* buffer) {
+
+    diffFunNew(buffer);
+    diffFunOld(buffer);
+
+    compareBuffers();
+
+    accMeanDiff(_yinBuffer1);
+    accMeanDiff(_yinBuffer2);
+
+    size_t tNew = absThreshNew(_yinBuffer1);
+    size_t tOld = absThreshOld(_yinBuffer2);
+
+    double preF1 = _sampleRate / tNew;
+    double preF2 = _sampleRate / tOld;
+
+    qDebug() << "Pre " << preF1 << " " << preF2;
+
+    size_t t1 = parabOld(preF1, _yinBuffer1); //TODO replace with new
+    size_t t2 = parabOld(preF2, _yinBuffer2);
+
+    double foundPitch = _sampleRate / t1;
+    return foundPitch;
+}
+
+
+size_t YinPP::parabOld(size_t t, std::vector<float>& v) {
+    size_t start = t ? t - 1 : t;
+    size_t finish = t + 1 < v.size() ? t + 1 : t;
+
+    auto borderResult = [&](size_t idx) {
+        if (v[t] <= v[idx])
+            return t;
+        else
+            return idx;
+    };
+
+    if (start == t)
+        return borderResult(finish);
+    if (finish == t)
+        return borderResult(start);
+
+    double begin = v[start];
+    double middle = v[t];
+    double end = v[finish];
+    return t + (end - begin) / (2.0 * (2.0 * middle - end - begin));
+}
+
+
+size_t YinPP::absThreshOld(std::vector<float>& v) {
+
+    size_t found = 0;
+    for (found = 2; found < v.size() ; found++)
+
+        if (v[found] < _threshold) {
+            while (found + 1 < v.size() &&
+                   v[found + 1] < v[found])
+                ++found;
+            break;
+        }
+    return found;
+}
+
+
+size_t YinPP::absThreshNew(std::vector<float>& v) {
+    double minValue = 5000.;
+    size_t minTau = 0;
+    size_t found = 0;
+
+
+    for (found = 2; found < v.size() ; found++)
+        if (v[found] < 0.15) {
+            while (found + 1 < v.size() &&
+                   v[found + 1] < v[found])
+                ++found;
+            break;
+        }
+        else if (v[found] < minValue) {
+            minValue = v[found];
+            minTau = found;
+        }
+
+    if (found == v.size())
+        found = minTau;
+    return found;
+}
+
+
+
+void YinPP::accMeanDiff(std::vector<float>& v) {
+    v[0] = 1;
+    float runningSum = 0;
+    for (size_t tau = 1; tau < v.size(); tau++) {
+        runningSum += v[tau];
+        v[tau] *= tau / runningSum;
+    }
+}
+
+
+void YinPP::diffFunNew(const float* signal) {
+    const size_t n = _bufferSize / 2;
+    for(size_t tau = 0 ; tau < n; tau++)
+        for(size_t j = 0; j < n; j++)
+        {
+            auto d = signal[j] - signal[j + tau];
+            _yinBuffer1[tau] += d * d;
+        }
+}
+
+void YinPP::diffFunOld(const float* buffer) {
+    const size_t n = _bufferSize / 2;
+    float delta = 0.f;
+    for(size_t tau = 0 ; tau < n; tau++) {
+        for(size_t index = 0; index < n; index++){
+            delta = buffer[index] - buffer[index + tau];
+            _yinBuffer2[tau] += delta * delta; //Что если здесь сделать 4ую степень но потом взять от всего корень? Эксперименты!
+        }
+    }
+}
+
+
+
+
+//===========================Experiments===========================
 
 void YinPP::autoCorrelateionSlow1(const float* buffer, size_t tau, size_t W) {
     const size_t n = _bufferSize / 2;
@@ -191,16 +318,11 @@ void YinPP::diffSlow(const float* yinBuf, size_t W) {
 
     for(size_t tau = 0 ; tau < n; tau++) {
 
-        _yinBuffer1[tau] = 0;
-
         for(size_t j = 0; j < n; j++)
         {
-            auto delta = yinBuf[j] - yinBuf[j + tau];
-            _yinBuffer1[tau] += delta * delta;
+            auto d = yinBuf[j] - yinBuf[j + tau];
+            _yinBuffer1[tau] += d * d;
         }
-
-        if (tau < 15)
-            qDebug() << "Slow " << _yinBuffer1[tau];
     }
 }//Что если здесь сделать 4ую степень но потом взять от всего корень? Эксперименты!
 

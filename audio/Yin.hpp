@@ -46,25 +46,25 @@ class Yin {
             _sampleRate = sampleRate;
             _bufferSize = bufferSize;
             _threshold = 0.2;
-            //TODO remove size we have buffer but todo -f
             _yinBuffer1 = std::vector<float>(_bufferSize/2.0, 0.f);
             _yinBuffer2 = std::vector<float>(_bufferSize/2.0, 0.f);
         }
 
         void compareBuffers();
 
-        void process(const float* buffer);
+        double process(const float* buffer);
 
         //TODO access to buffers for visualization + mode to save all the results
+        void diffFunNew(const float* signal);
+        void diffFunOld(const float* buffer);
 
-        void autoCorrelateionSlow1(const float* buffer, size_t tau, size_t W);
-        void autoCorrelateionSlow2(const float* buffer, size_t tau, size_t W);
+        void accMeanDiff(std::vector<float>& v);
 
-        void autoCorrelationFast(const float* buffer);
+        size_t absThreshOld(std::vector<float>& v);
+        size_t absThreshNew(std::vector<float>& v);
 
-        void diffSlow(const float* yinBuf, size_t W);
-        void diffFast(const float* yinBuf, size_t W);
-
+        size_t parabNew(size_t t, std::vector<float>& v);
+        size_t parabOld(size_t t, std::vector<float>& v);
 
     private:
 
@@ -93,6 +93,12 @@ class Yin {
 
         //+ Amp vatiation implementation
         //+ F0 variation implementation
+        void autoCorrelateionSlow1(const float* buffer, size_t tau, size_t W);
+        void autoCorrelateionSlow2(const float* buffer, size_t tau, size_t W);
+        void autoCorrelationFast(const float* buffer);
+        void diffSlow(const float* yinBuf, size_t W);
+        void diffFast(const float* yinBuf, size_t W);
+
 
     };
 
