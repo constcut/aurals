@@ -14,6 +14,7 @@
 #include <chrono>
 #include <iostream>
 
+
 void benchmarkFFT() {
 
     const int bits = 12;
@@ -95,7 +96,7 @@ void benchmarkFFT() {
 
     unsigned long kissCount = 0;
 
-    for (size_t i = 0; i < 15000; ++i) {
+    for (size_t i = 0; i < 10000; ++i) {
 
         for (auto& sample: testVector)
             sample = (rand() % 30000) / 30000.0f;
@@ -112,6 +113,7 @@ void benchmarkFFT() {
             kissCount += benchKiss();
             unfCount += bench(fftUnf, "UNf");
         }
+
     }
 
     //qDebug() << "Total dyn: " << dynCount / 1000.0;
@@ -130,7 +132,7 @@ int main(int argc, char *argv[])
 
     LogHandler::getInstance().setFilename("log.txt");
 
-    benchmarkFFT();
+    //benchmarkFFT();
 
     qDebug() << "Starting application";
     return mainInit(argc,argv);
