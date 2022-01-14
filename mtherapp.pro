@@ -33,6 +33,11 @@ SOURCES += \
     audio/WaveShape.cpp \
     audio/Yin.cpp \
     libs/fft/fftreal_wrapper.cpp \
+    libs/kiss/kfc.c \
+    libs/kiss/kiss_fft.c \
+    libs/kiss/kiss_fftnd.c \
+    libs/kiss/kiss_fftndr.c \
+    libs/kiss/kiss_fftr.c \
     libs/sf/tsf.cpp \
     main.cpp \
     midi/MidiEngine.cpp \
@@ -103,6 +108,13 @@ HEADERS += \
     libs/fft/OscSinCos.hpp \
     libs/fft/def.h \
     libs/fft/fftreal_wrapper.h \
+    libs/kiss/_kiss_fft_guts.h \
+    libs/kiss/kfc.h \
+    libs/kiss/kiss_fft.h \
+    libs/kiss/kiss_fft_log.h \
+    libs/kiss/kiss_fftnd.h \
+    libs/kiss/kiss_fftndr.h \
+    libs/kiss/kiss_fftr.h \
     log.hpp \
     midi/MidiEngine.hpp \
     midi/MidiFile.hpp \

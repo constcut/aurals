@@ -162,7 +162,8 @@ double YinPP::process(const float* buffer) {
             //qDebug() << "Sub place";
         }
         else
-            qDebug() << id << " one of ids " << _yinBuffer1[id];
+            qDebug() << id << " one of ids " << _yinBuffer1[id] << " f0 "
+                     << _sampleRate / id;
     }
 
 

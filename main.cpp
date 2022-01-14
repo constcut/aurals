@@ -8,6 +8,8 @@
 #include "libs/fft/FFTunreal.hpp"
 #include "libs/fft/FFTurealfix.hpp"
 
+#include "libs/kiss/kiss_fftr.h"
+
 #include <vector>
 #include <chrono>
 #include <iostream>
@@ -28,6 +30,7 @@ void benchmarkFFT() {
     std::vector<float> output(size, 0);
 
 
+
     for (auto& sample: testVector)
         sample = (rand() % 30000) / 30000.0f;
 
@@ -40,11 +43,19 @@ void benchmarkFFT() {
         return durationMs;
     };
 
-    unsigned long dynCount = 0;
-    unsigned long fixCount = 0;
-    unsigned long unCount = 0;
-    unsigned long unfCount = 0;
 
+    std::vector<kiss_fft_cpx> outKiss(size);
+
+    kiss_fftr_cfg cfg = kiss_fftr_alloc( size, 0, 0, 0 );
+    kiss_fftr( cfg , testVector.data() , outKiss.data() );
+
+    auto benchKiss = [&]() {
+        auto start = std::chrono::high_resolution_clock::now();
+        kiss_fftr( cfg , testVector.data() , outKiss.data() );
+        auto end = std::chrono::high_resolution_clock::now();
+        auto durationMs = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+        return durationMs;
+    };
 
     qDebug() << "Sizes " << size << " and " << fftUnf.FFT_LEN;
 
@@ -77,24 +88,37 @@ void benchmarkFFT() {
 
     //exit(0); */
 
+    unsigned long dynCount = 0;
+    unsigned long fixCount = 0;
+    unsigned long unCount = 0;
+    unsigned long unfCount = 0;
 
-    for (size_t i = 0; i < 100; ++i) {
+    unsigned long kissCount = 0;
+
+    for (size_t i = 0; i < 15000; ++i) {
 
         for (auto& sample: testVector)
             sample = (rand() % 30000) / 30000.0f;
 
+        //dynCount += bench(fftDynamic, "Dyn");
+        //fixCount += bench(fftFixed, "Fix");
+        //unCount += bench(fftUn, "UN");
 
-        dynCount += bench(fftDynamic, "Dyn");
-        fixCount += bench(fftFixed, "Fix");
-        unCount += bench(fftUn, "UN");
-        unfCount += bench(fftUnf, "UNf");
-
+        if (i % 2 == 0) {
+            unfCount += bench(fftUnf, "UNf");
+            kissCount += benchKiss();
+        }
+        else {
+            kissCount += benchKiss();
+            unfCount += bench(fftUnf, "UNf");
+        }
     }
 
-    qDebug() << "Total dyn: " << dynCount / 1000.0;
-    qDebug() << "Total fixed: " << fixCount / 1000.0;
-    qDebug() << "Total un: " << unCount / 1000.0;
+    //qDebug() << "Total dyn: " << dynCount / 1000.0;
+    //qDebug() << "Total fixed: " << fixCount / 1000.0;
+    //qDebug() << "Total un: " << unCount / 1000.0;
     qDebug() << "Total un fixed: " << unfCount / 1000.0;
+    qDebug() << "Total kiss: " << kissCount / 1000.0;
 
 }
 
