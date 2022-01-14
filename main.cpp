@@ -14,7 +14,7 @@
 
 void benchmarkFFT() {
 
-    const int bits = 16;
+    const int bits = 12;
     const int size = 2 << (bits-1);
 
     ffft::FFTReal<float> fftDynamic(size);
@@ -46,6 +46,8 @@ void benchmarkFFT() {
     unsigned long unfCount = 0;
 
 
+    qDebug() << "Sizes " << size << " and " << fftUnf.FFT_LEN;
+
     /*
     bench(fftDynamic, "Dyn");
     std::vector<float> output2(output.begin(), output.end());
@@ -76,7 +78,7 @@ void benchmarkFFT() {
     //exit(0); */
 
 
-    for (size_t i = 0; i < 10000; ++i) {
+    for (size_t i = 0; i < 100; ++i) {
 
         for (auto& sample: testVector)
             sample = (rand() % 30000) / 30000.0f;
@@ -105,7 +107,6 @@ int main(int argc, char *argv[])
     LogHandler::getInstance().setFilename("log.txt");
 
     benchmarkFFT();
-    exit(0);
 
     qDebug() << "Starting application";
     return mainInit(argc,argv);

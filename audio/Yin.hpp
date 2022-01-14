@@ -37,6 +37,42 @@ class Yin {
         size_t _currentTau;
     };
 
+
+    //TODO template with check is float + is_same
+    class YinPP { //Yin ++ better version with step 1, step 1 opt, step 2 on step 1, and step 6
+
+    public:
+        void init(const double sampleRate, const size_t bufferSize) {
+            _sampleRate = sampleRate;
+            _bufferSize = bufferSize;
+            _threshold = 0.2;
+            _yinBuffer1 = std::vector<float>(_bufferSize/2.0, 0.f);
+            _yinBuffer2 = std::vector<float>(_bufferSize/2.0, 0.f);
+        }
+
+        void compareBuffers();
+
+        //TODO access to buffers for visualization + mode to save all the results
+
+        void autoCorrelateionSlow(const float* buffer);
+        void autoCorrelationFast(const float* buffer);
+
+
+    private:
+
+        double _threshold;
+        size_t _bufferSize;
+        double _sampleRate;
+
+        std::vector<float> _yinBuffer1;
+        std::vector<float> _yinBuffer2;
+
+
+
+    };
+
+
+
 }
 
 

@@ -1,5 +1,9 @@
 #include "Yin.hpp"
 
+#include <QDebug>
+
+#include "libs/fft/FFTurealfix.hpp"
+
 using namespace mtherapp;
 
 
@@ -31,6 +35,9 @@ void Yin::init(double yinSampleRate, const size_t yinBufferSize) {
 
 
 double Yin::getPitch(const float *buffer) {
+
+    _yinBuffer = std::vector<float>(_halfBufferSize, 0.f); //ERROR!
+
     //1. Autocorrelation ?
     differenceFunction(buffer); //2. Difference function
     accMeanNormDifference(); //3. Cumulative mean normalized difference function
@@ -99,4 +106,65 @@ bool Yin::absoluteThresholdFound(){
     if (_currentTau == _halfBufferSize || _yinBuffer[_currentTau] >= _threshold)
         return false;
     return true;
+}
+
+
+
+//Better Yin
+
+void YinPP::autoCorrelateionSlow(const float* buffer) {
+
+    //TODO buffers must be reseted every time!!!
+    const size_t n = _bufferSize / 2;
+
+    for (size_t j = 0; j < n; j++)
+
+        for (size_t i = 0; i < n; i++)
+
+            _yinBuffer1[j] += buffer[i] * buffer[(n + i - j) % n]; //TODO std complex -> conj etc
+
+}
+
+
+void YinPP::autoCorrelationFast(const float* buffer) {
+    static FFTRealFixLen<12> _fft;
+
+    //first no optimization, just make it work:
+
+    auto buf = std::vector<float>(_bufferSize, 0.f);
+
+
+    _fft.do_fft(buf.data(), buffer); //TODO make inplace version
+
+    const size_t n = _bufferSize / 2;
+
+    for (size_t i = 0; i < n; ++i) { //conjugate
+        buf[i] = buf[i] * buf[i];
+        buf[n + i] = buf[n + i] * buf[n * i];
+    }
+
+    _fft.do_ifft(buf.data(), _yinBuffer2.data());
+    _fft.rescale(_yinBuffer2.data());
+
+}
+
+
+void YinPP::compareBuffers() {
+
+    float eps = 10e-7;
+
+    const size_t n = _bufferSize / 2;
+
+    size_t failesCount = 0;
+
+    for (size_t i = 0; i < n; i++) {
+        if (std::abs(_yinBuffer1[i] - _yinBuffer2[i]) > eps) {
+            qDebug() << i << " unequal " << _yinBuffer1[i] << " " << _yinBuffer2[i];
+            ++failesCount;
+            if (failesCount > 10)
+                break;
+        }
+    }
+
+
 }

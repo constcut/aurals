@@ -92,7 +92,7 @@ namespace mtherapp {
         WindowFunction _windowFunction;
 
 
-        QVector<float> _window;
+        QVector<float> _window; //TODO vector
         QVector<float> _input;
         QVector<float> _output;
         FrequencySpectrum _spectrum;

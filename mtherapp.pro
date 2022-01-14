@@ -5,6 +5,7 @@ CONFIG += c++17
 linux:Debug:CONFIG += sanitizer sanitize_address sanitize_memory sanitize_undefined
 #sanitize_thread
 
+#QMAKE_CXXFLAGS_RELEASE += -Omax
 
 
 #CONFIG += no_keywords #was used only for python interpreter
