@@ -4,7 +4,7 @@
 
 #include "libs/fft/FFTurealfix.hpp"
 
-#include "FindPeaks.hpp"
+#include "PeaksOperations.hpp"
 
 using namespace aural_sight;
 

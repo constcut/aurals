@@ -47,7 +47,7 @@
 #include <unordered_map>
 
 #include "audio/wave/WavFile.hpp"
-#include "audio/features/FindPeaks.hpp"
+#include "audio/features/PeaksOperations.hpp"
 #include "audio/wave/AudioUtils.hpp"
 
 
@@ -308,6 +308,9 @@ void SpectrographPainter::findF0() { //TODO findF0 classifySlope findPeaks ис�
     //Нужно сохранять дополнительную информацию - какой пик из +- был максимальным
     //Нужно сохранять процент не пустых пиков, так как например если субгармоника содержит все гармоники, но и пропуски - её рейтинг должен падать
     _spectrumPitch = (sortedTable[0].first + 0.5) * _freqStep;
+
+    qDebug() << "Pitch " << _spectrumPitch;
+
      //Нужно использовать максимальный пик из + - тогда получится повысить точность
     _specPitchAprox = (sortedTable[0].first + 0.5) * _freqStep +
             (sortedTable[0].first * 2 + 0.5) * _freqStep +

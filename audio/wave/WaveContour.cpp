@@ -4,7 +4,7 @@
 
 #include "WavFile.hpp"
 #include "audio/features/FeatureExtractor.hpp"
-#include "audio/features/FindPeaks.hpp"
+#include "audio/features/PeaksOperations.hpp"
 #include "AudioUtils.hpp"
 
 

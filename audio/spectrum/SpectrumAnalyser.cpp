@@ -91,6 +91,7 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
                                                 int inputFrequency,
                                                 int bytesPerSample) {
 
+    //TODO sepparate into sub function + accept different types both 16 bit and 32
     Q_ASSERT(buffer.size() == _numSamples * bytesPerSample);
     const char *ptr = buffer.constData(); //Delayed: from preloaded (загружать float сразу, без преобразований)
     for (int i=0; i<_numSamples; ++i) {

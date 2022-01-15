@@ -203,7 +203,7 @@ namespace aural_sight {
             peakLoc.erase(peakLoc.begin() + cInd - 1, peakLoc.end());
             if (indexes[peakLoc.back()] >= signal.size())
                 peakLoc.pop_back();
-            peakIdx = selectElements_(indexes, peakLoc);
+            peakIdx = selectElementsByIdx(indexes, peakLoc);
         }
 
         return peakIdx;
