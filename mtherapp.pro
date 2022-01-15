@@ -23,15 +23,15 @@ SOURCES += \
     audio/AudioReceiver.cpp \
     audio/AudioSpeaker.cpp \
     audio/AudioUtils.cpp \
-    audio/FeatureExtractor.cpp \
-    audio/FindPeaks.cpp \
-    audio/FrequencySpectrum.cpp \
-    audio/Spectrograph.cpp \
-    audio/SpectrumAnalyser.cpp \
+    audio/features/FeatureExtractor.cpp \
+    audio/features/FindPeaks.cpp \
+    audio/spectrum/FrequencySpectrum.cpp \
+    audio/spectrum/Spectrograph.cpp \
+    audio/spectrum/SpectrumAnalyser.cpp \
     audio/WavFile.cpp \
     audio/WaveContour.cpp \
     audio/WaveShape.cpp \
-    audio/Yin.cpp \
+    audio/features/Yin.cpp \
     libs/fft/fftreal_wrapper.cpp \
     libs/kiss/kfc.c \
     libs/kiss/kiss_fft.c \
@@ -53,8 +53,6 @@ RESOURCES += qml.qrc \
     fonts.qrc \
     soundfonts.qrc
 
-windows:DEFINES += __WINDOWS_MM__
-windows:LIBS += -lWINMM
 
 QML_IMPORT_PATH =
 QML_DESIGNER_IMPORT_PATH =
@@ -74,16 +72,16 @@ HEADERS += \
     audio/AudioReceiver.hpp \
     audio/AudioSpeaker.hpp \
     audio/AudioUtils.hpp \
-    audio/FeatureExtractor.hpp \
-    audio/FindPeaks.hpp \
-    audio/FrequencySpectrum.hpp \
-    audio/Spectrograph.hpp \
-    audio/Spectrum.hpp \
-    audio/SpectrumAnalyser.hpp \
+    audio/features/FeatureExtractor.hpp \
+    audio/features/FindPeaks.hpp \
+    audio/spectrum/FrequencySpectrum.hpp \
+    audio/spectrum/Spectrograph.hpp \
+    audio/spectrum/Spectrum.hpp \
+    audio/spectrum/SpectrumAnalyser.hpp \
     audio/WavFile.hpp \
     audio/WaveContour.hpp \
     audio/WaveShape.hpp \
-    audio/Yin.hpp \
+    audio/features/Yin.hpp \
     libs/fft/Array.h \
     libs/fft/Array.hpp \
     libs/fft/DynArray.h \
