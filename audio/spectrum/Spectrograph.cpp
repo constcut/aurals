@@ -343,7 +343,7 @@ void SpectrographPainter::findPeaks() {
     std::vector<double> amps;
     for (auto& bar: _bars)
         amps.push_back(bar.value);
-    auto peaks = aural_sight::peakIndexesInData(amps, 6.0);
+    auto peaks = aural_sight::peakIndexes<double>(amps, 6.0);
 
     if (_bars.size() < 7) {
         qDebug() << "Spectrograph bars size issue";

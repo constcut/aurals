@@ -154,7 +154,7 @@ double YinPP::process(const float* buffer) {
 
     //Find best ways to find local minima
 
-    auto idx = peakIndexesInData(invBuffer);
+    auto idx = peakIndexes<double>(invBuffer);
 
     qDebug() << "_";
     for (auto id: idx) {

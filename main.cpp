@@ -25,7 +25,6 @@ void benchmarkFFT() {
     std::vector<float> output(size, 0);
 
 
-
     for (auto& sample: testVector)
         sample = (rand() % 30000) / 30000.0f;
 
