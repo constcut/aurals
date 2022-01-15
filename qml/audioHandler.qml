@@ -160,6 +160,12 @@ Item {
                     fileDialog.visible = true
                 }
             }
+            ToolButton {
+                text: "ACF"
+                onClicked:  {
+                    thatWindow.requestAFC("records/" + filenameEdit.text)
+                }
+            }
         }
 
         FileDialog {
@@ -230,6 +236,7 @@ Item {
                         wrapper.ListView.view.currentIndex = index
                         filesModel.filename = name
                         filenameEdit.text = name
+                        console.log("mouse ", mouse.button)
                     }
                     onDoubleClicked: {
                         thatWindow.requestWaveshape("records/" + filenameEdit.text)

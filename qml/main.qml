@@ -59,6 +59,10 @@ ApplicationWindow {
         mainLoader.setSource("qrc:/qml/WaveshapeQML.qml", {"filename": filename});
     }
 
+    function requestAFC(filename) {
+        mainLoader.setSource("qrc:/qml/ACFQML.qml", {"filename": filename});
+    }
+
     Loader {
     id:mainLoader
        anchors.fill: parent

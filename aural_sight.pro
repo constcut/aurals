@@ -122,12 +122,15 @@ DISTFILES += \
     libs/fft/license.txt \
     libs/fft/readme.txt \
     main.qml \
+    qml/ACFQML.qml \
     qml/ConsoleLog.qml \
+    qml/MidiRenderSettings.qml \
     qml/PianoMap.qml \
     qml/WaveshapeQML.qml \
     qml/audioHandler.qml \
     qml/consoleLog.qml \
     qml/main.qml \
+    qml/midiPlayer.qml \
     qml/tapper.qml
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android

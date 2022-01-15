@@ -137,17 +137,16 @@ double YinPP::process(const float* buffer) {
     //TODO remove all old + replace with
 
     diffFunNew(buffer);
-    diffFunOld(buffer);
+    //diffFunOld(buffer);
 
-    compareBuffers();
+    //compareBuffers();
 
     accMeanDiff(_yinBuffer1);
-    accMeanDiff(_yinBuffer2);
+    //accMeanDiff(_yinBuffer2);
 
     auto maxE = std::max_element(_yinBuffer1.begin(), _yinBuffer1.end());
-    auto minE = std::min_element(_yinBuffer1.begin(), _yinBuffer1.end());
-
-    float minVal = *minE;
+    //auto minE = std::min_element(_yinBuffer1.begin(), _yinBuffer1.end());
+    //float minVal = *minE;
     float maxVal = *maxE;
 
     std::vector<double> invBuffer(_yinBuffer1.size(), 0); //TODO inversed function for peaks
@@ -196,12 +195,12 @@ double YinPP::process(const float* buffer) {
     size_t tNew = absThreshNew(_yinBuffer1);
     double t1 = parabNew(tNew, _yinBuffer1);
 
-    qDebug() << "Std found: " << t1 << " freq= " << _sampleRate / t1;
+    //qDebug() << "Std found: " << t1 << " freq= " << _sampleRate / t1;
     qDebug() << "Mine found: " << tX << " freq= " << _sampleRate / tX;
 
-    double intp = parabNew(tX, _yinBuffer1);
+    //double intp = parabNew(tX, _yinBuffer1);
 
-    qDebug() << "Mine intp: " << intp << " freq= " << _sampleRate / intp;
+    //qDebug() << "Mine intp: " << intp << " freq= " << _sampleRate / intp;
 
     if (tX == 0)
         return 0.0;

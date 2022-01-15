@@ -8,5 +8,6 @@
         <file>qml/tapper.qml</file>
         <file>qml/MidiRenderSettings.qml</file>
         <file>qml/midiPlayer.qml</file>
+        <file>qml/ACFQML.qml</file>
     </qresource>
 </RCC>
