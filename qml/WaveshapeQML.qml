@@ -358,18 +358,7 @@ Item {
         }
         function outputPeaksGroup() {
             peaksGroup.text = "";
-            var bins = spectrum.getBinTable()
-            var summs = spectrum.getBinCount()
-            var checkCount = bins.length < 20 ? bins.length : 20
-
-            for (var i = 0; i < checkCount; ++i) {
-                var bin = bins[i]
-                var sum = summs[i]
-                if (i && i % 5 == 0)
-                    peaksGroup.text += "<br>";
-                peaksGroup.text += "<b>" + bin + "</b> : " + sum
-                peaksGroup.text += " ; "
-            }
+            //Removed can be reused
         }
     }
 

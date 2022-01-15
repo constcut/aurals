@@ -100,8 +100,6 @@ namespace aural_sight {
         double _spectrumPitch = 0.0;
         double _specPitchAprox = 0.0;
 
-        QVector<int> _binTable;
-        QVector<int> _binCount;
 
         std::unordered_set<int> _peaksIdx;
 
@@ -156,8 +154,6 @@ namespace aural_sight {
 
         Q_INVOKABLE qreal getSpectrumF0() const { return _spectrumPitch; }
         Q_INVOKABLE qreal getSpectrumAproxF0() const { return _specPitchAprox; }
-        Q_INVOKABLE QVector<int> getBinTable() const { return _binTable; }
-        Q_INVOKABLE QVector<int> getBinCount() const { return _binCount; }
 
         Q_INVOKABLE bool clipped() const { return _gotClipping; }
         Q_INVOKABLE bool gotGap() const { return _spectrumGap; }
