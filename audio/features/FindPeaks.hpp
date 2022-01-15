@@ -11,8 +11,6 @@
 
 namespace aural_sight {
 
-    std::vector<size_t> peakIndexesInData(const std::vector<double>& signal, const float sensitivity = 2.f);
-
 
     template <class T>
     std::vector<T> differenceInRange(typename std::vector<T>::const_iterator begin,
@@ -32,7 +30,7 @@ namespace aural_sight {
 
 
     template <class T>
-    std::vector<T> vectorProduct_(typename std::vector<T>::iterator a,
+    std::vector<T> vectorProduct(typename std::vector<T>::iterator a,
                                  typename std::vector<T>::iterator b, const size_t len)
     {
         std::vector<T> product;
@@ -44,7 +42,7 @@ namespace aural_sight {
 
 
     template <class T>
-    std::vector<size_t> indexesOfDataLessThan_(const std::vector<T>& data,
+    std::vector<size_t> indexesOfDataLessThan(const std::vector<T>& data,
                                                const float threshold)
     {
         std::vector<size_t> ids;
@@ -56,7 +54,7 @@ namespace aural_sight {
 
 
     template <typename T>
-    std::vector<T> selectElements_(const std::vector<T>& data,
+    std::vector<T> selectElementsByIdx(const std::vector<T>& data,
                                   const std::vector<size_t>& ids)
     {
         std::vector<T> selection;
@@ -68,7 +66,7 @@ namespace aural_sight {
 
 
     template <typename T>
-    std::vector<int> signVector_(const std::vector<T>& data)
+    std::vector<int> signVectorElements(const std::vector<T>& data)
     {
         std::vector<int> signs; //TODO replace on bool?
         signs.reserve(data.size());
@@ -105,9 +103,9 @@ namespace aural_sight {
         const T EPS(2.2204e-16);
         replace(dx.begin(), dx.end(), 0.0, -EPS);
 
-        auto dx2 = vectorProduct_<T>(dx.begin(), dx.begin() + 1, dx.size() - 1);
-        auto indexes = indexesOfDataLessThan_<T>(dx2, 0.f); // Find where the derivative changes sign
-        auto x = selectElements_<T>(signal, indexes);
+        auto dx2 = vectorProduct<T>(dx.begin(), dx.begin() + 1, dx.size() - 1);
+        auto indexes = indexesOfDataLessThan<T>(dx2, 0.f); // Find where the derivative changes sign
+        auto x = selectElementsByIdx<T>(signal, indexes);
 
         if (x.empty())
             return {};
@@ -126,27 +124,24 @@ namespace aural_sight {
         T tempMag = minMag;
         bool foundPeak = false;
 
-        // Deal with first point a little differently since tacked it on
-        // Calculate the sign of the derivative since we tacked the first
-        // point on it does not neccessarily alternate like the rest.
         std::vector<T> xDiff = differenceInRange<T>(x.begin(), x.begin() + 3); // tener cuidado subvector
-        std::vector<int> signDx = signVector_<T>(xDiff);
+        std::vector<int> signDx = signVectorElements<T>(xDiff);
 
-        if (signDx[0] == signDx[1]){ // Want alternating signs
-            if (signDx[0] <= 0){  // The first point is larger or equal to the second
+        if (signDx[0] == signDx[1]){
+            if (signDx[0] <= 0){
                 x.erase(x.begin() + 1);
                 indexes.erase(indexes.begin() + 1);
             }
-            else { // First point is smaller than the second
+            else {
                 x.erase(x.begin());
                 indexes.erase(indexes.begin());
             }
             --len;
         }
 
-        int ii = 1;
+        int j = 1;
         if (x[0] >= x[1])
-            ii = 0;
+            j = 0;
 
         float maxPeaks = ceil(len / 2.0);
         std::vector<size_t> peakLoc(maxPeaks, 0);
@@ -154,49 +149,43 @@ namespace aural_sight {
         int cInd = 1;
         int tempLoc = 0;
 
-        while (ii < len){
-            ++ii; // This is a peak
+        while (j < len){
+            ++j;
 
-            // Reset peak finding if we had a peak and the next peak is bigger
-            // than the last or the left min was small enough to reset.
             if (foundPeak){
                 tempMag = minMag;
                 foundPeak = false;
             }
 
-            // Found new peak that was lager than temp mag and selectivity larger
-            // than the minimum to its left.
-            int prev = ii - 1;
+            int prev = j - 1;
             if (x[prev] > tempMag && x[prev] > leftMin + sel){
                 tempLoc = prev;
                 tempMag = x[prev];
             }
 
-            // Make sure we don't iterate past the length of our vector
-            if (ii >= len)
-                break; // We assign the last point differently out of the loop
+            if (j >= len)
+                break;
+            ++j;
 
-            ++ii; // Move onto the valley
-
-            // Come down at least sel from peak
-            if (!foundPeak && tempMag > sel + x[ii - 1]){
+            if (!foundPeak && tempMag > sel + x[j - 1]){
                 foundPeak = true;
-                leftMin = x[ii - 1];
-                peakLoc[cInd - 1] = tempLoc; // Add peak to index
+                leftMin = x[j - 1];
+                peakLoc[cInd - 1] = tempLoc;
                 peakMag[cInd - 1] = tempMag;
                 ++cInd;
             }
-            else if (x[ii - 1] < leftMin) // New left minima
-                leftMin = x[ii - 1];
+            else if (x[j - 1] < leftMin)
+                leftMin = x[j - 1];
         }
 
-        // Check end point
+
         if (x.back() > tempMag && x.back() > leftMin + sel){
             peakLoc[cInd - 1] = len - 1;
             peakMag[cInd - 1] = x.back();
             ++cInd;
         }
-        else if (!foundPeak && tempMag > minMag){ // Check if we still need to add the last point
+
+        else if (!foundPeak && tempMag > minMag){
             peakLoc[cInd - 1] = tempLoc;
             peakMag[cInd - 1] = tempMag;
             ++cInd;
@@ -205,7 +194,7 @@ namespace aural_sight {
         if (cInd > 0){
             peakLoc.erase(peakLoc.begin() + cInd - 1, peakLoc.end());
             if (indexes[peakLoc.back()] >= signal.size())
-                peakLoc.pop_back(); // иногда последний индекс == длине
+                peakLoc.pop_back();
             peakIdx = selectElements_(indexes, peakLoc);
         }
 

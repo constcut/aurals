@@ -24,7 +24,6 @@ SOURCES += \
     audio/wave/AudioSpeaker.cpp \
     audio/wave/AudioUtils.cpp \
     audio/features/FeatureExtractor.cpp \
-    audio/features/FindPeaks.cpp \
     audio/spectrum/FrequencySpectrum.cpp \
     audio/spectrum/Spectrograph.cpp \
     audio/spectrum/SpectrumAnalyser.cpp \
