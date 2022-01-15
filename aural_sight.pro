@@ -67,12 +67,12 @@ HEADERS += \
     app/Clipboard.hpp \
     app/Init.hpp \
     app/LogHandler.hpp \
+    audio/features/PeaksOperations.hpp \
     audio/wave/AudioHandler.hpp \
     audio/wave/AudioReceiver.hpp \
     audio/wave/AudioSpeaker.hpp \
     audio/wave/AudioUtils.hpp \
     audio/features/FeatureExtractor.hpp \
-    audio/features/FindPeaks.hpp \
     audio/spectrum/FrequencySpectrum.hpp \
     audio/spectrum/Spectrograph.hpp \
     audio/spectrum/Spectrum.hpp \

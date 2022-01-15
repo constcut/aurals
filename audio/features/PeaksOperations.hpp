@@ -2,14 +2,22 @@
  This code was delivered from https://github.com/claydergc/find-peaks
  and distributed under MIT lisence
  */
-#ifndef FINDPEAKS_H
-#define FINDPEAKS_H
+#ifndef PEAKSOPERATIONS_H
+#define PEAKSOPERATIONS_H
 
 #include <vector>
 #include <algorithm>
 #include <cmath>
 
 namespace aural_sight {
+
+
+    template <class T>
+    std::vector<size_t> peakIndexes(const std::vector<T>& signal,
+                                    const T sensitivity = 2.0);
+
+
+
 
 
     template <class T>
@@ -84,7 +92,7 @@ namespace aural_sight {
 
     template <class T>
     std::vector<size_t> peakIndexes(const std::vector<T>& signal,
-                                    const T sensitivity = 2.f)
+                                    const T sensitivity)
     {
         std::vector<size_t> peakIdx;
         if (signal.size() < 2)
