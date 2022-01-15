@@ -96,7 +96,7 @@ Item {
 
     Text {
         id: yinInfo
-        y : acgraph.y + acgraph.height + 10
+        y : acgraph.y + acgraph.height + 30
         x : 25
         text: "Yin info"
     }
@@ -111,19 +111,39 @@ Item {
         }
     }
 
-    ACgraph {
-        y: waveShape.height + waveShape.y + 5
+
+    ScrollView {
         width: parent.width
         height: parent.height / 4
 
-        id:acgraph
+        y: waveShape.height + waveShape.y + 5
 
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                //TODO just position + freq
+        Flickable {
+            id: flick2
+            y: 5// waveShape.height + waveShape.y + 5
+            x: 0
+            width: parent.width
+            height: parent.height - 20
+            contentWidth: 2048
+            contentHeight:  parent.height
+
+            ACgraph {
+                y: 5// waveShape.height + waveShape.y + 5
+                width: parent.width
+                height: parent.height
+
+                id:acgraph
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        //TODO just position + freq
+                    }
+                }
             }
+
         }
+
     }
 
 }

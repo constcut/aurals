@@ -174,7 +174,7 @@ double YinPP::process(const float* buffer) {
     //qDebug() << "MinMax Dist is " << minMaxDist;
 
     filteredIdx.clear();
-    qDebug() << "_";
+    //qDebug() << "_";
     for (size_t i = 1; i < idx.size(); ++i) { //First is always 0 //TODO check + idx shifter
 
         auto id = idx[i];
