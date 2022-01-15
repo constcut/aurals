@@ -62,7 +62,7 @@ std::pair<double, double> aural_sight::calc_YinF0(const float* data,  const size
         qDebug() << "Pitch equal"; */
 
     //return {p, 0}; //Todo found flag
-    return {p1, yin.getTau()};
+    return {p1, yin.getTau()}; //p1
 
 }
 

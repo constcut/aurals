@@ -60,7 +60,7 @@ namespace aural_sight {
         std::vector<size_t> _rmsLow;
 
         double _yinTheshold = 0.15;
-        size_t _yinWindowSize = 2048;
+        size_t _yinWindowSize = 4096;
         std::vector<double> _yinLine;
 
         QAudioFormat _audioFormat; //Если избавиться от этого компонента и переписать WavFile - можно сделать класс pure C++

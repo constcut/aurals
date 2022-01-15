@@ -145,52 +145,66 @@ double YinPP::process(const float* buffer) {
     accMeanDiff(_yinBuffer2);
 
     auto maxE = std::max_element(_yinBuffer1.begin(), _yinBuffer1.end());
+    auto minE = std::min_element(_yinBuffer1.begin(), _yinBuffer1.end());
+
+    float minVal = *minE;
     float maxVal = *maxE;
 
-    auto minE = std::min_element(_yinBuffer1.begin(), _yinBuffer1.end());
-    float minVal = *minE;
-
-    std::vector<double> invBuffer(_yinBuffer1.size(), 0);
+    std::vector<double> invBuffer(_yinBuffer1.size(), 0); //TODO inversed function for peaks
     for (size_t i = 0; i < invBuffer.size(); ++i)
         invBuffer[i] = maxVal - _yinBuffer1[i];
 
 
     auto idx = peakIndexes<double>(invBuffer);
 
-    //When peaks are found we need to find min\max of _yinBuffer element
+    float minP = 100.0, maxP = -1.0;
 
-    double minY = 1000.0;
-    double maxY = -1.0;
-
-
-    for (auto id: idx) {
-        const double yVal = _yinBuffer1[id];
-        if (yVal < minY)
-            minY = yVal;
-        if (yVal > maxY)
-            maxY = yVal;
+    for (size_t i = 1; i < idx.size(); ++i) {
+        auto id = idx[i];
+        const float v = _yinBuffer1[id];
+        if (v > maxP)
+            maxP = v;
+        if (v < minP)
+            minP = v;
     }
 
-    double minMaxDist = maxY - minY;
+    float minMaxDist = maxP - minP;
     qDebug() << "MinMax Dist is " << minMaxDist;
 
     std::vector<size_t> filteredIdx;
     qDebug() << "_";
-    for (auto id: idx) {
-        const double dist = maxY - _yinBuffer1[id];
-        if (dist > minMaxDist / 2.0) {
-            qDebug() << "Phantom " << id << " _ " << _yinBuffer1[id];
+    for (size_t i = 1; i < idx.size(); ++i) { //First is always 0 //TODO check + idx shifter
+
+        auto id = idx[i];
+
+        const float val =  _yinBuffer1[id];
+        const float distMax = maxP - val;
+        const float distMin = val - minP;
+
+        //qDebug() << "Dist max " << distMax << " distMin " << distMin;
+        if (distMax <= distMin) {
+            qDebug() << "Phantom " << id << " _ " << val;
         }
         else {
-            qDebug() << "Real one " << id << " _ " << _yinBuffer1[id];
-            //filteredIdx.push_back(idx);
+            qDebug() << "Real one " << id << " _ " << val;
+            filteredIdx.push_back(id);
         }
     }
+
+    double tX = findPeakCommonDistance(filteredIdx, 3); //dist can be +-5 I think
 
     size_t tNew = absThreshNew(_yinBuffer1);
     double t1 = parabNew(tNew, _yinBuffer1);
 
     qDebug() << "Std found: " << t1 << " freq= " << _sampleRate / t1;
+    qDebug() << "Mine found: " << tX << " freq= " << _sampleRate / tX;
+
+    double intp = parabNew(tX, _yinBuffer1);
+
+    qDebug() << "Mine intp: " << intp << " freq= " << _sampleRate / intp;
+
+    if (tX == 0)
+        return 0.0;
 
     double foundPitch = _sampleRate / t1;
     return foundPitch;
