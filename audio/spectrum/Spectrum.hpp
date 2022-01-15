@@ -42,7 +42,7 @@
 #define SPECTRUM_H
 
 #include <qglobal.h>
-#include "AudioUtils.hpp"
+#include "../AudioUtils.hpp"
 
 namespace mtherapp {
 

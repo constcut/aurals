@@ -3,8 +3,8 @@
 #include <QDebug>
 
 #include "WavFile.hpp"
-#include "FeatureExtractor.hpp"
-#include "FindPeaks.hpp"
+#include "features/FeatureExtractor.hpp"
+#include "features/FindPeaks.hpp"
 #include "AudioUtils.hpp"
 
 

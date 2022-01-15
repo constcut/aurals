@@ -12,7 +12,7 @@
 
 #include "audio/AudioHandler.hpp"
 #include "audio/WaveShape.hpp"
-#include "audio/Spectrograph.hpp"
+#include "audio/spectrum/Spectrograph.hpp"
 #include "music/Tapper.h"
 //#include "music/graphicmap.h"
 #include "midi/MidiFile.hpp"

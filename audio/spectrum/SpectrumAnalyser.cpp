@@ -45,8 +45,8 @@
 #include <QAudioFormat>
 
 #include "libs/fft/fftreal_wrapper.h"
-#include "FeatureExtractor.hpp"
-#include "AudioUtils.hpp"
+#include "audio/features/FeatureExtractor.hpp"
+#include "audio/AudioUtils.hpp"
 
 
 using namespace mtherapp;

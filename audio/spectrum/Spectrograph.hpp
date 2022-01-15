@@ -49,7 +49,7 @@
 #include <unordered_set>
 
 #include "FrequencySpectrum.hpp"
-#include "FeatureExtractor.hpp"
+#include "audio/features/FeatureExtractor.hpp"
 
 
 namespace mtherapp {

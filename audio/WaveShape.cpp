@@ -47,7 +47,7 @@
 #include <QPainterPath>
 #include <QDebug>
 
-#include "FeatureExtractor.hpp"
+#include "audio/features/FeatureExtractor.hpp"
 
 
 using namespace mtherapp;
