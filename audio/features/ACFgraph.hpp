@@ -32,6 +32,11 @@ namespace aural_sight {
         Q_INVOKABLE double getLastFreq() { return _lastFreq; }
         //Load from samples
 
+        Q_INVOKABLE void setCursor(double pos) {
+            _cursorPos = pos;
+            update(); //TODO вначале нарисовать всю подложку
+        }
+
     private:
         QVector<float> _input; //TODO тут и в спектральном анализаторе
         YinPP _yin;
@@ -39,6 +44,8 @@ namespace aural_sight {
         double _lastFreq = 0;
 
         void prepareBackground(QPainter &painter, const QRect &rect) const;
+
+        double _cursorPos = -1.0;
 
     };
 

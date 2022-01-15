@@ -59,15 +59,18 @@ void ACGraphQML::paint(QPainter* painter) {
     for (size_t i = 0; i < _yin.accBufer.size(); ++i) {
 
         painter->setPen(rPen);
-        const double newYacc = rect.height() - _yin.accBufer[i] * 30;
+        const double newYacc = rect.height() - _yin.accBufer[i] * 30; //TODO scale
         painter->drawLine(i-1, prevYacc, i, newYacc);
         prevYacc = newYacc;
 
         painter->setPen(bPen);
-        const double newDiff = rect.height() - _yin.sumBufer[i] * 10;
+        const double newDiff = rect.height() - _yin.sumBufer[i] * 7;
         painter->drawLine(i-1, prevDiff, i, newDiff);
         prevDiff = newDiff;
     }
+
+    painter->setPen(QColor("orange"));
+    painter->drawLine(_cursorPos, 0, _cursorPos, rect.height());
 }
 
 

@@ -147,7 +147,8 @@ Item {
                     anchors.fill: parent
                     onClicked: {
                         //TODO just position + freq
-                        yinInfo2.text = "pos= "+ mouseX + " freq = " + mouseX / 44100.0
+                        yinInfo2.text = "pos= "+ mouseX + " freq = " +  44100.0 / mouseX
+                        acgraph.setCursor(mouseX)
                     }
                 }
             }
