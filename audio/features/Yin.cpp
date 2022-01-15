@@ -139,19 +139,22 @@ double YinPP::process(const float* buffer) {
     diffFunNew(buffer);
     //diffFunOld(buffer);
 
+    sumBufer = _yinBufer1;
     //compareBuffers();
 
-    accMeanDiff(_yinBuffer1);
+    accMeanDiff(_yinBufer1);
+    accBufer = _yinBufer1;
+
     //accMeanDiff(_yinBuffer2);
 
-    auto maxE = std::max_element(_yinBuffer1.begin(), _yinBuffer1.end());
+    auto maxE = std::max_element(_yinBufer1.begin(), _yinBufer1.end());
     //auto minE = std::min_element(_yinBuffer1.begin(), _yinBuffer1.end());
     //float minVal = *minE;
     float maxVal = *maxE;
 
-    std::vector<double> invBuffer(_yinBuffer1.size(), 0); //TODO inversed function for peaks
+    std::vector<double> invBuffer(_yinBufer1.size(), 0); //TODO inversed function for peaks
     for (size_t i = 0; i < invBuffer.size(); ++i)
-        invBuffer[i] = maxVal - _yinBuffer1[i];
+        invBuffer[i] = maxVal - _yinBufer1[i];
 
 
     auto idx = peakIndexes<double>(invBuffer);
@@ -160,7 +163,7 @@ double YinPP::process(const float* buffer) {
 
     for (size_t i = 1; i < idx.size(); ++i) {
         auto id = idx[i];
-        const float v = _yinBuffer1[id];
+        const float v = _yinBufer1[id];
         if (v > maxP)
             maxP = v;
         if (v < minP)
@@ -168,35 +171,35 @@ double YinPP::process(const float* buffer) {
     }
 
     float minMaxDist = maxP - minP;
-    qDebug() << "MinMax Dist is " << minMaxDist;
+    //qDebug() << "MinMax Dist is " << minMaxDist;
 
-    std::vector<size_t> filteredIdx;
+    filteredIdx.clear();
     qDebug() << "_";
     for (size_t i = 1; i < idx.size(); ++i) { //First is always 0 //TODO check + idx shifter
 
         auto id = idx[i];
 
-        const float val =  _yinBuffer1[id];
+        const float val =  _yinBufer1[id];
         const float distMax = maxP - val;
         const float distMin = val - minP;
 
         //qDebug() << "Dist max " << distMax << " distMin " << distMin;
         if (distMax <= distMin) {
-            qDebug() << "Phantom " << id << " _ " << val;
+            //qDebug() << "Phantom " << id << " _ " << val;
         }
         else {
-            qDebug() << "Real one " << id << " _ " << val;
+            //qDebug() << "Real one " << id << " _ " << val;
             filteredIdx.push_back(id);
         }
     }
 
     double tX = findPeakCommonDistance(filteredIdx, 3); //dist can be +-5 I think
 
-    size_t tNew = absThreshNew(_yinBuffer1);
-    double t1 = parabNew(tNew, _yinBuffer1);
+    size_t tNew = absThreshNew(_yinBufer1);
+    double t1 = parabNew(tNew, _yinBufer1);
 
     //qDebug() << "Std found: " << t1 << " freq= " << _sampleRate / t1;
-    qDebug() << "Mine found: " << tX << " freq= " << _sampleRate / tX;
+    //qDebug() << "Mine found: " << tX << " freq= " << _sampleRate / tX;
 
     //double intp = parabNew(tX, _yinBuffer1);
 
@@ -325,7 +328,7 @@ void YinPP::diffFunNew(const float* signal) {
         for(size_t j = 0; j < n; j++)
         {
             auto d = signal[j] - signal[j + tau];
-            _yinBuffer1[tau] += d * d;
+            _yinBufer1[tau] += d * d;
         }
 }
 
@@ -335,7 +338,7 @@ void YinPP::diffFunOld(const float* buffer) {
     for(size_t tau = 0 ; tau < n; tau++) {
         for(size_t index = 0; index < n; index++){
             delta = buffer[index] - buffer[index + tau];
-            _yinBuffer2[tau] += delta * delta; //Что если здесь сделать 4ую степень но потом взять от всего корень? Эксперименты!
+            _yinBufer2[tau] += delta * delta; //Что если здесь сделать 4ую степень но потом взять от всего корень? Эксперименты!
         }
     }
 }
@@ -350,10 +353,10 @@ void YinPP::autoCorrelateionSlow1(const float* buffer, size_t tau, size_t W) {
 
     for (size_t t = 0; t < n; t++) {
 
-        _yinBuffer1[t] = 0;
+        _yinBufer1[t] = 0;
 
         for (size_t j = t + 1; j < (t + W); j++) {
-            _yinBuffer1[t] += buffer[j] * buffer[j + tau];
+            _yinBufer1[t] += buffer[j] * buffer[j + tau];
         }
     }
 
@@ -364,7 +367,7 @@ void YinPP::autoCorrelateionSlow2(const float* buffer, size_t tau, size_t W) {
     //TODO buffer must be zeroes
     for (size_t t = 0; t < n; t++)
         for (size_t j = t + 1; j < (t + W - tau); j++)
-            _yinBuffer2[t] += buffer[j] * buffer[j + tau];
+            _yinBufer2[t] += buffer[j] * buffer[j + tau];
 
 }
 
@@ -377,7 +380,7 @@ void YinPP::diffSlow(const float* yinBuf, size_t W) {
         for(size_t j = 0; j < n; j++)
         {
             auto d = yinBuf[j] - yinBuf[j + tau];
-            _yinBuffer1[tau] += d * d;
+            _yinBufer1[tau] += d * d;
         }
     }
 }//Что если здесь сделать 4ую степень но потом взять от всего корень? Эксперименты!
@@ -387,7 +390,7 @@ void YinPP::diffFast(const float* buffer, size_t W) {
 
     const size_t n = _bufferSize / 2; //Or w??
 
-    auto first = _yinBuffer1[0];
+    auto first = _yinBufer1[0];
 
     for(size_t tau = 0 ; tau < n; tau++) {
 
@@ -395,7 +398,7 @@ void YinPP::diffFast(const float* buffer, size_t W) {
         for (size_t j = 1; j < W; j++)
             second += buffer[j] * buffer[j + tau];
 
-         _yinBuffer2[tau] = first + second - _yinBuffer1[tau];
+         _yinBufer2[tau] = first + second - _yinBufer1[tau];
 
          //qDebug() << "Fast t " << tau << " " << _yinBuffer2[tau];
     }
@@ -419,10 +422,10 @@ void YinPP::autoCorrelationFast(const float* buffer) {
         buf[n + i] = buf[n + i] * buf[n + i];
     }
 
-    _yinBuffer2 = std::vector<float>(_bufferSize, 0.f);
+    _yinBufer2 = std::vector<float>(_bufferSize, 0.f);
 
-    _fft.do_ifft(buf.data(), _yinBuffer2.data());
-    _fft.rescale(_yinBuffer2.data());
+    _fft.do_ifft(buf.data(), _yinBufer2.data());
+    _fft.rescale(_yinBufer2.data());
 
 }
 
@@ -436,9 +439,9 @@ void YinPP::compareBuffers() {
     size_t failesCount = 0;
 
     for (size_t i = 0; i < n; i++) {
-        if (std::abs(_yinBuffer1[i] - _yinBuffer2[i]) > eps) {
+        if (std::abs(_yinBufer1[i] - _yinBufer2[i]) > eps) {
 
-            qDebug() << i << " unequal " << _yinBuffer1[i] << " " << _yinBuffer2[i];
+            qDebug() << i << " unequal " << _yinBufer1[i] << " " << _yinBufer2[i];
 
             ++failesCount;
             //if (failesCount > 10)

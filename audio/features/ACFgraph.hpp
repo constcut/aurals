@@ -19,7 +19,8 @@ namespace aural_sight {
     {
             Q_OBJECT
     public:
-        ACGraphQML([[maybe_unused]] QQuickItem* parent = nullptr) : _input(4096*4, 0.0)
+        ACGraphQML([[maybe_unused]] QQuickItem* parent = nullptr)
+        : _input(4096, 0.0)
         { _yin.init(44100, 4096); }
 
         ~ACGraphQML() = default;
@@ -27,6 +28,8 @@ namespace aural_sight {
         void paint(QPainter* painter);
 
         Q_INVOKABLE bool loadByteArray(QByteArray analyseData);
+
+        Q_INVOKABLE double getLastFreq() { return _lastFreq; }
         //Load from samples
 
     private:

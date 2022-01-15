@@ -9,7 +9,8 @@ using namespace aural_sight;
 bool ACGraphQML::loadByteArray(QByteArray analyseData) {
 
     const size_t _numSamples = 4096;
-    Q_ASSERT(analyseData.size() == 4096 * 2);
+    const int bytesPerSample  = 2;
+    Q_ASSERT(analyseData.size() == _numSamples * bytesPerSample);
     const char *ptr = analyseData.constData(); //TODO здесь и в spectrum: from preloaded (загружать float сразу, без преобразований)
 
     for (size_t i=0; i<_numSamples; ++i) {
@@ -17,12 +18,13 @@ bool ACGraphQML::loadByteArray(QByteArray analyseData) {
         const float realSample = pcmToReal(pcmSample); // Scale down to range [-1.0, 1.0]
         //const float windowedSample = realSample * _window[i];
         _input[i] = realSample;
-        //ptr += bytesPerSample;
+         ptr += bytesPerSample;
     }
 
     //TODO prepare YIN data
+    _yin.init(44100, 4096);
     _lastFreq = _yin.process(_input.data());
-
+    update();
     return true;
 }
 
@@ -33,7 +35,17 @@ void ACGraphQML::paint(QPainter* painter) {
     rect.setWidth(this->width());
     rect.setHeight(this->height());
     prepareBackground(*painter, rect);
+
+    //PAINT ACC Buffer first, from 0 to max, lets max would be first 5
+    double prevY = rect.height();
+    painter->setPen(QColor("red"));
+    for (size_t i = 0; i < _yin.accBufer.size(); ++i) {
+        const double newY = rect.height() - _yin.accBufer[i] * 30;
+        painter->drawLine(i-1, prevY, i, newY);
+        prevY = newY;
+    }
 }
+
 
 
 void ACGraphQML::prepareBackground(QPainter &painter, const QRect &rect) const {

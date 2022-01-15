@@ -46,8 +46,8 @@ class Yin {
             _sampleRate = sampleRate;
             _bufferSize = bufferSize;
             _threshold = 0.2;
-            _yinBuffer1 = std::vector<float>(_bufferSize/2.0, 0.f);
-            _yinBuffer2 = std::vector<float>(_bufferSize/2.0, 0.f);
+            _yinBufer1 = std::vector<float>(_bufferSize/2.0, 0.f);
+            _yinBufer2 = std::vector<float>(_bufferSize/2.0, 0.f);
         }
 
         void compareBuffers();
@@ -66,14 +66,20 @@ class Yin {
         size_t parabNew(size_t t, std::vector<float>& v);
         double parabOld(double t, std::vector<float>& v);
 
+    public:
+
+        std::vector<float> sumBufer;
+        std::vector<float> accBufer;
+        std::vector<size_t> filteredIdx;
+
     private:
 
         double _threshold;
         size_t _bufferSize;
         double _sampleRate;
 
-        std::vector<float> _yinBuffer1;
-        std::vector<float> _yinBuffer2;
+        std::vector<float> _yinBufer1;
+        std::vector<float> _yinBufer2;
 
         std::vector<size_t> tSet;
 

@@ -44,17 +44,13 @@ Item {
                 onClicked:{
                     var minRmStep = waveShape.getMinRmsStep()
                     waveShape.setWindowPosition(mouseX * minRmStep/2.0)
-                    //If we need to load some file: spectrum.loadSpectrum(item.filename,mouseX*minRmStep/2.0) //This version reloads file
-                    spectrum.loadByteArray(waveShape.getPCM(mouseX * minRmStep / 2.0, spectrum.getSamplesAmount()));
+                    acgraph.loadByteArray(waveShape.getPCM(mouseX * minRmStep / 2.0, 4096));
+                    yinInfo.text = acgraph.getLastFreq()
 
-                    var winRmsDb = waveShape.getWindowRmsDb()
-                    var winYinF0 = waveShape.getWindowYinF0()
-                    //TODO ACF
                 }
                 onDoubleClicked: {
                     var minRmStep = waveShape.getMinRmsStep()
-                    //If we need to load some file: audio.loadOnlyWindow(item.filename, mouseX * minRmStep / 2.0, spectrum.getSamplesAmount())
-                    audio.loadWindowPCM(waveShape.getPCM(mouseX * minRmStep / 2.0, spectrum.getSamplesAmount()))
+                    audio.loadWindowPCM(waveShape.getPCM(mouseX * minRmStep / 2.0, 4096))
                     audio.startPlayback()
                 }
 
@@ -99,7 +95,7 @@ Item {
     }
 
     Text {
-        id: specInfo
+        id: yinInfo
         y : acgraph.y + acgraph.height + 10
         x : 25
         text: "Yin info"
@@ -107,7 +103,7 @@ Item {
 
     Button {
         id: settingsButton
-        y: specInfo.y
+        y: yinInfo.y
         x: parent.width - width - 10
         text: "Settings"
         onClicked:  {
