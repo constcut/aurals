@@ -8,7 +8,7 @@
 #include "AudioUtils.hpp"
 
 
-using namespace mtherapp;
+using namespace aural_sight;
 
 
 WaveContour::WaveContour(QString filename) {
@@ -70,10 +70,10 @@ void WaveContour::calculateRms() {
     calcRms(8.0, _8RmsLine);
 
     std::vector<double> stdRms(_rmsLine.begin(), _rmsLine.end());
-    _rmsHigh = mtherapp::peakIndexesInData(stdRms, _peakSensetivity);
+    _rmsHigh = aural_sight::peakIndexesInData(stdRms, _peakSensetivity);
     for (auto& s: stdRms)
         s *= -1;
-    _rmsLow = mtherapp::peakIndexesInData(stdRms, _peakSensetivity);
+    _rmsLow = aural_sight::peakIndexesInData(stdRms, _peakSensetivity);
 }
 
 

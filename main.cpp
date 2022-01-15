@@ -125,7 +125,7 @@ void benchmarkFFT() {
 }
 
 
-using namespace mtherapp;
+using namespace aural_sight;
 
 int main(int argc, char *argv[])
 {

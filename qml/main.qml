@@ -11,7 +11,7 @@ ApplicationWindow {
     id: thatWindow
     visible: true
     visibility: "FullScreen"
-    title: "Mtherapp"
+    title: "aural_sight"
 
     onClosing: {
         if (Qt.platform.os == "android")

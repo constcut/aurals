@@ -4,7 +4,7 @@
 #include <limits.h>
 #include <cstddef>
 
-namespace mtherapp {
+namespace aural_sight {
 
     template <typename T>
     T swapEndian(T u) {

@@ -51,7 +51,7 @@
 #include "audio/wave/AudioUtils.hpp"
 
 
-using namespace mtherapp;
+using namespace aural_sight;
 
 
 SpectrographPainter::SpectrographPainter() : _barSelected(-1),
@@ -343,7 +343,7 @@ void SpectrographPainter::findPeaks() {
     std::vector<double> amps;
     for (auto& bar: _bars)
         amps.push_back(bar.value);
-    auto peaks = mtherapp::peakIndexesInData(amps, 6.0);
+    auto peaks = aural_sight::peakIndexesInData(amps, 6.0);
 
     if (_bars.size() < 7) {
         qDebug() << "Spectrograph bars size issue";
@@ -442,8 +442,8 @@ void SpectrographPainter::classifySlope() {
 
 SpectrographQML::SpectrographQML([[maybe_unused]] QQuickItem* parent) :  _samplesAmount(4096) {
     setParams(SpectrumNumBands, SpectrumLowFreq, SpectrumHighFreq);
-    QObject::connect(&_analyser,SIGNAL(spectrumChanged(mtherapp::FrequencySpectrum)),
-                     this,SLOT(spectrumChanged(mtherapp::FrequencySpectrum)));
+    QObject::connect(&_analyser,SIGNAL(spectrumChanged(aural_sight::FrequencySpectrum)),
+                     this,SLOT(spectrumChanged(aural_sight::FrequencySpectrum)));
 }
 
 
@@ -463,13 +463,13 @@ void SpectrographQML::updateBars() {
 }
 
 void SpectrographQML::spectrumChanged([[maybe_unused]] const qint64 position, [[maybe_unused]] const qint64 length,
-                                      const mtherapp::FrequencySpectrum &spectrum) {
+                                      const aural_sight::FrequencySpectrum &spectrum) {
     _spectrum = spectrum;
     SpectrographQML::updateBars();
 }
 
 
-void SpectrographQML::spectrumChanged(const mtherapp::FrequencySpectrum &spectrum) {
+void SpectrographQML::spectrumChanged(const aural_sight::FrequencySpectrum &spectrum) {
     _spectrum = spectrum;
     SpectrographQML::updateBars();
 }

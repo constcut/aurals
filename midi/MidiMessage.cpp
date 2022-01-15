@@ -3,7 +3,7 @@
 #include "log.hpp"
 
 
-using namespace mtherapp;
+using namespace aural_sight;
 
 
 MidiMessage::MidiMessage() : _typeAndChannel(0), _param1(0), _param2(0){}

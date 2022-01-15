@@ -5,7 +5,7 @@
 #include <deque>
 #include <fstream>
 
-namespace mtherapp {
+namespace aural_sight {
 
     class NBytesInt : public std::deque<uint8_t> {
 

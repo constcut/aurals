@@ -44,7 +44,7 @@
 #include <qglobal.h>
 #include "audio/wave/AudioUtils.hpp"
 
-namespace mtherapp {
+namespace aural_sight {
 
     const int FFTLengthPowerOfTwo = 12;
     const int SpectrumLengthSamples = PowerOfTwo<FFTLengthPowerOfTwo>::Result;

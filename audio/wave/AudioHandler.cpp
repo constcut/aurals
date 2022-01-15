@@ -10,7 +10,7 @@
 
 //#include "midi/MidiRender.hpp"
 
-using namespace mtherapp;
+using namespace aural_sight;
 
 
 AudioHandler::AudioHandler() {

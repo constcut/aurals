@@ -6,7 +6,7 @@
 #include "log.hpp"
 #include "MidiUtils.hpp"
 
-using namespace mtherapp;
+using namespace aural_sight;
 
 
 
@@ -21,7 +21,7 @@ constexpr uint32_t returnChunkId(std::string_view str = "MTrk") { //DELAYED: inv
 }
 
 
-uint32_t mtherapp::MidiTrack::calculateHeader(bool skipSomeMessages) {
+uint32_t aural_sight::MidiTrack::calculateHeader(bool skipSomeMessages) {
 
     uint32_t calculatedSize = 0;
 
@@ -42,12 +42,12 @@ uint32_t mtherapp::MidiTrack::calculateHeader(bool skipSomeMessages) {
 }
 
 
-void mtherapp::MidiTrack::pushChangeInstrument(const uint8_t newInstrument, const uint8_t channel, const uint32_t timeShift) {
+void aural_sight::MidiTrack::pushChangeInstrument(const uint8_t newInstrument, const uint8_t channel, const uint32_t timeShift) {
     push_back(MidiMessage(MidiMasks::PatchChangeMask | channel, newInstrument, 0, timeShift));
 }
 
 
-void mtherapp::MidiTrack::pushTrackName(const std::string trackName) {
+void aural_sight::MidiTrack::pushTrackName(const std::string trackName) {
     MidiMessage nameTrack(MidiEvent::MetaEvent, MidiMetaTypes::TrackName);
     nameTrack.metaLen() = NBytesInt(trackName.size());
 
@@ -58,7 +58,7 @@ void mtherapp::MidiTrack::pushTrackName(const std::string trackName) {
 }
 
 
-void mtherapp::MidiTrack::pushMetricsSignature(const uint8_t numeration, const uint8_t denumeration,
+void aural_sight::MidiTrack::pushMetricsSignature(const uint8_t numeration, const uint8_t denumeration,
                                                const uint32_t timeShift, const uint8_t metr, const uint8_t perQuat) {
     MidiMessage metrics(MidiEvent::MetaEvent, MidiMetaTypes::ChangeTimeSignature, 0, timeShift);
     metrics.metaBufer().push_back(numeration);
@@ -73,7 +73,7 @@ void mtherapp::MidiTrack::pushMetricsSignature(const uint8_t numeration, const u
 }
 
 
-void mtherapp::MidiTrack::pushChangeBPM(const uint16_t bpm, const uint32_t timeShift) {
+void aural_sight::MidiTrack::pushChangeBPM(const uint16_t bpm, const uint32_t timeShift) {
     MidiMessage changeTempo(MidiEvent::MetaEvent, MidiMetaTypes::ChangeTempo, 0, timeShift);
     uint32_t nanoCount = 60000000 / bpm; //6e7 = amount of nanoseconds
     changeTempo.metaBufer().push_back((nanoCount >> 16) & 0xff);
@@ -85,19 +85,19 @@ void mtherapp::MidiTrack::pushChangeBPM(const uint16_t bpm, const uint32_t timeS
 }
 
 
-void mtherapp::MidiTrack::pushChangeVolume(const uint8_t newVolume, const uint8_t channel) {
+void aural_sight::MidiTrack::pushChangeVolume(const uint8_t newVolume, const uint8_t channel) {
     MidiMessage volumeChange(MidiMasks::ControlChangeMask | channel, MidiChange::ChangeVolume, newVolume > 127 ? 127 : newVolume, 0);
     push_back(volumeChange);
 }
 
 
-void mtherapp::MidiTrack::pushChangePanoram(const uint8_t newPanoram, const uint8_t channel) {
+void aural_sight::MidiTrack::pushChangePanoram(const uint8_t newPanoram, const uint8_t channel) {
     MidiMessage panoramChange(MidiMasks::ControlChangeMask | channel, MidiChange::ChangePanoram, newPanoram, 0);
     push_back(panoramChange);
 }
 
 
-void mtherapp::MidiTrack::pushVibration(const uint8_t channel, const uint8_t depth, const uint16_t step, const uint8_t stepsCount) {
+void aural_sight::MidiTrack::pushVibration(const uint8_t channel, const uint8_t depth, const uint16_t step, const uint8_t stepsCount) {
     const uint8_t middle = 64;
     uint8_t shiftDown = middle - depth;
     uint8_t shiftUp = middle + depth;
@@ -111,7 +111,7 @@ void mtherapp::MidiTrack::pushVibration(const uint8_t channel, const uint8_t dep
 }
 
 
-void mtherapp::MidiTrack::pushSlideUp(const uint8_t channel, const uint8_t shift, const uint16_t step, const uint8_t stepsCount) {
+void aural_sight::MidiTrack::pushSlideUp(const uint8_t channel, const uint8_t shift, const uint16_t step, const uint8_t stepsCount) {
     const uint8_t middle = 64;
     uint8_t pitchShift = middle;
     uint8_t signalKey = MidiMasks::PitchWheelMask + channel;
@@ -123,7 +123,7 @@ void mtherapp::MidiTrack::pushSlideUp(const uint8_t channel, const uint8_t shift
 }
 
 
-void mtherapp::MidiTrack::pushSlideDown(const uint8_t channel, const uint8_t shift, const uint16_t step, const uint8_t stepsCount) {
+void aural_sight::MidiTrack::pushSlideDown(const uint8_t channel, const uint8_t shift, const uint16_t step, const uint8_t stepsCount) {
     const uint8_t middle = 64;
     uint8_t pitchShift = middle;
     uint8_t signalKey = MidiMasks::PitchWheelMask + channel;
@@ -135,7 +135,7 @@ void mtherapp::MidiTrack::pushSlideDown(const uint8_t channel, const uint8_t shi
 }
 
 
-void mtherapp::MidiTrack::pushTremolo(const uint8_t channel, uint16_t offset) {
+void aural_sight::MidiTrack::pushTremolo(const uint8_t channel, uint16_t offset) {
     uint16_t slideStep = offset / 40;
     const uint8_t middle = 64;
     uint8_t pitchShift = middle;
@@ -149,7 +149,7 @@ void mtherapp::MidiTrack::pushTremolo(const uint8_t channel, uint16_t offset) {
 }
 
 
-void mtherapp::MidiTrack::pushFadeIn(const uint16_t offset, const uint8_t channel) {
+void aural_sight::MidiTrack::pushFadeIn(const uint16_t offset, const uint8_t channel) {
     uint8_t newVolume = 27;
     uint16_t fadeInStep = offset / 20;
     push_back(MidiMessage(MidiMasks::ControlChangeMask | channel, MidiChange::ChangeVolume, newVolume, 0));
@@ -159,14 +159,14 @@ void mtherapp::MidiTrack::pushFadeIn(const uint16_t offset, const uint8_t channe
     }
 }
 
-void mtherapp::MidiTrack::pushEvent47() { //Emergency event
+void aural_sight::MidiTrack::pushEvent47() { //Emergency event
     MidiMessage event47(MidiEvent::MetaEvent, MidiMetaTypes::KindOfFinish, 0, 0);
     event47.metaLen() = NBytesInt(0);
     push_back(event47);
 }
 
 
-int16_t mtherapp::MidiTrack::calculateRhythmDetail(const uint8_t value, const int16_t offset) const {
+int16_t aural_sight::MidiTrack::calculateRhythmDetail(const uint8_t value, const int16_t offset) const {
     uint16_t resultOffset = 0;
     if (value == 3)
         resultOffset = (offset * 2) / 3;
@@ -182,7 +182,7 @@ int16_t mtherapp::MidiTrack::calculateRhythmDetail(const uint8_t value, const in
 }
 
 
-uint32_t mtherapp::MidiTrack::readFromFile(std::ifstream& f)
+uint32_t aural_sight::MidiTrack::readFromFile(std::ifstream& f)
 {
     f.read(_chunkId, 4);
     f.read(reinterpret_cast<char*>(&_trackSize), 4);
@@ -224,7 +224,7 @@ uint32_t mtherapp::MidiTrack::readFromFile(std::ifstream& f)
 }
 
 
-uint32_t mtherapp::MidiTrack::writeToFile(std::ofstream& f, bool skipSomeMessages) const {
+uint32_t aural_sight::MidiTrack::writeToFile(std::ofstream& f, bool skipSomeMessages) const {
     uint32_t totalBytesWritten = 0;
     //f << _chunkId;
     f.write(_chunkId, 4);
@@ -244,14 +244,14 @@ uint32_t mtherapp::MidiTrack::writeToFile(std::ofstream& f, bool skipSomeMessage
 }
 
 
-void mtherapp::MidiTrack::closeLetRings(const uint8_t channel) {
+void aural_sight::MidiTrack::closeLetRings(const uint8_t channel) {
     for (size_t i = 0; i < 10; ++i)
         if (_ringRay[i] != 255)
             closeLetRing(i, channel);
 }
 
 
-void mtherapp::MidiTrack::closeLetRing(const uint8_t stringN, const uint8_t channel) {
+void aural_sight::MidiTrack::closeLetRing(const uint8_t stringN, const uint8_t channel) {
     if (stringN > 8){
         qDebug() <<"String issue " << stringN;
         return;
@@ -265,7 +265,7 @@ void mtherapp::MidiTrack::closeLetRing(const uint8_t stringN, const uint8_t chan
 }
 
 
-void mtherapp::MidiTrack::openLetRing(const uint8_t stringN, const uint8_t midiNote,
+void aural_sight::MidiTrack::openLetRing(const uint8_t stringN, const uint8_t midiNote,
                                       const uint8_t velocity, const uint8_t channel) {
     if (stringN > 8){
         qDebug() <<"String issue "<<stringN;
@@ -279,7 +279,7 @@ void mtherapp::MidiTrack::openLetRing(const uint8_t stringN, const uint8_t midiN
 }
 
 
-void mtherapp::MidiTrack::finishIncomplete(short specialR) {
+void aural_sight::MidiTrack::finishIncomplete(short specialR) {
     short int rhyBase = 120;
     short int power2 = 2<<(3);
     int preRValue = rhyBase*power2/4;
@@ -289,14 +289,14 @@ void mtherapp::MidiTrack::finishIncomplete(short specialR) {
 }
 
 
-void mtherapp::MidiTrack::pushNoteOn(const uint8_t midiNote, const uint8_t velocity, const uint8_t channel) {
+void aural_sight::MidiTrack::pushNoteOn(const uint8_t midiNote, const uint8_t velocity, const uint8_t channel) {
     MidiMessage msg(MidiMasks::NoteOnMask | channel, midiNote, velocity,_accum);
     flushAccum();
     push_back(msg);
 }
 
 
-void mtherapp::MidiTrack::pushNoteOff(const uint8_t midiNote, const uint8_t velocity, const uint8_t channel) {
+void aural_sight::MidiTrack::pushNoteOff(const uint8_t midiNote, const uint8_t velocity, const uint8_t channel) {
     MidiMessage msg(MidiMasks::NoteOffMask | channel, midiNote, velocity,_accum);
     flushAccum();
     push_back(msg);

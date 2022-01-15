@@ -50,7 +50,7 @@
 #include "audio/features/FeatureExtractor.hpp"
 
 
-using namespace mtherapp;
+using namespace aural_sight;
 
 
 void WaveshapeQML::paint(QPainter *painter) {

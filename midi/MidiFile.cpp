@@ -3,10 +3,10 @@
 #include "log.hpp"
 #include "MidiUtils.hpp"
 
-using namespace mtherapp;
+using namespace aural_sight;
 
 
-uint32_t mtherapp::MidiFile::calculateHeader(bool skipSomeMessages) {
+uint32_t aural_sight::MidiFile::calculateHeader(bool skipSomeMessages) {
 
     uint32_t totalBytesCalculated = 0;
     _chunkId[0] = 'M';
@@ -26,11 +26,11 @@ uint32_t mtherapp::MidiFile::calculateHeader(bool skipSomeMessages) {
     return totalBytesCalculated;
 }
 
-mtherapp::MidiFile::MidiFile(std::string_view filename) {
+aural_sight::MidiFile::MidiFile(std::string_view filename) {
     readFromFile(filename);
 }
 
-uint32_t mtherapp::MidiFile::readFromFile(std::string_view filename) {
+uint32_t aural_sight::MidiFile::readFromFile(std::string_view filename) {
     std::string strFileName {filename};
     std::ifstream file {strFileName, std::ios::binary};
     if (file.is_open())
@@ -38,7 +38,7 @@ uint32_t mtherapp::MidiFile::readFromFile(std::string_view filename) {
     return 0;
 }
 
-uint32_t mtherapp::MidiFile::readFromFile(std::ifstream& f) {
+uint32_t aural_sight::MidiFile::readFromFile(std::ifstream& f) {
 
     uint32_t totalBytesRead = 0;
     _chunkSize = 0;
@@ -87,7 +87,7 @@ uint32_t mtherapp::MidiFile::readFromFile(std::ifstream& f) {
     return totalBytesRead;
 }
 
-uint32_t mtherapp::MidiFile::writeToFile(std::string_view filename, bool skipSomeMessages) {
+uint32_t aural_sight::MidiFile::writeToFile(std::string_view filename, bool skipSomeMessages) {
     std::string strFilename(filename);
     std::ofstream file(strFilename, std::ios::binary);
     return writeToFile(file, skipSomeMessages);
@@ -95,7 +95,7 @@ uint32_t mtherapp::MidiFile::writeToFile(std::string_view filename, bool skipSom
 
 
 
-uint32_t mtherapp::MidiFile::writeToFile(std::ofstream& f, bool skipSomeMessages) {
+uint32_t aural_sight::MidiFile::writeToFile(std::ofstream& f, bool skipSomeMessages) {
 
     uint32_t totalBytesWritten=0;
     calculateHeader(skipSomeMessages);

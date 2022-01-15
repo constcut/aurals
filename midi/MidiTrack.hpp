@@ -6,7 +6,7 @@
 #include <vector>
 #include <fstream>
 
-namespace mtherapp {
+namespace aural_sight {
 
 
     class MidiTrack : public std::vector<MidiMessage> {

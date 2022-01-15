@@ -49,7 +49,7 @@
 
 #include "WaveContour.hpp"
 
-namespace mtherapp {
+namespace aural_sight {
 
 
     class WaveshapePainter  {

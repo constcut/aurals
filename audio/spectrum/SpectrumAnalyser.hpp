@@ -59,7 +59,7 @@ class FFTRealWrapper;
 class SpectrumAnalyserThreadPrivate;
 
 
-namespace mtherapp {
+namespace aural_sight {
 
     class SpectrumAnalyserThread : public QObject {
         Q_OBJECT
@@ -74,13 +74,13 @@ namespace mtherapp {
         void setFFTLimit(int newLimit) { _fftLimit = newLimit; }
 
     public slots:
-        void setWindowFunction(mtherapp::WindowFunction type);
+        void setWindowFunction(aural_sight::WindowFunction type);
         void calculateSpectrum(const QByteArray &buffer,
                                int inputFrequency,
                                int bytesPerSample);
 
     signals:
-        void calculationComplete(const mtherapp::FrequencySpectrum &spectrum);
+        void calculationComplete(const aural_sight::FrequencySpectrum &spectrum);
 
     private:
         void calculateWindow();
@@ -125,10 +125,10 @@ namespace mtherapp {
         void setFFTLimit(int newLimit) { _fftLimit = newLimit; }
 
     signals:
-        void spectrumChanged(const mtherapp::FrequencySpectrum &spectrum);
+        void spectrumChanged(const aural_sight::FrequencySpectrum &spectrum);
 
     private slots:
-        void calculationComplete(const mtherapp::FrequencySpectrum &spectrum);
+        void calculationComplete(const aural_sight::FrequencySpectrum &spectrum);
 
     private:
         void calculateWindow();

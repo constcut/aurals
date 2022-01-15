@@ -15,7 +15,7 @@ typedef vector<double>::const_iterator cit;
 typedef vector<double>::iterator it;
 
 
-using namespace mtherapp;
+using namespace aural_sight;
 
 vector<double> diffsInRange(cit begin, cit end){
     
@@ -78,7 +78,7 @@ vector<int> signVector(const vector<double>& data){
 }
 
 
-vector<size_t> mtherapp::peakIndexesInData(const vector<double>& signal, const float sensitivity) {
+vector<size_t> aural_sight::peakIndexesInData(const vector<double>& signal, const float sensitivity) {
     
     vector<size_t> peakIndexes;
     if (signal.size() < 2) {

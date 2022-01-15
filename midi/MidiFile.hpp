@@ -8,7 +8,7 @@
 #include "MidiTrack.hpp"
 
 
-namespace mtherapp {
+namespace aural_sight {
 
     class MidiFile : public std::vector<MidiTrack> {
 

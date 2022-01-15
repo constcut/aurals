@@ -13,7 +13,7 @@
 struct tml_message;
 struct tsf;
 
-namespace mtherapp {
+namespace aural_sight {
 
     class MidiRender
     {

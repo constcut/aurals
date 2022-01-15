@@ -45,7 +45,7 @@
 #include <QFile>
 #include <QAudioFormat>
 
-namespace mtherapp {
+namespace aural_sight {
 
     class WavFile : public QFile {
     public:

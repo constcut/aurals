@@ -5,7 +5,7 @@
 #include <utility>
 
 
-namespace mtherapp {
+namespace aural_sight {
 
     double calc_RMS(const float* data, const size_t len);
     double calc_dB(const float* data, const size_t len);

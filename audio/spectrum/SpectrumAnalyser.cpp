@@ -49,7 +49,7 @@
 #include "audio/wave/AudioUtils.hpp"
 
 
-using namespace mtherapp;
+using namespace aural_sight;
 
 
 SpectrumAnalyserThread::SpectrumAnalyserThread(QObject *parent)
@@ -65,7 +65,7 @@ SpectrumAnalyserThread::SpectrumAnalyserThread(QObject *parent)
     calculateWindow();
 }
 
-void SpectrumAnalyserThread::setWindowFunction(mtherapp::WindowFunction type) {
+void SpectrumAnalyserThread::setWindowFunction(aural_sight::WindowFunction type) {
     _windowFunction = type;
     calculateWindow();
 }
@@ -142,8 +142,8 @@ SpectrumAnalyser::SpectrumAnalyser(QObject *parent)
     ,   _thread(new SpectrumAnalyserThread(this))
     ,   _state(Idle)
 {
-    CHECKED_CONNECT(_thread, SIGNAL(calculationComplete(mtherapp::FrequencySpectrum)),
-                    this, SLOT(calculationComplete(mtherapp::FrequencySpectrum)));
+    CHECKED_CONNECT(_thread, SIGNAL(calculationComplete(aural_sight::FrequencySpectrum)),
+                    this, SLOT(calculationComplete(aural_sight::FrequencySpectrum)));
 }
 
 
@@ -192,7 +192,7 @@ void SpectrumAnalyser::cancelCalculation() {
 }
 
 
-void SpectrumAnalyser::calculationComplete(const mtherapp::FrequencySpectrum &spectrum)
+void SpectrumAnalyser::calculationComplete(const aural_sight::FrequencySpectrum &spectrum)
 {
     Q_ASSERT(Idle != _state);
     if (Busy == _state)

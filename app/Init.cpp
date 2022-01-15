@@ -27,7 +27,7 @@ void checkMidiRegression() {
                                  "test4.mid", "test5.mid", "test6.mid"};
 
     for (auto& filename: filesToCheck) {
-        mtherapp::MidiFile m;
+        aural_sight::MidiFile m;
         m.readFromFile(filename.toStdString());
 
         auto resavedFilename = "re_" + filename;
@@ -69,12 +69,12 @@ void copySoundfontsAndTests() {
 int mainInit(int argc, char *argv[]) {
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    qmlRegisterType<mtherapp::ConsoleLogQML>("mther.app",1,0,"ConsoleLogView");
+    qmlRegisterType<aural_sight::ConsoleLogQML>("mther.app",1,0,"ConsoleLogView");
     //qmlRegisterType<PianoQML>("mther.app",1,0,"Piano");
 
     QGuiApplication app(argc, argv);
 
-    app.setApplicationName("mtherapp");
+    app.setApplicationName("aural_sight");
     app.setOrganizationName("accumerite");
     app.setOrganizationDomain("acc.u.merite");
 
@@ -93,13 +93,13 @@ int mainInit(int argc, char *argv[]) {
     else
         qWarning() << "Failed to load font";
 
-    qmlRegisterType<mtherapp::WaveshapeQML>("mther.app", 1, 0, "Waveshape");
-    qmlRegisterType<mtherapp::SpectrographQML>("mther.app", 1, 0,"Spectrograph");
-    qmlRegisterType<mtherapp::Tapper>("mther.app", 1, 0,"Tapper");
+    qmlRegisterType<aural_sight::WaveshapeQML>("mther.app", 1, 0, "Waveshape");
+    qmlRegisterType<aural_sight::SpectrographQML>("mther.app", 1, 0,"Spectrograph");
+    qmlRegisterType<aural_sight::Tapper>("mther.app", 1, 0,"Tapper");
 
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("Windows-1251")); //Настройки //KOI8-R //ISO 8859-5 //UTF-8 //Windows-1251
     QQmlApplicationEngine engine;
-    mtherapp::AudioHandler audio;
+    aural_sight::AudioHandler audio;
     engine.rootContext()->setContextProperty("audio", &audio);
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
     if (engine.rootObjects().isEmpty())

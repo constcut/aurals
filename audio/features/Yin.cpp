@@ -6,7 +6,7 @@
 
 #include "FindPeaks.hpp"
 
-using namespace mtherapp;
+using namespace aural_sight;
 
 
 Yin::Yin() { //TODO template
