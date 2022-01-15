@@ -10,8 +10,8 @@
 #include "log.hpp"
 #include "app/LogHandler.hpp"
 
-#include "audio/AudioHandler.hpp"
-#include "audio/WaveShape.hpp"
+#include "audio/wave/AudioHandler.hpp"
+#include "audio/wave/WaveShape.hpp"
 #include "audio/spectrum/Spectrograph.hpp"
 #include "music/Tapper.h"
 //#include "music/graphicmap.h"

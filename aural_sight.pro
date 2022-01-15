@@ -19,18 +19,18 @@ SOURCES += \
     app/AndroidTools.cpp \
     app/Init.cpp \
     app/LogHandler.cpp \
-    audio/AudioHandler.cpp \
-    audio/AudioReceiver.cpp \
-    audio/AudioSpeaker.cpp \
-    audio/AudioUtils.cpp \
+    audio/wave/AudioHandler.cpp \
+    audio/wave/AudioReceiver.cpp \
+    audio/wave/AudioSpeaker.cpp \
+    audio/wave/AudioUtils.cpp \
     audio/features/FeatureExtractor.cpp \
     audio/features/FindPeaks.cpp \
     audio/spectrum/FrequencySpectrum.cpp \
     audio/spectrum/Spectrograph.cpp \
     audio/spectrum/SpectrumAnalyser.cpp \
-    audio/WavFile.cpp \
-    audio/WaveContour.cpp \
-    audio/WaveShape.cpp \
+    audio/wave/WavFile.cpp \
+    audio/wave/WaveContour.cpp \
+    audio/wave/WaveShape.cpp \
     audio/features/Yin.cpp \
     libs/fft/fftreal_wrapper.cpp \
     libs/kiss/kfc.c \
@@ -68,19 +68,19 @@ HEADERS += \
     app/Clipboard.hpp \
     app/Init.hpp \
     app/LogHandler.hpp \
-    audio/AudioHandler.hpp \
-    audio/AudioReceiver.hpp \
-    audio/AudioSpeaker.hpp \
-    audio/AudioUtils.hpp \
+    audio/wave/AudioHandler.hpp \
+    audio/wave/AudioReceiver.hpp \
+    audio/wave/AudioSpeaker.hpp \
+    audio/wave/AudioUtils.hpp \
     audio/features/FeatureExtractor.hpp \
     audio/features/FindPeaks.hpp \
     audio/spectrum/FrequencySpectrum.hpp \
     audio/spectrum/Spectrograph.hpp \
     audio/spectrum/Spectrum.hpp \
     audio/spectrum/SpectrumAnalyser.hpp \
-    audio/WavFile.hpp \
-    audio/WaveContour.hpp \
-    audio/WaveShape.hpp \
+    audio/wave/WavFile.hpp \
+    audio/wave/WaveContour.hpp \
+    audio/wave/WaveShape.hpp \
     audio/features/Yin.hpp \
     libs/fft/Array.h \
     libs/fft/Array.hpp \

@@ -46,7 +46,7 @@
 
 #include "libs/fft/fftreal_wrapper.h"
 #include "audio/features/FeatureExtractor.hpp"
-#include "audio/AudioUtils.hpp"
+#include "audio/wave/AudioUtils.hpp"
 
 
 using namespace mtherapp;

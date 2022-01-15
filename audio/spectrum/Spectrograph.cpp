@@ -46,9 +46,9 @@
 #include <cmath>
 #include <unordered_map>
 
-#include "audio/WavFile.hpp"
+#include "audio/wave/WavFile.hpp"
 #include "audio/features/FindPeaks.hpp"
-#include "audio/AudioUtils.hpp"
+#include "audio/wave/AudioUtils.hpp"
 
 
 using namespace mtherapp;
