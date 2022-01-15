@@ -46,25 +46,17 @@ class Yin {
             _sampleRate = sampleRate;
             _bufferSize = bufferSize;
             _threshold = 0.2;
-            _yinBufer1 = std::vector<float>(_bufferSize/2.0, 0.f);
-            _yinBufer2 = std::vector<float>(_bufferSize/2.0, 0.f);
         }
 
         void compareBuffers();
 
         double process(const float* buffer);
 
-        //TODO access to buffers for visualization + mode to save all the results
-        void diffFunNew(const float* signal);
-        void diffFunOld(const float* buffer);
+        void differenceFunction(const float* signal);
+        void accMeanDifferenceFunction(std::vector<float>& v);
+        size_t absoluteThreshold(std::vector<float>& v);
 
-        void accMeanDiff(std::vector<float>& v);
-
-        size_t absThreshOld(std::vector<float>& v);
-        size_t absThreshNew(std::vector<float>& v);
-
-        size_t parabNew(size_t t, std::vector<float>& v);
-        double parabOld(double t, std::vector<float>& v);
+        size_t parabolicInterpolation(size_t t, std::vector<float>& v);
 
     public:
 
@@ -79,37 +71,10 @@ class Yin {
         double _sampleRate;
 
         std::vector<float> _yinBufer1;
-        std::vector<float> _yinBufer2;
-
-        std::vector<size_t> tSet;
-
-        //STEP1:
-        //TODO autocorrelation FFT method
-
-        //STEP2:
-        //TODO diff function on acf
-
-        //STEP3:
-        //TODO accMeanNormDifference
-
-        //STEP4:
-        //TODO threshold
-
-        //STEP5: parabolic inerpolation
-
-        //STEP6: estimate
 
         //+ Amp vatiation implementation
         //+ F0 variation implementation
-        void autoCorrelateionSlow1(const float* buffer, size_t tau, size_t W);
-        void autoCorrelateionSlow2(const float* buffer, size_t tau, size_t W);
-        void autoCorrelationFast(const float* buffer);
-        void diffSlow(const float* yinBuf, size_t W);
-        void diffFast(const float* yinBuf, size_t W);
-
-
     };
-
 
 
 }
