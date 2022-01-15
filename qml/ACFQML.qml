@@ -100,7 +100,7 @@ Item {
 
     Text {
         id: specInfo
-        y : spectrum.y + spectrum.height + 10
+        y : acgraph.y + acgraph.height + 10
         x : 25
         text: "Yin info"
     }
@@ -115,30 +115,18 @@ Item {
         }
     }
 
-    Spectrograph {
+    ACgraph {
         y: waveShape.height + waveShape.y + 5
         width: parent.width
-        height: parent.height / 6
-        id:spectrum
+        height: parent.height / 4
+
+        id:acgraph
 
         MouseArea {
             anchors.fill: parent
-            function log10(val) {
-              return Math.log(val) / Math.LN10;
-            }
             onClicked: {
-                spectrum.onPress(mouseX, mouseY, spectrum.width, spectrum.height)
-                specInfo.text = spectrum.getFreq1().toFixed(2) + "-" + spectrum.getFreq2().toFixed(2) + " Hz"
-                +  " lvl = " + (20*log10(spectrum.getValue())).toFixed(1) + " idx " + spectrum.getIndex()
-                        + " val " + spectrum.getValue().toFixed(4)
+                //TODO just position + freq
             }
-        }
-        onSpectrumCalculated: {
-            outputPeaksGroup()
-        }
-        function outputPeaksGroup() {
-            peaksGroup.text = "";
-            //Removed can be reused
         }
     }
 

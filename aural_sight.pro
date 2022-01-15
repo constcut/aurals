@@ -19,6 +19,7 @@ SOURCES += \
     app/AndroidTools.cpp \
     app/Init.cpp \
     app/LogHandler.cpp \
+    audio/features/ACFgraph.cpp \
     audio/wave/AudioHandler.cpp \
     audio/wave/AudioReceiver.cpp \
     audio/wave/AudioSpeaker.cpp \
@@ -67,6 +68,7 @@ HEADERS += \
     app/Clipboard.hpp \
     app/Init.hpp \
     app/LogHandler.hpp \
+    audio/features/ACFgraph.hpp \
     audio/features/PeaksOperations.hpp \
     audio/wave/AudioHandler.hpp \
     audio/wave/AudioReceiver.hpp \

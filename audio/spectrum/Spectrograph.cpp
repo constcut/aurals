@@ -419,7 +419,7 @@ void SpectrographQML::paint(QPainter* painter) {
    rect.setWidth(this->width());
    rect.setHeight(this->height());
    paintSpectr(*painter,rect);
-   emit spectrumCalculated();
+   emit spectrumCalculated(); //emh?
 }
 
 
