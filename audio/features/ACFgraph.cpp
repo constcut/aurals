@@ -37,12 +37,36 @@ void ACGraphQML::paint(QPainter* painter) {
     prepareBackground(*painter, rect);
 
     //PAINT ACC Buffer first, from 0 to max, lets max would be first 5
-    double prevY = rect.height();
-    painter->setPen(QColor("red"));
+
+    QPen rPen(QColor("red"));
+    rPen.setWidth(3);
+
+    QPen bPen(QColor("blue"));
+    bPen.setWidth(3);
+
+    QPen gPen(QColor("green"));
+    gPen.setWidth(3);
+
+    painter->setPen(gPen);
+    for (size_t i = 0; i < _yin.filteredIdx.size(); ++i) {
+        const auto idx = _yin.filteredIdx[i];
+        painter->drawLine(idx, 0, idx, rect.height());
+    }
+
+    double prevYacc = rect.height();
+    double prevDiff = rect.height();
+
     for (size_t i = 0; i < _yin.accBufer.size(); ++i) {
-        const double newY = rect.height() - _yin.accBufer[i] * 30;
-        painter->drawLine(i-1, prevY, i, newY);
-        prevY = newY;
+
+        painter->setPen(rPen);
+        const double newYacc = rect.height() - _yin.accBufer[i] * 30;
+        painter->drawLine(i-1, prevYacc, i, newYacc);
+        prevYacc = newYacc;
+
+        painter->setPen(bPen);
+        const double newDiff = rect.height() - _yin.sumBufer[i] * 10;
+        painter->drawLine(i-1, prevDiff, i, newDiff);
+        prevDiff = newDiff;
     }
 }
 

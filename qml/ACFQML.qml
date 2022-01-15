@@ -96,8 +96,15 @@ Item {
 
     Text {
         id: yinInfo
-        y : acgraph.y + acgraph.height + 30
+        y : acfScroll.y + acfScroll.height + 30
         x : 25
+        text: "Yin info"
+    }
+
+    Text {
+        id: yinInfo2
+        y : acfScroll.y + acfScroll.height + 30
+        x : parent.width/2
         text: "Yin info"
     }
 
@@ -113,6 +120,8 @@ Item {
 
 
     ScrollView {
+
+        id: acfScroll
         width: parent.width
         height: parent.height / 4
 
@@ -138,6 +147,7 @@ Item {
                     anchors.fill: parent
                     onClicked: {
                         //TODO just position + freq
+                        yinInfo2.text = "pos= "+ mouseX + " freq = " + mouseX / 44100.0
                     }
                 }
             }
