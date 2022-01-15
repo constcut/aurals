@@ -30,7 +30,7 @@
 
 //#include "libs/fft/FFTRealFixLen.h"
 
-#include "FFTReal.h"
+#include "FFTurealfix.hpp"
 #include "audio/spectrum/Spectrum.hpp"
 
 // Each pass of the FFT processes 2^X samples, where X is the
@@ -41,9 +41,9 @@ class FFTRealWrapperPrivate {
 
 public:
 
-    FFTRealWrapperPrivate(): m_fft(4096) {}
+    FFTRealWrapperPrivate() {}
 
-    ffft::FFTReal<float> m_fft;
+    FFTRealFixLen<12> m_fft;
 };
 
 
@@ -65,12 +65,9 @@ public:
     FFTRealWrapper();
     ~FFTRealWrapper();
 
-    typedef float DataType;
-    void calculateFFT(DataType out[], DataType in[]);
-    void calculateInverseFFT(DataType in[], DataType out[]);
-
-    void rescale(DataType data[]);
-
+    void calculateFFT(float out[], float in[]);
+    void calculateInverseFFT(float in[], float out[]);
+    void rescale(float data[]);
 
 
 private:

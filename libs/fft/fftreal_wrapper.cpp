@@ -29,17 +29,17 @@ FFTRealWrapper::~FFTRealWrapper()
     delete m_private;
 }
 
-void FFTRealWrapper::calculateFFT(DataType out[], DataType in[])
+void FFTRealWrapper::calculateFFT(float out[], float in[])
 {
     m_private->m_fft.do_fft(out, in);
 }
 
-void FFTRealWrapper::calculateInverseFFT(DataType in[], DataType out[]) //here it looks not inverted
+void FFTRealWrapper::calculateInverseFFT(float in[], float out[])
 {
     m_private->m_fft.do_ifft(in,out);
 }
 
-void FFTRealWrapper::rescale(DataType data[])
+void FFTRealWrapper::rescale(float data[])
 {
     m_private->m_fft.rescale(data);
 }

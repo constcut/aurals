@@ -82,29 +82,8 @@ HEADERS += \
     audio/wave/WaveContour.hpp \
     audio/wave/WaveShape.hpp \
     audio/features/Yin.hpp \
-    libs/fft/Array.h \
-    libs/fft/Array.hpp \
-    libs/fft/DynArray.h \
-    libs/fft/DynArray.hpp \
     libs/fft/FFTCommon.hpp \
-    libs/fft/FFTReal.h \
-    libs/fft/FFTReal.hpp \
-    libs/fft/FFTRealFixLen.h \
-    libs/fft/FFTRealFixLen.hpp \
-    libs/fft/FFTRealFixLenParam.h \
-    libs/fft/FFTRealPassDirect.h \
-    libs/fft/FFTRealPassDirect.hpp \
-    libs/fft/FFTRealPassInverse.h \
-    libs/fft/FFTRealPassInverse.hpp \
-    libs/fft/FFTRealSelect.h \
-    libs/fft/FFTRealSelect.hpp \
-    libs/fft/FFTRealUseTrigo.h \
-    libs/fft/FFTRealUseTrigo.hpp \
     libs/fft/FFTunreal.hpp \
-    libs/fft/FFTurealfix.hpp \
-    libs/fft/OscSinCos.h \
-    libs/fft/OscSinCos.hpp \
-    libs/fft/def.h \
     libs/fft/fftreal_wrapper.h \
     libs/kiss/_kiss_fft_guts.h \
     libs/kiss/kfc.h \
