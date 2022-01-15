@@ -134,6 +134,8 @@ bool Yin::absoluteThresholdFound(){
 
 double YinPP::process(const float* buffer) {
 
+    //TODO remove all old + replace with
+
     diffFunNew(buffer);
     diffFunOld(buffer);
 
@@ -152,40 +154,43 @@ double YinPP::process(const float* buffer) {
     for (size_t i = 0; i < invBuffer.size(); ++i)
         invBuffer[i] = maxVal - _yinBuffer1[i];
 
-    //Find best ways to find local minima
 
     auto idx = peakIndexes<double>(invBuffer);
 
-    qDebug() << "_";
+    //When peaks are found we need to find min\max of _yinBuffer element
+
+    double minY = 1000.0;
+    double maxY = -1.0;
+
+
     for (auto id: idx) {
-        if (_yinBuffer1[id] > minVal*5) { //TODO K mean
-            //qDebug() << "Sub place";
-        }
-        else
-            qDebug() << id << " one of ids " << _yinBuffer1[id] << " f0 "
-                     << _sampleRate / id;
+        const double yVal = _yinBuffer1[id];
+        if (yVal < minY)
+            minY = yVal;
+        if (yVal > maxY)
+            maxY = yVal;
     }
 
+    double minMaxDist = maxY - minY;
+    qDebug() << "MinMax Dist is " << minMaxDist;
+
+    std::vector<size_t> filteredIdx;
+    qDebug() << "_";
+    for (auto id: idx) {
+        const double dist = maxY - _yinBuffer1[id];
+        if (dist > minMaxDist / 2.0) {
+            qDebug() << "Phantom " << id << " _ " << _yinBuffer1[id];
+        }
+        else {
+            qDebug() << "Real one " << id << " _ " << _yinBuffer1[id];
+            //filteredIdx.push_back(idx);
+        }
+    }
 
     size_t tNew = absThreshNew(_yinBuffer1);
-    size_t tOld = absThreshOld(_yinBuffer2);
+    double t1 = parabNew(tNew, _yinBuffer1);
 
-    double preF1 = _sampleRate / tNew;
-    double preF2 = _sampleRate / tOld;
-
-    //qDebug() << "Pre " << preF1 << " " << preF2;
-
-    size_t t1 = parabNew(tNew, _yinBuffer1); //TODO replace with new
-    size_t t2 = parabOld(tOld, _yinBuffer2);
-
-    //qDebug() << "Para new " << t1 << " para old " << t2;
-
-    qDebug() << "And found is " << t1;
-
-    //for (auto ts: tSet)
-        //qDebug() << "Th set " << ts;
-
-    //TODO estimate
+    qDebug() << "Std found: " << t1 << " freq= " << _sampleRate / t1;
 
     double foundPitch = _sampleRate / t1;
     return foundPitch;
@@ -230,15 +235,15 @@ size_t YinPP::absThreshNew(std::vector<float>& v) {
 
 
 
-size_t YinPP::parabOld(size_t t, std::vector<float>& v) {
+double YinPP::parabOld(double t, std::vector<float>& v) {
     size_t start = t ? t - 1 : t;
     size_t finish = t + 1 < v.size() ? t + 1 : t;
 
     auto borderResult = [&](size_t idx) {
         if (v[t] <= v[idx])
-            return t;
+            return static_cast<double>(t);
         else
-            return idx;
+            return static_cast<double>(idx);
     };
 
     if (start == t)

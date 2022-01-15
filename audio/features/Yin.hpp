@@ -64,7 +64,7 @@ class Yin {
         size_t absThreshNew(std::vector<float>& v);
 
         size_t parabNew(size_t t, std::vector<float>& v);
-        size_t parabOld(size_t t, std::vector<float>& v);
+        double parabOld(double t, std::vector<float>& v);
 
     private:
 
