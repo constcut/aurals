@@ -342,7 +342,7 @@ void SpectrographPainter::findF0() { //TODO findF0 classifySlope findPeaks ис�
 }
 
 
-double findPeakCommonDistance(const std::vector<size_t>& peaks) {
+double findPeakCommonDistance(const std::vector<size_t>& peaks, int mergeDistance = 1) {
 
     std::map<int, int> diffCount;
     int prev = -1;
@@ -369,7 +369,7 @@ double findPeakCommonDistance(const std::vector<size_t>& peaks) {
         int subBin = -1;
         int subCount = 0;
         for (size_t i = 1; i < sorted.size(); ++i)
-            if (std::abs(sorted[i].first - mainBin) == 1) {
+            if (std::abs(sorted[i].first - mainBin) == mergeDistance) {
                 subBin = sorted[i].first;
                 subCount = sorted[i].second;
                 break;
@@ -422,58 +422,13 @@ void SpectrographPainter::findPeaks() {
     }
 
     _peaksIdx.clear();
-    std::map<int, int> diffCount;
-    int prev = -1;
-    for (auto p: peaks) {
+    for (auto p: peaks)
         _peaksIdx.insert(p);
-        if (prev != -1) {
-            int diff = p - prev;
-            if (diffCount.count(diff))
-                diffCount[diff] += 1;
-            else
-                diffCount[diff] = 1;
-        }
-        prev = p;
-    }
 
-    std::vector<std::pair<int,int>> sorted(diffCount.begin(), diffCount.end());
-    std::sort(sorted.begin(), sorted.end(), [](auto& lhs, auto& rhs){ return lhs.second > rhs.second; });
+    _spectrumPitch = findPeakCommonDistance(peaks) * _freqStep;
 
-    double foundBin = 0.0;
-
-    if (sorted.empty() == false) {
-        int mainBin = sorted[0].first;
-        _spectrumPitch = (mainBin) * _freqStep;
-        foundBin = mainBin;
-
-        int subBin = -1;
-        int subCount = 0;
-        for (size_t i = 1; i < sorted.size(); ++i)
-            if (std::abs(sorted[i].first - mainBin) == 1) {
-                subBin = sorted[i].first;
-                subCount = sorted[i].second;
-                break;
-            }
-        if (subBin != -1) {
-            double countCoef = static_cast<double>(sorted[0].second) / subCount;
-            double midBin = (static_cast<double>(mainBin) + subBin ) / 2.0;
-            double addition = 0.5 - 0.5 / countCoef;
-            midBin += addition;
-            foundBin = midBin;
-            _spectrumPitch = _freqStep * midBin;
-        }
-    }
-
-    qDebug() << "Found bin " << foundBin << " its freq " << foundBin * _freqStep;
-    qDebug() << "The sub product: " << findPeakCommonDistance(peaks);
-
-    _binTable.clear();
-    _binCount.clear();
-    for (auto& [diff, count]: sorted) {
-        _binTable.append(diff);
-        _binCount.append(count);
-    }
-
+    //_binTable.clear();
+    //_binCount.clear();
 }
 
 
