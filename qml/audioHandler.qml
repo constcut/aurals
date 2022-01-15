@@ -166,6 +166,12 @@ Item {
                     thatWindow.requestAFC("records/" + filenameEdit.text)
                 }
             }
+            ToolButton {
+                text: "Wave"
+                onClicked:  {
+                    thatWindow.requestWaveshape("records/" + filenameEdit.text)
+                }
+            }
         }
 
         FileDialog {
@@ -239,7 +245,8 @@ Item {
                         console.log("mouse ", mouse.button)
                     }
                     onDoubleClicked: {
-                        thatWindow.requestWaveshape("records/" + filenameEdit.text)
+                        //thatWindow.requestWaveshape("records/" + filenameEdit.text)
+                        thatWindow.requestAFC("records/" + filenameEdit.text)
                     }
                     onPressAndHold: {
                         wrapper.ListView.view.currentIndex = index
