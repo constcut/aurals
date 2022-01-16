@@ -70,14 +70,18 @@ void SpectrumAnalyserThread::setWindowFunction(int idx) {
     calculateWindow();
 }
 
+
+
 inline float hannWindowF(float t, size_t N) {
-    return 0.5 * (1 - std::cos((2 * M_PI * t) / (N - 1)));
+    return 0.5 * (1 - std::cos((2 * M_PI * t) / N)); //There was N-1 in Qt, but why?
 }
+
 
 inline float gausWindowF(float t, size_t N, float sigma = 0.4f) {
     const float term = (t - N/2) / (sigma * N/2);
     return std::exp(-0.5 * term * term);
 }
+
 
 inline float blackmanWindowF(float t, size_t N, float alpha = 0.16) {
     const float a0 = (1.f - alpha) / 2.f;
@@ -87,6 +91,14 @@ inline float blackmanWindowF(float t, size_t N, float alpha = 0.16) {
     return a0 - a1 * std::cos(M_PI * 2 * t / N)
             + a2 * std::cos(M_PI * 24 * t / N);
 }
+
+
+inline float hammWindowF(float t, size_t N, float a0 = 0.54f) {
+    const float a1 = 1.f - a0;
+    return a0 - a1 * std::cos((2 * M_PI * t) / N);
+}
+
+
 
 
 void SpectrumAnalyserThread::calculateWindow() {
@@ -105,12 +117,17 @@ void SpectrumAnalyserThread::calculateWindow() {
         case BlackmanWindow:
             x = blackmanWindowF(i, _numSamples);
             break;
+        case HammWindow:
+            x = hammWindowF(i, _numSamples);
+            break;
         default:
             Q_ASSERT(false);
         }
         _window[i] = x;
     }
 }
+
+
 
 void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
                                                 int inputFrequency,

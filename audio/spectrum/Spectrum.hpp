@@ -58,7 +58,8 @@ namespace aural_sight {
         NoWindow = 0,
         HannWindow = 1,
         GausWindow = 2,
-        BlackmanWindow = 3
+        BlackmanWindow = 3,
+        HammWindow = 4
     };
 
     const WindowFunction DefaultWindowFunction = HannWindow;
