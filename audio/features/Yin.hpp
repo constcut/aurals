@@ -65,6 +65,7 @@ class Yin {
 
 
         std::vector<float> acfBufer;
+        std::vector<float> sumBufV2;
 
         std::vector<float> sumBufer;
         std::vector<float> accBufer;

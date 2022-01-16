@@ -161,6 +161,12 @@ void YinPP::calcBasicACF(const float* buffer) {
         [](std::complex<float> cplx) -> float { return std::real(cplx); });
 
     acfBufer = realOut;
+
+    sumBufV2 = std::vector<float>(2048, 0.f);
+
+    for (size_t i = 0; i < 2048; ++i) { //TODO second term is wrong ?
+        sumBufV2[i] = 2 * realOut[0]  - 2 * realOut[i];
+    }
 }
 
 
