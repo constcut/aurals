@@ -70,6 +70,25 @@ void SpectrumAnalyserThread::setWindowFunction(aural_sight::WindowFunction type)
     calculateWindow();
 }
 
+inline float hannWindowF(float t, size_t N) {
+    return 0.5 * (1 - std::cos((2 * M_PI * t) / (N - 1)));
+}
+
+inline float gausWindowF(float t, size_t N, float sigma = 0.4f) {
+    const float term = (t - N/2) / (sigma * N/2);
+    return std::exp(-0.5 * term * term);
+}
+
+inline float blackmanWindowF(float t, size_t N, float alpha = 0.16) {
+    const float a0 = (1.f - alpha) / 2.f;
+    const float a1 = 0.5f;
+    const float a2 = alpha / 2.f;
+
+    return a0 - a1 * std::cos(M_PI * 2 * t / N)
+            + a2 * std::cos(M_PI * 24 * t / N);
+}
+
+
 void SpectrumAnalyserThread::calculateWindow() {
     for (int i=0; i<_numSamples; ++i) {
         float x = 0.0;
@@ -78,7 +97,13 @@ void SpectrumAnalyserThread::calculateWindow() {
             x = 1.0;
             break;
         case HannWindow:
-            x = 0.5 * (1 - qCos((2 * M_PI * i) / (_numSamples - 1)));
+            x =  hannWindowF(i, _numSamples); //0.5 * (1 - qCos((2 * M_PI * i) / (_numSamples - 1)));
+            break;
+        case GausWindow:
+            x = gausWindowF(i, _numSamples);
+            break;
+        case BlackmanWindow:
+            x = blackmanWindowF(i, _numSamples);
             break;
         default:
             Q_ASSERT(false);

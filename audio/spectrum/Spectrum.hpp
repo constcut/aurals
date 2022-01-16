@@ -55,8 +55,10 @@ namespace aural_sight {
 
 
     enum WindowFunction {
-        NoWindow,
-        HannWindow
+        NoWindow = 0,
+        HannWindow = 1,
+        GausWindow = 2,
+        BlackmanWindow = 3
     };
 
     const WindowFunction DefaultWindowFunction = HannWindow;
