@@ -65,8 +65,8 @@ SpectrumAnalyserThread::SpectrumAnalyserThread(QObject *parent)
     calculateWindow();
 }
 
-void SpectrumAnalyserThread::setWindowFunction(aural_sight::WindowFunction type) {
-    _windowFunction = type;
+void SpectrumAnalyserThread::setWindowFunction(int idx) {
+    _windowFunction = static_cast<aural_sight::WindowFunction>(idx);
     calculateWindow();
 }
 
@@ -178,7 +178,7 @@ SpectrumAnalyser::SpectrumAnalyser(QObject *parent)
 // Public functions
 //-----------------------------------------------------------------------------
 
-void SpectrumAnalyser::setWindowFunction(aural_sight::WindowFunction type) {
+void SpectrumAnalyser::setWindowFunction(int idx) {
     /*
     const bool b = QMetaObject::invokeMethod(_thread, "setWindowFunction",
                               Qt::AutoConnection,
@@ -186,7 +186,7 @@ void SpectrumAnalyser::setWindowFunction(aural_sight::WindowFunction type) {
     Q_ASSERT(b);
     Q_UNUSED(b) // suppress warnings in release builds*/
 
-    _thread->setWindowFunction(type);
+    _thread->setWindowFunction(idx);
 }
 
 void SpectrumAnalyser::calculate(const QByteArray &buffer,

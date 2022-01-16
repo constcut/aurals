@@ -224,11 +224,13 @@ Item {
                         waveShape.setRmsStep(rmsStep)
                     }
                 }
-                CheckBox {
-                    text: "Use fft window"
-                    checked: true
-                    onCheckStateChanged: {
-                        spectrum.setWindowFunction(checked)
+                ComboBox {
+
+                    model: ["No window", "Hann", "Gaus", "Blackman", "Hamm"]
+                    currentIndex: 1
+
+                    onCurrentTextChanged: {
+                        spectrum.setWindowFunction(currentIndex)
                     }
                 }
             }

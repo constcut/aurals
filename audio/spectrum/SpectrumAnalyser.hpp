@@ -74,7 +74,7 @@ namespace aural_sight {
         void setFFTLimit(int newLimit) { _fftLimit = newLimit; }
 
     public slots:
-        void setWindowFunction(aural_sight::WindowFunction type);
+        void setWindowFunction(int idx);
         void calculateSpectrum(const QByteArray &buffer,
                                int inputFrequency,
                                int bytesPerSample);
@@ -117,7 +117,7 @@ namespace aural_sight {
             return 0;
         }
 
-        void setWindowFunction(aural_sight::WindowFunction type);
+        void setWindowFunction(int idx);
         void calculate(const QByteArray &buffer, const QAudioFormat &format);
         bool isReady() const;
         void cancelCalculation();
