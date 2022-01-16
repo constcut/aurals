@@ -41,6 +41,7 @@ namespace aural_sight {
 
         QAudioFormat getAudioFormat() { return _audioFormat; }
         QByteArray getPCM(const quint64 position, const quint64 samples);
+        QByteArray getFloatSamples(const quint64 position, const quint64 samples);
 
         void setYinWindowSize(const size_t newSize) { _yinWindowSize = newSize; }
         size_t getYinWindowSize() const { return _yinWindowSize; }

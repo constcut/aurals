@@ -29,6 +29,8 @@ namespace aural_sight {
 
         Q_INVOKABLE bool loadByteArray(QByteArray analyseData);
 
+        Q_INVOKABLE void loadFloatSamples(QByteArray samples);
+
         Q_INVOKABLE double getLastFreq() { return _lastFreq; }
         //Load from samples
 

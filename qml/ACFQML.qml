@@ -44,7 +44,8 @@ Item {
                 onClicked:{
                     var minRmStep = waveShape.getMinRmsStep()
                     waveShape.setWindowPosition(mouseX * minRmStep/2.0)
-                    acgraph.loadByteArray(waveShape.getPCM(mouseX * minRmStep / 2.0, 4096));
+                    //acgraph.loadByteArray(waveShape.getPCM(mouseX * minRmStep / 2.0, 4096));
+                    acgraph.loadFloatSamples(waveShape.getFloatSamples(mouseX * minRmStep / 2.0, 4096))
                     yinInfo.text = acgraph.getLastFreq()
 
                 }

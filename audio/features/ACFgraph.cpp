@@ -22,10 +22,18 @@ bool ACGraphQML::loadByteArray(QByteArray analyseData) {
     }
 
     //TODO prepare YIN data
-    _yin.init(44100, 4096);
+    _yin.init(44100, _numSamples);
     _lastFreq = _yin.process(_input.data());
     update();
     return true;
+}
+
+void ACGraphQML::loadFloatSamples(QByteArray samples) {
+    const size_t _numSamples = 4096;
+    const float* ptr = reinterpret_cast<const float*>(samples.constData());
+    _yin.init(44100, _numSamples);
+    _lastFreq = _yin.process(ptr);
+    update();
 }
 
 

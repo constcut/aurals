@@ -135,6 +135,8 @@ namespace aural_sight {
         Q_INVOKABLE void setYinThreshold(double threshold) { changeYinTheshold(threshold); update(); }
 
         Q_INVOKABLE QByteArray getPCM(quint64 position, quint64 samples) { return _waveContour.getPCM(position, samples); }
+        Q_INVOKABLE QByteArray getFloatSamples(quint64 position, quint64 samples)
+            { return _waveContour.getFloatSamples(position, samples); }
 
         Q_INVOKABLE double getWindowRmsDb() { return calculateWindowRmsDb(); }
 

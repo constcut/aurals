@@ -89,3 +89,10 @@ QByteArray WaveContour::getPCM(const quint64 position, const quint64 samples) {
     QByteArray analyseData = QByteArray(reinterpret_cast<const char*>(intSamples.data()), intSamples.size() * bytesInSample);
     return analyseData;
 }
+
+
+QByteArray WaveContour::getFloatSamples(const quint64 position, const quint64 samples) {
+    QByteArray analyseData = QByteArray(reinterpret_cast<const char*>(&_floatSamples[position]),
+                                        samples * sizeof(float));
+    return analyseData;
+}
