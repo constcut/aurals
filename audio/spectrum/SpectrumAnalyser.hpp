@@ -89,7 +89,7 @@ namespace aural_sight {
 
         std::unique_ptr<FFTRealWrapper> _fft; //TODO replace
         int _numSamples;
-        WindowFunction _windowFunction;
+        aural_sight::WindowFunction _windowFunction;
 
 
         QVector<float> _window; //TODO vector
@@ -117,7 +117,7 @@ namespace aural_sight {
             return 0;
         }
 
-        void setWindowFunction(WindowFunction type);
+        void setWindowFunction(aural_sight::WindowFunction type);
         void calculate(const QByteArray &buffer, const QAudioFormat &format);
         bool isReady() const;
         void cancelCalculation();

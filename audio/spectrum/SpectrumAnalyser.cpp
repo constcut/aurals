@@ -153,12 +153,15 @@ SpectrumAnalyser::SpectrumAnalyser(QObject *parent)
 // Public functions
 //-----------------------------------------------------------------------------
 
-void SpectrumAnalyser::setWindowFunction(WindowFunction type) {
+void SpectrumAnalyser::setWindowFunction(aural_sight::WindowFunction type) {
+    /*
     const bool b = QMetaObject::invokeMethod(_thread, "setWindowFunction",
                               Qt::AutoConnection,
                               Q_ARG(WindowFunction, type));
     Q_ASSERT(b);
-    Q_UNUSED(b) // suppress warnings in release builds
+    Q_UNUSED(b) // suppress warnings in release builds*/
+
+    _thread->setWindowFunction(type);
 }
 
 void SpectrumAnalyser::calculate(const QByteArray &buffer,

@@ -167,9 +167,9 @@ namespace aural_sight {
         Q_INVOKABLE void setFFTLimit(const int limit) { _analyser.setFFTLimit(limit); };
         Q_INVOKABLE void setWindowFunction(const bool turnedOn) {
             if (turnedOn)
-                _analyser.setWindowFunction(WindowFunction::HannWindow);
+                _analyser.setWindowFunction(aural_sight::WindowFunction::HannWindow);
             else
-                _analyser.setWindowFunction(WindowFunction::NoWindow);
+                _analyser.setWindowFunction(aural_sight::WindowFunction::NoWindow);
         }
 
     public slots:
