@@ -79,6 +79,8 @@ namespace aural_sight {
                                int inputFrequency,
                                int bytesPerSample);
 
+       void calculateSpectrumFloat(const QByteArray &buffer);
+
     signals:
         void calculationComplete(const aural_sight::FrequencySpectrum &spectrum);
 
@@ -118,7 +120,9 @@ namespace aural_sight {
         }
 
         void setWindowFunction(int idx);
-        void calculate(const QByteArray &buffer, const QAudioFormat &format);
+        void calculate(const QByteArray& buffer, const QAudioFormat &format);
+        void calculateFromFloat(const QByteArray& buffer);
+
         bool isReady() const;
         void cancelCalculation();
 

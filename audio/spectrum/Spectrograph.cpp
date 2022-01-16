@@ -485,3 +485,9 @@ bool SpectrographQML::loadByteArray(QByteArray analyseData) {
     _analyser.calculate(analyseData, format);
     return true;
 }
+
+
+bool SpectrographQML::loadFloatSamples(QByteArray samples) {
+    _analyser.calculateFromFloat(samples);
+    return true;
+}

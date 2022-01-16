@@ -176,6 +176,39 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
 }
 
 
+void SpectrumAnalyserThread::calculateSpectrumFloat(const QByteArray &buffer) {
+
+
+    const float *ptr = reinterpret_cast<const float*>(buffer.constData()); //Delayed: from preloaded (загружать float сразу, без преобразований)
+
+    for (int i=0; i<_numSamples; ++i) {
+        const float windowedSample = ptr[i] * _window[i];
+        _input[i] = windowedSample;
+    }
+
+    _fft->calculateFFT(_output.data(), _input.data()); //TODO sepparate into sub function for PCM and float common
+
+
+    int inputFrequency = 44100;
+
+    for (int i=0; i<=_numSamples/2; ++i) {
+        _spectrum[i].frequency = qreal(i * inputFrequency) / (_numSamples);
+        const qreal real = _output[i];
+        qreal imag = 0.0;
+        if (i>0 && i<_numSamples/2)
+            imag = _output[_numSamples/2 + i];
+        const qreal magnitude = qSqrt(real*real + imag*imag);
+        qreal amplitude = SpectrumAnalyserMultiplier * qLn(magnitude);
+
+        _spectrum[i].clipped = (amplitude > 1.0); // Bound amplitude to [0.0, 1.0]
+        amplitude = qMax(qreal(0.0), amplitude);
+        amplitude = qMin(qreal(1.0), amplitude);
+        _spectrum[i].amplitude = amplitude;
+    }
+    emit calculationComplete(_spectrum);
+}
+
+
 //=============================================================================
 // SpectrumAnalyser
 //=============================================================================
@@ -221,6 +254,22 @@ void SpectrumAnalyser::calculate(const QByteArray &buffer,
                                   Q_ARG(QByteArray, buffer),
                                   Q_ARG(int, format.sampleRate()),
                                   Q_ARG(int, bytesPerSample));
+        Q_ASSERT(b);
+        Q_UNUSED(b) // suppress warnings in release builds
+    }
+}
+
+
+void SpectrumAnalyser::calculateFromFloat(const QByteArray& buffer)
+{
+
+    if (isReady()) {
+
+        _state = Busy;
+        _thread->setFFTLimit(_fftLimit);
+        const bool b = QMetaObject::invokeMethod(_thread, "calculateSpectrumFloat",
+                                  Qt::AutoConnection,
+                                  Q_ARG(QByteArray, buffer));
         Q_ASSERT(b);
         Q_UNUSED(b) // suppress warnings in release builds
     }
