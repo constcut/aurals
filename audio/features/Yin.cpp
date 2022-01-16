@@ -2,9 +2,11 @@
 
 #include <QDebug>
 
-#include "libs/fft/FFTurealfix.hpp"
-
 #include "PeaksOperations.hpp"
+
+#include "libs/kiss/kiss_fft.h"
+#include <complex>
+
 
 using namespace aural_sight;
 
@@ -128,46 +130,66 @@ bool Yin::absoluteThresholdFound(){
 }
 
 
+void YinPP::calcBasicACF(const float* buffer) {
 
-//Better Yin
+    std::vector<std::complex<float>> b(4096, 0.f);
+
+    std::transform(buffer, buffer + 4096,
+        b.begin(), [](float x) -> std::complex<float> {
+            return std::complex(x, static_cast<float>(0.0));
+        });
+
+    kiss_fft_cfg fwd = kiss_fft_alloc(4096, 0, NULL,NULL);
+    kiss_fft_cfg inv = kiss_fft_alloc(4096, 1, NULL,NULL);
+
+    std::vector<std::complex<float>> out(4096, 0.f);
+
+    kiss_fft(fwd,(kiss_fft_cpx*)b.data(),(kiss_fft_cpx*)out.data());
+
+
+    std::complex<float> scale = {
+        1.0f / (float)(4096 * 2), static_cast<float>(0.0)};
+
+    for (int i = 0; i < 4096; ++i)
+        out[i] *= std::conj(out[i]) * scale;
+
+    kiss_fft(inv,(kiss_fft_cpx*)out.data(),(kiss_fft_cpx*)b.data());
+
+    std::vector<float> realOut(4096, 0.f); //half?
+
+    std::transform(b.begin(), b.begin() + 4096, realOut.begin(),
+        [](std::complex<float> cplx) -> float { return std::real(cplx); });
+
+    acfBufer = realOut;
+}
 
 
 double YinPP::process(const float* buffer) {
 
+    calcBasicACF(buffer);
+
     _yinBufer1 = std::vector<float>(_bufferSize/2.0, 0.f); //TODO better way to flush
 
-    //TODO remove all old + replace with
-
     differenceFunction(buffer);
-    //diffFunOld(buffer);
-
     sumBufer = _yinBufer1;
-    //compareBuffers();
 
     accMeanDifferenceFunction(_yinBufer1);
     accBufer = _yinBufer1;
 
-    //accMeanDiff(_yinBuffer2);
-
     auto maxE = std::max_element(_yinBufer1.begin(), _yinBufer1.end());
-    //auto minE = std::min_element(_yinBuffer1.begin(), _yinBuffer1.end());
-    //float minVal = *minE;
     float maxVal = *maxE;
 
     std::vector<double> invBuffer(_yinBufer1.size(), 0); //TODO inversed function for peaks
     for (size_t i = 0; i < invBuffer.size(); ++i)
         invBuffer[i] = maxVal - _yinBufer1[i];
 
-
-    auto idx = peakIndexes<double>(invBuffer);
-
-    float minP = 100.0, maxP = -1.0;
+    auto idx = peakIndexes<double>(invBuffer, 2);
 
     size_t startIdx = 0;
-
     if (idx.empty() == false && idx[0] == 0)
         startIdx = 1;
 
+    float minP = 100.0, maxP = -1.0;
     for (size_t i = startIdx; i < idx.size(); ++i) {
         auto id = idx[i];
         const float v = _yinBufer1[id];
@@ -176,7 +198,6 @@ double YinPP::process(const float* buffer) {
         if (v < minP)
             minP = v;
     }
-
 
     filteredIdx.clear();
     for (size_t i = startIdx; i < idx.size(); ++i) { //First is always 0 //TODO check + idx shifter
@@ -190,16 +211,14 @@ double YinPP::process(const float* buffer) {
         //Иные отфильтрованы как суб компоненты
     }
 
-    double tX = findPeakCommonDistance(filteredIdx, 3);
+    mineFound = findPeakCommonDistance(filteredIdx, 3);
 
     size_t tNew = absoluteThreshold(_yinBufer1);
-    double t1 = parabolicInterpolation(tNew, _yinBufer1);
+    stdFound = parabolicInterpolation(tNew, _yinBufer1);
 
-
-    double foundPitch = _sampleRate / t1;
+    double foundPitch = _sampleRate / stdFound;
     return foundPitch;
 }
-
 
 
 
@@ -208,9 +227,8 @@ size_t YinPP::absoluteThreshold(std::vector<float>& v) {
     size_t minTau = 0;
     size_t found = 0;
 
-
     for (found = 2; found < v.size() ; found++) {
-        if (v[found] < 0.15) {
+        if (v[found] < 0.15) { //TODO установка
             while (found + 1 < v.size() && v[found + 1] < v[found])
                 ++found;
             return found;
@@ -265,7 +283,7 @@ void YinPP::differenceFunction(const float* signal) {
         for(size_t j = 0; j < n; j++)
         {
             auto d = signal[j] - signal[j + tau];
-            _yinBufer1[tau] += d * d;
+            _yinBufer1[tau] += d * d; //TODO если тут сделать тессеракт- возможно будет даже лучше мой метод работать
         }
 }
 

@@ -22,6 +22,11 @@ namespace aural_sight {
     inline double findPeakCommonDistance(const std::vector<size_t>& peaks,
                                   int mergeDistance = 1)
     {
+        if (peaks.empty())
+            return 0.0;
+
+        if (peaks.size() == 1)
+            return peaks[0];
 
         std::unordered_map<int, int> diffCount;
         int prev = -1;

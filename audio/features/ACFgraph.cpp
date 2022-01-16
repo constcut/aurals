@@ -38,11 +38,7 @@ void ACGraphQML::paint(QPainter* painter) {
 
     //PAINT ACC Buffer first, from 0 to max, lets max would be first 5
 
-    QPen rPen(QColor("red"));
-    rPen.setWidth(3);
 
-    QPen bPen(QColor("blue"));
-    bPen.setWidth(3);
 
     QPen gPen(QColor("green"));
     gPen.setWidth(3);
@@ -53,13 +49,24 @@ void ACGraphQML::paint(QPainter* painter) {
         painter->drawLine(idx, 0, idx, rect.height());
     }
 
+    QPen rPen(QColor("red")); //TODO just function with position, color, width to paint line!
+    rPen.setWidth(3);
+    QPen bPen(QColor("blue"));
+    bPen.setWidth(3);
+
     double prevYacc = rect.height();
     double prevDiff = rect.height();
+    double prevAcc = rect.height() / 2;
 
     for (size_t i = 0; i < _yin.accBufer.size(); ++i) {
 
+        painter->setPen(gPen);
+        const double newAC = rect.height() / 2 - _yin.acfBufer[i] * 14;
+        painter->drawLine(i-1, prevAcc, i, newAC);
+        prevAcc = newAC;
+
         painter->setPen(rPen);
-        const double newYacc = rect.height() - _yin.accBufer[i] * 30; //TODO scale
+        const double newYacc = rect.height() - _yin.accBufer[i] * 28; //TODO scale
         painter->drawLine(i-1, prevYacc, i, newYacc);
         prevYacc = newYacc;
 
@@ -67,10 +74,21 @@ void ACGraphQML::paint(QPainter* painter) {
         const double newDiff = rect.height() - _yin.sumBufer[i] * 7;
         painter->drawLine(i-1, prevDiff, i, newDiff);
         prevDiff = newDiff;
+
     }
 
     painter->setPen(QColor("orange"));
     painter->drawLine(_cursorPos, 0, _cursorPos, rect.height());
+
+    QPen wPen(QColor("white"));
+    wPen.setWidth(3);
+    painter->setPen(wPen);
+    painter->drawLine(_yin.mineFound, 0, _yin.mineFound, rect.height()/2);
+
+    QPen blackPen(QColor("black"));
+    blackPen.setWidth(3);
+    painter->setPen(blackPen);
+    painter->drawLine(_yin.stdFound, 0, _yin.stdFound, rect.height()/2);
 }
 
 

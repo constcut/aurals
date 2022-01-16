@@ -58,11 +58,20 @@ class Yin {
 
         size_t parabolicInterpolation(size_t t, std::vector<float>& v);
 
+
+        void calcBasicACF(const float* buffer);
+
     public:
+
+
+        std::vector<float> acfBufer;
 
         std::vector<float> sumBufer;
         std::vector<float> accBufer;
         std::vector<size_t> filteredIdx;
+
+        double stdFound;
+        double mineFound;
 
     private:
 
