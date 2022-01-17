@@ -123,10 +123,12 @@ void WaveContour::STFT(QString filename) {
     float hScale = log(height) / height;
 
     size_t spaceOf12Bins = 234;
+    size_t realH = 600 - spaceOf12Bins + 34;
 
 
     qDebug() << "Width " << width;
-    QImage img(width + 1, height + 1, QImage::Format_RGB32);
+    QImage img(width + 1, realH, QImage::Format_RGB32);
+    img.fill(QColor("black"));
 
     auto start = std::chrono::high_resolution_clock::now();
 
@@ -196,7 +198,7 @@ void WaveContour::STFT(QString filename) {
 
             QColor color(rColor,gColor,bColor);
 
-            img.setPixel(count, height - i + spaceOf12Bins, color.rgb());
+            img.setPixel(count, realH - 1 - i + spaceOf12Bins, color.rgb());
         }
 
 
