@@ -9,6 +9,7 @@
 
 
 #include "libs/kiss/kiss_fftr.h"
+#include "libs/fft/FFTurealfix.hpp"
 #include <QImage>
 
 
@@ -102,39 +103,85 @@ QByteArray WaveContour::getFloatSamples(const quint64 position, const quint64 sa
 }
 
 
+inline float hannWindowFun(float t, size_t N) {
+    return 0.5 * (1 - std::cos((2 * M_PI * t) / N)); //There was N-1 in Qt, but why?
+}
+
+
 
 //TODO sepparate it somewhere
 void WaveContour::STFT(QString filename) {
 
-    const size_t windowSize = 1024;
+    const size_t windowSize = 1024 * 4;
     const size_t windowStep = 64; //TODO 512 or 256 even
 
 
     kiss_fftr_cfg cfg = kiss_fftr_alloc( windowSize, 0, 0, 0 );
-    std::vector<kiss_fft_cpx> outKiss(windowSize); //TODO std::complex
+
+
+    FFTRealFixLen<12> fft_fix;
 
     size_t width = (_floatSamples.size() - windowSize) / windowStep;
 
+
+    size_t specCut = 4;
+
     qDebug() << "Width " << width;
-    QImage img(width + 1, (windowSize / 2) + 1, QImage::Format_RGB32);
+    QImage img(width + 1, (windowSize / specCut) + 1, QImage::Format_RGB32);
 
 
     auto start = std::chrono::high_resolution_clock::now();
 
+    std::vector<float> windowFun(windowSize);
+    for (size_t i = 0; i < windowSize; ++i)
+        windowFun[i] = hannWindowFun(i, windowSize); //window[i]
+
+    std::vector<float> windowed(windowSize);
+
+
+    std::vector<kiss_fft_cpx> outKiss(windowSize); //TODO std::complex
+    std::vector<float> outFix(windowSize);
+
+    std::vector<float> amp(windowSize, 0.f);
+
+    size_t height = windowSize / specCut;
+    float hScale = log(height) / height;
+
     size_t count = 0;
     size_t position = 0;
     while (position + windowSize < _floatSamples.size()) {
-        const float* window = &_floatSamples[position];
-        kiss_fftr( cfg , window , outKiss.data() );
-        //TODO image
 
-        for (size_t i = 0; i < outKiss.size() / 2; ++i) {
+        const float* winPos = &_floatSamples[position];
+
+        for (size_t i = 0; i < windowSize; ++i)
+            windowed[i] = winPos[i] * windowFun[i];
+
+        kiss_fftr( cfg , windowed.data() , outKiss.data() );
+        //TODO image
+        //fft_fix.do_fft(outFix.data() , windowed.data());
+
+
+
+        for (size_t i = 0; i < outKiss.size() / specCut; ++i) {
+
             const auto b = outKiss[i];
-            const float magnitude = b.i * b.i + b.r * b.r;
-            const float simpleG = 255 * magnitude;
-            QColor color(0, simpleG, 0);
-            img.setPixel(count, windowSize/2 - i, color.rgb());
+            const float magnitude = sqrt(b.i * b.i + b.r * b.r);
+            const float amplitude = 0.15 * std::log(magnitude);
+            amp[i] = amplitude;
+
+            //const float simpleG = 255 * (amplitude); //log10(magnitude);
+            //QColor color(0, simpleG, simpleG / 4.0); //.rgb
+            //img.setPixel(count, windowSize/specCut - i, color.rgb());
         }
+
+        for (size_t i = 0; i < outKiss.size() / specCut; ++i) {
+            int index = pow(2.7182818284590452354, i * hScale);
+            const float a = amp[index];
+            const float simpleG = 255 * (a);
+            QColor color(0, simpleG, simpleG / 4.0);
+            img.setPixel(count, windowSize/specCut - i, color.rgb());
+        }
+
 
         position += windowStep;
         ++count;
