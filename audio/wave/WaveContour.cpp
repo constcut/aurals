@@ -102,114 +102,87 @@ QByteArray WaveContour::getFloatSamples(const quint64 position, const quint64 sa
 }
 
 
+
+
 inline float hannWindowFun(float t, size_t N) {
-    return 0.5 * (1 - std::cos((2 * M_PI * t) / N)); //There was N-1 in Qt, but why?
+    return 0.5 * (1 - std::cos((2 * M_PI * t) / N));
 }
 
 
-void WaveContour::STFT(QString filename) {
+QRgb colorFromAmp(float amp) {
+    int gColor = 256 * amp;
+    int rColor = 0;
+    int bColor = 0;
+
+    if (gColor > 80)
+        gColor += 64;
+
+    if (gColor > 255)
+        gColor = 255;
+
+    if (gColor > 150)
+        rColor = gColor / 3;
+
+    if (gColor > 100)
+        bColor = gColor / 2;
+
+    QColor color(rColor,gColor,bColor);
+    return color.rgb();
+}
 
 
+void WaveContour::STFT(QString filename)
+{
     const size_t windowSize = 4096*2;
     const size_t windowStep = 256;
+    size_t width = (_floatSamples.size() - windowSize) / windowStep + 1;
 
-    kiss_fftr_cfg cfg = kiss_fftr_alloc( windowSize, 0, 0, 0 );
-
-    size_t width = (_floatSamples.size() - windowSize) / windowStep;
-    size_t specCut = 2;
-
-    size_t height = windowSize / specCut;
-    height = 600;
+    size_t height = 600;
     float hScale = log(height) / height;
+    size_t spaceOf12Bins = 234; //TODO calculate
+    size_t realHeight = 600 - spaceOf12Bins + 34;
 
-    size_t spaceOf12Bins = 234;
-    size_t realH = 600 - spaceOf12Bins + 34;
-
-
-    qDebug() << "Width " << width;
-    QImage img(width + 1, realH, QImage::Format_RGB32);
+    QImage img(width, realHeight, QImage::Format_RGB32);
     img.fill(QColor("black"));
 
-    auto start = std::chrono::high_resolution_clock::now();
-
-    std::vector<float> windowFun(windowSize);
+    std::vector<float> window(windowSize);
     for (size_t i = 0; i < windowSize; ++i)
-        windowFun[i] = hannWindowFun(i, windowSize); //window[i]
+        window[i] = hannWindowFun(i, windowSize);
 
-    std::vector<float> windowed(windowSize);
+    std::vector<float> windowedSamples(windowSize);
+    std::vector<kiss_fft_cpx> fftOutput(windowSize); //TODO std::complex
+    std::vector<float> amplitudes(windowSize, 0.f);
 
-    std::vector<kiss_fft_cpx> outKiss(windowSize); //TODO std::complex
-    std::vector<float> outFix(windowSize);
-
-    std::vector<float> amp(windowSize, 0.f);
+    kiss_fftr_cfg cfg = kiss_fftr_alloc( windowSize, 0, 0, 0 );
 
     size_t count = 0;
     size_t position = 0;
     while (position + windowSize < _floatSamples.size()) {
 
         const float* winPos = &_floatSamples[position];
-
         for (size_t i = 0; i < windowSize; ++i)
-            windowed[i] = winPos[i] * windowFun[i];
+            windowedSamples[i] = winPos[i] * window[i];
 
-        kiss_fftr( cfg , windowed.data() , outKiss.data() );
+        kiss_fftr( cfg , windowedSamples.data() , fftOutput.data() );
 
-
-        for (size_t i = 0; i < outKiss.size() / specCut; ++i) { //full amp count
-
-            const auto b = outKiss[i];
+        for (size_t i = 0; i < fftOutput.size() / 2; ++i) { // /2 because we don't search for all of the bins
+            const auto b = fftOutput[i];
             const float magnitude = sqrt(b.i * b.i + b.r * b.r);
             float amplitude = 0.15 * std::log(magnitude);
-
             amplitude = std::max(0.f, amplitude);
             amplitude = std::min(1.f, amplitude);
-
-            amp[i] = amplitude;
-
+            amplitudes[i] = amplitude;
         }
 
         for (size_t i = 0; i < height; ++i) {
-
-
-            int index = pow(2.7182818284590452354, i * hScale);
-            float a = amp[index];
-
+            int index = pow(M_E, i * hScale);
             if (index < 12)
                 continue;
-
-            int gColor = 256 * a; //TODO into function
-            int rColor = 0;
-            int bColor = 0;
-
-            if (gColor < 50)
-                gColor /= 10;
-
-            if (gColor > 80)
-                gColor += 64;
-
-            if (gColor > 255)
-                gColor = 255;
-
-            if (gColor > 150) //Only for current files :(
-                rColor = gColor / 3;
-
-            if (gColor > 100)
-                bColor = gColor / 2;
-
-            QColor color(rColor,gColor,bColor);
-
-            img.setPixel(count, realH - 1 - i + spaceOf12Bins, color.rgb());
+            img.setPixel(count, realHeight - 1 - i + spaceOf12Bins, colorFromAmp(amplitudes[index]));
         }
-
 
         position += windowStep;
         ++count;
     }
-
-    auto end = std::chrono::high_resolution_clock::now();
-    auto durationMs = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-    qDebug() << "Spent " << durationMs / 1000.0
-             << " on whole STFT "  << count << " steps";
-
     img.save(filename);
 }
