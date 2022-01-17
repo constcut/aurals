@@ -64,7 +64,9 @@ Item {
                     flick.contentWidth = waveShape.getPixelsLength() + 10
                     waveShape.width = flick.contentWidth
                     //TODO flick set too
+                    flick2.contentWidth = waveShape.getPixelsLength() + 10
                     strechedImg.setImage(waveShape.makeSTFT(), waveShape.getPixelsLength() + 10);
+                    strechedImg.width = flick2.contentWidth
                 }
             }
 
@@ -96,14 +98,14 @@ Item {
 
     Text {
         id: yinInfo
-        y : acfScroll.y + acfScroll.height + 30
+        y : acfScroll.y + acfScroll.height + 5
         x : 25
         text: "STFT info"
     }
 
     Text {
         id: yinInfo2
-        y : acfScroll.y + acfScroll.height + 30
+        y : acfScroll.y + acfScroll.height + 5
         x : parent.width/2
         text: "STFT info"
     }
@@ -125,7 +127,7 @@ Item {
 
         id: acfScroll
         width: parent.width
-        height: parent.height / 4
+        height: 420
 
         y: waveShape.height + waveShape.y + 5
 

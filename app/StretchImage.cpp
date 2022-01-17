@@ -3,5 +3,6 @@
 
 
 void StretchImageQML::paint(QPainter* painter) {
-    painter->drawImage(0, 0, _image);
+    auto rI = _image.scaled(_stretchedWidth, _image.height());
+    painter->drawImage(0, 0, rI, 0, 0, _stretchedWidth, -1);
 }
