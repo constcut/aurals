@@ -13,9 +13,12 @@ Item {
         waveShape.loadFile(item.filename)
     }
 
+    property int waveHeight: height/3
+    property int stftHeight: height/2
+
     ScrollView {
         width: parent.width
-        height: parent.height / 3 + 420
+        height:  item.waveHeight + item.stftHeight + 20 //parent.height / 3 + 420
 
         Flickable {
             id: flick
@@ -56,15 +59,13 @@ Item {
 
             Waveshape {
                 id: waveShape
-                height:  parent.height - 400
+                height:  item.waveHeight
                 width: 1000
                 y: 5
                 Component.onCompleted: {
                     waveShape.loadFile(item.filename)
                     flick.contentWidth = waveShape.getPixelsLength() + 10
                     waveShape.width = flick.contentWidth
-                    //TODO flick set too
-                    //flick2.contentWidth = waveShape.getPixelsLength() + 10
                     strechedImg.setImage(waveShape.makeSTFT(), waveShape.getPixelsLength() + 10);
                     strechedImg.width = flick.contentWidth
                 }
@@ -73,7 +74,7 @@ Item {
             StretchImage {
                 y: waveShape.height + 5
                 width: parent.width
-                height: 400
+                height: item.stftHeight
 
                 id: strechedImg
 

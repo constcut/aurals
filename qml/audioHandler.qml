@@ -102,7 +102,7 @@ Item {
             spacing: 10
             ToolButton {
                 property bool recording: false
-                text: recording ? "Stop and save" : "Start record"
+                text: recording ? "Stop+save" : "Start rec"
                 onClicked: {
                     if (recording) {
                         audio.stopRecord()
@@ -141,12 +141,6 @@ Item {
                 }
             }
             ToolButton {
-                text: "Show/Hide panel"
-                onClicked: {
-                    testAudioDialog.visible = !testAudioDialog.visible
-                }
-            }
-            ToolButton {
                 text: "Play"
                 onClicked: {
                     audio.resetBufer()
@@ -176,6 +170,12 @@ Item {
                 text: "STFT"
                 onClicked:  {
                     thatWindow.requestSTFT("records/" + filenameEdit.text)
+                }
+            }
+            ToolButton {
+                text: "Panel"
+                onClicked: {
+                    testAudioDialog.visible = !testAudioDialog.visible
                 }
             }
         }
