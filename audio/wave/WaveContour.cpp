@@ -103,6 +103,10 @@ QByteArray WaveContour::getFloatSamples(const quint64 position, const quint64 sa
 
 
 
+void WaveContour::STFTtoFile(QString filename) {
+    makeSTFT().save(filename);
+}
+
 
 inline float hannWindowFun(float t, size_t N) {
     return 0.5 * (1 - std::cos((2 * M_PI * t) / N));
@@ -116,13 +120,11 @@ QRgb colorFromAmp(float amp) {
 
     if (gColor > 80)
         gColor += 64;
-
     if (gColor > 255)
         gColor = 255;
 
     if (gColor > 150)
         rColor = gColor / 3;
-
     if (gColor > 100)
         bColor = gColor / 2;
 
@@ -131,8 +133,7 @@ QRgb colorFromAmp(float amp) {
 }
 
 
-void WaveContour::STFT(QString filename)
-{
+QImage WaveContour::makeSTFT() {
     const size_t windowSize = 4096*2;
     const size_t windowStep = 256;
     size_t width = (_floatSamples.size() - windowSize) / windowStep + 1;
@@ -184,5 +185,5 @@ void WaveContour::STFT(QString filename)
         position += windowStep;
         ++count;
     }
-    img.save(filename);
+    return img;
 }

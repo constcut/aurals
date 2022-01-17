@@ -46,6 +46,8 @@
 #include <QQuickPaintedItem>
 #include <QImage>
 #include <QList>
+#include <QVariant>
+
 
 #include "WaveContour.hpp"
 
@@ -143,7 +145,13 @@ namespace aural_sight {
         Q_INVOKABLE QList<qreal> getWindowYinF0() { auto y = calculateWindowYin(); return {y.first, y.second}; }
         Q_INVOKABLE qreal freqToMidi(const qreal freq) const;
 
-        Q_INVOKABLE void calcSTFT(QString filename) { _waveContour.STFT(filename); }
+        Q_INVOKABLE void saveSTFT(QString filename) { _waveContour.STFTtoFile(filename); }
+
+        Q_INVOKABLE QVariant makeSTFT() { return _waveContour.makeSTFT(); }
+
+        Q_INVOKABLE void saveImage(QVariant img, QString filename) {
+            img.value<QImage>().save(filename);
+        }
     };
 
 }

@@ -125,7 +125,9 @@ Item {
         x: parent.width - width - 10
         text: "STFT"
         onClicked:  {
-            waveShape.calcSTFT("test.jpg")
+            waveShape.saveSTFT("test_1.jpg")
+            var stft = waveShape.makeSTFT()
+            waveShape.saveImage(stft, "test_2.jpg")
         }
     }
 
