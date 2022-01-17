@@ -63,6 +63,11 @@ ApplicationWindow {
         mainLoader.setSource("qrc:/qml/ACFQML.qml", {"filename": filename});
     }
 
+    function requestSTFT(filename) {
+        mainLoader.setSource("qrc:/qml/STFTQML.qml", {"filename": filename});
+    }
+
+
     Loader {
     id:mainLoader
        anchors.fill: parent

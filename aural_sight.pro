@@ -19,6 +19,7 @@ SOURCES += \
     app/AndroidTools.cpp \
     app/Init.cpp \
     app/LogHandler.cpp \
+    app/StretchImage.cpp \
     audio/features/ACFgraph.cpp \
     audio/wave/AudioHandler.cpp \
     audio/wave/AudioReceiver.cpp \
@@ -68,6 +69,7 @@ HEADERS += \
     app/Clipboard.hpp \
     app/Init.hpp \
     app/LogHandler.hpp \
+    app/StretchImage.hpp \
     audio/features/ACFgraph.hpp \
     audio/features/PeaksOperations.hpp \
     audio/wave/AudioHandler.hpp \
@@ -128,6 +130,7 @@ DISTFILES += \
     qml/ConsoleLog.qml \
     qml/MidiRenderSettings.qml \
     qml/PianoMap.qml \
+    qml/STFTQML.qml \
     qml/WaveshapeQML.qml \
     qml/audioHandler.qml \
     qml/consoleLog.qml \

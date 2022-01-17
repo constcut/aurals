@@ -172,6 +172,12 @@ Item {
                     thatWindow.requestWaveshape("records/" + filenameEdit.text)
                 }
             }
+            ToolButton {
+                text: "STFT"
+                onClicked:  {
+                    thatWindow.requestSTFT("records/" + filenameEdit.text)
+                }
+            }
         }
 
         FileDialog {
