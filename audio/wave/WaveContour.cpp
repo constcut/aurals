@@ -111,7 +111,7 @@ void WaveContour::STFT(QString filename) {
 
 
     const size_t windowSize = 4096*2;
-    const size_t windowStep = 64; //TODO 512 or 256 even
+    const size_t windowStep = 256; //TODO 512 or 256 even
 
 
     kiss_fftr_cfg cfg = kiss_fftr_alloc( windowSize, 0, 0, 0 );
@@ -119,8 +119,13 @@ void WaveContour::STFT(QString filename) {
     size_t width = (_floatSamples.size() - windowSize) / windowStep;
     size_t specCut = 2;
 
+    size_t height = windowSize / specCut;
+    height = 600;
+    float hScale = log(height) / height;
+
+
     qDebug() << "Width " << width;
-    QImage img(width + 1, (windowSize / specCut) + 1, QImage::Format_RGB32);
+    QImage img(width + 1, height + 1, QImage::Format_RGB32);
 
     auto start = std::chrono::high_resolution_clock::now();
 
@@ -134,12 +139,6 @@ void WaveContour::STFT(QString filename) {
     std::vector<float> outFix(windowSize);
 
     std::vector<float> amp(windowSize, 0.f);
-
-    size_t height = windowSize / specCut;
-    float hScale = log(height) / height;
-
-    float minA = std::numeric_limits<float>::max();
-    float maxA = std::numeric_limits<float>::min();
 
     size_t count = 0;
     size_t position = 0;
@@ -164,15 +163,9 @@ void WaveContour::STFT(QString filename) {
 
             amp[i] = amplitude;
 
-            if (amplitude > maxA)
-                maxA = amplitude;
-
-            if (amplitude < minA)
-                minA = amplitude;
-
         }
 
-        for (size_t i = 0; i < outKiss.size() / specCut; ++i) {
+        for (size_t i = 0; i < height; ++i) {
 
             int index = pow(2.7182818284590452354, i * hScale);
             float a = amp[index];
@@ -198,7 +191,7 @@ void WaveContour::STFT(QString filename) {
 
             QColor color(rColor,gColor,bColor);
 
-            img.setPixel(count, windowSize/specCut - i, color.rgb());
+            img.setPixel(count, height - i, color.rgb());
         }
 
 
