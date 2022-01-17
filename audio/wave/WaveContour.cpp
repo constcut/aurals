@@ -112,7 +112,7 @@ inline float hannWindowFun(float t, size_t N) {
 //TODO sepparate it somewhere
 void WaveContour::STFT(QString filename) {
 
-    const size_t windowSize = 1024 * 4;
+    const size_t windowSize = 4096*2;
     const size_t windowStep = 64; //TODO 512 or 256 even
 
 
@@ -177,8 +177,15 @@ void WaveContour::STFT(QString filename) {
         for (size_t i = 0; i < outKiss.size() / specCut; ++i) {
             int index = pow(2.7182818284590452354, i * hScale);
             const float a = amp[index];
-            const float simpleG = 255 * (a);
-            QColor color(0, simpleG, simpleG / 4.0);
+            //const float simpleG = 255 * (a);
+
+            //const float logA = log10(a);
+            float c = 255 * (a);
+
+            if (a < 0.2)
+                c /= 4;
+
+            QColor color(0, c , c / 4);
             img.setPixel(count, windowSize/specCut - i, color.rgb());
         }
 
