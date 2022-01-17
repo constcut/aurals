@@ -15,7 +15,7 @@ Item {
 
     ScrollView {
         width: parent.width
-        height: parent.height / 3
+        height: parent.height / 3 + 420
 
         Flickable {
             id: flick
@@ -56,7 +56,7 @@ Item {
 
             Waveshape {
                 id: waveShape
-                height:  parent.height
+                height:  parent.height - 400
                 width: 1000
                 y: 5
                 Component.onCompleted: {
@@ -64,9 +64,24 @@ Item {
                     flick.contentWidth = waveShape.getPixelsLength() + 10
                     waveShape.width = flick.contentWidth
                     //TODO flick set too
-                    flick2.contentWidth = waveShape.getPixelsLength() + 10
+                    //flick2.contentWidth = waveShape.getPixelsLength() + 10
                     strechedImg.setImage(waveShape.makeSTFT(), waveShape.getPixelsLength() + 10);
-                    strechedImg.width = flick2.contentWidth
+                    strechedImg.width = flick.contentWidth
+                }
+            }
+
+            StretchImage {
+                y: waveShape.height + 5
+                width: parent.width
+                height: 400
+
+                id: strechedImg
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+
+                    }
                 }
             }
 
@@ -98,21 +113,21 @@ Item {
 
     Text {
         id: yinInfo
-        y : acfScroll.y + acfScroll.height + 5
+        y : settingsButton.y
         x : 25
         text: "STFT info"
     }
 
     Text {
         id: yinInfo2
-        y : acfScroll.y + acfScroll.height + 5
+        y : settingsButton.y
         x : parent.width/2
         text: "STFT info"
     }
 
     Button {
         id: settingsButton
-        y: yinInfo.y
+        y: parent.height - height - 10
         x: parent.width - width - 10
         text: "Settings"
         onClicked:  {
@@ -121,8 +136,7 @@ Item {
     }
 
 
-
-
+/*
     ScrollView {
 
         id: acfScroll
@@ -141,7 +155,7 @@ Item {
             contentHeight:  parent.height
 
             StretchImage {
-                y: 5// waveShape.height + waveShape.y + 5
+                y: 5
                 width: parent.width
                 height: parent.height
 
@@ -157,6 +171,6 @@ Item {
 
         }
 
-    }
+    }*/
 
 }
