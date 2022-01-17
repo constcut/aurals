@@ -250,8 +250,7 @@ Item {
                         filenameEdit.text = name
                     }
                     onDoubleClicked: {
-                        //thatWindow.requestWaveshape("records/" + filenameEdit.text)
-                        thatWindow.requestAFC("records/" + filenameEdit.text)
+                        thatWindow.requestWaveshape("records/" + filenameEdit.text)
                     }
                     onPressAndHold: {
                         wrapper.ListView.view.currentIndex = index
@@ -277,17 +276,21 @@ Item {
                 }
             }
             MenuItem {
-                text: "Open"
+                text: "Open wave"
                 onTriggered: {
                     thatWindow.requestWaveshape("records/" + filenameEdit.text)
                 }
             }
             MenuItem {
-                text: "Delete"
+                text: "Open ACF"
                 onTriggered: {
-                    if (filesModel.filename === "")
-                        return
-                    confirmDialog.visible = true
+                    thatWindow.requestAFC("records/" + filenameEdit.text)
+                }
+            }
+            MenuItem {
+                text: "Open STFT"
+                onTriggered: {
+                    thatWindow.requestSTFT("records/" + filenameEdit.text)
                 }
             }
         }
