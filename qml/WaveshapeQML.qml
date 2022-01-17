@@ -296,7 +296,7 @@ Item {
 
     Text {
         id: rmsGroup
-        y: specInfo.y
+        y: windowInfo.y
         x: parent.width / 4
         text: "<font color='red'>RMS group</font>"
     }

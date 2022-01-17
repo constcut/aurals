@@ -117,7 +117,7 @@ Item {
                     }
                 }
             }
-            TextEdit {
+            TextEdit { //TODO отдельный диалог
                 id: filenameEdit
                 width: 250
             }
@@ -172,7 +172,7 @@ Item {
                     thatWindow.requestSTFT("records/" + filenameEdit.text)
                 }
             }
-            ToolButton {
+            ToolButton { //TODO в базовое меню
                 text: "Panel"
                 onClicked: {
                     testAudioDialog.visible = !testAudioDialog.visible

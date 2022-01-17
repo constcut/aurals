@@ -119,19 +119,6 @@ Item {
         }
     }
 
-    Button {
-        id: stftTest
-        y: settingsButton.y + settingsButton.height + 10
-        x: parent.width - width - 10
-        text: "STFT"
-        onClicked:  {
-            waveShape.saveSTFT("test_1.jpg")
-            var stft = waveShape.makeSTFT()
-            waveShape.saveImage(stft, "test_2.jpg")
-        }
-    }
-
-
 
     ScrollView {
 
