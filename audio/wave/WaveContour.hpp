@@ -46,6 +46,8 @@ namespace aural_sight {
         void setYinWindowSize(const size_t newSize) { _yinWindowSize = newSize; }
         size_t getYinWindowSize() const { return _yinWindowSize; }
 
+        void STFT(QString filename);
+
     protected:
 
         std::vector<float> _floatSamples;

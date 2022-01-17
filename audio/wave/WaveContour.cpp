@@ -8,6 +8,10 @@
 #include "AudioUtils.hpp"
 
 
+#include "libs/kiss/kiss_fftr.h"
+#include <QImage>
+
+
 using namespace aural_sight;
 
 
@@ -95,4 +99,51 @@ QByteArray WaveContour::getFloatSamples(const quint64 position, const quint64 sa
     QByteArray analyseData = QByteArray(reinterpret_cast<const char*>(&_floatSamples[position]),
                                         samples * sizeof(float));
     return analyseData;
+}
+
+
+
+//TODO sepparate it somewhere
+void WaveContour::STFT(QString filename) {
+
+    const size_t windowSize = 1024;
+    const size_t windowStep = 64; //TODO 512 or 256 even
+
+
+    kiss_fftr_cfg cfg = kiss_fftr_alloc( windowSize, 0, 0, 0 );
+    std::vector<kiss_fft_cpx> outKiss(windowSize); //TODO std::complex
+
+    size_t width = (_floatSamples.size() - windowSize) / windowStep;
+
+    qDebug() << "Width " << width;
+    QImage img(width + 1, (windowSize / 2) + 1, QImage::Format_RGB32);
+
+
+    auto start = std::chrono::high_resolution_clock::now();
+
+    size_t count = 0;
+    size_t position = 0;
+    while (position + windowSize < _floatSamples.size()) {
+        const float* window = &_floatSamples[position];
+        kiss_fftr( cfg , window , outKiss.data() );
+        //TODO image
+
+        for (size_t i = 0; i < outKiss.size() / 2; ++i) {
+            const auto b = outKiss[i];
+            const float magnitude = b.i * b.i + b.r * b.r;
+            const float simpleG = 255 * magnitude;
+            QColor color(0, simpleG, 0);
+            img.setPixel(count, windowSize/2 - i, color.rgb());
+        }
+
+        position += windowStep;
+        ++count;
+    }
+
+    auto end = std::chrono::high_resolution_clock::now();
+    auto durationMs = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    qDebug() << "Spent " << durationMs / 1000.0
+             << " on whole STFT "  << count << " steps";
+
+    img.save(filename);
 }

@@ -142,6 +142,8 @@ namespace aural_sight {
 
         Q_INVOKABLE QList<qreal> getWindowYinF0() { auto y = calculateWindowYin(); return {y.first, y.second}; }
         Q_INVOKABLE qreal freqToMidi(const qreal freq) const;
+
+        Q_INVOKABLE void calcSTFT(QString filename) { _waveContour.STFT(filename); }
     };
 
 }

@@ -119,6 +119,17 @@ Item {
         }
     }
 
+    Button {
+        id: stftTest
+        y: settingsButton.y + settingsButton.height + 10
+        x: parent.width - width - 10
+        text: "STFT"
+        onClicked:  {
+            waveShape.calcSTFT("test.jpg")
+        }
+    }
+
+
 
     ScrollView {
 
