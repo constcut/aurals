@@ -111,8 +111,7 @@ void WaveContour::STFT(QString filename) {
 
 
     const size_t windowSize = 4096*2;
-    const size_t windowStep = 256; //TODO 512 or 256 even
-
+    const size_t windowStep = 256;
 
     kiss_fftr_cfg cfg = kiss_fftr_alloc( windowSize, 0, 0, 0 );
 
@@ -122,6 +121,8 @@ void WaveContour::STFT(QString filename) {
     size_t height = windowSize / specCut;
     height = 600;
     float hScale = log(height) / height;
+
+    size_t spaceOf12Bins = 234;
 
 
     qDebug() << "Width " << width;
@@ -152,7 +153,7 @@ void WaveContour::STFT(QString filename) {
         kiss_fftr( cfg , windowed.data() , outKiss.data() );
 
 
-        for (size_t i = 0; i < outKiss.size() / specCut; ++i) {
+        for (size_t i = 0; i < outKiss.size() / specCut; ++i) { //full amp count
 
             const auto b = outKiss[i];
             const float magnitude = sqrt(b.i * b.i + b.r * b.r);
@@ -167,10 +168,14 @@ void WaveContour::STFT(QString filename) {
 
         for (size_t i = 0; i < height; ++i) {
 
+
             int index = pow(2.7182818284590452354, i * hScale);
             float a = amp[index];
 
-            int gColor = 256 * a;
+            if (index < 12)
+                continue;
+
+            int gColor = 256 * a; //TODO into function
             int rColor = 0;
             int bColor = 0;
 
@@ -191,7 +196,7 @@ void WaveContour::STFT(QString filename) {
 
             QColor color(rColor,gColor,bColor);
 
-            img.setPixel(count, height - i, color.rgb());
+            img.setPixel(count, height - i + spaceOf12Bins, color.rgb());
         }
 
 
@@ -203,8 +208,6 @@ void WaveContour::STFT(QString filename) {
     auto durationMs = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
     qDebug() << "Spent " << durationMs / 1000.0
              << " on whole STFT "  << count << " steps";
-
-    qDebug() << minA << " " << maxA;
 
     img.save(filename);
 }
