@@ -52,6 +52,11 @@ namespace aural_sight {
         void paintACFbufer(QPainter& painter, const std::vector<float>& bufer,
                            size_t size, QString color, float heightPos, float scaleCoef);
 
+        void paintImage(QPainter& painter);
+
+        QImage _mainImage;
+        bool _imagePainted = false;
+
     };
 
 }

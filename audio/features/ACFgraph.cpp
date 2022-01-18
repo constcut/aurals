@@ -23,6 +23,7 @@ bool ACGraphQML::loadByteArray(QByteArray analyseData) {
 
     _yin.init(44100, _numSamples);
     _lastFreq = _yin.process(_input.data());
+    _imagePainted = false;
     update();
     return true;
 }
@@ -35,6 +36,7 @@ void ACGraphQML::loadFloatSamples(QByteArray samples) {
 
     _yin.init(44100, _numSamples);
     _lastFreq = _yin.process(ptr);
+    _imagePainted = false;
     update();
 }
 
@@ -71,40 +73,51 @@ void ACGraphQML::paintACFbufer(QPainter& painter, const std::vector<float>& bufe
     }
 }
 
+void ACGraphQML::paintImage(QPainter& painter) {
+    _mainImage =  QImage(painter.device()->width(), painter.device()->height(), QImage::Format_ARGB32);
+    QPainter imgPainter(&_mainImage);
 
-void ACGraphQML::paint(QPainter* painter) {
-
-    prepareBackground(*painter);
+    prepareBackground(imgPainter);
 
     QPen gPen(QColor("green"));
     gPen.setWidth(3);
-    painter->setPen(gPen);
+    imgPainter.setPen(gPen);
 
     int h = height();
     for (size_t i = 0; i < _yin.filteredIdx.size(); ++i) {
         const auto idx = _yin.filteredIdx[i];
-        painter->drawLine(idx, 0, idx, h);
+        imgPainter.drawLine(idx, 0, idx, h);
     }
 
     size_t uiSize = _yin.accBufer.size();
-    paintACFbufer(*painter, _yin.acfBufer, uiSize, "green", h/2, 14);
-    paintACFbufer(*painter, _yin.accBufer, uiSize, "red", h, 28);
-    paintACFbufer(*painter, _yin.sumBufer, uiSize, "blue", h, 7);
-
-    painter->setPen(QColor("orange"));
-    painter->drawLine(_cursorPos, 0, _cursorPos, h);
+    paintACFbufer(imgPainter, _yin.acfBufer, uiSize, "green", h/2, 14);
+    paintACFbufer(imgPainter, _yin.accBufer, uiSize, "red", h, 28);
+    paintACFbufer(imgPainter, _yin.sumBufer, uiSize, "blue", h, 7);
 
     QPen wPen(QColor("white"));
     wPen.setWidth(3);
-    painter->setPen(wPen);
-    painter->drawLine(_yin.mineFound, 0, _yin.mineFound, h/2);
+    imgPainter.setPen(wPen);
+    imgPainter.drawLine(_yin.mineFound, 0, _yin.mineFound, h/2);
 
     QPen blackPen(QColor("black"));
     blackPen.setWidth(3);
-    painter->setPen(blackPen);
-    painter->drawLine(_yin.stdFound, 0, _yin.stdFound, h/2);
+    imgPainter.setPen(blackPen);
+    imgPainter.drawLine(_yin.stdFound, 0, _yin.stdFound, h/2);
 }
 
+
+void ACGraphQML::paint(QPainter* painter) {
+
+    if (_imagePainted == false) {
+        paintImage(*painter);
+        _imagePainted = true;
+    }
+
+    painter->drawImage(QPoint{0,0}, _mainImage);
+
+    painter->setPen(QColor("orange"));
+    painter->drawLine(_cursorPos, 0, _cursorPos, height());
+}
 
 
 
