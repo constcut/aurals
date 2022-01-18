@@ -115,7 +115,7 @@ Item {
 
     RowLayout {
         id : buttonsLayout
-        y: 5
+        y: secondMidiNoteField.y + secondMidiNoteField.height + 5
         x: leftTap.width + (parent.width - leftTap.width - rightTap.width - width) / 2
         spacing: 10
         ToolButton {

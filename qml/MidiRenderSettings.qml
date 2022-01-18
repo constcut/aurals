@@ -12,6 +12,7 @@ Item {
         spacing:  10
         Text {
             text: "Volume"
+            visible:  Qt.platform.os == "android" ? false : true
         }
         ComboBox {
             model : ["24.0", "18.0", "12.0", "6.0", "0.0", "-6.0", "-12.0"]
@@ -20,9 +21,11 @@ Item {
                 var db = parseFloat(currentText)
                 audio.changeMidiRenderVolume(db)
             }
+            width: 50
         }
         Text {
             text: "Soundfont"
+            visible:  Qt.platform.os == "android" ? false : true
         }
         ComboBox {
             model: ["epiano.sf2", "guitar.sf2", "fullset.sf2", "eguitar.sf2", "nylon_guitar.sf2", "piano.sf2", "drums.sf2"]
@@ -33,6 +36,7 @@ Item {
         }
         Text {
             text: "Sample Rate"
+            visible:  Qt.platform.os == "android" ? false : true
         }
         ComboBox {
             id: midiSampleRate
@@ -44,6 +48,7 @@ Item {
         }
         Text {
             text: "Speed"
+            visible:  Qt.platform.os == "android" ? false : true
         }
         ComboBox {
             id: midiSpeedCoef
@@ -52,6 +57,7 @@ Item {
             onCurrentTextChanged: {
                 midiRenderLayout.updateSampleRates()
             }
+            implicitWidth: 70
         }
         function updateSampleRates() {
             var coef = parseFloat(midiSpeedCoef.currentText)

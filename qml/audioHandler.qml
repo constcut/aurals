@@ -154,8 +154,8 @@ Item {
                     fileDialog.visible = true
                 }
             }
-            ToolButton { //TODO в базовое меню
-                text: "Panel"
+            ToolButton { //TODO в базовое меню или общие настройки
+                text: "P"
                 onClicked: {
                     testAudioDialog.visible = !testAudioDialog.visible
                 }

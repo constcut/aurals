@@ -14,7 +14,7 @@ Item {
     }
 
     property int waveHeight: height/3
-    property int stftHeight: Qt.platform.os == "Android" ? height/2 : 400
+    property int stftHeight: Qt.platform.os == "android" ? height/2 : 400
 
     ScrollView {
         width: parent.width
