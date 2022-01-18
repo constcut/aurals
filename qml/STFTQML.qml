@@ -14,7 +14,7 @@ Item {
     }
 
     property int waveHeight: height/3
-    property int stftHeight: height/2
+    property int stftHeight: Qt.platform.os == "Android" ? height/2 : 400
 
     ScrollView {
         width: parent.width
@@ -47,7 +47,6 @@ Item {
                 onClicked:{
                     var minRmStep = waveShape.getMinRmsStep()
                     waveShape.setWindowPosition(mouseX * minRmStep/2.0)
-
                 }
                 onDoubleClicked: {
                     var minRmStep = waveShape.getMinRmsStep()
@@ -81,7 +80,17 @@ Item {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
+                            //Yet accurate only on desktop, very evil ariphmetic
+                        var hScale = Math.log(600) / 600;
+                        var inversedPos = strechedImg.height  - mouseY
+                        inversedPos += 234 //12 bins shift TODO calculate
+                        var freqInBin = 44100 / 8192
 
+                        var minRmStep = waveShape.getMinRmsStep()
+                        var binIdx = Math.pow(Math.exp(1), inversedPos * hScale)
+                        stftInfo.text = "Freq=  " + freqInBin * binIdx
+                                + "\nTime= " + ((mouseX * minRmStep / 2.0) / 44100.0).toFixed(4)
+                                + "\тBin=" + binIdx
                     }
                 }
             }
@@ -113,14 +122,14 @@ Item {
     }
 
     Text {
-        id: yinInfo
+        id: stftInfo
         y : settingsButton.y
         x : 25
         text: "STFT info"
     }
 
     Text {
-        id: yinInfo2
+        id: stftInfo2
         y : settingsButton.y
         x : parent.width/2
         text: "STFT info"
@@ -128,7 +137,7 @@ Item {
 
     Button {
         id: settingsButton
-        y: parent.height - height - 10
+        y: parent.height - height - 30
         x: parent.width - width - 10
         text: "Settings"
         onClicked:  {
@@ -136,42 +145,5 @@ Item {
         }
     }
 
-
-/*
-    ScrollView {
-
-        id: acfScroll
-        width: parent.width
-        height: 420
-
-        y: waveShape.height + waveShape.y + 5
-
-        Flickable {
-            id: flick2
-            y: 5// waveShape.height + waveShape.y + 5
-            x: 0
-            width: parent.width
-            height: parent.height - 20
-            contentWidth: 2048
-            contentHeight:  parent.height
-
-            StretchImage {
-                y: 5
-                width: parent.width
-                height: parent.height
-
-                id: strechedImg
-
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-
-                    }
-                }
-            }
-
-        }
-
-    }*/
 
 }

@@ -154,10 +154,10 @@ Item {
                     fileDialog.visible = true
                 }
             }
-            ToolButton {
-                text: "ACF"
-                onClicked:  {
-                    thatWindow.requestAFC("records/" + filenameEdit.text)
+            ToolButton { //TODO в базовое меню
+                text: "Panel"
+                onClicked: {
+                    testAudioDialog.visible = !testAudioDialog.visible
                 }
             }
             ToolButton {
@@ -167,17 +167,18 @@ Item {
                 }
             }
             ToolButton {
+                text: "ACF"
+                onClicked:  {
+                    thatWindow.requestAFC("records/" + filenameEdit.text)
+                }
+            }
+            ToolButton {
                 text: "STFT"
                 onClicked:  {
                     thatWindow.requestSTFT("records/" + filenameEdit.text)
                 }
             }
-            ToolButton { //TODO в базовое меню
-                text: "Panel"
-                onClicked: {
-                    testAudioDialog.visible = !testAudioDialog.visible
-                }
-            }
+
         }
 
         FileDialog {
