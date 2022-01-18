@@ -86,14 +86,14 @@ void ACGraphQML::paint(QPainter* painter) {
     rPen.setWidth(3);
     QPen bPen(QColor("blue"));
     bPen.setWidth(3);
-    QPen cPen(QColor("cyan"));
-    cPen.setWidth(3);
+    //QPen cPen(QColor("cyan"));
+    //cPen.setWidth(3);
 
 
     double prevYacc = rect.height();
     double prevDiff = rect.height();
     double prevAcc = rect.height() / 2;
-    double prevDiff2 = rect.height();
+    //double prevDiff2 = rect.height();
 
     for (size_t i = 0; i < _yin.accBufer.size(); ++i) {
 
@@ -112,10 +112,11 @@ void ACGraphQML::paint(QPainter* painter) {
         painter->drawLine(i-1, prevDiff, i, newDiff);
         prevDiff = newDiff;
 
+        /*
         painter->setPen(cPen);
         const double newDiff2 = rect.height() - _yin.sumBufV2[i] * 7;
         painter->drawLine(i-1, prevDiff2, i, newDiff2);
-        prevDiff2 = newDiff2;
+        prevDiff2 = newDiff2;*/
 
     }
 
