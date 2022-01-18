@@ -338,6 +338,60 @@ Item {
         }
     }
 
+    Button {
+        id: showSTFT
+        y: showNotesButton.y + showNotesButton.height + 5
+        x: parent.width - width - 10
+        text: "Show STFT"
+        onClicked:  {
+            //TODO calculate real width + add flick?
+            strechedImg.setImage(waveShape.makeSTFT(), 800);
+            stftDialog.open()
+        }
+    }
+
+
+    Dialog {
+        id: stftDialog
+
+        width: 850
+        height: 500
+
+        StretchImage {
+            x: 15
+            y: 10
+            width: 800
+            height: 400
+            id: strechedImg
+        }
+
+        ToolButton {
+            y: parent.height - height - 5
+            x: parent.width - width - 10
+            text: "Save to file"
+            onClicked: {
+                saveFileDialog.open()
+            }
+        }
+    }
+
+    FileDialog {
+        id: saveFileDialog
+        title: "Save STFT file to file"
+        folder: shortcuts.home
+        selectExisting: false
+        selectMultiple: false
+        onAccepted: {
+            waveShape.saveSTFT(saveFileDialog.fileUrls[0].substring(7))
+            saveFileDialog.visible = false
+        }
+        onRejected: {
+            saveFileDialog.visible = false
+        }
+        nameFilters: [ "JPEG file (*.jpg)" ]
+    }
+
+
     Spectrograph {
         y: waveShape.height + waveShape.y + 5
         width: parent.width
