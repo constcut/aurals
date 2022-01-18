@@ -39,6 +39,8 @@ namespace aural_sight {
 
         Q_INVOKABLE QByteArray getACF();
 
+        Q_INVOKABLE void saveImage(QString filename) { _mainImage.save(filename); }
+
     private:
 
         QVector<float> _input; //TODO тут и в спектральном анализаторе

@@ -19,6 +19,8 @@ public:
         _stretchedWidth = newWidth;
     }
 
+    Q_INVOKABLE void saveImage(QString filename) { _image.save(filename); }
+
 private:
 
     QImage _image;

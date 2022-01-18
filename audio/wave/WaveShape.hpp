@@ -149,9 +149,7 @@ namespace aural_sight {
 
         Q_INVOKABLE QVariant makeSTFT() { return _waveContour.makeSTFT(); }
 
-        Q_INVOKABLE void saveImage(QVariant img, QString filename) {
-            img.value<QImage>().save(filename);
-        }
+        Q_INVOKABLE void saveImage(QString filename) { _mainImage.save(filename); }
     };
 
 }
