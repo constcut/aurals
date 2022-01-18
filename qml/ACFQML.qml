@@ -47,6 +47,10 @@ Item {
                     //acgraph.loadByteArray(waveShape.getPCM(mouseX * minRmStep / 2.0, 4096));
                     acgraph.loadFloatSamples(waveShape.getFloatSamples(mouseX * minRmStep / 2.0, 4096))
                     yinInfo.text = acgraph.getLastFreq()
+                            + "\nTime = " + ((mouseX * minRmStep / 2.0) / 44100.0).toFixed(4)
+                            + "\nSpecPitch= " + spectrum.getSpectrumF0().toFixed(3)
+
+                    spectrum.loadFloatSamples(acgraph.getACF())
 
                 }
                 onDoubleClicked: {
@@ -97,21 +101,28 @@ Item {
 
     Text {
         id: yinInfo
-        y : acfScroll.y + acfScroll.height + 30
+        y : settingsButton.y
         x : 25
         text: "Yin info"
     }
 
     Text {
         id: yinInfo2
-        y : acfScroll.y + acfScroll.height + 30
-        x : parent.width/2
+        y : settingsButton.y
+        x : parent.width/3
+        text: "Yin info"
+    }
+
+    Text {
+        id: specInfo
+        y : settingsButton.y
+        x : 2*parent.width/3
         text: "Yin info"
     }
 
     Button {
         id: settingsButton
-        y: yinInfo.y
+        y: parent.height - height - 30
         x: parent.width - width - 10
         text: "Settings"
         onClicked:  {
@@ -121,11 +132,9 @@ Item {
 
 
     ScrollView {
-
         id: acfScroll
         width: parent.width
         height: parent.height / 4
-
         y: waveShape.height + waveShape.y + 5
 
         Flickable {
@@ -153,9 +162,30 @@ Item {
                     }
                 }
             }
-
         }
+    }
 
+
+    Spectrograph {
+        y: acfScroll.height + acfScroll.y + 5
+        width: parent.width
+        height: parent.height / 6
+        id:spectrum
+
+        MouseArea {
+            anchors.fill: parent
+            function log10(val) {
+              return Math.log(val) / Math.LN10;
+            }
+            onClicked: {
+                spectrum.onPress(mouseX, mouseY, spectrum.width, spectrum.height)
+                specInfo.text = spectrum.getFreq1().toFixed(2) + "-" + spectrum.getFreq2().toFixed(2) + " Hz"
+                +  " lvl = " + (20*log10(spectrum.getValue())).toFixed(1) + " idx " + spectrum.getIndex()
+                        + " val " + spectrum.getValue().toFixed(4)
+            }
+        }
+        onSpectrumCalculated: {
+        }
     }
 
 }

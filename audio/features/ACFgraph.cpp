@@ -2,6 +2,8 @@
 
 #include "audio/wave/AudioUtils.hpp"
 
+#include <cmath>
+
 using namespace aural_sight;
 
 
@@ -34,6 +36,31 @@ void ACGraphQML::loadFloatSamples(QByteArray samples) {
     _yin.init(44100, _numSamples);
     _lastFreq = _yin.process(ptr);
     update();
+}
+
+
+inline float hannWindowFun(float t, size_t N) { //TODO windows into special header
+    return 0.5 * (1 - std::cos((2 * M_PI * t) / N));
+}
+
+
+Q_INVOKABLE QByteArray ACGraphQML::getACF() {
+
+    size_t samplesCount = 4096;
+
+    std::vector<float> buf(samplesCount, 0.f);
+
+    const std::vector<float>& src = _yin.acfBufer;  //_yin.accBufer //acfBufer
+
+    for (size_t i = 0; i < src.size(); ++i) //TODO speedup
+        buf[i] = hannWindowFun(i, samplesCount) * src[i];
+
+
+    QByteArray yinData = QByteArray(
+                reinterpret_cast<const char*>(&buf[0]),
+                samplesCount * sizeof(float));
+
+    return yinData;
 }
 
 

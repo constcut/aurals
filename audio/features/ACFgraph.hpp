@@ -39,6 +39,8 @@ namespace aural_sight {
             update(); //TODO вначале нарисовать всю подложку
         }
 
+        Q_INVOKABLE QByteArray getACF();
+
     private:
         QVector<float> _input; //TODO тут и в спектральном анализаторе
         YinPP _yin;
