@@ -43,6 +43,7 @@
 
 #include <qglobal.h>
 #include "audio/wave/AudioUtils.hpp"
+#include "audio/features/WindowFunction.hpp"
 
 namespace aural_sight {
 
@@ -52,15 +53,6 @@ namespace aural_sight {
     const qreal SpectrumLowFreq = 20.0; // Hz
     const qreal SpectrumHighFreq = 4000.0; // Hz
     const qreal SpectrumAnalyserMultiplier = 0.15;
-
-
-    enum WindowFunction {
-        NoWindow = 0,
-        HannWindow = 1,
-        GausWindow = 2,
-        BlackmanWindow = 3,
-        HammWindow = 4
-    };
 
     const WindowFunction DefaultWindowFunction = HannWindow;
 }

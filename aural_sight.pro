@@ -72,6 +72,7 @@ HEADERS += \
     app/StretchImage.hpp \
     audio/features/ACFgraph.hpp \
     audio/features/PeaksOperations.hpp \
+    audio/features/WindowFunction.hpp \
     audio/wave/AudioHandler.hpp \
     audio/wave/AudioReceiver.hpp \
     audio/wave/AudioSpeaker.hpp \

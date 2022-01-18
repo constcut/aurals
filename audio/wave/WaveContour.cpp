@@ -5,7 +5,8 @@
 #include "WavFile.hpp"
 #include "audio/features/FeatureExtractor.hpp"
 #include "audio/features/PeaksOperations.hpp"
-#include "AudioUtils.hpp"
+#include "audio/wave/AudioUtils.hpp"
+#include "audio/features/WindowFunction.hpp"
 
 
 #include "libs/kiss/kiss_fftr.h"
@@ -108,10 +109,6 @@ void WaveContour::STFTtoFile(QString filename) {
 }
 
 
-inline float hannWindowFun(float t, size_t N) {
-    return 0.5 * (1 - std::cos((2 * M_PI * t) / N));
-}
-
 
 QRgb colorFromAmp(float amp) {
     int gColor = 256 * amp;
@@ -148,7 +145,7 @@ QImage WaveContour::makeSTFT() {
 
     std::vector<float> window(windowSize);
     for (size_t i = 0; i < windowSize; ++i)
-        window[i] = hannWindowFun(i, windowSize);
+        window[i] = hannWindow(i, windowSize);
 
     std::vector<float> windowedSamples(windowSize);
     std::vector<kiss_fft_cpx> fftOutput(windowSize); //TODO std::complex
