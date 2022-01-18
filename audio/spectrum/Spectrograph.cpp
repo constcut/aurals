@@ -66,16 +66,6 @@ void SpectrographPainter::prepareBackground(QPainter &painter, const QRect &rect
     const double barWidth = rect.width()/( static_cast<double>(numBars) );
     auto calcXPos = [&rect, &barWidth](int index) { return (rect.topLeft().x() + index * barWidth); };
 
-    if (_barSelected != -1 && numBars) {
-        QRectF regionRect = rect;
-        regionRect.setLeft(calcXPos(_barSelected));
-        regionRect.setWidth(barWidth);
-        QColor regionColor(202, 202, 64);
-        painter.setBrush(Qt::DiagCrossPattern);
-        painter.fillRect(regionRect, regionColor);
-        painter.setBrush(Qt::NoBrush);
-    }
-
     QColor barColor(51, 204, 102);
     const QColor gridColor = barColor.darker();
     QPen gridPen(gridColor);
@@ -154,13 +144,38 @@ void SpectrographPainter::paintSlope(QPainter &painter, const QRect &rect) const
 }
 
 
-void SpectrographPainter::paintSpectr(QPainter &painter, const QRect &rect) const {
-    prepareBackground(painter, rect);
+void SpectrographPainter::paintSpectr(QPainter &painter, const QRect &rect) {
+
 
     if (_bars.count()) {
-        paintBars(painter, rect);
-        if (_gapLevel < 0.1)
-            paintSlope(painter, rect);
+
+        if (_imagePainted == false) {
+
+            _mainImage = QImage(painter.device()->width(), painter.device()->height(), QImage::Format_ARGB32);
+            QPainter imgPainter(&_mainImage);
+
+            prepareBackground(imgPainter, rect);
+            paintBars(imgPainter, rect);
+            if (_gapLevel < 0.1)
+                paintSlope(imgPainter, rect);
+
+            _imagePainted = true;
+        }
+
+        painter.drawImage(QPoint{0,0}, _mainImage);
+
+        const double barWidth = rect.width()/( static_cast<double>(_bars.count()) );
+        auto calcXPos = [&rect, &barWidth](int index) { return (rect.topLeft().x() + index * barWidth); };
+
+        if (_barSelected != -1) {
+            QRectF regionRect = rect;
+            regionRect.setLeft(calcXPos(_barSelected));
+            regionRect.setWidth(barWidth);
+            QColor regionColor(202, 202, 64);
+            painter.setBrush(Qt::DiagCrossPattern);
+            painter.fillRect(regionRect, regionColor);
+            painter.setBrush(Qt::NoBrush);
+        }
     }
     else
         qDebug () << "No bars to draw for qml";
@@ -239,6 +254,7 @@ void SpectrographPainter::updateBars()
     if (_gapLevel < 0.1)
         classifySlope();
     findPeaks();
+    _imagePainted = false;
 }
 
 
@@ -308,8 +324,6 @@ void SpectrographPainter::findF0() { //TODO findF0 classifySlope findPeaks ис�
     //Нужно сохранять дополнительную информацию - какой пик из +- был максимальным
     //Нужно сохранять процент не пустых пиков, так как например если субгармоника содержит все гармоники, но и пропуски - её рейтинг должен падать
     _spectrumPitch = (sortedTable[0].first + 0.5) * _freqStep;
-
-    qDebug() << "Pitch " << _spectrumPitch;
 
      //Нужно использовать максимальный пик из + - тогда получится повысить точность
     _specPitchAprox = (sortedTable[0].first + 0.5) * _freqStep +

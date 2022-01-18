@@ -45,6 +45,7 @@
 
 #include <QQuickPaintedItem>
 #include <QPainter>
+#include <QImage>
 
 #include <unordered_set>
 
@@ -60,7 +61,7 @@ namespace aural_sight {
         SpectrographPainter();
         ~SpectrographPainter() = default;
 
-        void paintSpectr(QPainter &painter, const QRect &rect) const;
+        void paintSpectr(QPainter &painter, const QRect &rect);
         void setParams(const int numBars, const qreal lowFreq, const qreal highFreq);
 
     protected:
@@ -107,6 +108,9 @@ namespace aural_sight {
         int _maxIdx = -1;
         int _lastIdx = - 1;
         double _lastValue = 0.0;
+
+        QImage _mainImage;
+        bool _imagePainted = false;
     };
 
 
@@ -169,6 +173,8 @@ namespace aural_sight {
         Q_INVOKABLE void setWindowFunction(const int idx) {
             _analyser.setWindowFunction(idx);
         }
+
+        Q_INVOKABLE void saveImage(QString filename) { _mainImage.save(filename); }
 
     public slots:
         void spectrumChanged(const qint64 position, const qint64 length,

@@ -146,7 +146,6 @@ namespace aural_sight {
         Q_INVOKABLE qreal freqToMidi(const qreal freq) const;
 
         Q_INVOKABLE void saveSTFT(QString filename) { _waveContour.STFTtoFile(filename); }
-
         Q_INVOKABLE QVariant makeSTFT() { return _waveContour.makeSTFT(); }
 
         Q_INVOKABLE void saveImage(QString filename) { _mainImage.save(filename); }
