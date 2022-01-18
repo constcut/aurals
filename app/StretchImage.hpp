@@ -5,27 +5,30 @@
 #include <QPainter>
 #include <QVariant>
 
+namespace aural_sight {
 
-class StretchImageQML: public QQuickPaintedItem
-{
-        Q_OBJECT
-public:
-    StretchImageQML([[maybe_unused]] QQuickItem* parent = nullptr){}
+    class StretchImageQML: public QQuickPaintedItem
+    {
+            Q_OBJECT
+    public:
+        StretchImageQML([[maybe_unused]] QQuickItem* parent = nullptr){}
 
-    void paint(QPainter* painter);
+        void paint(QPainter* painter);
 
-    Q_INVOKABLE void setImage(QVariant img, int newWidth) {
-        _image = img.value<QImage>();
-        _stretchedWidth = newWidth;
-    }
+        Q_INVOKABLE void setImage(QVariant img, int newWidth) {
+            _image = img.value<QImage>();
+            _stretchedWidth = newWidth;
+        }
 
-    Q_INVOKABLE void saveImage(QString filename) { _image.save(filename); }
+        Q_INVOKABLE void saveImage(QString filename) { _image.save(filename); }
 
-private:
+    private:
 
-    QImage _image;
-    int _stretchedWidth;
+        QImage _image;
+        int _stretchedWidth;
 
-};
+    };
+
+}
 
 #endif // STRETCHIMAGE_HPP
