@@ -90,7 +90,7 @@ Item {
                         var binIdx = Math.pow(Math.exp(1), inversedPos * hScale)
                         stftInfo.text = "Freq=  " + freqInBin * binIdx
                                 + "\nTime= " + ((mouseX * minRmStep / 2.0) / 44100.0).toFixed(4)
-                                + "\тBin=" + binIdx
+                                + "\nBin=" + binIdx
                     }
                 }
             }
@@ -133,11 +133,12 @@ Item {
         y : settingsButton.y
         x : parent.width/2
         text: "STFT info"
+        visible: false
     }
 
     Button {
         id: settingsButton
-        y: parent.height - height - 30
+        y: parent.height - height - 10
         x: parent.width - width - 10
         text: "Settings"
         onClicked:  {

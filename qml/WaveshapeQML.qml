@@ -340,8 +340,8 @@ Item {
 
     Button {
         id: showSTFT
-        y: showNotesButton.y + showNotesButton.height + 5
-        x: parent.width - width - 10
+        y: showNotesButton.y
+        x: parent.width - width - 10 - showNotesButton.width - 10
         text: "Show STFT"
         onClicked:  {
             //TODO calculate real width + add flick?
@@ -354,12 +354,12 @@ Item {
     Dialog {
         id: stftDialog
 
-        width: 850
+        width: 825
         height: 500
 
         StretchImage {
-            x: 15
-            y: 10
+            x: 0
+            y: 0
             width: 800
             height: 400
             id: strechedImg
