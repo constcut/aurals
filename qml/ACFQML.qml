@@ -48,9 +48,8 @@ Item {
                     acgraph.loadFloatSamples(waveShape.getFloatSamples(mouseX * minRmStep / 2.0, 4096))
                     yinInfo.text = acgraph.getLastFreq()
                             + "\nTime = " + ((mouseX * minRmStep / 2.0) / 44100.0).toFixed(4)
-                            + "\nSpecPitch= " + spectrum.getSpectrumF0().toFixed(3)
-
-                    spectrum.loadFloatSamples(acgraph.getACF())
+                            //+ "\nSpecPitch= " + spectrum.getSpectrumF0().toFixed(3)
+                    //spectrum.loadFloatSamples(acgraph.getACF())
 
                 }
                 onDoubleClicked: {
@@ -113,12 +112,13 @@ Item {
         text: "Yin info"
     }
 
+    /*
     Text {
         id: specInfo
         y : settingsButton.y
         x : 2*parent.width/3
-        text: "Yin info"
-    }
+        text: "Spectrum info"
+    }*/
 
     Button {
         id: settingsButton
@@ -165,7 +165,7 @@ Item {
         }
     }
 
-
+    /* //ACF spectrum experiment
     Spectrograph {
         y: acfScroll.height + acfScroll.y + 5
         width: parent.width
@@ -186,6 +186,6 @@ Item {
         }
         onSpectrumCalculated: {
         }
-    }
+    }*/
 
 }
