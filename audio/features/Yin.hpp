@@ -39,7 +39,7 @@ class Yin {
 
 
     //TODO template with check is float + is_same
-    class YinPP { //Yin ++ better version with step 1, step 1 opt, step 2 on step 1, and step 6
+    class YinPP {
 
     public:
         void init(const double sampleRate, const size_t bufferSize) {
@@ -72,7 +72,7 @@ class Yin {
         std::vector<size_t> filteredIdx;
 
         double stdFound;
-        double mineFound;
+        double mineFound; //Almost MPM method
 
     private:
 

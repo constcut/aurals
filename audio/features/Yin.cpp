@@ -40,23 +40,14 @@ void Yin::init(double yinSampleRate, const size_t yinBufferSize) {
 
 double Yin::getPitch(const float *buffer) {
 
-    _yinBuffer = std::vector<float>(_halfBufferSize, 0.f); //ERROR!
-
-    //1. Autocorrelation ?
-    differenceFunction(buffer); //2. Difference function
-    accMeanNormDifference(); //3. Cumulative mean normalized difference function
-    if (absoluteThresholdFound())  {//4. Absolute threshold {
-
-        //qDebug() << "Olderst " << _sampleRate / _currentTau << " " << _currentTau;
-
-        size_t _new = parabolicInterpolation();
-
-        //qDebug() << "Next " << _sampleRate / _new << " pa "  << _new;
-
-        return _sampleRate / _new; //5.Parabolic interpolation
+    _yinBuffer = std::vector<float>(_halfBufferSize, 0.f);
+    differenceFunction(buffer);
+    accMeanNormDifference();
+    if (absoluteThresholdFound())  {
+    size_t _new = parabolicInterpolation();
+        return _sampleRate / _new;
     }
     return -1.0;
-    //6. Best local estimate ?
 }
 
 
@@ -65,13 +56,13 @@ void Yin::differenceFunction(const float* buffer) {
     for(size_t tau = 0 ; tau < _halfBufferSize; tau++) {
         for(size_t index = 0; index < _halfBufferSize; index++){
             delta = buffer[index] - buffer[index + tau];
-            _yinBuffer[tau] += delta * delta; //Что если здесь сделать 4ую степень но потом взять от всего корень? Эксперименты!
+            _yinBuffer[tau] += delta * delta;
         }
     }
 }
 
 
-double Yin::parabolicInterpolation() const { //TODO сравнить с другим результатом
+double Yin::parabolicInterpolation() const {
 
     size_t start = _currentTau ? _currentTau - 1 : _currentTau;
     size_t finish = _currentTau + 1 < _halfBufferSize ? _currentTau + 1 : _currentTau;
@@ -107,9 +98,7 @@ void Yin::accMeanNormDifference(){
 
 
 
-
 bool Yin::absoluteThresholdFound(){
-
 
     for (_currentTau = 2; _currentTau < _halfBufferSize ; _currentTau++)
 
@@ -130,6 +119,7 @@ bool Yin::absoluteThresholdFound(){
 }
 
 
+
 void YinPP::calcBasicACF(const float* buffer) {
 
     std::vector<std::complex<float>> b(4096, 0.f);
@@ -146,7 +136,6 @@ void YinPP::calcBasicACF(const float* buffer) {
 
     kiss_fft(fwd,(kiss_fft_cpx*)b.data(),(kiss_fft_cpx*)out.data());
 
-
     std::complex<float> scale = {
         1.0f / (float)(4096 * 2), static_cast<float>(0.0)};
 
@@ -161,10 +150,9 @@ void YinPP::calcBasicACF(const float* buffer) {
         [](std::complex<float> cplx) -> float { return std::real(cplx); });
 
     acfBufer = realOut;
-
     sumBufV2 = std::vector<float>(2048, 0.f);
 
-    for (size_t i = 0; i < 2048; ++i) { //TODO second term is wrong ?
+    for (size_t i = 0; i < 2048; ++i) { //TODO second term is wrong!
         sumBufV2[i] = 2 * realOut[0]  - 2 * realOut[i];
     }
 }
@@ -174,7 +162,7 @@ double YinPP::process(const float* buffer) {
 
     calcBasicACF(buffer);
 
-    _yinBufer1 = std::vector<float>(_bufferSize/2.0, 0.f); //TODO better way to flush
+    _yinBufer1 = std::vector<float>(_bufferSize/2.0, 0.f); //TODO better way!
 
     differenceFunction(buffer);
     sumBufer = _yinBufer1;
@@ -206,15 +194,13 @@ double YinPP::process(const float* buffer) {
     }
 
     filteredIdx.clear();
-    for (size_t i = startIdx; i < idx.size(); ++i) { //First is always 0 //TODO check + idx shifter
-
+    for (size_t i = startIdx; i < idx.size(); ++i) {
         auto id = idx[i];
         const float val =  _yinBufer1[id];
         const float distMax = maxP - val;
         const float distMin = val - minP;
         if (distMax > distMin)
             filteredIdx.push_back(id);
-        //Иные отфильтрованы как суб компоненты
     }
 
     mineFound = findPeakCommonDistance(filteredIdx, 3);
@@ -289,7 +275,7 @@ void YinPP::differenceFunction(const float* signal) {
         for(size_t j = 0; j < n; j++)
         {
             auto d = signal[j] - signal[j + tau];
-            _yinBufer1[tau] += d * d; //TODO если тут сделать тессеракт- возможно будет даже лучше мой метод работать
+            _yinBufer1[tau] += d * d;
         }
 }
 
