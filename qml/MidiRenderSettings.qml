@@ -41,7 +41,7 @@ Item {
         ComboBox {
             id: midiSampleRate
             model: [8000, 11025, 16000, 22050, 44100, 48000]
-            currentIndex: 4
+            currentIndex: Qt.platform.os == "android" ? 1 : 4
             onCurrentTextChanged: {
                 midiRenderLayout.updateSampleRates()
             }
