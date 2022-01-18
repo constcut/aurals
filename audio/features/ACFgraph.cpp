@@ -12,17 +12,15 @@ bool ACGraphQML::loadByteArray(QByteArray analyseData) {
     const size_t _numSamples = 4096;
     const int bytesPerSample  = 2;
     Q_ASSERT(analyseData.size() == _numSamples * bytesPerSample);
-    const char *ptr = analyseData.constData(); //TODO здесь и в spectrum: from preloaded (загружать float сразу, без преобразований)
+    const char *ptr = analyseData.constData();
 
     for (size_t i=0; i<_numSamples; ++i) {
         const qint16 pcmSample = *reinterpret_cast<const qint16*>(ptr);
-        const float realSample = pcmToReal(pcmSample); // Scale down to range [-1.0, 1.0]
-        //const float windowedSample = realSample * _window[i];
+        const float realSample = pcmToReal(pcmSample);
         _input[i] = realSample;
          ptr += bytesPerSample;
     }
 
-    //TODO prepare YIN data
     _yin.init(44100, _numSamples);
     _lastFreq = _yin.process(_input.data());
     update();
@@ -32,6 +30,9 @@ bool ACGraphQML::loadByteArray(QByteArray analyseData) {
 void ACGraphQML::loadFloatSamples(QByteArray samples) {
     const size_t _numSamples = 4096;
     const float* ptr = reinterpret_cast<const float*>(samples.constData());
+
+    //TODO samples data and window fun
+
     _yin.init(44100, _numSamples);
     _lastFreq = _yin.process(ptr);
     update();
@@ -41,14 +42,12 @@ void ACGraphQML::loadFloatSamples(QByteArray samples) {
 Q_INVOKABLE QByteArray ACGraphQML::getACF() {
 
     size_t samplesCount = 4096;
-
     std::vector<float> buf(samplesCount, 0.f);
 
-    const std::vector<float>& src = _yin.acfBufer;  //_yin.accBufer //acfBufer
+    const std::vector<float>& src = _yin.acfBufer;
 
-    for (size_t i = 0; i < src.size(); ++i) //TODO speedup
+    for (size_t i = 0; i < src.size(); ++i)
         buf[i] = hannWindow(i, samplesCount) * src[i];
-
 
     QByteArray yinData = QByteArray(
                 reinterpret_cast<const char*>(&buf[0]),
@@ -58,79 +57,64 @@ Q_INVOKABLE QByteArray ACGraphQML::getACF() {
 }
 
 
-void ACGraphQML::paint(QPainter* painter) {
-    QRect rect;
-    rect.setX(0); rect.setY(0);
-    rect.setWidth(this->width());
-    rect.setHeight(this->height());
-    prepareBackground(*painter, rect);
+void ACGraphQML::paintACFbufer(QPainter& painter, const std::vector<float>& bufer,
+                               size_t size, QString color, float heightPos, float scaleCoef) {
+    QColor c(color);
+    QPen pen(c);
+    pen.setWidth(3);
+    painter.setPen(pen);
+    float prevValue = heightPos;
+    for (size_t i = 0; i < size; ++i) {
+        const double value = heightPos - bufer[i] * scaleCoef;
+        painter.drawLine(i-1, prevValue, i, value);
+        prevValue = value;
+    }
+}
 
-    //PAINT ACC Buffer first, from 0 to max, lets max would be first 5
+
+void ACGraphQML::paint(QPainter* painter) {
+
+    prepareBackground(*painter);
 
     QPen gPen(QColor("green"));
     gPen.setWidth(3);
-
     painter->setPen(gPen);
+
+    int h = height();
     for (size_t i = 0; i < _yin.filteredIdx.size(); ++i) {
         const auto idx = _yin.filteredIdx[i];
-        painter->drawLine(idx, 0, idx, rect.height());
+        painter->drawLine(idx, 0, idx, h);
     }
 
-    QPen rPen(QColor("red")); //TODO just function with position, color, width to paint line!
-    rPen.setWidth(3);
-    QPen bPen(QColor("blue"));
-    bPen.setWidth(3);
-    //QPen cPen(QColor("cyan"));
-    //cPen.setWidth(3);
-
-
-    double prevYacc = rect.height();
-    double prevDiff = rect.height();
-    double prevAcc = rect.height() / 2;
-    //double prevDiff2 = rect.height();
-
-    for (size_t i = 0; i < _yin.accBufer.size(); ++i) {
-
-        painter->setPen(gPen);
-        const double newAC = rect.height() / 2 - _yin.acfBufer[i] * 14;
-        painter->drawLine(i-1, prevAcc, i, newAC);
-        prevAcc = newAC;
-
-        painter->setPen(rPen);
-        const double newYacc = rect.height() - _yin.accBufer[i] * 28; //TODO scale
-        painter->drawLine(i-1, prevYacc, i, newYacc);
-        prevYacc = newYacc;
-
-        painter->setPen(bPen);
-        const double newDiff = rect.height() - _yin.sumBufer[i] * 7;
-        painter->drawLine(i-1, prevDiff, i, newDiff);
-        prevDiff = newDiff;
-
-        /*
-        painter->setPen(cPen);
-        const double newDiff2 = rect.height() - _yin.sumBufV2[i] * 7;
-        painter->drawLine(i-1, prevDiff2, i, newDiff2);
-        prevDiff2 = newDiff2;*/
-
-    }
+    size_t uiSize = _yin.accBufer.size();
+    paintACFbufer(*painter, _yin.acfBufer, uiSize, "green", h/2, 14);
+    paintACFbufer(*painter, _yin.accBufer, uiSize, "red", h, 28);
+    paintACFbufer(*painter, _yin.sumBufer, uiSize, "blue", h, 7);
 
     painter->setPen(QColor("orange"));
-    painter->drawLine(_cursorPos, 0, _cursorPos, rect.height());
+    painter->drawLine(_cursorPos, 0, _cursorPos, h);
 
     QPen wPen(QColor("white"));
     wPen.setWidth(3);
     painter->setPen(wPen);
-    painter->drawLine(_yin.mineFound, 0, _yin.mineFound, rect.height()/2);
+    painter->drawLine(_yin.mineFound, 0, _yin.mineFound, h/2);
 
     QPen blackPen(QColor("black"));
     blackPen.setWidth(3);
     painter->setPen(blackPen);
-    painter->drawLine(_yin.stdFound, 0, _yin.stdFound, rect.height()/2);
+    painter->drawLine(_yin.stdFound, 0, _yin.stdFound, h/2);
 }
 
 
 
-void ACGraphQML::prepareBackground(QPainter &painter, const QRect &rect) const {
+
+void ACGraphQML::prepareBackground(QPainter &painter) const {
+
+    QRect rect;
+    rect.setX(0); rect.setY(0);
+    rect.setWidth(this->width());
+    rect.setHeight(this->height());
+
     painter.fillRect(rect, Qt::darkGray);
     const int numBars = 200;
     const double barWidth = rect.width()/( static_cast<double>(numBars) );

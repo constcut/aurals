@@ -28,11 +28,9 @@ namespace aural_sight {
         void paint(QPainter* painter);
 
         Q_INVOKABLE bool loadByteArray(QByteArray analyseData);
-
         Q_INVOKABLE void loadFloatSamples(QByteArray samples);
 
         Q_INVOKABLE double getLastFreq() { return _lastFreq; }
-        //Load from samples
 
         Q_INVOKABLE void setCursor(double pos) {
             _cursorPos = pos;
@@ -42,14 +40,17 @@ namespace aural_sight {
         Q_INVOKABLE QByteArray getACF();
 
     private:
+
         QVector<float> _input; //TODO тут и в спектральном анализаторе
         YinPP _yin;
 
         double _lastFreq = 0;
-
-        void prepareBackground(QPainter &painter, const QRect &rect) const;
-
         double _cursorPos = -1.0;
+
+        void prepareBackground(QPainter &painter) const;
+
+        void paintACFbufer(QPainter& painter, const std::vector<float>& bufer,
+                           size_t size, QString color, float heightPos, float scaleCoef);
 
     };
 
