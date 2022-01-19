@@ -190,24 +190,23 @@ QImage WaveContour::makeSTFT() const {
 
 void WaveContour::makeCQT() {
     CQParameters params(44100, 100, 14700, 60);
-    ConstantQ cq(params);
+    ConstantQ cq(params); //TODO CQSpectrogram instead
     CQInverse cqi(params);
 
-    int latency = cq.getLatency() + cqi.getLatency();
-
-    int inframe = 0;
-    int outframe = 0;
-
-    float* fbuf = _floatSamples.data();
-
-    std::vector<float> outputData;
+    std::vector<float> outputData; //TODO reserve?
 
     auto start = std::chrono::high_resolution_clock::now();
 
+    size_t latency = cq.getLatency() + cqi.getLatency();
+
+    float* fbuf = _floatSamples.data();
+
+    size_t inframe = 0;
+    size_t outframe = 0;
+
     while (inframe < _floatSamples.size()) {
 
-        int count = -1;
-
+        size_t count = 0;
         if (_floatSamples.size() - inframe < 1024)
             count = _floatSamples.size() - inframe;
         else
@@ -215,11 +214,10 @@ void WaveContour::makeCQT() {
 
         std::vector<float> cqin(fbuf, fbuf + count);
 
-        auto cQ = cq.process(cqin);
+        auto cQ = cq.process(cqin); //TODO переписать на float* + size чтобы не нужно было создавать новые вектора
         std::vector<float> cqout = cqi.process(cQ);
 
         if (outframe >= latency) {
-
             outputData.insert(outputData.end(), cqout.begin(), cqout.end());
 
         } else if (outframe + (int)cqout.size() >= latency) {
@@ -243,8 +241,6 @@ void WaveContour::makeCQT() {
     auto end = std::chrono::high_resolution_clock::now();
     auto durationMs = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 
-
-    qDebug() << "OuputData " << outputData.size() << " f " << _floatSamples.size();
     qDebug() << "Time spent " << durationMs / 1000.0;
 
     WavFile wav;
