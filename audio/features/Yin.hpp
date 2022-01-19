@@ -8,36 +8,6 @@
 
 namespace aural_sight {
 
-class Yin {
-
-    public:
-        Yin();
-
-        void init(const double sampleRate, const size_t bufferSize);
-        double getPitch(const float* buffer);
-
-        double getThreshold() const;
-        void setThreshold(const double newThresh);
-
-        size_t getTau() const;
-
-    private:
-
-        double parabolicInterpolation() const;
-        bool absoluteThresholdFound();
-        void accMeanNormDifference();
-        void differenceFunction(const float *buffer);
-
-        double _threshold;
-        size_t _bufferSize;
-        size_t _halfBufferSize;
-        double _sampleRate;
-        std::vector<float> _yinBuffer;
-
-        size_t _currentTau;
-    };
-
-
     //TODO template with check is float + is_same
     class YinPP {
 

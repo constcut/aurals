@@ -42,28 +42,13 @@ double aural_sight::calc_MidiCents(const double f0) {
 }
 
 
-std::pair<double, double> aural_sight::calc_YinF0(const float* data,  const size_t len,
-                                               const double threshold, const double sampleRate) {
-    static Yin yin;
-    yin.init(sampleRate, len);
-    yin.setThreshold(threshold);
-    //return {yin.getPitch(data), yin.getTau()};
-    auto p1 = yin.getPitch(data);
-
-
-    static YinPP yin2;
+double aural_sight::calc_YinF0(const float* data,  const size_t len,
+                            const double threshold, const double sampleRate)
+{
+    static YinPP yin2; //TO
     yin2.init(sampleRate, len);
     auto p = yin2.process(data);
-
-
-    if (p != p1)
-        qDebug() << "Pitch diff " << p1 << ' ' << p;
-    else
-        qDebug() << "Pitch equal";
-
-    //return {p, 0}; //Todo found flag
-    return {p1, yin.getTau()}; //p1
-
+    return p;
 }
 
 

@@ -63,7 +63,7 @@ namespace aural_sight {
         void paintWaveShape(QPainter& painter);
 
         double calculateWindowRmsDb() const;
-        std::pair<double, double> calculateWindowYin() const;
+        double calculateWindowYin() const;
 
     protected:
         WaveContour _waveContour;
@@ -142,7 +142,7 @@ namespace aural_sight {
 
         Q_INVOKABLE double getWindowRmsDb() { return calculateWindowRmsDb(); }
 
-        Q_INVOKABLE QList<qreal> getWindowYinF0() { auto y = calculateWindowYin(); return {y.first, y.second}; }
+        Q_INVOKABLE double getWindowYinF0() { return calculateWindowYin();  }
         Q_INVOKABLE qreal freqToMidi(const qreal freq) const;
 
         Q_INVOKABLE void saveSTFT(QString filename) { _waveContour.STFTtoFile(filename); }
