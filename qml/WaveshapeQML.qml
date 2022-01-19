@@ -318,6 +318,16 @@ Item {
         }
     }
 
+    ToolButton {
+        y: specInfo.y
+        x: parent.width - width - 10 - settingsButton.width - 10
+        text: "Save wave to file"
+        onClicked: {
+            saveFileDialog.source = "Wave"
+            saveFileDialog.open()
+        }
+    }
+
     Button {
         id: f0Button
         y: settingsButton.y + settingsButton.height + 5
@@ -327,6 +337,19 @@ Item {
             waveShape.calculateF0()
         }
     }
+
+
+    ToolButton {
+        y: f0Button.y
+        x: parent.width - width - 10 - f0Button.width - 10
+        text: "Save spectrum to file"
+        onClicked: {
+            saveFileDialog.source = "Spectrum"
+            saveFileDialog.open()
+        }
+    }
+
+
 
     Button {
         id: showNotesButton
@@ -370,6 +393,7 @@ Item {
             x: parent.width - width - 10
             text: "Save to file"
             onClicked: {
+                saveFileDialog.source = "STFT"
                 saveFileDialog.open()
             }
         }
@@ -377,12 +401,25 @@ Item {
 
     FileDialog {
         id: saveFileDialog
-        title: "Save STFT file to file"
+        title: "Save image file to file"
         folder: shortcuts.home
         selectExisting: false
         selectMultiple: false
+
+        property string source: ""
+
         onAccepted: {
-            waveShape.saveSTFT(saveFileDialog.fileUrls[0].substring(7))
+            var filename = saveFileDialog.fileUrls[0].substring(7)
+            if (source == "STFT") {
+                waveShape.saveSTFT(filename)
+            }
+            if (source == "Wave") {
+                waveShape.saveImage(filename)
+            }
+            if (source == "Spectrum") {
+                spectrum.saveImage(filename)
+            }
+
             saveFileDialog.visible = false
         }
         onRejected: {
