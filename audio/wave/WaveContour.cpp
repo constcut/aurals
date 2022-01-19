@@ -10,8 +10,11 @@
 #include "audio/features/WindowFunction.hpp"
 
 #include "libs/kiss/kiss_fftr.h"
-#include "libs/cqt/ConstantQ.h"
 
+#include "libs/cqt/ConstantQ.h"
+#include "libs/cqt/CQInverse.h"
+
+#include <sndfile.h>
 
 
 using namespace aural_sight;
@@ -104,8 +107,7 @@ QByteArray WaveContour::getFloatSamples(const quint64 position, const quint64 sa
 }
 
 
-
-void WaveContour::STFTtoFile(QString filename) {
+void WaveContour::STFTtoFile(QString filename) const {
     makeSTFT().save(filename);
 }
 
@@ -131,7 +133,7 @@ QRgb colorFromAmp(float amp) {
 }
 
 
-QImage WaveContour::makeSTFT() {
+QImage WaveContour::makeSTFT() const {
     const size_t windowSize = 4096*2;
     const size_t windowStep = 256;
     size_t width = (_floatSamples.size() - windowSize) / windowStep + 1;
@@ -191,12 +193,42 @@ QImage WaveContour::makeSTFT() {
 void WaveContour::makeCQT() {
     CQParameters params(44100, 100, 14700, 60);
     ConstantQ cq(params);
+    CQInverse cqi(params);
+
+    int latency = cq.getLatency() + cqi.getLatency();
+
+    unsigned long durationMs = 0;
 
     auto start = std::chrono::high_resolution_clock::now();
-    auto cqt = cq.process(_floatSamples);
+    auto cqt = cq.process(_floatSamples); //If split in parts it would work much faster
     auto end = std::chrono::high_resolution_clock::now();
-    auto durationMs = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    durationMs += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 
     qDebug() << "Const-Q took " << durationMs / 1000.0 << "ms";
+    std::vector<float> cqout = cqi.process(cqt);
 
+    qDebug() << cqout.size() << " Vs " << _floatSamples.size()
+             << " latency " << latency;
+
+    std::vector<float> r = cqi.process(cq.getRemainingOutput());
+    std::vector<float> r2 = cqi.getRemainingOutput();
+
+    qDebug() << "RO " << r.size() << " " << r2.size();
+
+    SF_INFO sfinfoOut;
+    sfinfoOut.channels = 1;
+    sfinfoOut.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16;
+    sfinfoOut.frames = cqout.size() + r2.size();
+    sfinfoOut.samplerate = 44100;
+    sfinfoOut.sections = 1;
+    sfinfoOut.seekable = 1;
+
+    char fileNameOut[] = "/home/punnalyse/dev/___/A__DSP__A/constant-Q/constant-q-cpp-master/test/data/o_e.wav";
+
+    SNDFILE *sndfileOut;
+    sndfileOut = sf_open(fileNameOut, SFM_WRITE, &sfinfoOut) ;
+    sf_writef_float(sndfileOut, cqout.data(),cqout.size());
+    sf_writef_float(sndfileOut, r2.data(),r2.size());
+
+    sf_close(sndfileOut);
 }

@@ -46,8 +46,8 @@ namespace aural_sight {
         void setYinWindowSize(const size_t newSize) { _yinWindowSize = newSize; }
         size_t getYinWindowSize() const { return _yinWindowSize; }
 
-        void STFTtoFile(QString filename);
-        QImage makeSTFT();
+        void STFTtoFile(QString filename) const;
+        QImage makeSTFT() const;
 
         void makeCQT();
 

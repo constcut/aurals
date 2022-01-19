@@ -63,10 +63,8 @@ int main___(int argc)
     bool doDiff = (diffFileName != 0);
 
     SNDFILE *sndfile;
-    SNDFILE *sndfileOut;
     SNDFILE *sndDiffFile = 0;
     SF_INFO sfinfo;
-    SF_INFO sfinfoOut;
     SF_INFO sfinfoDiff;
     memset(&sfinfo, 0, sizeof(SF_INFO));
 
@@ -77,6 +75,7 @@ int main___(int argc)
     return 1;
     }
 
+    SF_INFO sfinfoOut;
     sfinfoOut.channels = 1;
     sfinfoOut.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16;
     sfinfoOut.frames = sfinfo.frames;
@@ -84,7 +83,9 @@ int main___(int argc)
     sfinfoOut.sections = sfinfo.sections;
     sfinfoOut.seekable = sfinfo.seekable;
 
+    SNDFILE *sndfileOut;
     sndfileOut = sf_open(fileNameOut, SFM_WRITE, &sfinfoOut) ;
+
     if (!sndfileOut) {
     cerr << "ERROR: Failed to open output file \"" << fileNameOut << "\" for writing: "
          << sf_strerror(sndfileOut) << endl;
