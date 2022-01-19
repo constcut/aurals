@@ -11,8 +11,7 @@
 
 #include "libs/kiss/kiss_fftr.h"
 
-#include "libs/cqt/ConstantQ.h"
-#include "libs/cqt/CQInverse.h"
+#include "libs/cqt/CQSpectrogram.h"
 
 
 using namespace aural_sight;
@@ -190,22 +189,16 @@ QImage WaveContour::makeSTFT() const {
 
 void WaveContour::makeCQT() {
     CQParameters params(44100, 100, 14700, 60);
-    ConstantQ cq(params); //TODO CQSpectrogram instead
-    //CQInverse cqi(params);
+    CQSpectrogram cq(params, CQSpectrogram::Interpolation::InterpolateLinear); //ConstantQ
 
     std::vector<float> outputData; //TODO reserve?
 
     auto start = std::chrono::high_resolution_clock::now();
 
-    size_t latency = cq.getLatency(); //+ cqi.getLatency();
-
     float* fbuf = _floatSamples.data();
-
     size_t inframe = 0;
-    //size_t outframe = 0;
-
-    while (inframe < _floatSamples.size()) {
-
+    while (inframe < _floatSamples.size())
+    {
         size_t count = 0;
         if (_floatSamples.size() - inframe < 1024)
             count = _floatSamples.size() - inframe;
@@ -213,45 +206,19 @@ void WaveContour::makeCQT() {
             count = 1024;
 
         std::vector<float> cqin(fbuf, fbuf + count);
-
         auto cQ = cq.process(cqin); //TODO переписать на float* + size чтобы не нужно было создавать новые вектора
-        //std::vector<float> cqout = cqi.process(cQ);
 
-        /*
-        if (outframe >= latency) {
-            outputData.insert(outputData.end(), cqout.begin(), cqout.end());
-
-        } else if (outframe + (int)cqout.size() >= latency) {
-
-            int offset = latency - outframe;
-            outputData.insert(outputData.end(), cqout.begin() + offset, cqout.end());
-
-        }*/
+        if (cQ.size() != 0) { //Возможно так же требуется ещё пропускат latency - но пока что это не заметно
+                          //TODO append into memory bufer
+        }
 
         inframe += count;
-        //outframe += cqout.size();
         fbuf += 1024;
     }
 
-    //auto r = cqi.process(cq.getRemainingOutput());
-    //auto r2 = cqi.getRemainingOutput();
+    auto r = cq.getRemainingOutput();
 
     auto end = std::chrono::high_resolution_clock::now();
     auto durationMs = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
     qDebug() << "Time spent " << durationMs / 1000.0;
-
-    /*
-    outputData.insert(outputData.end(), r.begin(), r.end());
-    outputData.insert(outputData.end(), r2.begin(), r2.end());
-
-
-
-
-
-    WavFile wav;
-    wav.open("back.wav", QIODevice::WriteOnly);
-    wav.writeHeader(44100, 32, outputData.size() * sizeof(float), false, true); //EH not float fuck stupid QT, not cute at all
-
-    QByteArray bytes(reinterpret_cast<char*>(outputData.data()),outputData.size() * sizeof(float));
-    wav.write(bytes);*/
 }
