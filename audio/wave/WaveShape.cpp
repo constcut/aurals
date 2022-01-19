@@ -86,6 +86,10 @@ void WaveshapePainter::makeBackgroungImage(QPainter &painter, int height, double
     paintRms(4.0, 1.1, _waveContour.getRMS_4(), QColor("green"), QColor("green"));
     paintRms(2.0, 0.8, _waveContour.getRMS_2(), QColor("green").lighter(110), QColor("green").lighter(110));
     paintMainRms(imgPainter, height, heightCoef);
+
+    drawPitch(imgPainter, height);
+    if (_showNotes)
+        drawNoteStartEnd(imgPainter, height);
 }
 
 
@@ -154,9 +158,7 @@ void WaveshapePainter::paintWaveShape(QPainter &painter)
         makeBackgroungImage(painter, height, heightCoef);
 
     painter.drawImage(QPoint{0,0}, _mainImage);
-    drawPitch(painter, height);
-    if (_showNotes)
-        drawNoteStartEnd(painter, height);
+
 
     painter.setPen(Qt::darkMagenta);
     auto x1 = 2.0 * _windowPosition / (_waveContour.getMinRmsStep());

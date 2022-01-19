@@ -126,7 +126,7 @@ namespace aural_sight {
         Q_INVOKABLE quint64 getWindowPosition() const { return _windowPosition; }
         Q_INVOKABLE void setWindowWidth(quint64 newWidth) { _windowWidth = newWidth; update(); }
 
-        Q_INVOKABLE void calculateF0() { _waveContour.calculateF0(); update(); }
+        Q_INVOKABLE void calculateF0() { _waveContour.calculateF0(); _noImage = true; update(); }
         Q_INVOKABLE void setYinWindowSize(int newSize) { _waveContour.setYinWindowSize(newSize); }
 
         Q_INVOKABLE void showNotes() { invertShowNotes(); update();}
