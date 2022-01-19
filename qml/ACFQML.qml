@@ -133,6 +133,16 @@ Item {
         }
     }
 
+    ComboBox {
+        y: saveButton.y - height - 10
+        x: saveButton.x
+        model: ["No window", "Hann", "Gaus", "Blackman", "Hamm"]
+        currentIndex: 0
+        onCurrentTextChanged: {
+            acgraph.setWindowFunction(currentIndex)
+        }
+    }
+
 
     FileDialog {
         id: saveFileDialog
@@ -173,7 +183,7 @@ Item {
                 width: parent.width
                 height: parent.height
 
-                id:acgraph
+                id: acgraph
 
                 MouseArea {
                     anchors.fill: parent

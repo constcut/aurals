@@ -17,7 +17,11 @@ bool ACGraphQML::loadByteArray(QByteArray analyseData) {
     for (size_t i=0; i<_numSamples; ++i) {
         const qint16 pcmSample = *reinterpret_cast<const qint16*>(ptr);
         const float realSample = pcmToReal(pcmSample);
-        _input[i] = realSample;
+
+        if (_window != WindowFunction::NoWindow)
+            _input[i] = realSample * _windowBufer[i];
+        else
+            _input[i] = realSample;
          ptr += bytesPerSample;
     }
 
@@ -30,14 +34,34 @@ bool ACGraphQML::loadByteArray(QByteArray analyseData) {
 
 void ACGraphQML::loadFloatSamples(QByteArray samples) {
     const size_t _numSamples = 4096;
-    const float* ptr = reinterpret_cast<const float*>(samples.constData());
+    float* ptr = reinterpret_cast<float*>(samples.data());
 
-    //TODO samples data and window fun
+    if (_window != WindowFunction::NoWindow)
+        for (size_t i = 0; i < _numSamples; ++i)
+            ptr[i] *= _windowBufer[i];
 
     _yin.init(44100, _numSamples);
     _lastFreq = _yin.process(ptr);
     _imagePainted = false;
     update();
+}
+
+
+void ACGraphQML::updateWindowFunction() {
+    if (_window == WindowFunction::NoWindow)
+        return;
+
+    const size_t _numSamples = 4096;
+    for (size_t i = 0; i < _numSamples; ++i) {
+        if (_window == WindowFunction::HannWindow)
+            _windowBufer[i] = hannWindow(i, _numSamples);
+        else if (_window == WindowFunction::GausWindow)
+            _windowBufer[i] = gausWindow(i, _numSamples);
+        else if (_window == WindowFunction::BlackmanWindow)
+            _windowBufer[i] = blackmanWindow(i, _numSamples);
+        else if (_window == WindowFunction::HammWindow)
+            _windowBufer[i] = hammWindow(i, _numSamples);
+    }
 }
 
 

@@ -9,6 +9,7 @@
 #include <unordered_set>
 
 #include "audio/features/Yin.hpp"
+#include "audio/features/WindowFunction.hpp"
 
 
 namespace aural_sight {
@@ -20,7 +21,8 @@ namespace aural_sight {
             Q_OBJECT
     public:
         ACGraphQML([[maybe_unused]] QQuickItem* parent = nullptr)
-        : _input(4096, 0.0)
+        : _input(4096, 0.f),
+          _windowBufer(4096, 0.f)
         { _yin.init(44100, 4096); }
 
         ~ACGraphQML() = default;
@@ -41,13 +43,22 @@ namespace aural_sight {
 
         Q_INVOKABLE void saveImage(QString filename) { _mainImage.save(filename); }
 
+        Q_INVOKABLE void setWindowFunction(int idx) {
+            _window = static_cast<WindowFunction>(idx);
+            updateWindowFunction();
+        }
+
     private:
 
-        QVector<float> _input; //TODO тут и в спектральном анализаторе
+        std::vector<float> _input;
+        std::vector<float> _windowBufer;
+
         YinPP _yin;
 
         double _lastFreq = 0;
         double _cursorPos = -1.0;
+
+        WindowFunction _window = WindowFunction::NoWindow;
 
         void prepareBackground(QPainter &painter) const;
 
@@ -55,6 +66,8 @@ namespace aural_sight {
                            size_t size, QString color, float heightPos, float scaleCoef);
 
         void paintImage(QPainter& painter);
+
+        void updateWindowFunction();
 
         QImage _mainImage;
         bool _imagePainted = false;
