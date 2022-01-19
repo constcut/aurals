@@ -21,6 +21,8 @@ using std::endl;
 #include <sys/time.h>
 #include <cstdlib>
 
+
+
 int main___(int argc)
 {
     float maxFreq = 0;
@@ -159,7 +161,10 @@ int main___(int argc)
         buffer.insert(buffer.end(), cqin.begin(), cqin.end());
     }
 
-    vector<float> cqout = cqi.process(cq.process(cqin));
+    auto cQ = cq.process(cqin);
+    qDebug() << "CQ Done";
+
+    vector<float> cqout = cqi.process(cQ);
 
     for (int i = 0; i < int(cqout.size()); ++i) {
         if (cqout[i] > 1.0) cqout[i] = 1.0;
@@ -283,7 +288,7 @@ using namespace aural_sight;
 int main(int argc, char *argv[])
 {
 
-     main___(3);
+    //main___(3);
 
     LogHandler::getInstance().setFilename("log.txt");
     qDebug() << "Starting application";

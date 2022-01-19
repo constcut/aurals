@@ -1,6 +1,7 @@
 ﻿#include "WaveContour.hpp"
 
 #include <QDebug>
+#include <QImage>
 
 #include "WavFile.hpp"
 #include "audio/features/FeatureExtractor.hpp"
@@ -8,9 +9,9 @@
 #include "audio/wave/AudioUtils.hpp"
 #include "audio/features/WindowFunction.hpp"
 
-
 #include "libs/kiss/kiss_fftr.h"
-#include <QImage>
+#include "libs/cqt/ConstantQ.h"
+
 
 
 using namespace aural_sight;
@@ -183,4 +184,19 @@ QImage WaveContour::makeSTFT() {
         ++count;
     }
     return img;
+}
+
+
+
+void WaveContour::makeCQT() {
+    CQParameters params(44100, 100, 14700, 60);
+    ConstantQ cq(params);
+
+    auto start = std::chrono::high_resolution_clock::now();
+    auto cqt = cq.process(_floatSamples);
+    auto end = std::chrono::high_resolution_clock::now();
+    auto durationMs = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+
+    qDebug() << "Const-Q took " << durationMs / 1000.0 << "ms";
+
 }

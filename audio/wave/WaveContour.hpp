@@ -49,6 +49,8 @@ namespace aural_sight {
         void STFTtoFile(QString filename);
         QImage makeSTFT();
 
+        void makeCQT();
+
     protected:
 
         std::vector<float> _floatSamples;

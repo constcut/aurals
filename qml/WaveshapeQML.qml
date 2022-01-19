@@ -317,12 +317,22 @@ Item {
     }
 
     ToolButton {
+        id: saveWavButton
         y: specInfo.y
         x: parent.width - width - 10 - settingsButton.width - 10
         text: "Save wave to file"
         onClicked: {
             saveFileDialog.source = "Wave"
             saveFileDialog.open()
+        }
+    }
+
+    ToolButton {
+        y: specInfo.y
+        x: saveWavButton.x - width - 10
+        text: "Const-Q"
+        onClicked:  {
+            waveShape.makeCQT()
         }
     }
 
