@@ -7,6 +7,8 @@ linux:Debug:CONFIG += sanitizer sanitize_address sanitize_memory sanitize_undefi
 
 QMAKE_CXXFLAGS_RELEASE += -O3
 
+LIBS += -lsndfile
+
 
 #CONFIG += no_keywords #was used only for python interpreter
 DEFINES += QT_DEPRECATED_WARNINGS
@@ -33,6 +35,17 @@ SOURCES += \
     audio/wave/WaveContour.cpp \
     audio/wave/WaveShape.cpp \
     audio/features/Yin.cpp \
+    libs/cqt/CQInverse.cpp \
+    libs/cqt/CQKernel.cpp \
+    libs/cqt/CQSpectrogram.cpp \
+    libs/cqt/Chromagram.cpp \
+    libs/cqt/ConstantQ.cpp \
+    libs/cqt/Pitch.cpp \
+    libs/cqt/dsp/FFT.cpp \
+    libs/cqt/dsp/KaiserWindow.cpp \
+    libs/cqt/dsp/MathUtilities.cpp \
+    libs/cqt/dsp/Resampler.cpp \
+    libs/cqt/dsp/SincWindow.cpp \
     libs/fft/fftreal_wrapper.cpp \
     libs/kiss/kfc.c \
     libs/kiss/kiss_fft.c \
@@ -86,6 +99,22 @@ HEADERS += \
     audio/wave/WaveContour.hpp \
     audio/wave/WaveShape.hpp \
     audio/features/Yin.hpp \
+    libs/cqt/CQBase.h \
+    libs/cqt/CQInverse.h \
+    libs/cqt/CQKernel.h \
+    libs/cqt/CQParameters.h \
+    libs/cqt/CQSpectrogram.h \
+    libs/cqt/Chromagram.h \
+    libs/cqt/ConstantQ.h \
+    libs/cqt/Pitch.h \
+    libs/cqt/dsp/FFT.h \
+    libs/cqt/dsp/KaiserWindow.h \
+    libs/cqt/dsp/MathUtilities.h \
+    libs/cqt/dsp/Resampler.h \
+    libs/cqt/dsp/SincWindow.h \
+    libs/cqt/dsp/Window.h \
+    libs/cqt/dsp/nan-inf.h \
+    libs/cqt/dsp/pi.h \
     libs/fft/FFTCommon.hpp \
     libs/fft/FFTunreal.hpp \
     libs/fft/fftreal_wrapper.h \
@@ -124,6 +153,8 @@ DISTFILES += \
     android/gradlew \
     android/gradlew.bat \
     android/res/values/libs.xml \
+    libs/cqt/COPYING \
+    libs/cqt/README \
     libs/fft/license.txt \
     libs/fft/readme.txt \
     main.qml \
