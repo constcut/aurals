@@ -199,35 +199,10 @@ void WaveContour::makeCQT() {
 
     unsigned long durationMs = 0;
 
-    auto start = std::chrono::high_resolution_clock::now();
-    auto cqt = cq.process(_floatSamples); //If split in parts it would work much faster
-    auto end = std::chrono::high_resolution_clock::now();
-    durationMs += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-
-    qDebug() << "Const-Q took " << durationMs / 1000.0 << "ms";
-    std::vector<float> cqout = cqi.process(cqt);
-
-    qDebug() << cqout.size() << " Vs " << _floatSamples.size()
-             << " latency " << latency;
-
-    std::vector<float> r0 = cqi.getRemainingOutput();
-
-    std::vector<float> r1 = cqi.process(cq.getRemainingOutput());
-
-    //auto remained = cq.getRemainingOutput();
-
-    std::vector<float> latVec(latency, 0.f);
-    std::vector<float> r2 = cqi.process(cq.process(latVec)); //
-    std::vector<float> r3 = {}; //cqi.getRemainingOutput();
-
-    qDebug () << "Rsized " << r0.size() << r1.size() << r2.size() << r3.size();
-    //qDebug () << "Remained " << remained.size();
-
-
     SF_INFO sfinfoOut;
     sfinfoOut.channels = 1;
     sfinfoOut.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16;
-    sfinfoOut.frames = cqout.size() + r0.size() + r1.size() + r2.size() + r3.size() - latency;
+    sfinfoOut.frames = _floatSamples.size();
     sfinfoOut.samplerate = 44100;
     sfinfoOut.sections = 1;
     sfinfoOut.seekable = 1;
@@ -237,12 +212,48 @@ void WaveContour::makeCQT() {
     SNDFILE *sndfileOut;
     sndfileOut = sf_open(fileNameOut, SFM_WRITE, &sfinfoOut) ;
 
+    int inframe = 0;
+    int outframe = 0;
 
-    sf_writef_float(sndfileOut, &cqout.data()[latency], cqout.size() - latency);
-    sf_writef_float(sndfileOut, r0.data(),r0.size());
-    sf_writef_float(sndfileOut, r1.data(),r1.size());
-    sf_writef_float(sndfileOut, r2.data(),r2.size());
-    //sf_writef_float(sndfileOut, r3.data(),r3.size());
+    float* fbuf = _floatSamples.data();
+
+    while (inframe < _floatSamples.size()) {
+
+        int count = -1;
+
+        if (_floatSamples.size() - inframe < 1024)
+            count = _floatSamples.size() - inframe;
+        else
+            count = 1024;
+
+        std::vector<float> cqin(fbuf, fbuf + count);
+
+        auto cQ = cq.process(cqin);
+        std::vector<float> cqout = cqi.process(cQ);
+
+        if (outframe >= latency) {
+
+            sf_writef_float(sndfileOut,
+                     cqout.data(),
+                     cqout.size());
+
+        } else if (outframe + (int)cqout.size() >= latency) {
+
+            int offset = latency - outframe;
+            sf_writef_float(sndfileOut,
+                     cqout.data() + offset,
+                     cqout.size() - offset);
+        }
+
+        inframe += count;
+        outframe += cqout.size();
+        fbuf += 1024;
+    }
+
+    auto r = cqi.process(cq.getRemainingOutput());
+    auto r2 = cqi.getRemainingOutput();
+    r.insert(r.end(), r2.begin(), r2.end());
+    sf_writef_float(sndfileOut, r.data(), r.size());
 
     sf_close(sndfileOut);
 }

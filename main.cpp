@@ -123,8 +123,7 @@ int main___(int argc)
     }
     cerr << endl;
 
-    int inframe = 0;
-    int outframe = 0;
+
     int latency = cq.getLatency() + cqi.getLatency();
 
     vector<float> buffer;
@@ -138,85 +137,38 @@ int main___(int argc)
     timeval tv;
     (void)gettimeofday(&tv, 0);
 
+
+    int inframe = 0;
+    int outframe = 0;
+
     while (inframe < sfinfo.frames) {
 
         int count = -1;
 
-    if ((count = sf_readf_float(sndfile, fbuf, ibs)) < 0) {
-        break;
-    }
-
-    vector<float> cqin;
-    for (int i = 0; i < count; ++i) {
-        float v = fbuf[i * channels];
-        if (channels > 1) {
-        for (int c = 1; c < channels; ++c) {
-            v += fbuf[i * channels + c];
+        if ((count = sf_readf_float(sndfile, fbuf, ibs)) < 0) {
+            break;
         }
-        v /= channels;
-        }
-        cqin.push_back(v);
-    }
 
-    if (doDiff) {
-        buffer.insert(buffer.end(), cqin.begin(), cqin.end());
-    }
-
-    auto cQ = cq.process(cqin);
-
-    vector<float> cqout = cqi.process(cQ);
-
-    for (int i = 0; i < int(cqout.size()); ++i) {
-        if (cqout[i] > 1.0) cqout[i] = 1.0;
-        if (cqout[i] < -1.0) cqout[i] = -1.0;
-    }
-
-    if (outframe >= latency) {
-
-        sf_writef_float(sndfileOut,
-                 cqout.data(),
-                 cqout.size());
-
-    } else if (outframe + (int)cqout.size() >= latency) {
-
-        int offset = latency - outframe;
-        sf_writef_float(sndfileOut,
-                 cqout.data() + offset,
-                 cqout.size() - offset);
-    }
-
-    if (doDiff) {
-        for (int i = 0; i < (int)cqout.size(); ++i) {
-        if (outframe + i >= latency) {
-            int dframe = outframe + i - latency;
-            if (dframe >= (int)buffer.size()) cqout[i] = 0;
-            else cqout[i] -= buffer[dframe];
-            if (fabs(cqout[i]) > maxdiff &&
-            dframe > sfinfo.samplerate && // ignore first/last sec
-            dframe + sfinfo.samplerate < sfinfo.frames) {
-            maxdiff = fabs(cqout[i]);
-            maxdiffidx = dframe;
-            }
-        }
-        }
+        vector<float> cqin(fbuf, fbuf + count);
+        auto cQ = cq.process(cqin);
+        vector<float> cqout = cqi.process(cQ);
 
         if (outframe >= latency) {
 
-        sf_writef_float(sndDiffFile,
-                 cqout.data(),
-                 cqout.size());
+            sf_writef_float(sndfileOut,
+                     cqout.data(),
+                     cqout.size());
 
         } else if (outframe + (int)cqout.size() >= latency) {
 
-        int offset = latency - outframe;
-        sf_writef_float(sndDiffFile,
-                 cqout.data() + offset,
-                 cqout.size() - offset);
+            int offset = latency - outframe;
+            sf_writef_float(sndfileOut,
+                     cqout.data() + offset,
+                     cqout.size() - offset);
         }
-    }
 
-    inframe += count;
-    outframe += cqout.size();
+        inframe += count;
+        outframe += cqout.size();
     }
 
     vector<float> r = cqi.process(cq.getRemainingOutput());
@@ -225,35 +177,16 @@ int main___(int argc)
     r.insert(r.end(), r2.begin(), r2.end());
 
     for (int i = 0; i < int(r.size()); ++i) {
-    if (r[i] > 1.0) r[i] = 1.0;
-    if (r[i] < -1.0) r[i] = -1.0;
+        if (r[i] > 1.0) r[i] = 1.0;
+        if (r[i] < -1.0) r[i] = -1.0;
     }
 
     sf_writef_float(sndfileOut, r.data(), r.size());
-    if (doDiff) {
-    for (int i = 0; i < (int)r.size(); ++i) {
-        if (outframe + i >= latency) {
-        int dframe = outframe + i - latency;
-        if (dframe >= (int)buffer.size()) r[i] = 0;
-        else r[i] -= buffer[dframe];
-        if (fabs(r[i]) > maxdiff &&
-            dframe > sfinfo.samplerate && // ignore first/last sec
-            dframe + sfinfo.samplerate < sfinfo.frames) {
-            maxdiff = fabs(r[i]);
-            maxdiffidx = dframe;
-        }
-        }
-    }
-    sf_writef_float(sndDiffFile, r.data(), r.size());
-    }
     outframe += r.size();
 
     sf_close(sndfile);
     sf_close(sndfileOut);
 
-    if (doDiff) {
-    sf_close(sndDiffFile);
-    }
 
     cerr << "in: " << inframe << ", out: " << outframe - latency << endl;
 
@@ -289,6 +222,7 @@ int main(int argc, char *argv[])
 {
 
     //main___(3);
+    //exit(0);
 
     LogHandler::getInstance().setFilename("log.txt");
     qDebug() << "Starting application";
