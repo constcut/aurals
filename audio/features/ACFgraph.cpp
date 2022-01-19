@@ -138,7 +138,6 @@ void ACGraphQML::paint(QPainter* painter) {
     }
 
     painter->drawImage(QPoint{0,0}, _mainImage);
-
     painter->setPen(QColor("orange"));
     painter->drawLine(_cursorPos, 0, _cursorPos, height());
 }

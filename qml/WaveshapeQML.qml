@@ -37,9 +37,7 @@ Item {
                 }
                 onReleased: {
                     var diff =  flick.pressedX - mouseX
-                    flick.contentX += diff
-                    if (flick.contentX < 0)
-                        flick.contentX = 0
+                    console.log('Move diff: ', diff) //TODO doesn't work
                 }
                 onClicked:{
                     var minRmStep = waveShape.getMinRmsStep()

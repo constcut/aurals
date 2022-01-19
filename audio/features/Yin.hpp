@@ -80,7 +80,9 @@ class Yin {
         size_t _bufferSize;
         double _sampleRate;
 
-        std::vector<float> _yinBufer1;
+        std::vector<float> _yinBufer;
+
+        bool _thresholdFound = false;
 
         //+ Amp vatiation implementation
         //+ F0 variation implementation
