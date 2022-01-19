@@ -58,7 +58,7 @@ int main___(int argc)
 
 
     char fileName[] = "/home/punnalyse/dev/___/A__DSP__A/constant-Q/constant-q-cpp-master/test/data/i.wav";
-    char fileNameOut[] = "/home/punnalyse/dev/___/A__DSP__A/constant-Q/constant-q-cpp-master/test/data/o.wav";
+    char fileNameOut[] = "/home/punnalyse/dev/___/A__DSP__A/constant-Q/constant-q-cpp-master/test/data/o2.wav";
     char *diffFileName = 0; //(optind < argc ? strdup(argv[optind++]) : 0);
     bool doDiff = (diffFileName != 0);
 
@@ -163,7 +163,6 @@ int main___(int argc)
     }
 
     auto cQ = cq.process(cqin);
-    qDebug() << "CQ Done";
 
     vector<float> cqout = cqi.process(cQ);
 

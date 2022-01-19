@@ -210,15 +210,24 @@ void WaveContour::makeCQT() {
     qDebug() << cqout.size() << " Vs " << _floatSamples.size()
              << " latency " << latency;
 
-    std::vector<float> r = cqi.process(cq.getRemainingOutput());
-    std::vector<float> r2 = cqi.getRemainingOutput();
+    std::vector<float> r0 = cqi.getRemainingOutput();
 
-    qDebug() << "RO " << r.size() << " " << r2.size();
+    std::vector<float> r1 = cqi.process(cq.getRemainingOutput());
+
+    //auto remained = cq.getRemainingOutput();
+
+    std::vector<float> latVec(latency, 0.f);
+    std::vector<float> r2 = cqi.process(cq.process(latVec)); //
+    std::vector<float> r3 = {}; //cqi.getRemainingOutput();
+
+    qDebug () << "Rsized " << r0.size() << r1.size() << r2.size() << r3.size();
+    //qDebug () << "Remained " << remained.size();
+
 
     SF_INFO sfinfoOut;
     sfinfoOut.channels = 1;
     sfinfoOut.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16;
-    sfinfoOut.frames = cqout.size() + r2.size();
+    sfinfoOut.frames = cqout.size() + r0.size() + r1.size() + r2.size() + r3.size() - latency;
     sfinfoOut.samplerate = 44100;
     sfinfoOut.sections = 1;
     sfinfoOut.seekable = 1;
@@ -227,8 +236,13 @@ void WaveContour::makeCQT() {
 
     SNDFILE *sndfileOut;
     sndfileOut = sf_open(fileNameOut, SFM_WRITE, &sfinfoOut) ;
-    sf_writef_float(sndfileOut, cqout.data(),cqout.size());
+
+
+    sf_writef_float(sndfileOut, &cqout.data()[latency], cqout.size() - latency);
+    sf_writef_float(sndfileOut, r0.data(),r0.size());
+    sf_writef_float(sndfileOut, r1.data(),r1.size());
     sf_writef_float(sndfileOut, r2.data(),r2.size());
+    //sf_writef_float(sndfileOut, r3.data(),r3.size());
 
     sf_close(sndfileOut);
 }
