@@ -240,7 +240,7 @@ Item {
                 }
                 ComboBox {
                     model : ["0.5", "0.1", "0.15", "0.2", "0.25", "0.3", "0.35", "0.4", "0.45", "0.5"]
-                    currentIndex: 2
+                    currentIndex: 3
                     onCurrentTextChanged: {
                         var threshold = parseFloat(currentText)
                         waveShape.setYinThreshold(threshold)

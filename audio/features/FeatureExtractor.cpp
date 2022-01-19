@@ -47,6 +47,7 @@ double aural_sight::calc_YinF0(const float* data,  const size_t len,
 {
     static YinPP yin2; //TO
     yin2.init(sampleRate, len);
+    yin2.setThreshold(threshold);
     auto p = yin2.process(data);
     return p;
 }

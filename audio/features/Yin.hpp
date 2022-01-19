@@ -18,6 +18,10 @@ namespace aural_sight {
             _threshold = 0.2;
         }
 
+        void setThreshold(double newThreshold) {
+            _threshold = newThreshold;
+        }
+
         void compareBuffers();
 
         double process(const float* buffer);
