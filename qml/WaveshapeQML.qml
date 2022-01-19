@@ -401,7 +401,7 @@ Item {
 
     FileDialog {
         id: saveFileDialog
-        title: "Save image file to file"
+        title: "Save image to file"
         folder: shortcuts.home
         selectExisting: false
         selectMultiple: false

@@ -112,13 +112,6 @@ Item {
         text: "Yin info"
     }
 
-    /*
-    Text {
-        id: specInfo
-        y : settingsButton.y
-        x : 2*parent.width/3
-        text: "Spectrum info"
-    }*/
 
     Button {
         id: settingsButton
@@ -128,6 +121,35 @@ Item {
         onClicked:  {
             settingsDialog.visible = true;
         }
+    }
+
+    Button {
+        id: saveButton
+        y: settingsButton.y
+        x: parent.width - width - 10 - settingsButton.width - 10
+        text: "Save ACF image"
+        onClicked:  {
+            saveFileDialog.visible = true;
+        }
+    }
+
+
+    FileDialog {
+        id: saveFileDialog
+        title: "Save image to file"
+        folder: shortcuts.home
+        selectExisting: false
+        selectMultiple: false
+
+        onAccepted: {
+            var filename = saveFileDialog.fileUrls[0].substring(7)
+            acgraph.saveImage(filename)
+            saveFileDialog.visible = false
+        }
+        onRejected: {
+            saveFileDialog.visible = false
+        }
+        nameFilters: [ "JPEG file (*.jpg)" ]
     }
 
 

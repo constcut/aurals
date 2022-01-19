@@ -72,7 +72,7 @@ class Yin {
         std::vector<size_t> filteredIdx;
 
         double stdFound;
-        double mineFound; //Almost MPM method
+        double mineFound; //Almost MPM method (TODO 3 in 1 : MPM, Yin + FFT)
 
     private:
 
