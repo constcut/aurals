@@ -8,7 +8,7 @@
 
 namespace aural_sight {
 
-    //TODO template with check is float + is_same
+    //Delayed template with check is float + is_same
     class YinPP {
 
     public:

@@ -193,8 +193,8 @@ void WaveContour::CQTtoFile(QString filename) const {
 
 
 QImage WaveContour::makeCQT() const {
-    CQParameters params(44100, 60, 14700, 60); //TODO better configuration
-    CQSpectrogram cq(params, CQSpectrogram::Interpolation::InterpolateLinear); //ConstantQ
+    CQParameters params(44100, 60, 14700, 60);
+    CQSpectrogram cq(params, CQSpectrogram::Interpolation::InterpolateLinear);
 
     size_t latency = cq.getLatency();
     std::vector<std::vector<float>> spectrogram;

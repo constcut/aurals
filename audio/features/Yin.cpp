@@ -104,6 +104,7 @@ double YinPP::process(const float* buffer) {
     double foundPitch = _sampleRate / stdFound;
 
     //TODO оценка гладкости функции - отсечение поиска частот на шумовых звуках
+    //TODO оценка стадии ноты по уровням прижатости компонентов - разметка ноты на ASDR огибающую
 
     if (mineFound !=.0)
         foundPitch = _sampleRate /  mineFound;
