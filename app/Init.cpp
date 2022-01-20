@@ -23,7 +23,7 @@
 
 
 //FFT bench
-#include "libs/fft/FFTurealfix.hpp"
+#include "libs/fft/FFTRealFixed.hpp"
 
 #include "libs/kiss/kiss_fftr.h"
 

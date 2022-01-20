@@ -1,5 +1,5 @@
-#ifndef FFTUREALFIX_HPP
-#define FFTUREALFIX_HPP
+#ifndef FFTREALFIXED_H
+#define FFTREALFIXED_H
 
 
 #include <cstdint>
@@ -1072,4 +1072,4 @@ void	FFTRealFixLen <LL2>::build_trigo_osc ()
 
 
 
-#endif // FFTUREALFIX_HPP
+#endif // FFTREALFIXED_H
