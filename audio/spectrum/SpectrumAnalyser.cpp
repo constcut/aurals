@@ -44,7 +44,6 @@
 #include <qmetatype.h>
 #include <QAudioFormat>
 
-#include "libs/fft/fftreal_wrapper.h"
 #include "audio/features/FeatureExtractor.hpp"
 #include "audio/wave/AudioUtils.hpp"
 #include "audio/features/WindowFunction.hpp"
