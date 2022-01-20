@@ -327,14 +327,6 @@ Item {
         }
     }
 
-    ToolButton {
-        y: specInfo.y
-        x: saveWavButton.x - width - 10
-        text: "Const-Q"
-        onClicked:  {
-            waveShape.makeCQT()
-        }
-    }
 
     Button {
         id: f0Button
@@ -377,16 +369,31 @@ Item {
         onClicked:  {
             //TODO calculate real width + add flick?
             strechedImg.setImage(waveShape.makeSTFT(), 800);
-            stftDialog.open()
+            specDialog.mode = "STFT"
+            specDialog.open()
+        }
+    }
+
+    ToolButton {
+        y: showSTFT.y
+        x: showSTFT.x - width - 10
+        text: "Const-Q"
+        onClicked:  {
+            strechedImg.setImage(waveShape.makeCQT(), 800);
+            specDialog.mode = "CQT"
+            specDialog.open()
         }
     }
 
 
+
     Dialog {
-        id: stftDialog
+        id: specDialog
 
         width: 825
         height: 500
+
+        property string mode: ""
 
         StretchImage {
             x: 0
@@ -401,7 +408,7 @@ Item {
             x: parent.width - width - 10
             text: "Save to file"
             onClicked: {
-                saveFileDialog.source = "STFT"
+                saveFileDialog.source = specDialog.mode
                 saveFileDialog.open()
             }
         }
@@ -427,7 +434,9 @@ Item {
             if (source == "Spectrum") {
                 spectrum.saveImage(filename)
             }
-
+            if (source == "CQT") {
+                waveShape.saveCQT(filename)
+            }
             saveFileDialog.visible = false
         }
         onRejected: {
