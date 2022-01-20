@@ -46,7 +46,7 @@ namespace aural_sight {
         std::vector<size_t> filteredIdx;
 
         double stdFound;
-        double mineFound; //Almost MPM method (TODO 3 in 1 : MPM, Yin + FFT)
+        double mineFound;
 
     private:
 

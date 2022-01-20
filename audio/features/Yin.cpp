@@ -13,8 +13,6 @@ using namespace aural_sight;
 
 void YinPP::calcBasicACF(const float* buffer) {
 
-
-
     std::vector<std::complex<float>> b(_bufferSize, 0.f);
 
     std::transform(buffer, buffer + _bufferSize,
@@ -32,7 +30,7 @@ void YinPP::calcBasicACF(const float* buffer) {
     std::complex<float> scale = {
         1.0f / (float)(_bufferSize * 2), static_cast<float>(0.0)};
 
-    for (int i = 0; i < _bufferSize; ++i)
+    for (size_t i = 0; i < _bufferSize; ++i)
         out[i] *= std::conj(out[i]) * scale;
 
     kiss_fft(inv,(kiss_fft_cpx*)out.data(),(kiss_fft_cpx*)b.data());
@@ -47,9 +45,8 @@ void YinPP::calcBasicACF(const float* buffer) {
 
     sumBufV2 = std::vector<float>(_bufferSize/2, 0.f);
 
-    for (size_t i = 0; i < _bufferSize/2; ++i) { //TODO second term is wrong!
+    for (size_t i = 0; i < _bufferSize/2; ++i)  //TODO second term is wrong!
         sumBufV2[i] = 2 * realOut[0]  - 2 * realOut[i];
-    }
 }
 
 
@@ -110,7 +107,6 @@ double YinPP::process(const float* buffer) {
     if (mineFound !=.0)
         foundPitch = _sampleRate /  mineFound;
 
-
     if (foundPitch > 660.0) //Yin isn't good and highs -> limit for 1st string fret 12
         foundPitch = -1.0;
 
@@ -127,7 +123,7 @@ size_t YinPP::absoluteThreshold(std::vector<float>& v) {
     _thresholdFound = false;
 
     for (found = 2; found < v.size() ; found++) {
-        if (v[found] < _threshold) { //TODO установка
+        if (v[found] < _threshold) {
             while (found + 1 < v.size() && v[found + 1] < v[found])
                 ++found;
             _thresholdFound = true;

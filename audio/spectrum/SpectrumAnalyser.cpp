@@ -106,7 +106,6 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
                                                 int inputFrequency,
                                                 int bytesPerSample) {
 
-    //TODO sepparate into sub function + accept different types both 16 bit and 32
     Q_ASSERT(buffer.size() == _numSamples * bytesPerSample);
     const char *ptr = buffer.constData(); //Delayed: from preloaded (загружать float сразу, без преобразований)
     for (int i=0; i<_numSamples; ++i) {
@@ -123,46 +122,25 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
         ptr += bytesPerSample;
     }
 
-    auto start = std::chrono::high_resolution_clock::now();
-    _fft->calculateFFT(_output.data(), _input.data()); //m_noWindowInput m_input
-    auto end = std::chrono::high_resolution_clock::now();
-    auto durationMs = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-
-    //qDebug() << "FFT done for " << durationMs;
-
-
-    for (int i=0; i<=_numSamples/2; ++i) {
-        _spectrum[i].frequency = qreal(i * inputFrequency) / (_numSamples);
-        const qreal real = _output[i];
-        qreal imag = 0.0;
-        if (i>0 && i<_numSamples/2)
-            imag = _output[_numSamples/2 + i];
-        const qreal magnitude = qSqrt(real*real + imag*imag);
-        qreal amplitude = SpectrumAnalyserMultiplier * qLn(magnitude);
-
-        _spectrum[i].clipped = (amplitude > 1.0); // Bound amplitude to [0.0, 1.0]
-        amplitude = qMax(qreal(0.0), amplitude);
-        amplitude = qMin(qreal(1.0), amplitude);
-        _spectrum[i].amplitude = amplitude;
-    }
-    emit calculationComplete(_spectrum);
+    finishSpectrumCalculation(inputFrequency);
 }
 
 
 void SpectrumAnalyserThread::calculateSpectrumFloat(const QByteArray &buffer) {
 
-
-    const float *ptr = reinterpret_cast<const float*>(buffer.constData()); //Delayed: from preloaded (загружать float сразу, без преобразований)
-
+    const float *ptr = reinterpret_cast<const float*>(buffer.constData());
     for (int i=0; i<_numSamples; ++i) {
         const float windowedSample = ptr[i] * _window[i];
         _input[i] = windowedSample;
     }
 
-    _fft->calculateFFT(_output.data(), _input.data()); //TODO sepparate into sub function for PCM and float common
+    finishSpectrumCalculation(44100);
+}
 
 
-    int inputFrequency = 44100;
+void SpectrumAnalyserThread::finishSpectrumCalculation(int inputFrequency) {
+
+    _fft->calculateFFT(_output.data(), _input.data());
 
     for (int i=0; i<=_numSamples/2; ++i) {
         _spectrum[i].frequency = qreal(i * inputFrequency) / (_numSamples);
@@ -180,7 +158,6 @@ void SpectrumAnalyserThread::calculateSpectrumFloat(const QByteArray &buffer) {
     }
     emit calculationComplete(_spectrum);
 }
-
 
 //=============================================================================
 // SpectrumAnalyser
