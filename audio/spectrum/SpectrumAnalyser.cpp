@@ -118,6 +118,7 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
 
     Q_ASSERT(buffer.size() == _numSamples * bytesPerSample);
     const char *ptr = buffer.constData(); //Delayed: from preloaded (загружать float сразу, без преобразований)
+
     for (int i=0; i<_numSamples ; ++i) {
 
         if (i > _fftLimit) {
@@ -139,6 +140,7 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
 void SpectrumAnalyserThread::calculateSpectrumFloat(const QByteArray &buffer) {
 
     const float *ptr = reinterpret_cast<const float*>(buffer.constData());
+
     for (int i=0; i<_numSamples; ++i) {
         const float windowedSample = ptr[i] * _window[i];
         _input[i] = windowedSample;
