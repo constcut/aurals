@@ -36,7 +36,7 @@ namespace aural_sight {
 
         Q_INVOKABLE void setCursor(double pos) {
             _cursorPos = pos;
-            update(); //TODO вначале нарисовать всю подложку
+            update();
         }
 
         Q_INVOKABLE QByteArray getACF();

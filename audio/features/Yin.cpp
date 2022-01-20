@@ -43,7 +43,7 @@ void YinPP::calcBasicACF(const float* buffer) {
         [](std::complex<float> cplx) -> float { return std::real(cplx); });
 
     acfBufer = realOut;
-    //TODO calculate slow ACF -> compare
+    //DELAYED: calculate slow ACF -> compare
 
     sumBufV2 = std::vector<float>(_bufferSize/2, 0.f);
 
@@ -57,7 +57,7 @@ double YinPP::process(const float* buffer) {
 
     calcBasicACF(buffer);
 
-    _yinBufer = std::vector<float>(_bufferSize/2.0, 0.f); //TODO better way!
+    _yinBufer = std::vector<float>(_bufferSize/2.0, 0.f); //Delayed better way of flush
 
     differenceFunction(buffer);
     sumBufer = _yinBufer;
@@ -68,7 +68,7 @@ double YinPP::process(const float* buffer) {
     auto maxE = std::max_element(_yinBufer.begin(), _yinBufer.end());
     float maxVal = *maxE;
 
-    std::vector<double> invBuffer(_yinBufer.size(), 0); //TODO inversed function for peaks
+    std::vector<double> invBuffer(_yinBufer.size(), 0); //Delayed inversed function for peaks
     for (size_t i = 0; i < invBuffer.size(); ++i)
         invBuffer[i] = maxVal - _yinBufer[i];
 
@@ -127,7 +127,7 @@ size_t YinPP::absoluteThreshold(std::vector<float>& v) {
     _thresholdFound = false;
 
     for (found = 2; found < v.size() ; found++) {
-        if (v[found] < 0.15) { //TODO установка
+        if (v[found] < _threshold) { //TODO установка
             while (found + 1 < v.size() && v[found + 1] < v[found])
                 ++found;
             _thresholdFound = true;

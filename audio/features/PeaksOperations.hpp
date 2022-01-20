@@ -127,7 +127,7 @@ namespace aural_sight {
     template <typename T>
     std::vector<int> signVectorElements(const std::vector<T>& data)
     {
-        std::vector<int> signs; //TODO replace on bool?
+        std::vector<int> signs;
         signs.reserve(data.size());
         for (auto& d : data)
             if (d > 0.f)
@@ -179,7 +179,7 @@ namespace aural_sight {
         T minMag = x[minMagIdx];
         T leftMin = minMag;
 
-        int len = static_cast<int>(x.size()); //TODO check why size_t fails?
+        int len = static_cast<int>(x.size());
         T tempMag = minMag;
         bool foundPeak = false;
 
