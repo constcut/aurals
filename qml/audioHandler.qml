@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
-import QtQuick.Dialogs 1.3
+import QtQuick.Dialogs 1.1
 
 Item {
     id: audioHandlerItem
@@ -9,7 +9,6 @@ Item {
     Dialog {
         id: testAudioDialog
         width: testLayout.width + 10
-        standardButtons:  Dialog.NoButton
 
         ColumnLayout {
             spacing:  10
@@ -99,7 +98,6 @@ Item {
 
     Dialog {
         id: renameDialog
-
         standardButtons:  Dialog.NoButton
         RowLayout {
             spacing: 10
