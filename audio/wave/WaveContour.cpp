@@ -3,6 +3,8 @@
 #include <QDebug>
 #include <QImage>
 
+#include <complex>
+
 #include "WavFile.hpp"
 #include "audio/features/FeatureExtractor.hpp"
 #include "audio/features/PeaksOperations.hpp"
@@ -10,7 +12,6 @@
 #include "audio/features/WindowFunction.hpp"
 
 #include "libs/kiss/kiss_fftr.h"
-
 #include "libs/cqt/CQSpectrogram.h"
 
 
@@ -148,7 +149,7 @@ QImage WaveContour::makeSTFT() const {
         window[i] = hannWindow(i, windowSize);
 
     std::vector<float> windowedSamples(windowSize);
-    std::vector<kiss_fft_cpx> fftOutput(windowSize); //TODO std::complex
+    std::vector<std::complex<float>> fftOutput(windowSize);
     std::vector<float> amplitudes(windowSize, 0.f);
 
     kiss_fftr_cfg cfg = kiss_fftr_alloc( windowSize, 0, 0, 0 );
@@ -161,11 +162,11 @@ QImage WaveContour::makeSTFT() const {
         for (size_t i = 0; i < windowSize; ++i)
             windowedSamples[i] = winPos[i] * window[i];
 
-        kiss_fftr( cfg , windowedSamples.data() , fftOutput.data() );
+        kiss_fftr( cfg , windowedSamples.data() , reinterpret_cast<kiss_fft_cpx*>(fftOutput.data()) );
 
         for (size_t i = 0; i < fftOutput.size() / 2; ++i) { // /2 because we don't search for all of the bins
             const auto b = fftOutput[i];
-            const float magnitude = sqrt(b.i * b.i + b.r * b.r);
+            const float magnitude = std::sqrt(std::norm(b));
             float amplitude = 0.15 * std::log(magnitude);
             amplitude = std::max(0.f, amplitude);
             amplitude = std::min(1.f, amplitude);

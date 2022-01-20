@@ -25,18 +25,19 @@ void YinPP::calcBasicACF(const float* buffer) {
 
     std::vector<std::complex<float>> out(_bufferSize, 0.f);
 
-    kiss_fft(fwd,(kiss_fft_cpx*)b.data(),(kiss_fft_cpx*)out.data());
+    kiss_fft(fwd, reinterpret_cast<kiss_fft_cpx*>(b.data()),
+             reinterpret_cast<kiss_fft_cpx*>(out.data()));
 
     std::complex<float> scale = {
         1.0f / (float)(_bufferSize * 2), static_cast<float>(0.0)};
 
     for (size_t i = 0; i < _bufferSize; ++i)
-        out[i] *= std::conj(out[i]) * scale;
+        out[i] = std::norm(out[i]) * scale;
 
-    kiss_fft(inv,(kiss_fft_cpx*)out.data(),(kiss_fft_cpx*)b.data());
+    kiss_fft(inv, reinterpret_cast<kiss_fft_cpx*>(out.data()),
+             reinterpret_cast<kiss_fft_cpx*>(b.data()));
 
     std::vector<float> realOut(_bufferSize, 0.f); //half?
-
     std::transform(b.begin(), b.begin() + _bufferSize, realOut.begin(),
         [](std::complex<float> cplx) -> float { return std::real(cplx); });
 
