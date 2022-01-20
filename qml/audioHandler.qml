@@ -1,15 +1,19 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
-import QtQuick.Dialogs 1.1
+import QtQuick.Dialogs 1.3
 
 Item {
     id: audioHandlerItem
 
     Dialog {
         id: testAudioDialog
+        width: testLayout.width + 10
+        standardButtons:  Dialog.NoButton
+
         ColumnLayout {
             spacing:  10
+            id: testLayout
             RowLayout {
                 spacing:  10
                 id: upperLayout
@@ -93,6 +97,35 @@ Item {
         }
     }
 
+    Dialog {
+        id: renameDialog
+
+        standardButtons:  Dialog.NoButton
+        RowLayout {
+            spacing: 10
+            TextField {
+                id: filenameEdit
+                width: 300
+            }
+            ToolButton {
+                text: "Rename"
+                onClicked: {
+                    audio.renameRecord(filesModel.filename, filenameEdit.text)
+                    audioHandlerItem.reload()
+                    filesModel.filename = ""
+                    renameDialog.close()
+                }
+            }
+            ToolButton {
+                text: "Cancel"
+                onClicked: {
+                    renameDialog.close()
+                }
+            }
+        }
+    }
+
+
     ColumnLayout {
         spacing:  10
         y: 10
@@ -117,19 +150,13 @@ Item {
                     }
                 }
             }
-            TextEdit { //TODO отдельный диалог
-                id: filenameEdit
-                width: 250
-            }
+
             ToolButton {
                 text: "Rename"
                 onClicked: {
                     if (filesModel.filename === "")
                         return
-                    //Возможно стоит открывать диалог, в котором вводить новое имя, и одновременно иметь возможность отменить действие
-                    audio.renameRecord(filesModel.filename, filenameEdit.text)
-                    audioHandlerItem.reload()
-                    filesModel.filename = ""
+                    renameDialog.open()
                 }
             }
             ToolButton {
@@ -298,6 +325,12 @@ Item {
                 text: "Open STFT"
                 onTriggered: {
                     thatWindow.requestSTFT("records/" + filenameEdit.text)
+                }
+            }
+            MenuItem {
+                text: "Open CQT"
+                onTriggered: {
+                    thatWindow.requestCQT("records/" + filenameEdit.text)
                 }
             }
         }
