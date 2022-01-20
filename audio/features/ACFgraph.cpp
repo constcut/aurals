@@ -9,12 +9,11 @@ using namespace aural_sight;
 
 bool ACGraphQML::loadByteArray(QByteArray analyseData) {
 
-    const size_t _numSamples = 4096;
-    const int bytesPerSample  = 2;
-    Q_ASSERT(analyseData.size() == _numSamples * bytesPerSample);
+    const size_t bytesPerSample  = 2;
+    Q_ASSERT(analyseData.size() == _windoSize * bytesPerSample);
     const char *ptr = analyseData.constData();
 
-    for (size_t i=0; i<_numSamples; ++i) {
+    for (size_t i=0; i<_windoSize; ++i) {
         const qint16 pcmSample = *reinterpret_cast<const qint16*>(ptr);
         const float realSample = pcmToReal(pcmSample);
 
@@ -25,7 +24,7 @@ bool ACGraphQML::loadByteArray(QByteArray analyseData) {
          ptr += bytesPerSample;
     }
 
-    _yin.init(44100, _numSamples);
+    _yin.init(_sampleRate, _windoSize);
     _lastFreq = _yin.process(_input.data());
     _imagePainted = false;
     update();
@@ -33,14 +32,13 @@ bool ACGraphQML::loadByteArray(QByteArray analyseData) {
 }
 
 void ACGraphQML::loadFloatSamples(QByteArray samples) {
-    const size_t _numSamples = 4096;
     float* ptr = reinterpret_cast<float*>(samples.data());
 
     if (_window != WindowFunction::NoWindow)
-        for (size_t i = 0; i < _numSamples; ++i)
+        for (size_t i = 0; i < _windoSize; ++i)
             ptr[i] *= _windowBufer[i];
 
-    _yin.init(44100, _numSamples);
+    _yin.init(_sampleRate, _windoSize);
     _lastFreq = _yin.process(ptr);
     _imagePainted = false;
     update();
@@ -51,33 +49,46 @@ void ACGraphQML::updateWindowFunction() {
     if (_window == WindowFunction::NoWindow)
         return;
 
-    const size_t _numSamples = 4096;
-    for (size_t i = 0; i < _numSamples; ++i) {
+    for (size_t i = 0; i < _windoSize; ++i) {
         if (_window == WindowFunction::HannWindow)
-            _windowBufer[i] = hannWindow(i, _numSamples);
+            _windowBufer[i] = hannWindow(i, _windoSize);
         else if (_window == WindowFunction::GausWindow)
-            _windowBufer[i] = gausWindow(i, _numSamples);
+            _windowBufer[i] = gausWindow(i, _windoSize);
         else if (_window == WindowFunction::BlackmanWindow)
-            _windowBufer[i] = blackmanWindow(i, _numSamples);
+            _windowBufer[i] = blackmanWindow(i, _windoSize);
         else if (_window == WindowFunction::HammWindow)
-            _windowBufer[i] = hammWindow(i, _numSamples);
+            _windowBufer[i] = hammWindow(i, _windoSize);
     }
+}
+
+
+void ACGraphQML::changeSampleRate(int newSampleRate) {
+    _sampleRate = newSampleRate;
+    _yin.init(_sampleRate, _windoSize);
+}
+
+void ACGraphQML::changeWindowSize(int newWindowSize) {
+    _windoSize = newWindowSize;
+
+    _windowBufer = std::vector(newWindowSize, 0.f);
+    _input = std::vector(newWindowSize, 0.f);
+
+    updateWindowFunction();
 }
 
 
 Q_INVOKABLE QByteArray ACGraphQML::getACF() {
 
-    size_t samplesCount = 4096;
-    std::vector<float> buf(samplesCount, 0.f);
+    std::vector<float> buf(_windoSize, 0.f);
 
     const std::vector<float>& src = _yin.acfBufer;
 
     for (size_t i = 0; i < src.size(); ++i)
-        buf[i] = hannWindow(i, samplesCount) * src[i];
+        buf[i] = hannWindow(i, _windoSize) * src[i];
 
     QByteArray yinData = QByteArray(
                 reinterpret_cast<const char*>(&buf[0]),
-                samplesCount * sizeof(float));
+                _windoSize * sizeof(float));
 
     return yinData;
 }

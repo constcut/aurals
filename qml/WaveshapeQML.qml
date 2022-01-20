@@ -420,6 +420,7 @@ Item {
         folder: shortcuts.home
         selectExisting: false
         selectMultiple: false
+        defaultSuffix: "jpg"
 
         property string source: ""
 
@@ -442,7 +443,7 @@ Item {
         onRejected: {
             saveFileDialog.visible = false
         }
-        nameFilters: [ "JPEG file (*.jpg)" ]
+        nameFilters: [ "JPEG file (*.jpg)" , "All files(*)"]
     }
 
 

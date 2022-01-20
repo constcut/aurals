@@ -23,7 +23,7 @@ namespace aural_sight {
         ACGraphQML([[maybe_unused]] QQuickItem* parent = nullptr)
         : _input(4096, 0.f),
           _windowBufer(4096, 0.f)
-        { _yin.init(44100, 4096); }
+        { _yin.init(_sampleRate, _windoSize); }
 
         ~ACGraphQML() = default;
 
@@ -48,6 +48,9 @@ namespace aural_sight {
             updateWindowFunction();
         }
 
+        Q_INVOKABLE void changeSampleRate(int newSampleRate);
+        Q_INVOKABLE void changeWindowSize(int newWindowSize);
+
     private:
 
         std::vector<float> _input;
@@ -57,6 +60,9 @@ namespace aural_sight {
 
         double _lastFreq = 0;
         double _cursorPos = -1.0;
+
+        size_t _sampleRate = 44100.0;
+        size_t _windoSize = 4096;
 
         WindowFunction _window = WindowFunction::NoWindow;
 
