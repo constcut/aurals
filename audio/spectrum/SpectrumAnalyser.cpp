@@ -55,14 +55,14 @@ using namespace aural_sight;
 
 SpectrumAnalyserThread::SpectrumAnalyserThread(QObject *parent)
     :   QObject(parent)
-    ,   _numSamples(SpectrumLengthSamples)
+    ,   _numSamples(4096)
     ,   _windowFunction(DefaultWindowFunction)
-    ,   _window(4096*4, 0.0) //SpectrumLengthSamples
-    ,   _input(4096*4, 0.0)
-    ,   _output(4096*4, 0.0)
-    ,   _spectrum(4096*4) //16 before
+    ,   _window(4096, 0.0) //SpectrumLengthSamples
+    ,   _input(4096, 0.0)
+    ,   _output(4096, 0.0)
+    ,   _spectrum(4096) //16 before
 {
-    _fft = std::make_unique<FFTRealWrapper>();
+    _fft = std::make_unique<FFTReal>(4096);
     calculateWindow();
 }
 
@@ -108,7 +108,7 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
 
     Q_ASSERT(buffer.size() == _numSamples * bytesPerSample);
     const char *ptr = buffer.constData(); //Delayed: from preloaded (загружать float сразу, без преобразований)
-    for (int i=0; i<_numSamples; ++i) {
+    for (int i=0; i<_numSamples ; ++i) {
 
         if (i > _fftLimit) {
             _input[i] = 0.f;
@@ -140,15 +140,12 @@ void SpectrumAnalyserThread::calculateSpectrumFloat(const QByteArray &buffer) {
 
 void SpectrumAnalyserThread::finishSpectrumCalculation(int inputFrequency) {
 
-    _fft->calculateFFT(_output.data(), _input.data());
+    _fft->forwardMagnitude(_input.data(), _output.data());
 
-    for (int i=0; i<=_numSamples/2; ++i) {
+    for (int i=0; i<= _numSamples / 2; ++i) {
         _spectrum[i].frequency = qreal(i * inputFrequency) / (_numSamples);
-        const qreal real = _output[i];
-        qreal imag = 0.0;
-        if (i>0 && i<_numSamples/2)
-            imag = _output[_numSamples/2 + i];
-        const qreal magnitude = qSqrt(real*real + imag*imag);
+
+        const double magnitude = _output[i]; //fullsize??
         qreal amplitude = SpectrumAnalyserMultiplier * qLn(magnitude);
 
         _spectrum[i].clipped = (amplitude > 1.0); // Bound amplitude to [0.0, 1.0]

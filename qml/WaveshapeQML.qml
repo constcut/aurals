@@ -38,7 +38,7 @@ Item {
                 }
                 onReleased: {
                     var diff =  flick.pressedX - mouseX
-                    console.log('Move diff: ', diff) //Use for moving note start\end
+                    //console.log('Move diff: ', diff) //Use for moving note start\end
                 }
                 onClicked:{
                     var minRmStep = waveShape.getMinRmsStep()

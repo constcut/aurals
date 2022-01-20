@@ -23,7 +23,6 @@
 
 
 //FFT bench
-#include "libs/fft/FFTunreal.hpp"
 #include "libs/fft/FFTurealfix.hpp"
 
 #include "libs/kiss/kiss_fftr.h"
@@ -89,8 +88,6 @@ void benchmarkFFT() {
     const int bits = 12;
     const int size = 2 << (bits-1);
 
-    FFTReal<float> fftUn(size);
-
     FFTRealFixLen<bits> fftUnf;
 
     std::vector<float> testVector(size, 0);
@@ -127,7 +124,6 @@ void benchmarkFFT() {
 
     //exit(0); */
 
-    unsigned long unCount = 0;
     unsigned long unfCount = 0;
 
     unsigned long kissCount = 0;
@@ -136,9 +132,6 @@ void benchmarkFFT() {
 
         for (auto& sample: testVector)
             sample = (rand() % 30000) / 30000.0f;
-
-        //unCount += bench(fftUn, "UN");
-
         if (i % 2 == 0) {
             unfCount += bench(fftUnf, "UNf");
             kissCount += benchKiss();
@@ -150,7 +143,6 @@ void benchmarkFFT() {
 
     }
 
-    //qDebug() << "Total un: " << unCount / 1000.0;
     qDebug() << "Total un fixed: " << unfCount / 1000.0;
     qDebug() << "Total kiss: " << kissCount / 1000.0;
 

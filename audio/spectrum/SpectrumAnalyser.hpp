@@ -50,7 +50,7 @@
 #include "FrequencySpectrum.hpp"
 #include "Spectrum.hpp"
 
-#include "libs/fft/fftreal_wrapper.h"
+#include "libs/cqt/dsp/FFT.h"
 
 QT_FORWARD_DECLARE_CLASS(QAudioFormat)
 QT_FORWARD_DECLARE_CLASS(QThread)
@@ -92,7 +92,7 @@ namespace aural_sight {
 
         int _fftLimit = 4096;
 
-        std::unique_ptr<FFTRealWrapper> _fft; //TODO replace to change fft size
+        std::unique_ptr<FFTReal> _fft; //TODO replace to change fft size
         int _numSamples;
         aural_sight::WindowFunction _windowFunction;
 
