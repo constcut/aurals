@@ -48,9 +48,9 @@
 #include <QVector>
 
 #include "FrequencySpectrum.hpp"
-#include "Spectrum.hpp"
 
 #include "libs/cqt/dsp/FFT.h"
+#include "audio/features/WindowFunction.hpp"
 
 QT_FORWARD_DECLARE_CLASS(QAudioFormat)
 QT_FORWARD_DECLARE_CLASS(QThread)

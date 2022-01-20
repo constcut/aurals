@@ -56,13 +56,13 @@ using namespace aural_sight;
 SpectrumAnalyserThread::SpectrumAnalyserThread(QObject *parent)
     :   QObject(parent)
     ,   _numSamples(4096)
-    ,   _windowFunction(DefaultWindowFunction)
-    ,   _window(4096, 0.0) //SpectrumLengthSamples
-    ,   _input(4096, 0.0)
-    ,   _output(4096, 0.0)
-    ,   _spectrum(4096) //16 before
+    ,   _windowFunction(HannWindow)
+    ,   _window(4096, 0.f)
+    ,   _input(4096, 0.f)
+    ,   _output(4096, 0.f)
+    ,   _spectrum(4096)
 {
-    _fft = std::make_unique<FFTReal>(4096);
+    _fft = std::make_unique<FFTReal>(_numSamples);
     calculateWindow();
 }
 
@@ -142,6 +142,8 @@ void SpectrumAnalyserThread::finishSpectrumCalculation(int inputFrequency) {
 
     _fft->forwardMagnitude(_input.data(), _output.data());
 
+    const double SpectrumAnalyserMultiplier = 0.15;
+
     for (int i=0; i<= _numSamples / 2; ++i) {
         _spectrum[i].frequency = qreal(i * inputFrequency) / (_numSamples);
 
@@ -165,8 +167,8 @@ SpectrumAnalyser::SpectrumAnalyser(QObject *parent)
     ,   _thread(new SpectrumAnalyserThread(this))
     ,   _state(Idle)
 {
-    CHECKED_CONNECT(_thread, SIGNAL(calculationComplete(aural_sight::FrequencySpectrum)),
-                    this, SLOT(calculationComplete(aural_sight::FrequencySpectrum)));
+    /*CHECKED_CONNECT(_thread, SIGNAL(calculationComplete(aural_sight::FrequencySpectrum)),
+                    this, SLOT(calculationComplete(aural_sight::FrequencySpectrum)));*/
 }
 
 

@@ -90,7 +90,6 @@ HEADERS += \
     audio/features/FeatureExtractor.hpp \
     audio/spectrum/FrequencySpectrum.hpp \
     audio/spectrum/Spectrograph.hpp \
-    audio/spectrum/Spectrum.hpp \
     audio/spectrum/SpectrumAnalyser.hpp \
     audio/wave/WavFile.hpp \
     audio/wave/WaveContour.hpp \
