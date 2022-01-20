@@ -210,8 +210,7 @@ QImage WaveContour::makeCQT() const {
         else
             count = 1024;
 
-        std::vector<float> cqin(fbuf, fbuf + count);
-        auto cQ = cq.process(cqin); //TODO переписать на float* + size чтобы не нужно было создавать новые вектора
+        auto cQ = cq.process(fbuf, count);
 
         if (cQ.empty() == false && inframe > latency)
             spectrogram.insert(spectrogram.end(), cQ.begin(), cQ.end());
