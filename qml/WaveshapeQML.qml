@@ -368,7 +368,6 @@ Item {
         x: parent.width - width - 10 - showNotesButton.width - 10
         text: "Show STFT"
         onClicked:  {
-            //TODO calculate real width + add flick?
             strechedImg.setImage(waveShape.makeSTFT(), 800);
             specDialog.mode = "STFT"
             specDialog.open()

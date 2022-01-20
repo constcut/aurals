@@ -192,7 +192,6 @@ Item {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        //TODO just position + freq
                         yinInfo2.text = "pos= "+ mouseX + " freq = " +  44100.0 / mouseX
                         acgraph.setCursor(mouseX)
                     }

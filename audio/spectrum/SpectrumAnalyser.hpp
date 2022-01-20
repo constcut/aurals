@@ -90,10 +90,9 @@ namespace aural_sight {
         void finishSpectrumCalculation(int inputFrequency);
 
 
-
         int _fftLimit = 4096;
 
-        std::unique_ptr<FFTRealWrapper> _fft; //TODO replace
+        std::unique_ptr<FFTRealWrapper> _fft; //TODO replace to change fft size
         int _numSamples;
         aural_sight::WindowFunction _windowFunction;
 

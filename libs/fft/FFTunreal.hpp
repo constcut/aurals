@@ -3,8 +3,6 @@
 
 #include "FFTCommon.hpp"
 
-//TODO check in FFT class is typename float std::is_float<T>
-//TODO rename fields and functions
 
 
 template <class T>
@@ -86,7 +84,7 @@ static inline bool	FFTReal_is_pow2 (long x) {
 }
 
 
-static inline int	FFTReal_get_next_pow2 (long x) //TODO rechec constexpr
+static inline int	FFTReal_get_next_pow2 (long x)
 {
     --x;
     int p = 0;
@@ -380,7 +378,7 @@ void FFTReal <T>::init_trigo_osc ()
 
 template <class T>
 const uint32_t* FFTReal<T>::get_br_ptr() const {
-    return &_br_lut [0]; //TODO make another function just to access ptr
+    return &_br_lut [0];
 }
 
 
@@ -388,7 +386,7 @@ const uint32_t* FFTReal<T>::get_br_ptr() const {
 template <class T>
 const T* FFTReal <T>::get_trigo_ptr (int level) const {
     assert (level >= 3);
-    return (&_trigo_lut [get_trigo_level_index (level)]);//TODO make another function just to access ptr
+    return (&_trigo_lut [get_trigo_level_index (level)]);
 }
 
 
@@ -445,7 +443,7 @@ void FFTReal <T>::compute_direct_pass_1_2 (T df [], const T x []) const
     assert (x != 0);
     assert (df != x);
 
-    const uint32_t * const	bit_rev_lut_ptr = get_br_ptr (); //TODO maybe back
+    const uint32_t * const	bit_rev_lut_ptr = get_br_ptr ();
     uint32_t				coef_index = 0;
     do
     {
@@ -636,7 +634,7 @@ void FFTReal <T>::compute_ifft_general (const T f [], T x []) const
     assert (x != use_buffer ());
     assert (x != f);
 
-    const T* sf = f; // const_cast <DT *> (f); //TODO!
+    const T* sf = f;
     T* df;
     T* df_temp;
 
@@ -802,8 +800,8 @@ void FFTReal <T>::compute_inverse_pass_3 (T df [], const T sf []) const
     {
         df[coef_index] = sf[coef_index] + sf[coef_index + 4];
         df[coef_index + 4] = sf[coef_index] - sf[coef_index + 4];
-        df[coef_index + 2] = sf[coef_index + 2] * 2.0; //TODO is_same
-        df[coef_index + 6] = sf[coef_index + 6] * 2.0;
+        df[coef_index + 2] = sf[coef_index + 2] * 2.0f;
+        df[coef_index + 6] = sf[coef_index + 6] * 2.0f;
 
         df[coef_index + 1] = sf [coef_index + 1] + sf[coef_index + 3];
         df[coef_index + 3] = sf [coef_index + 5] - sf[coef_index + 7];

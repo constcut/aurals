@@ -13,7 +13,7 @@ const double SQRT2 = 1.41421356237309514547462185873883;
 
 
 template <class T>
-class DynArray //TODO try compare uint\int on many cycles
+class DynArray
 {
 
 public:
@@ -77,7 +77,7 @@ public:
 
     OscSinCos ();
 
-    inline void set_step (double angle_rad); //TODO T
+    inline void set_step (double angle_rad);
 
     inline T get_cos () const;
     inline T get_sin () const;
