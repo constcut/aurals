@@ -13,39 +13,41 @@ using namespace aural_sight;
 
 void YinPP::calcBasicACF(const float* buffer) {
 
-    std::vector<std::complex<float>> b(4096, 0.f);
 
-    std::transform(buffer, buffer + 4096,
+
+    std::vector<std::complex<float>> b(_bufferSize, 0.f);
+
+    std::transform(buffer, buffer + _bufferSize,
         b.begin(), [](float x) -> std::complex<float> {
             return std::complex(x, static_cast<float>(0.0));
         });
 
-    kiss_fft_cfg fwd = kiss_fft_alloc(4096, 0, NULL,NULL);
-    kiss_fft_cfg inv = kiss_fft_alloc(4096, 1, NULL,NULL);
+    kiss_fft_cfg fwd = kiss_fft_alloc(_bufferSize, 0, NULL,NULL);
+    kiss_fft_cfg inv = kiss_fft_alloc(_bufferSize, 1, NULL,NULL);
 
-    std::vector<std::complex<float>> out(4096, 0.f);
+    std::vector<std::complex<float>> out(_bufferSize, 0.f);
 
     kiss_fft(fwd,(kiss_fft_cpx*)b.data(),(kiss_fft_cpx*)out.data());
 
     std::complex<float> scale = {
-        1.0f / (float)(4096 * 2), static_cast<float>(0.0)};
+        1.0f / (float)(_bufferSize * 2), static_cast<float>(0.0)};
 
-    for (int i = 0; i < 4096; ++i)
+    for (int i = 0; i < _bufferSize; ++i)
         out[i] *= std::conj(out[i]) * scale;
 
     kiss_fft(inv,(kiss_fft_cpx*)out.data(),(kiss_fft_cpx*)b.data());
 
-    std::vector<float> realOut(4096, 0.f); //half?
+    std::vector<float> realOut(_bufferSize, 0.f); //half?
 
-    std::transform(b.begin(), b.begin() + 4096, realOut.begin(),
+    std::transform(b.begin(), b.begin() + _bufferSize, realOut.begin(),
         [](std::complex<float> cplx) -> float { return std::real(cplx); });
 
     acfBufer = realOut;
     //TODO calculate slow ACF -> compare
 
-    sumBufV2 = std::vector<float>(2048, 0.f);
+    sumBufV2 = std::vector<float>(_bufferSize/2, 0.f);
 
-    for (size_t i = 0; i < 2048; ++i) { //TODO second term is wrong!
+    for (size_t i = 0; i < _bufferSize/2; ++i) { //TODO second term is wrong!
         sumBufV2[i] = 2 * realOut[0]  - 2 * realOut[i];
     }
 }

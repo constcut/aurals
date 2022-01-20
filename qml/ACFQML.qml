@@ -88,12 +88,14 @@ Item {
                     text: "Yin window size: "
                 }
                 ComboBox {
-                    model: ["2048","4096"]
-                    currentIndex: 1
+                    model: ["1024","2048","4096"]
+                    currentIndex: 2
                     onCurrentTextChanged: {
-                        acgraph.changeWindowSize(parseInt(currentText))
-                        flick2.width = parseInt(currentText) / 2
-                        acgraph.width = flick2.width
+                        var newWindowSize = parseInt(currentText)
+                        acgraph.changeWindowSize(newWindowSize)
+                        flick2.contentWidth = newWindowSize / 2
+                        acgraph.width = newWindowSize / 2
+                        waveShape.setWindowWidth(newWindowSize)
                     }
                 }
             }

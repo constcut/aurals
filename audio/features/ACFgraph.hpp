@@ -23,7 +23,7 @@ namespace aural_sight {
         ACGraphQML([[maybe_unused]] QQuickItem* parent = nullptr)
         : _input(4096, 0.f),
           _windowBufer(4096, 0.f)
-        { _yin.init(_sampleRate, _windoSize); }
+        { _yin.init(_sampleRate, _windowSize); }
 
         ~ACGraphQML() = default;
 
@@ -62,7 +62,7 @@ namespace aural_sight {
         double _cursorPos = -1.0;
 
         size_t _sampleRate = 44100.0;
-        size_t _windoSize = 4096;
+        size_t _windowSize = 4096;
 
         WindowFunction _window = WindowFunction::NoWindow;
 

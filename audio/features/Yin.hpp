@@ -51,6 +51,7 @@ namespace aural_sight {
     private:
 
         double _threshold;
+
         size_t _bufferSize;
         double _sampleRate;
 
