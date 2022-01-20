@@ -56,20 +56,31 @@ SpectrumAnalyserThread::SpectrumAnalyserThread(QObject *parent)
     :   QObject(parent)
     ,   _numSamples(4096)
     ,   _windowFunction(HannWindow)
-    ,   _window(4096, 0.f)
-    ,   _input(4096, 0.f)
-    ,   _output(4096, 0.f)
-    ,   _spectrum(4096)
+    ,   _window(4096*4, 0.f)
+    ,   _input(4096*4, 0.f)
+    ,   _output(4096*4, 0.f)
+    ,   _spectrum(4096*4) //Biggest buffers we may use in our code
 {
     _fft = std::make_unique<FFTReal>(_numSamples);
     calculateWindow();
 }
 
+
 void SpectrumAnalyserThread::setWindowFunction(int idx) {
-    _windowFunction = static_cast<aural_sight::WindowFunction>(idx);
-    calculateWindow();
+    if (_windowFunction != static_cast<aural_sight::WindowFunction>(idx)) {
+        _windowFunction = static_cast<aural_sight::WindowFunction>(idx);
+        calculateWindow();
+    }
 }
 
+
+void SpectrumAnalyserThread::setSamplesAmount(int newNumSamples) {
+    if (newNumSamples != _numSamples) {
+        _numSamples = newNumSamples;
+        _fft = std::make_unique<FFTReal>(_numSamples);
+        calculateWindow();
+    }
+}
 
 
 

@@ -68,7 +68,7 @@ namespace aural_sight {
         SpectrumAnalyserThread(QObject *parent);
         ~SpectrumAnalyserThread() = default;
 
-        void setSamplesAmount(int newNumSamples) { _numSamples = newNumSamples; }
+        void setSamplesAmount(int newNumSamples);
         int getSamplesAmount() const { return _numSamples; }
 
         void setFFTLimit(int newLimit) { _fftLimit = newLimit; }
