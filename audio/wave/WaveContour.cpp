@@ -133,7 +133,7 @@ QRgb colorFromAmp(float amp) {
 QImage WaveContour::makeSTFT() const {
     const size_t windowSize = 4096*2;
     const size_t windowStep = 256;
-    size_t width = (_floatSamples.size() - windowSize) / windowStep + 1;
+    size_t width = (_floatSamples.size() ) / windowStep + 1; //- windowSize
 
     size_t height = 600;
     float hScale = log(height) / height;
@@ -153,7 +153,7 @@ QImage WaveContour::makeSTFT() const {
 
     kiss_fftr_cfg cfg = kiss_fftr_alloc( windowSize, 0, 0, 0 );
 
-    size_t count = 0;
+    size_t count = windowSize / windowStep;
     size_t position = 0;
     while (position + windowSize < _floatSamples.size()) {
 
