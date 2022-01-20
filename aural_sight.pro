@@ -19,7 +19,6 @@ SOURCES += \
     app/AndroidTools.cpp \
     app/Init.cpp \
     app/LogHandler.cpp \
-    app/StretchImage.cpp \
     audio/features/ACFgraph.cpp \
     audio/wave/AudioHandler.cpp \
     audio/wave/AudioReceiver.cpp \
