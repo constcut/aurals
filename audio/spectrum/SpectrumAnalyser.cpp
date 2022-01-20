@@ -161,13 +161,19 @@ void SpectrumAnalyserThread::finishSpectrumCalculation(int inputFrequency) {
 // SpectrumAnalyser
 //=============================================================================
 
+
+#define CHECKED_CONNECT(source, signal, receiver, slot) \
+    if (!connect(source, signal, receiver, slot)) \
+        qt_assert_x(Q_FUNC_INFO, "CHECKED_CONNECT failed", __FILE__, __LINE__);
+
+
 SpectrumAnalyser::SpectrumAnalyser(QObject *parent)
     :   QObject(parent)
     ,   _thread(new SpectrumAnalyserThread(this))
     ,   _state(Idle)
 {
-    /*CHECKED_CONNECT(_thread, SIGNAL(calculationComplete(aural_sight::FrequencySpectrum)),
-                    this, SLOT(calculationComplete(aural_sight::FrequencySpectrum)));*/
+    CHECKED_CONNECT(_thread, SIGNAL(calculationComplete(aural_sight::FrequencySpectrum)),
+                    this, SLOT(calculationComplete(aural_sight::FrequencySpectrum)));
 }
 
 
