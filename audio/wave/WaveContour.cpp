@@ -192,8 +192,17 @@ void WaveContour::CQTtoFile(QString filename) const {
 
 
 QImage WaveContour::makeCQT() const {
-    CQParameters params(44100, 100, 14700, 60);
+    CQParameters params(44100, 100, 14700, 60); //TODO better configuration
     CQSpectrogram cq(params, CQSpectrogram::Interpolation::InterpolateLinear); //ConstantQ
+
+    qDebug() << "Const q. total bins= " << cq.getTotalBins() << " per octave=" << cq.getBinsPerOctave();
+
+    qDebug() << "Min " << cq.getMinFrequency() << " get octaves " << cq.getOctaves();
+
+    for (int i = 0; i < cq.getTotalBins(); ++i) {
+        qDebug() << "On bin " << i << " got " << cq.getBinFrequency(i);
+    }
+
 
     size_t latency = cq.getLatency();
 

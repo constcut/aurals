@@ -13,12 +13,12 @@ Item {
         waveShape.loadFile(item.filename)
     }
 
-    property int waveHeight: height/3
-    property int stftHeight: Qt.platform.os == "android" ? height/2 : 400
+    property int waveHeight: height/4
+    property int cqtHeight: Qt.platform.os == "android" ? height/2 : 480
 
     ScrollView {
         width: parent.width
-        height:  item.waveHeight + item.stftHeight + 20 //parent.height / 3 + 420
+        height:  item.waveHeight + item.cqtHeight + 20 //parent.height / 3 + 420
 
         Flickable {
             id: flick
@@ -73,14 +73,17 @@ Item {
             StretchImage {
                 y: waveShape.height + 5
                 width: parent.width
-                height: item.stftHeight
+                height: item.cqtHeight
 
                 id: strechedImg
 
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        //TODO
+                        var bin = 60.0 * 8.0  - mouseY - 1
+                        var freq = 58.0891 * Math.pow(2, bin / 60.0)
+                        var minRmStep = waveShape.getMinRmsStep()
+                        ctqInfo.text = "Freq= " + freq + "  Time= " + ((mouseX * minRmStep / 2.0) / 44100.0).toFixed(4)
                     }
                 }
             }
@@ -112,14 +115,14 @@ Item {
     }
 
     Text {
-        id: stftInfo
+        id: ctqInfo
         y : settingsButton.y
         x : 25
         text: "CQT info"
     }
 
     Text {
-        id: stftInfo2
+        id: ctqInfo2
         y : settingsButton.y
         x : parent.width/2
         text: "CQT info"
