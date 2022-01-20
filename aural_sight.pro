@@ -43,7 +43,6 @@ SOURCES += \
     libs/cqt/dsp/MathUtilities.cpp \
     libs/cqt/dsp/Resampler.cpp \
     libs/cqt/dsp/SincWindow.cpp \
-    libs/fft/fftreal_wrapper.cpp \
     libs/kiss/kfc.c \
     libs/kiss/kiss_fft.c \
     libs/kiss/kiss_fftnd.c \
@@ -112,8 +111,7 @@ HEADERS += \
     libs/cqt/dsp/nan-inf.h \
     libs/cqt/dsp/pi.h \
     libs/fft/FFTCommon.hpp \
-    libs/fft/FFTunreal.hpp \
-    libs/fft/fftreal_wrapper.h \
+    libs/fft/FFTurealfix.hpp \
     libs/kiss/_kiss_fft_guts.h \
     libs/kiss/kfc.h \
     libs/kiss/kiss_fft.h \
