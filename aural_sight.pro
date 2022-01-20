@@ -157,6 +157,7 @@ DISTFILES += \
     libs/fft/readme.txt \
     main.qml \
     qml/ACFQML.qml \
+    qml/CQTQML.qml \
     qml/ConsoleLog.qml \
     qml/MidiRenderSettings.qml \
     qml/PianoMap.qml \

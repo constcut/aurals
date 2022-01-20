@@ -10,5 +10,6 @@
         <file>qml/midiPlayer.qml</file>
         <file>qml/ACFQML.qml</file>
         <file>qml/STFTQML.qml</file>
+        <file>qml/CQTQML.qml</file>
     </qresource>
 </RCC>

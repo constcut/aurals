@@ -49,7 +49,8 @@ namespace aural_sight {
         void STFTtoFile(QString filename) const;
         QImage makeSTFT() const;
 
-        void makeCQT();
+        QImage makeCQT() const;
+        void CQTtoFile(QString filename) const;
 
     protected:
 

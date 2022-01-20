@@ -67,6 +67,11 @@ ApplicationWindow {
         mainLoader.setSource("qrc:/qml/STFTQML.qml", {"filename": filename});
     }
 
+    function requestCQT(filename) {
+        mainLoader.setSource("qrc:/qml/CQTQML.qml", {"filename": filename});
+    }
+
+
 
     Loader {
     id:mainLoader

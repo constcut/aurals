@@ -178,6 +178,12 @@ Item {
                     thatWindow.requestSTFT("records/" + filenameEdit.text)
                 }
             }
+            ToolButton {
+                text: "CQT"
+                onClicked:  {
+                    thatWindow.requestCQT("records/" + filenameEdit.text)
+                }
+            }
 
         }
 

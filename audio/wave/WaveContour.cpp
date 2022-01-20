@@ -186,16 +186,22 @@ QImage WaveContour::makeSTFT() const {
 }
 
 
+void WaveContour::CQTtoFile(QString filename) const {
+    makeCQT().save(filename);
+}
 
-void WaveContour::makeCQT() {
+
+QImage WaveContour::makeCQT() const {
     CQParameters params(44100, 100, 14700, 60);
     CQSpectrogram cq(params, CQSpectrogram::Interpolation::InterpolateLinear); //ConstantQ
 
-    std::vector<float> outputData; //TODO reserve?
+    size_t latency = cq.getLatency();
+    qDebug() << "Latency " << latency;
 
+    std::vector<std::vector<float>> spectrogram;
     auto start = std::chrono::high_resolution_clock::now();
 
-    float* fbuf = _floatSamples.data();
+    const float* fbuf = _floatSamples.data();
     size_t inframe = 0;
     while (inframe < _floatSamples.size())
     {
@@ -209,7 +215,11 @@ void WaveContour::makeCQT() {
         auto cQ = cq.process(cqin); //TODO переписать на float* + size чтобы не нужно было создавать новые вектора
 
         if (cQ.size() != 0) { //Возможно так же требуется ещё пропускат latency - но пока что это не заметно
-                          //TODO append into memory bufer
+
+            if (inframe >= latency)
+                spectrogram.insert(spectrogram.end(), cQ.begin(), cQ.end());
+
+            qDebug() << inframe << " " << latency << " got " << spectrogram.size();
         }
 
         inframe += count;
@@ -217,8 +227,36 @@ void WaveContour::makeCQT() {
     }
 
     auto r = cq.getRemainingOutput();
+    spectrogram.insert(spectrogram.end(), r.begin(), r.end());
 
     auto end = std::chrono::high_resolution_clock::now();
     auto durationMs = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
     qDebug() << "Time spent " << durationMs / 1000.0;
+    qDebug() << "Total size is " << spectrogram.size();
+
+    float max = std::numeric_limits<float>::min();
+    float min = std::numeric_limits<float>::max();
+
+    size_t fullLen = _floatSamples.size() / 64;
+
+    qDebug() << "Full len vs " << fullLen << " " <<  _floatSamples.size();
+
+
+    QImage img = QImage(spectrogram.size(), spectrogram[0].size(), QImage::Format_RGB32);
+
+    for (size_t i = 0; i < spectrogram.size(); ++i) {
+        for (size_t j = 0; j < spectrogram[i].size(); ++j) {
+            const float mag = spectrogram[i][j];
+            if (mag > max)
+                max = mag;
+            if (mag < min)
+                min = mag;
+
+            const float norm = (mag / 12.f) * 255;
+            QColor c(0, norm, 0);
+            img.setPixel(i, j, c.rgb());
+        }
+    }
+
+    return img;
 }
