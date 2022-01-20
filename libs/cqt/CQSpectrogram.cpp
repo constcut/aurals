@@ -57,6 +57,12 @@ CQSpectrogram::process(const RealSequence &td)
 }
 
 CQSpectrogram::RealBlock
+CQSpectrogram::process(const float* buf, size_t size) {
+    return postProcess(m_cq.process(buf, size), false);
+}
+
+
+CQSpectrogram::RealBlock
 CQSpectrogram::getRemainingOutput()
 {
     return postProcess(m_cq.getRemainingOutput(), true);

@@ -264,6 +264,19 @@ ConstantQ::initialise()
 }
 
 ConstantQ::ComplexBlock
+ConstantQ::process(const float* buf, size_t size) {
+    m_buffers[0].insert(m_buffers[0].end(), buf, buf + size);
+
+    for (int i = 1; i < m_octaves; ++i) {
+        RealSequence dec = m_decimators[i]->process(buf, size);
+        m_buffers[i].insert(m_buffers[i].end(), dec.begin(), dec.end());
+    }
+
+    return processCommon();
+}
+
+
+ConstantQ::ComplexBlock
 ConstantQ::process(const RealSequence &td)
 {
     m_buffers[0].insert(m_buffers[0].end(), td.begin(), td.end());
@@ -273,22 +286,29 @@ ConstantQ::process(const RealSequence &td)
         m_buffers[i].insert(m_buffers[i].end(), dec.begin(), dec.end());
     }
 
+    return processCommon();
+}
+
+
+
+ConstantQ::ComplexBlock
+ConstantQ::processCommon() {
     ComplexBlock out;
 
     while (true) {
 
-	// We could have quite different remaining sample counts in
-	// different octaves, because (apart from the predictable
-	// added counts for decimator output on each block) we also
-	// have variable additional latency per octave
-	bool enough = true;
-	for (int i = 0; i < m_octaves; ++i) {
-	    int required = m_p.fftSize * pow(2, m_octaves - i - 1);
-	    if ((int)m_buffers[i].size() < required) {
-		enough = false;
-	    }
-	}
-	if (!enough) break;
+    // We could have quite different remaining sample counts in
+    // different octaves, because (apart from the predictable
+    // added counts for decimator output on each block) we also
+    // have variable additional latency per octave
+    bool enough = true;
+    for (int i = 0; i < m_octaves; ++i) {
+        int required = m_p.fftSize * pow(2, m_octaves - i - 1);
+        if ((int)m_buffers[i].size() < required) {
+        enough = false;
+        }
+    }
+    if (!enough) break;
 
         int base = out.size();
         int totalColumns = pow(2, m_octaves - 1) * m_p.atomsPerFrame;
@@ -302,21 +322,21 @@ ConstantQ::process(const RealSequence &td)
 
             for (int b = 0; b < blocksThisOctave; ++b) {
                 ComplexBlock block = processOctaveBlock(octave);
-                
+
                 for (int j = 0; j < m_p.atomsPerFrame; ++j) {
 
                     int target = base +
-			    (b * (totalColumns / blocksThisOctave) + 
-			     (j * ((totalColumns / blocksThisOctave) /
-				   m_p.atomsPerFrame)));
+                (b * (totalColumns / blocksThisOctave) +
+                 (j * ((totalColumns / blocksThisOctave) /
+                   m_p.atomsPerFrame)));
 
-                    while (int(out[target].size()) < 
+                    while (int(out[target].size()) <
                            m_p.binsPerOctave * (octave + 1)) {
                         out[target].push_back(Complex());
                     }
-                    
+
                     for (int i = 0; i < m_p.binsPerOctave; ++i) {
-                        out[target][m_p.binsPerOctave * octave + i] = 
+                        out[target][m_p.binsPerOctave * octave + i] =
                             block[j][m_p.binsPerOctave - i - 1];
                     }
                 }
@@ -326,6 +346,10 @@ ConstantQ::process(const RealSequence &td)
 
     return out;
 }
+
+
+
+
 
 ConstantQ::ComplexBlock
 ConstantQ::getRemainingOutput()

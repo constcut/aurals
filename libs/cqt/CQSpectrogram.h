@@ -99,6 +99,7 @@ public:
      * class.
      */
     RealBlock process(const RealSequence &);
+    RealBlock process(const float* buf, size_t size);
 
     /**
      * Return the remaining constant-Q magnitude columns following the

@@ -95,6 +95,7 @@ public:
      * of ConstantQ.
      */
     ComplexBlock process(const RealSequence &);
+    ComplexBlock process(const float* buf, size_t size);
 
     /**
      * Return the remaining constant-Q columns following the end of
@@ -104,6 +105,9 @@ public:
     ComplexBlock getRemainingOutput();
 
 private:
+
+    ComplexBlock processCommon();
+
     const CQParameters m_inparams;
     const float m_sampleRate;
     const float m_maxFrequency;
