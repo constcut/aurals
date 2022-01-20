@@ -110,7 +110,6 @@ HEADERS += \
     libs/cqt/dsp/Window.h \
     libs/cqt/dsp/nan-inf.h \
     libs/cqt/dsp/pi.h \
-    libs/fft/FFTCommon.hpp \
     libs/fft/FFTurealfix.hpp \
     libs/kiss/_kiss_fft_guts.h \
     libs/kiss/kfc.h \
