@@ -80,17 +80,7 @@ Item {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                            //Yet accurate only on desktop, very evil ariphmetic
-                        var hScale = Math.log(600) / 600;
-                        var inversedPos = strechedImg.height  - mouseY
-                        inversedPos += 234 //12 bins shift TODO calculate
-                        var freqInBin = 44100 / 8192
-
-                        var minRmStep = waveShape.getMinRmsStep()
-                        var binIdx = Math.pow(Math.exp(1), inversedPos * hScale)
-                        stftInfo.text = "Freq=  " + freqInBin * binIdx
-                                + "\nTime= " + ((mouseX * minRmStep / 2.0) / 44100.0).toFixed(4)
-                                + "\nBin=" + binIdx
+                        //TODO
                     }
                 }
             }
