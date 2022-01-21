@@ -15,6 +15,8 @@ QMAKE_CXXFLAGS += -Wall
 
 android: QT += androidextras
 
+#Wavelets are commented, yet no application for such amazing detalization
+
 SOURCES += \
     app/AndroidTools.cpp \
     app/Init.cpp \
@@ -49,15 +51,15 @@ SOURCES += \
     libs/kiss/kiss_fftndr.c \
     libs/kiss/kiss_fftr.c \
     libs/sf/tsf.cpp \
-    libs/wavelet/conv.c \
-    libs/wavelet/cwt.c \
-    libs/wavelet/cwtmath.c \
-    libs/wavelet/hsfft.c \
-    libs/wavelet/real.c \
-    libs/wavelet/wavefilt.c \
-    libs/wavelet/wavefunc.c \
-    libs/wavelet/wavelib.c \
-    libs/wavelet/wtmath.c \
+    #libs/wavelet/conv.c \
+    #libs/wavelet/cwt.c \
+    #libs/wavelet/cwtmath.c \
+    #libs/wavelet/hsfft.c \
+    #libs/wavelet/real.c \
+    #libs/wavelet/wavefilt.c \
+    #libs/wavelet/wavefunc.c \
+    #libs/wavelet/wavelib.c \
+    #libs/wavelet/wtmath.c \
     main.cpp \
     midi/MidiEngine.cpp \
     midi/MidiFile.cpp \
@@ -127,16 +129,16 @@ HEADERS += \
     libs/kiss/kiss_fftnd.h \
     libs/kiss/kiss_fftndr.h \
     libs/kiss/kiss_fftr.h \
-    libs/wavelet/conv.h \
-    libs/wavelet/cwt.h \
-    libs/wavelet/cwtmath.h \
-    libs/wavelet/hsfft.h \
-    libs/wavelet/real.h \
-    libs/wavelet/wauxlib.h \
-    libs/wavelet/wavefilt.h \
-    libs/wavelet/wavefunc.h \
-    libs/wavelet/wavelib.h \
-    libs/wavelet/wtmath.h \
+    #libs/wavelet/conv.h \
+    #libs/wavelet/cwt.h \
+    #libs/wavelet/cwtmath.h \
+    #libs/wavelet/hsfft.h \
+    #libs/wavelet/real.h \
+    #libs/wavelet/wauxlib.h \
+    #libs/wavelet/wavefilt.h \
+    #libs/wavelet/wavefunc.h \
+    #libs/wavelet/wavelib.h \
+    #libs/wavelet/wtmath.h \
     log.hpp \
     midi/MidiEngine.hpp \
     midi/MidiFile.hpp \

@@ -252,6 +252,8 @@ QImage WaveContour::makeCWT() const {
 
     //+add libs/wavelet/* to project
 
+    //Another reference on full scaled wavelets:
+
     /*
     size_t length = 44100 * 2;
 
