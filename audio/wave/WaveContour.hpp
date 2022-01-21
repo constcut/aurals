@@ -52,6 +52,8 @@ namespace aural_sight {
         QImage makeCQT() const;
         void CQTtoFile(QString filename) const;
 
+        QImage makeCWT() const;
+
     protected:
 
         std::vector<float> _floatSamples;

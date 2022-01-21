@@ -151,6 +151,8 @@ namespace aural_sight {
         Q_INVOKABLE void saveCQT(QString filename) { _waveContour.CQTtoFile(filename); }
         Q_INVOKABLE QVariant makeCQT() { return _waveContour.makeCQT(); }
 
+        Q_INVOKABLE QVariant makeCWT() { return _waveContour.makeCWT(); }
+
         Q_INVOKABLE void saveImage(QString filename) { _mainImage.save(filename); }
     };
 

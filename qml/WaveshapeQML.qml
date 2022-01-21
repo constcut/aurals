@@ -328,6 +328,19 @@ Item {
         }
     }
 
+    ToolButton {
+        y: saveWavButton.y
+        x: saveWavButton.x - width - 10
+        text: "CWT"
+        onClicked:  {
+            //strechedImg.setImage(waveShape.makeCQT(), 800);
+            //specDialog.mode = "CQT"
+            //specDialog.open()
+            waveShape.makeCWT()
+        }
+    }
+
+
 
     Button {
         id: f0Button

@@ -13,6 +13,7 @@
 
 #include "libs/kiss/kiss_fftr.h"
 #include "libs/cqt/CQSpectrogram.h"
+#include "libs/wavelet/wavelib.h"
 
 
 using namespace aural_sight;
@@ -237,4 +238,75 @@ QImage WaveContour::makeCQT() const {
     }
 
     return img;
+}
+
+
+
+QImage WaveContour::makeCWT() const {
+
+    size_t length = 44100 * 2;
+
+    std::vector<double> samples(length, 0.0);
+    std::vector<double> outSamples(length, 0.0);
+
+    for (size_t i = 0; i < length; ++i)
+        samples[i] = _floatSamples[length + i];
+
+
+
+    char wave[] = "morlet";// Set Morlet wavelet. Other options "paul" and "dog"
+    char type[] = "pow";
+
+    int N = length;
+    double param = 6.0;
+    int subscale = 8;
+    double dt = 0.25;
+    double s0 = dt;
+    double dj = 1.0 / (double)subscale;
+    int J = 64 * subscale; // Total Number of scales
+    int a0 = 2;//power
+
+
+    cwt_object wt = cwt_init(wave, param, N,dt, J);
+
+    setCWTScales(wt, s0, dj, type, a0);
+
+
+    auto start = std::chrono::high_resolution_clock::now();
+    cwt(wt, samples.data());
+    auto end = std::chrono::high_resolution_clock::now();
+    auto durationMs = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+
+    qDebug() << "CWT took " << durationMs / 1000.0 << " ms ";
+
+    icwt(wt, outSamples.data());
+
+    auto end2 = std::chrono::high_resolution_clock::now();
+    auto durationMs2 = std::chrono::duration_cast<std::chrono::microseconds>(end2 - end).count();
+
+    qDebug() << "iCWT took " << durationMs2 / 1000.0 << " ms ";
+
+    //check by inversed
+
+
+    for (size_t i = 0; i < static_cast<size_t>(J); ++i) {
+        for (size_t j = 0; j < length; ++j) {
+
+        }
+    }
+
+
+
+    std::vector<float> dump(length, 0.f);
+    for (size_t i = 0; i < length; ++i)
+        dump[i] = outSamples[i];
+
+    WavFile out;
+    out.open("cwt.wav", QIODevice::WriteOnly);
+    out.writeHeader(44100, 32, dump.size() * sizeof(float), false, true);
+    out.write(reinterpret_cast<const char*>(dump.data()), dump.size() * sizeof(float));
+
+
+
+    return QImage();
 }
