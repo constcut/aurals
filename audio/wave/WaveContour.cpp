@@ -244,6 +244,11 @@ QImage WaveContour::makeCQT() const {
 
 QImage WaveContour::makeCWT() const {
 
+    qDebug() << "Wavelets to good to be legal!";
+    qDebug() << "If you want to turn them include files into project.";
+    return QImage();
+
+    /*
     size_t length = 44100 * 2;
 
     std::vector<double> samples(length, 0.0);
@@ -334,7 +339,5 @@ QImage WaveContour::makeCWT() const {
     out.writeHeader(44100, 32, dump.size() * sizeof(float), false, true);
     out.write(reinterpret_cast<const char*>(dump.data()), dump.size() * sizeof(float));
 
-
-
-    return QImage();
+    return s;*/
 }
