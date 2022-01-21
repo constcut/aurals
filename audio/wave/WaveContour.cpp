@@ -244,13 +244,13 @@ QImage WaveContour::makeCQT() const {
 
 QImage WaveContour::makeCWT() const {
 
-    size_t length = 44100 / 4;
+    size_t length = 44100 / 2;
 
     std::vector<double> samples(length, 0.0);
     std::vector<double> outSamples(length, 0.0);
 
     for (size_t i = 0; i < length; ++i)
-        samples[i] = _floatSamples[length + i];
+        samples[i] = _floatSamples[44100 + i];
 
 
 
@@ -263,7 +263,7 @@ QImage WaveContour::makeCWT() const {
     double dt = 1.0 / 44100.0;
     double s0 = dt;
     double dj = 1.0 / (double)subscale;
-    int J = 64 * subscale; // Total Number of scales
+    int J = 128 * subscale; // Total Number of scales
     int a0 = 2;//power
 
 
@@ -296,24 +296,25 @@ QImage WaveContour::makeCWT() const {
     double max = std::numeric_limits<double>::min();
     double min = std::numeric_limits<double>::max();
 
-    for (size_t i = 0; i < static_cast<size_t>(J); ++i) {
-        for (size_t j = 0; j < length; ++j) {
-            auto s = wt->output[j*J + i]; //TODO std::complex
+
+    for (size_t i = 0; i < static_cast<size_t>(J) * length; ++i) {
+            auto s = wt->output[i]; //TODO std::complex
             const double mag = std::sqrt(s.im * s.im + s.re * s.re);
 
             const float norm = (mag / 0.6) * 255; //As above normalization..
             QColor c(0, norm, 0); //QColor c(i % 255, norm, 0);
 
-            img.setPixel(j, i, c.rgb());
+
+            img.setPixel(i % length, i / length, c.rgb());
 
             if (max < mag)
                 max = mag;
             if (min > mag)
                 min = mag;
-        }
     }
 
 
+    //img.scaled()
 
     img.save("cwt.jpg");
 
@@ -325,7 +326,7 @@ QImage WaveContour::makeCWT() const {
 
     qDebug() << "Max " << max << " min " << min;
 
-    /*
+
     std::vector<float> dump(length, 0.f);
     for (size_t i = 0; i < length; ++i)
         dump[i] = outSamples[i];
@@ -334,7 +335,7 @@ QImage WaveContour::makeCWT() const {
     out.open("cwt.wav", QIODevice::WriteOnly);
     out.writeHeader(44100, 32, dump.size() * sizeof(float), false, true);
     out.write(reinterpret_cast<const char*>(dump.data()), dump.size() * sizeof(float));
-    */
+
 
 
     return QImage();
