@@ -244,7 +244,7 @@ QImage WaveContour::makeCQT() const {
 
 QImage WaveContour::makeCWT() const {
 
-    size_t length = 44100 * 2;
+    size_t length = 44100 / 4;
 
     std::vector<double> samples(length, 0.0);
     std::vector<double> outSamples(length, 0.0);
@@ -260,14 +260,14 @@ QImage WaveContour::makeCWT() const {
     int N = length;
     double param = 6.0;
     int subscale = 8;
-    double dt = 0.25;
+    double dt = 1.0 / 44100.0;
     double s0 = dt;
     double dj = 1.0 / (double)subscale;
     int J = 64 * subscale; // Total Number of scales
     int a0 = 2;//power
 
 
-    cwt_object wt = cwt_init(wave, param, N,dt, J);
+    cwt_object wt = cwt_init(wave, param, N, dt, J);
 
     setCWTScales(wt, s0, dj, type, a0);
 
@@ -279,6 +279,8 @@ QImage WaveContour::makeCWT() const {
 
     qDebug() << "CWT took " << durationMs / 1000.0 << " ms ";
 
+    cwt_summary(wt);
+
     icwt(wt, outSamples.data());
 
     auto end2 = std::chrono::high_resolution_clock::now();
@@ -289,14 +291,41 @@ QImage WaveContour::makeCWT() const {
     //check by inversed
 
 
+    QImage img = QImage(length, J, QImage::Format_RGB32);
+
+    double max = std::numeric_limits<double>::min();
+    double min = std::numeric_limits<double>::max();
+
     for (size_t i = 0; i < static_cast<size_t>(J); ++i) {
         for (size_t j = 0; j < length; ++j) {
+            auto s = wt->output[j*J + i]; //TODO std::complex
+            const double mag = std::sqrt(s.im * s.im + s.re * s.re);
 
+            const float norm = (mag / 0.6) * 255; //As above normalization..
+            QColor c(0, norm, 0); //QColor c(i % 255, norm, 0);
+
+            img.setPixel(j, i, c.rgb());
+
+            if (max < mag)
+                max = mag;
+            if (min > mag)
+                min = mag;
         }
     }
 
 
 
+    img.save("cwt.jpg");
+
+    auto end3 = std::chrono::high_resolution_clock::now();
+    auto durationMs3 = std::chrono::duration_cast<std::chrono::microseconds>(end3 - end2).count();
+
+    qDebug() << "IMAGE took " << durationMs3 / 1000.0 << " ms ";
+
+
+    qDebug() << "Max " << max << " min " << min;
+
+    /*
     std::vector<float> dump(length, 0.f);
     for (size_t i = 0; i < length; ++i)
         dump[i] = outSamples[i];
@@ -305,7 +334,7 @@ QImage WaveContour::makeCWT() const {
     out.open("cwt.wav", QIODevice::WriteOnly);
     out.writeHeader(44100, 32, dump.size() * sizeof(float), false, true);
     out.write(reinterpret_cast<const char*>(dump.data()), dump.size() * sizeof(float));
-
+    */
 
 
     return QImage();
