@@ -73,19 +73,25 @@ Item {
 
                     for (var i = 0; i < 12; ++i) {
 
-                        if (i && i % 3 == 0)
-                            chromaGroup.text += "<br>"
-
                         if (i === maxIdx)
                              chromaGroup.text += "<b><font color='green'>"
 
-                        chromaGroup.text += chroma[i].toFixed(3)
+                        chromaGroup.text += chroma[i].toFixed(2)
 
                         if (i === maxIdx)
                              chromaGroup.text += "</font></b>"
 
                         if (i != 11)
                             chromaGroup.text +=  ", "
+                    }
+
+                    chromaGroup.text += "<br>"
+
+                    var list = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+                    for (i = 0; i < 12; ++i) {
+                        chromaGroup.text += list[i]
+                        var spaces = 8  - list[i].length
+                        chromaGroup.text += Array(spaces).fill('&nbsp;').join('')
                     }
 
                 }
