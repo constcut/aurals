@@ -244,7 +244,7 @@ QImage WaveContour::makeCQT() const {
 
 QImage WaveContour::makeCWT() const {
 
-    size_t length = 44100 / 2;
+    size_t length = 44100*2;
 
     std::vector<double> samples(length, 0.0);
     std::vector<double> outSamples(length, 0.0);
@@ -261,7 +261,7 @@ QImage WaveContour::makeCWT() const {
     double param = 6.0;
     int subscale = 8;
     double dt = 1.0 / 44100.0;
-    double s0 = dt;
+    double s0 = 2 * dt;
     double dj = 1.0 / (double)subscale;
     int J = 128 * subscale; // Total Number of scales
     int a0 = 2;//power
@@ -301,7 +301,7 @@ QImage WaveContour::makeCWT() const {
             auto s = wt->output[i]; //TODO std::complex
             const double mag = std::sqrt(s.im * s.im + s.re * s.re);
 
-            const float norm = (mag / 0.6) * 255; //As above normalization..
+            const float norm = (mag / 1.5) * 255; //As above normalization..
             QColor c(0, norm, 0); //QColor c(i % 255, norm, 0);
 
 
@@ -314,9 +314,9 @@ QImage WaveContour::makeCWT() const {
     }
 
 
-    //img.scaled()
+    auto s = img.scaled(length / 40, J);
 
-    img.save("cwt.jpg");
+    s.save("cwt.jpg");
 
     auto end3 = std::chrono::high_resolution_clock::now();
     auto durationMs3 = std::chrono::duration_cast<std::chrono::microseconds>(end3 - end2).count();
