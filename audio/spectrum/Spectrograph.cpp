@@ -257,7 +257,6 @@ void SpectrographPainter::updateBars()
     _imagePainted = false;
 
     //Chroma calculation
-
     std::vector<double> chroma(12, 0.0);
 
     for (int i = 0; i < _bars.size(); ++i) {
@@ -267,20 +266,10 @@ void SpectrographPainter::updateBars()
         chroma[idx] += _bars[i].value;
     }
 
-    for (size_t i = 0; i < 12; ++i)
-        qDebug() << i << " " << chroma[i];
-
-    std::vector<double> chromaHarmonics(12, 0.0);
-
     _chroma = QVector<double>(12, 0.0);
-
     for (size_t i = 0; i < 12; ++i)
-        chromaHarmonics[i] = chroma[i] + chroma[(i + 7) % 12] + chroma[(i + 4) % 12];
+        _chroma[i] = chroma[i] + chroma[(i + 7) % 12] + chroma[(i + 4) % 12];
 
-    qDebug() << "Chroma harmonics: ";
-
-    for (size_t i = 0; i < 12; ++i)
-        qDebug() << i << " " << chromaHarmonics[i];
 }
 
 

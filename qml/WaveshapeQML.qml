@@ -66,6 +66,19 @@ Item {
                         windowInfo.text += "Noisy spectrum! "
 
                     windowInfo.text += "Gaps: " + spectrum.gapLevel()
+
+                    chromaGroup.text = ""
+                    var chroma = spectrum.getChroma()
+
+                    for (var i = 0; i < 12; ++i) {
+                        if (i && i % 3 == 0)
+                            chromaGroup.text += "\n"
+                        chromaGroup.text += chroma[i].toFixed(3)
+
+                        if (i != 11)
+                            chromaGroup.text +=  ", "
+                    }
+
                 }
                 onDoubleClicked: {
                     var minRmStep = waveShape.getMinRmsStep()
@@ -301,10 +314,10 @@ Item {
     }
 
     Text {
-        id: peaksGroup
+        id: chromaGroup
         y: specInfo.y
         x: 2 * parent.width / 4 + 30
-        text: "<font color='green'>Peaks group</font>"
+        text: "<font color='green'>Chroma group</font>"
     }
 
     Button {
@@ -480,8 +493,7 @@ Item {
             outputPeaksGroup()
         }
         function outputPeaksGroup() {
-            peaksGroup.text = "";
-            //Removed can be reused
+
         }
     }
 

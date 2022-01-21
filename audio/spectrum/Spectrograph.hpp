@@ -101,6 +101,7 @@ namespace aural_sight {
         double _spectrumPitch = 0.0;
         double _specPitchAprox = 0.0;
 
+        QVector<double> _chroma;
 
         std::unordered_set<int> _peaksIdx;
 
@@ -111,6 +112,8 @@ namespace aural_sight {
 
         QImage _mainImage;
         bool _imagePainted = false;
+
+
     };
 
 
@@ -158,6 +161,9 @@ namespace aural_sight {
 
         Q_INVOKABLE qreal getSpectrumF0() const { return _spectrumPitch; }
         Q_INVOKABLE qreal getSpectrumAproxF0() const { return _specPitchAprox; }
+
+        Q_INVOKABLE QVector<double> getChroma() const { return _chroma; }
+
 
         Q_INVOKABLE bool clipped() const { return _gotClipping; }
         Q_INVOKABLE bool gotGap() const { return _spectrumGap; }
