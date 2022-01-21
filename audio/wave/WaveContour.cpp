@@ -13,7 +13,7 @@
 
 #include "libs/kiss/kiss_fftr.h"
 #include "libs/cqt/CQSpectrogram.h"
-#include "libs/wavelet/wavelib.h"
+
 
 
 using namespace aural_sight;
@@ -247,6 +247,10 @@ QImage WaveContour::makeCWT() const {
     qDebug() << "Wavelets to good to be legal!";
     qDebug() << "If you want to turn them include files into project.";
     return QImage();
+
+    //#include "libs/wavelet/wavelib.h"
+
+    //+add libs/wavelet/* to project
 
     /*
     size_t length = 44100 * 2;
