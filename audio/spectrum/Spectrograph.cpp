@@ -251,12 +251,20 @@ void SpectrographPainter::updateBars()
         ++count;
     }
     _gapLevel = emptyBins / _bars.size();
+
     if (_gapLevel < 0.1)
         classifySlope();
-    findPeaks();
-    _imagePainted = false;
 
-    //Chroma calculation
+    findPeaks();
+    calcChroma();
+
+    _imagePainted = false;
+}
+
+
+
+void SpectrographPainter::calcChroma()
+{
     std::vector<double> chroma(12, 0.0);
 
     for (int i = 0; i < _bars.size(); ++i) {
@@ -276,11 +284,11 @@ void SpectrographPainter::updateBars()
             _chromaIdx = i;
         }
     }
-
 }
 
 
-void SpectrographPainter::findF0() { //TODO findF0 classifySlope findPeaks использовать спектр, а не бары для отрисовки
+void SpectrographPainter::findF0()  //TODO findF0 calcChroma classifySlope findPeaks использовать спектр, а не бары для отрисовки
+{
     if (_bars.size() < 100)
         return;
 

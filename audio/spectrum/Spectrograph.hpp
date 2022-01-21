@@ -78,6 +78,8 @@ namespace aural_sight {
         void findF0();
         void classifySlope();
 
+        void calcChroma();
+
     protected:
 
         struct Bar {
