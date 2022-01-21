@@ -244,7 +244,7 @@ QImage WaveContour::makeCQT() const {
 
 QImage WaveContour::makeCWT() const {
 
-    size_t length = 44100*2;
+    size_t length = 44100 * 2;
 
     std::vector<double> samples(length, 0.0);
     std::vector<double> outSamples(length, 0.0);
@@ -253,15 +253,14 @@ QImage WaveContour::makeCWT() const {
         samples[i] = _floatSamples[44100 + i];
 
 
-
     char wave[] = "morlet";// Set Morlet wavelet. Other options "paul" and "dog"
     char type[] = "pow";
 
     int N = length;
     double param = 6.0;
-    int subscale = 8;
+    int subscale = 16;
     double dt = 1.0 / 44100.0;
-    double s0 = 2 * dt;
+    double s0 =  dt;
     double dj = 1.0 / (double)subscale;
     int J = 128 * subscale; // Total Number of scales
     int a0 = 2;//power
@@ -270,7 +269,6 @@ QImage WaveContour::makeCWT() const {
     cwt_object wt = cwt_init(wave, param, N, dt, J);
 
     setCWTScales(wt, s0, dj, type, a0);
-
 
     auto start = std::chrono::high_resolution_clock::now();
     cwt(wt, samples.data());
