@@ -267,8 +267,15 @@ void SpectrographPainter::updateBars()
     }
 
     _chroma = QVector<double>(12, 0.0);
-    for (size_t i = 0; i < 12; ++i)
+
+    double max = std::numeric_limits<double>::min();
+    for (int i = 0; i < 12; ++i) {
         _chroma[i] = chroma[i] + chroma[(i + 7) % 12] + chroma[(i + 4) % 12];
+        if (_chroma[i] > max) {
+            max = _chroma[i];
+            _chromaIdx = i;
+        }
+    }
 
 }
 

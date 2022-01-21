@@ -69,11 +69,20 @@ Item {
 
                     chromaGroup.text = ""
                     var chroma = spectrum.getChroma()
+                    var maxIdx = spectrum.getChromaMaxIdx()
 
                     for (var i = 0; i < 12; ++i) {
+
                         if (i && i % 3 == 0)
-                            chromaGroup.text += "\n"
+                            chromaGroup.text += "<br>"
+
+                        if (i === maxIdx)
+                             chromaGroup.text += "<b><font color='green'>"
+
                         chromaGroup.text += chroma[i].toFixed(3)
+
+                        if (i === maxIdx)
+                             chromaGroup.text += "</font></b>"
 
                         if (i != 11)
                             chromaGroup.text +=  ", "
@@ -316,7 +325,7 @@ Item {
     Text {
         id: chromaGroup
         y: specInfo.y
-        x: 2 * parent.width / 4 + 30
+        x: 2 * parent.width / 4 - 50
         text: "<font color='green'>Chroma group</font>"
     }
 
