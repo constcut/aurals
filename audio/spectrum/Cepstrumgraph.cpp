@@ -53,12 +53,14 @@ void CepstrumgraphQML::process() {
     std::vector<float> magnitude(_windowSize, 0.f);
     fft.forwardMagnitude(_input.data(), magnitude.data());
     for (auto& s: magnitude)
-        s = log(std::abs(s));
+        s = std::log(s * s); //std::abs(s)
 
     std::vector<float> complexZeroes(_windowSize, 0.f);
     _cepstrum = std::vector<float>(_windowSize, 0.f);
 
-    fft.inverse(magnitude.data(), complexZeroes.data(),
+    FFTReal fftHalf(_windowSize/2);
+
+    fftHalf.inverse(magnitude.data(), complexZeroes.data(),
                 _cepstrum.data());
 
     auto maxIt = std::max_element(_cepstrum.begin(), _cepstrum.end());
@@ -66,7 +68,7 @@ void CepstrumgraphQML::process() {
     qDebug() << "1) Max " << *maxIt << " min " << *minIt;
 
     _cepstrumV2 = std::vector<float>(_windowSize, 0.f);
-    fft.forward(magnitude.data(), _cepstrumV2.data(), complexZeroes.data());
+    fftHalf.forward(magnitude.data(), _cepstrumV2.data(), complexZeroes.data());
 
     auto maxIt2 = std::max_element(_cepstrumV2.begin(), _cepstrumV2.end());
     auto minIt2 = std::min_element(_cepstrumV2.begin(), _cepstrumV2.end());
@@ -127,8 +129,8 @@ void CepstrumgraphQML::paintImage(QPainter& painter) {
 
     prepareBackground(imgPainter);
 
-    paintBufer(imgPainter, _cepstrumV2, _windowSize /2, "red", height() / 4, 0.25f);
-    paintBufer(imgPainter, _cepstrum, _windowSize /2, "green", 3 * height() / 4, 1000.f);
+    //paintBufer(imgPainter, _cepstrumV2, _windowSize /2, "red", height() / 4, 0.5f);
+    paintBufer(imgPainter, _cepstrum, _windowSize /2, "green", height() / 2, 500.f);
 }
 
 
