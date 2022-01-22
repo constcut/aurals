@@ -22,6 +22,7 @@ SOURCES += \
     app/Init.cpp \
     app/LogHandler.cpp \
     audio/features/ACFgraph.cpp \
+    audio/spectrum/Cepstrumgraph.cpp \
     audio/wave/AudioHandler.cpp \
     audio/wave/AudioReceiver.cpp \
     audio/wave/AudioSpeaker.cpp \
@@ -101,6 +102,7 @@ HEADERS += \
     audio/features/ACFgraph.hpp \
     audio/features/PeaksOperations.hpp \
     audio/features/WindowFunction.hpp \
+    audio/spectrum/Cepstrumgraph.hpp \
     audio/wave/AudioHandler.hpp \
     audio/wave/AudioReceiver.hpp \
     audio/wave/AudioSpeaker.hpp \
