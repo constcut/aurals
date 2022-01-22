@@ -287,7 +287,7 @@ void SpectrographPainter::calcChroma()
 }
 
 
-void SpectrographPainter::findF0()  //TODO findF0 calcChroma classifySlope findPeaks использовать спектр, а не бары для отрисовки
+void SpectrographPainter::findF0()  //TODO _spectrum findF0 calcChroma classifySlope findPeaks использовать спектр, а не бары для отрисовки
 {
     if (_bars.size() < 100)
         return;

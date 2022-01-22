@@ -6,9 +6,19 @@
     a) Находить уровни гладкости RMS пока шероховатость не начнёт падать
     b) Находить рост за небольшое расстояние
 
+    + Скользящее среднее
 
-3) eSACF
+3) eSACF 1, 2
 
+4) primeF0 chord method
+
+5) Cepstrum calculation, Qml page\component
+
+6) Opening new pages Athenum mode
+
+7) Filters\effects page
+
+8) FFT усечение половины, fft раздвижение границ - flick
 
 _____________________________________________________________________
 Следующие шаги:
