@@ -160,12 +160,12 @@ void SpectrumAnalyserThread::calculateSpectrumFloat(const QByteArray &buffer) {
                 _input[i] = filter.filter(_input[i]);
         };
 
-        if (_filterIdx == 0) {
-            Iir::Butterworth::LowPass<4> f;
+        if (_filterIdx == 1 || _filterIdx == 2) {
+            Iir::Butterworth::HighPass<4> f;
             setupAndFilter(f);
         }
-        if (_filterIdx == 1) {
-            Iir::Butterworth::HighPass<4> f;
+        if (_filterIdx == 0 || _filterIdx == 2) {
+            Iir::Butterworth::LowPass<4> f;
             setupAndFilter(f);
         }
 

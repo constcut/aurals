@@ -119,7 +119,7 @@ Item {
         y: specInfo.y
         x: parent.width / 2
 
-        model: ["Low pass", "High pass"]
+        model: ["Low pass", "High pass", "Both"]
         currentIndex: 0
 
         onCurrentTextChanged: {
