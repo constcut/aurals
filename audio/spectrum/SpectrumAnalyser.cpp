@@ -51,6 +51,8 @@
 #include "libs/filters/filter_common.h"
 #include "libs/filters/filter_includes.h"
 
+#include "libs/filters2/Iir.h"
+
 
 using namespace aural_sight;
 
@@ -155,8 +157,10 @@ void SpectrumAnalyserThread::calculateSpectrumFloat(const QByteArray &buffer) {
 
     if (_filterIdx != -1) {
 
-        std::unique_ptr<Biquad> _filter;
+        Iir::Butterworth::LowPass<4> f;
 
+        /*
+        std::unique_ptr<Biquad> _filter;
         if (_filterIdx == 0) {
             _filter = std::make_unique<SO_LPF>();
             auto ptr = dynamic_cast<SO_LPF*>(_filter.get());
@@ -166,10 +170,12 @@ void SpectrumAnalyserThread::calculateSpectrumFloat(const QByteArray &buffer) {
             _filter = std::make_unique<SO_HPF>();
             auto ptr = dynamic_cast<SO_HPF*>(_filter.get());
             ptr->calculate_coeffs(1.0, _filterFreq, 44100);
-        }
+        }*/
+
+        f.setup(44100.0, _filterFreq);
 
         for (int i = 0; i< realSamplesCount; ++i)
-            _input[i] = _filter->process(_input[i]);
+            _input[i] = f.filter(_input[i]);
     }
 
     if (_halfCut)

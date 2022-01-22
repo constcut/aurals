@@ -45,6 +45,14 @@ SOURCES += \
     libs/cqt/dsp/MathUtilities.cpp \
     libs/cqt/dsp/Resampler.cpp \
     libs/cqt/dsp/SincWindow.cpp \
+    libs/filters2/Biquad.cpp \
+    libs/filters2/Butterworth.cpp \
+    libs/filters2/Cascade.cpp \
+    libs/filters2/ChebyshevI.cpp \
+    libs/filters2/ChebyshevII.cpp \
+    libs/filters2/Custom.cpp \
+    libs/filters2/PoleFilter.cpp \
+    libs/filters2/RBJ.cpp \
     libs/kiss/kfc.c \
     libs/kiss/kiss_fft.c \
     libs/kiss/kiss_fftnd.c \
@@ -122,6 +130,20 @@ HEADERS += \
     libs/cqt/dsp/nan-inf.h \
     libs/cqt/dsp/pi.h \
     libs/fft/FFTRealFixed.hpp \
+    libs/filters2/Biquad.h \
+    libs/filters2/Butterworth.h \
+    libs/filters2/Cascade.h \
+    libs/filters2/ChebyshevI.h \
+    libs/filters2/ChebyshevII.h \
+    libs/filters2/Common.h \
+    libs/filters2/Custom.h \
+    libs/filters2/Iir.h \
+    libs/filters2/Layout.h \
+    libs/filters2/MathSupplement.h \
+    libs/filters2/PoleFilter.h \
+    libs/filters2/RBJ.h \
+    libs/filters2/State.h \
+    libs/filters2/Types.h \
     libs/kiss/_kiss_fft_guts.h \
     libs/kiss/kfc.h \
     libs/kiss/kiss_fft.h \
@@ -171,6 +193,8 @@ DISTFILES += \
     libs/cqt/README \
     libs/fft/license.txt \
     libs/fft/readme.txt \
+    libs/filters2/COPYING \
+    libs/filters2/README.md \
     main.qml \
     qml/ACFQML.qml \
     qml/CQTQML.qml \
