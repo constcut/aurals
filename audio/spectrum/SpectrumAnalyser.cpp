@@ -48,10 +48,7 @@
 #include "audio/wave/AudioUtils.hpp"
 #include "audio/features/WindowFunction.hpp"
 
-#include "libs/filters/filter_common.h"
-#include "libs/filters/filter_includes.h"
-
-#include "libs/filters2/Iir.h"
+#include "libs/filters/Iir.h"
 
 
 using namespace aural_sight;
