@@ -22,7 +22,8 @@ namespace aural_sight {
         CepstrumgraphQML([[maybe_unused]] QQuickItem* parent = nullptr)
         : _input(4096, 0.f),
           _windowBufer(4096, 0.f),
-          _cepstrum(4096, 0.f)
+          _cepstrum(4096, 0.f),
+          _cepstrumV2(4096, 0.f)
         {  }
 
         ~CepstrumgraphQML() = default;
@@ -58,6 +59,7 @@ namespace aural_sight {
         size_t _windowSize = 4096;
 
         std::vector<float> _cepstrum;
+        std::vector<float> _cepstrumV2;
 
         WindowFunction _window = WindowFunction::NoWindow;
 
