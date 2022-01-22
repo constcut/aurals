@@ -94,11 +94,14 @@ Item {
                         chromaGroup.text += Array(spaces).fill('&nbsp;').join('')
                     }
 
-                    chromaGroup.text += "<br><br>"
+                    chromaGroup.text += "<br><br>Octaves energy:<br>"
                     var octaveEnergy = spectrum.getOctaveEnergy()
-                    for (i = 0; i < 11; ++i)
+                    for (i = 0; i < 12; ++i)
                         chromaGroup.text += octaveEnergy[i].toFixed(2) + " "
 
+                    chromaGroup.text += "<br>"
+                    for (i = 0; i < 12; ++i)
+                        chromaGroup.text += i + Array(7).fill('&nbsp;').join('')
                 }
                 onDoubleClicked: {
                     var minRmStep = waveShape.getMinRmsStep()
