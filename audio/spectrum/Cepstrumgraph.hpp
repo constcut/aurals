@@ -56,6 +56,8 @@ namespace aural_sight {
         size_t _sampleRate = 44100.0;
         size_t _windowSize = 4096;
 
+        std::vector<float> _cepstrum;
+
         WindowFunction _window = WindowFunction::NoWindow;
 
         void prepareBackground(QPainter &painter) const;
@@ -66,6 +68,8 @@ namespace aural_sight {
         void paintImage(QPainter& painter);
 
         void updateWindowFunction();
+
+        void process();
 
         QImage _mainImage;
         bool _imagePainted = false;

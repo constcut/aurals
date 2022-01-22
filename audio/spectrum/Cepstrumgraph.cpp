@@ -2,6 +2,7 @@
 
 #include "audio/wave/AudioUtils.hpp"
 #include "audio/features/WindowFunction.hpp"
+#include "libs/cqt/dsp/FFT.h"
 
 
 using namespace aural_sight;
@@ -24,7 +25,7 @@ bool CepstrumgraphQML::loadByteArray(QByteArray analyseData) {
          ptr += bytesPerSample;
     }
 
-    //TODO process
+    process();
     _imagePainted = false;
     update();
     return true;
@@ -33,13 +34,34 @@ bool CepstrumgraphQML::loadByteArray(QByteArray analyseData) {
 void CepstrumgraphQML::loadFloatSamples(QByteArray samples) {
     float* ptr = reinterpret_cast<float*>(samples.data());
 
-    if (_window != WindowFunction::NoWindow)
+    if (_window != WindowFunction::NoWindow) {
         for (size_t i = 0; i < _windowSize; ++i)
-            ptr[i] *= _windowBufer[i];
+            _input[i] = ptr[i] * _windowBufer[i];
+    }
+    else
+        _input = std::vector<float>(ptr, ptr + _windowSize);
 
-    //TODO process
+    process();
     _imagePainted = false;
     update();
+}
+
+
+void CepstrumgraphQML::process() {
+    FFTReal fft(_windowSize);
+
+    std::vector<float> magnitude(_windowSize, 0.f);
+    fft.forwardMagnitude(_input.data(), magnitude.data());
+    for (auto& s: magnitude)
+        s = log(s);
+
+    std::vector<float> complexZeroes(_windowSize, 0.f);
+    std::vector<float> cepstrum(_windowSize, 0.f);
+
+    fft.inverse(magnitude.data(), complexZeroes.data(),
+                cepstrum.data());
+
+    _cepstrum = cepstrum; //TODO Tiny opt
 }
 
 
@@ -96,9 +118,7 @@ void CepstrumgraphQML::paintImage(QPainter& painter) {
 
     prepareBackground(imgPainter);
 
-    QPen gPen(QColor("green"));
-    gPen.setWidth(3);
-    imgPainter.setPen(gPen);
+    paintBufer(imgPainter, _cepstrum, _windowSize /2, "green", height()/2, 1.f);
 
 }
 

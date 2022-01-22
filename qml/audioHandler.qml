@@ -295,7 +295,7 @@ Item {
                     }
                     onDoubleClicked: {
                         //thatWindow.requestWaveshape("records/" + filenameEdit.text) //TODO get back
-                        thatWindow.requestFilters("records/" + filenameEdit.text)
+                        thatWindow.requestCepstrum("records/" + filenameEdit.text)
                     }
                     onPressAndHold: {
                         wrapper.ListView.view.currentIndex = index

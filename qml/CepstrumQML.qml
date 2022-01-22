@@ -35,7 +35,7 @@ Item {
                 onClicked:{
                     var minRmStep = waveShape.getMinRmsStep()
                     waveShape.setWindowPosition(mouseX * minRmStep/2.0)
-
+                    cepstrum.loadFloatSamples(waveShape.getFloatSamples(mouseX * minRmStep / 2.0, 4096))
 
                 }
                 onDoubleClicked: {
@@ -132,7 +132,7 @@ Item {
             contentWidth: 2048
             contentHeight:  parent.height
 
-            ACgraph {
+            Cepstrumgraph {
                 y: 5
                 width: parent.width
                 height: parent.height
