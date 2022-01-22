@@ -154,25 +154,21 @@ void SpectrumAnalyserThread::calculateSpectrumFloat(const QByteArray &buffer) {
 
     if (_filterIdx != -1) {
 
-        Iir::Butterworth::LowPass<4> f;
+        auto setupAndFilter = [&](auto& filter) {
+            filter.setup(44100.0, _filterFreq);
+            for (int i = 0; i< realSamplesCount; ++i)
+                _input[i] = filter.filter(_input[i]);
+        };
 
-        /*
-        std::unique_ptr<Biquad> _filter;
         if (_filterIdx == 0) {
-            _filter = std::make_unique<SO_LPF>();
-            auto ptr = dynamic_cast<SO_LPF*>(_filter.get());
-            ptr->calculate_coeffs(1.0, _filterFreq, 44100);
+            Iir::Butterworth::LowPass<4> f;
+            setupAndFilter(f);
         }
         if (_filterIdx == 1) {
-            _filter = std::make_unique<SO_HPF>();
-            auto ptr = dynamic_cast<SO_HPF*>(_filter.get());
-            ptr->calculate_coeffs(1.0, _filterFreq, 44100);
-        }*/
+            Iir::Butterworth::HighPass<4> f;
+            setupAndFilter(f);
+        }
 
-        f.setup(44100.0, _filterFreq);
-
-        for (int i = 0; i< realSamplesCount; ++i)
-            _input[i] = f.filter(_input[i]);
     }
 
     if (_halfCut)
