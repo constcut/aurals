@@ -208,7 +208,6 @@ Item {
                         waveShape.setWindowWidth(windowWidth)
                         if (spectrum != null) {
                             spectrum.setSamplesAmount(windowWidth)
-                            spectrum.setFFTLimit((windowWidth))
                         }
                     }
                 }

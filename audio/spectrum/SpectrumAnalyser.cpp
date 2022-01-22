@@ -124,16 +124,10 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
     const int realSamplesCount = _halfCut ? _numSamples / 2 : _numSamples;
 
     for (int i=0; i< realSamplesCount ; ++i) {
-
-        if (i > _fftLimit) {
-            _input[i] = 0.f;
-        }
-        else {
-            const qint16 pcmSample = *reinterpret_cast<const qint16*>(ptr);
-            const float realSample = pcmToReal(pcmSample); // Scale down to range [-1.0, 1.0]
-            const float windowedSample = realSample * _window[i];
-            _input[i] = windowedSample;
-        }
+        const qint16 pcmSample = *reinterpret_cast<const qint16*>(ptr);
+        const float realSample = pcmToReal(pcmSample); // Scale down to range [-1.0, 1.0]
+        const float windowedSample = realSample * _window[i];
+        _input[i] = windowedSample;
         ptr += bytesPerSample;
     }
 
@@ -255,7 +249,6 @@ void SpectrumAnalyser::calculate(const QByteArray &buffer,
         const int bytesPerSample = format.sampleSize() * format.channelCount() / 8;
 
         _state = Busy;
-        _thread->setFFTLimit(_fftLimit);
         const bool b = QMetaObject::invokeMethod(_thread, "calculateSpectrum",
                                   Qt::AutoConnection,
                                   Q_ARG(QByteArray, buffer),
@@ -273,7 +266,6 @@ void SpectrumAnalyser::calculateFromFloat(const QByteArray& buffer)
     if (isReady()) {
 
         _state = Busy;
-        _thread->setFFTLimit(_fftLimit);
         const bool b = QMetaObject::invokeMethod(_thread, "calculateSpectrumFloat",
                                   Qt::AutoConnection,
                                   Q_ARG(QByteArray, buffer));

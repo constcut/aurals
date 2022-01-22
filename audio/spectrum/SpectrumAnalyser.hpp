@@ -71,8 +71,6 @@ namespace aural_sight {
         void setSamplesAmount(int newNumSamples);
         int getSamplesAmount() const { return _numSamples; }
 
-        void setFFTLimit(int newLimit) { _fftLimit = newLimit; }
-
         void changeHalfCut(bool newValue) { _halfCut = newValue; }
 
         void setFilter(int idx, double freq);
@@ -93,8 +91,6 @@ namespace aural_sight {
 
         void finishSpectrumCalculation(int inputFrequency);
 
-
-        int _fftLimit = 4096;
 
         std::unique_ptr<FFTReal> _fft; //TODO replace to change fft size
         int _numSamples;
@@ -136,7 +132,6 @@ namespace aural_sight {
         bool isReady() const;
         void cancelCalculation();
 
-        void setFFTLimit(int newLimit) { _fftLimit = newLimit; }
 
         void changeHalfCut(bool newValue) { _thread->changeHalfCut(newValue); }
 
@@ -153,7 +148,6 @@ namespace aural_sight {
         void calculateWindow();
 
         SpectrumAnalyserThread*    _thread;
-        int _fftLimit = 4096; //TODO only move to thread
         enum State {
             Idle,
             Busy,

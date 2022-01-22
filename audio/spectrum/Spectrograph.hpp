@@ -178,7 +178,6 @@ namespace aural_sight {
         Q_INVOKABLE bool loadByteArray(QByteArray analyseData);
         Q_INVOKABLE bool loadFloatSamples(QByteArray samples);
 
-        Q_INVOKABLE void setFFTLimit(const int limit) { _analyser.setFFTLimit(limit); };
         Q_INVOKABLE void setWindowFunction(const int idx) {
             _analyser.setWindowFunction(idx);
         }
