@@ -102,11 +102,6 @@ namespace aural_sight {
 
         double _spectrumPitch = 0.0;
         double _specPitchAprox = 0.0;
-
-        QVector<double> _chroma;
-        int _chromaIdx;
-
-
         std::unordered_set<int> _peaksIdx;
 
         double _maxValue = -120;
@@ -114,10 +109,11 @@ namespace aural_sight {
         int _lastIdx = - 1;
         double _lastValue = 0.0;
 
+        QVector<double> _chroma;
+        int _chromaIdx;
+
         QImage _mainImage;
         bool _imagePainted = false;
-
-
     };
 
 
@@ -186,6 +182,8 @@ namespace aural_sight {
         }
 
         Q_INVOKABLE void saveImage(QString filename) { _mainImage.save(filename); }
+
+        Q_INVOKABLE void changeHalfCut(bool newValue) { _analyser.changeHalfCut(newValue); }
 
     public slots:
         void spectrumChanged(const qint64 position, const qint64 length,

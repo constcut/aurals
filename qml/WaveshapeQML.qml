@@ -304,6 +304,13 @@ Item {
                     model: [6,7,8,9,10,11,12,13,14,15,16,17,18]
                     currentIndex: 3
                 }
+                CheckBox {
+                    text: "Half cut fft"
+                    checked: false
+                    onCheckStateChanged: {
+                        spectrum.changeHalfCut(checked)
+                    }
+                }
             }
         }
     }

@@ -73,6 +73,8 @@ namespace aural_sight {
 
         void setFFTLimit(int newLimit) { _fftLimit = newLimit; }
 
+        void changeHalfCut(bool newValue) { _halfCut = newValue; }
+
     public slots:
         void setWindowFunction(int idx);
         void calculateSpectrum(const QByteArray &buffer,
@@ -95,6 +97,7 @@ namespace aural_sight {
         std::unique_ptr<FFTReal> _fft; //TODO replace to change fft size
         int _numSamples;
         aural_sight::WindowFunction _windowFunction;
+        bool _halfCut = false;
 
 
         QVector<float> _window; //TODO vector
@@ -131,6 +134,8 @@ namespace aural_sight {
 
         void setFFTLimit(int newLimit) { _fftLimit = newLimit; }
 
+        void changeHalfCut(bool newValue) { _thread->changeHalfCut(newValue); }
+
     signals:
         void spectrumChanged(const aural_sight::FrequencySpectrum &spectrum);
 
@@ -141,7 +146,7 @@ namespace aural_sight {
         void calculateWindow();
 
         SpectrumAnalyserThread*    _thread;
-        int _fftLimit = 4096;
+        int _fftLimit = 4096; //TODO only move to thread
         enum State {
             Idle,
             Busy,
