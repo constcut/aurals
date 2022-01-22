@@ -8,75 +8,82 @@
 
     + Скользящее среднее
 
-3) eSACF 1, 2
-    1:
-    a) Warped linear prediction ?
+3) Cepstrum calculation, Qml page\component
 
-    b1) highpass
-    b2) half wave reclifier : clip 0 - 1
-    b3) low pass 1k
-
-    c) low pass 1k
-
-    d) b + c into SACF:
-        1) FFT like ACF + sum both into one
-        2) pow 0.67 not 2
-        3) IFFT
-        4) Take real part (half of it)
-
-    e) enchanged acf
-
-        0) in the cycle from 2 to n_peaks = timescale
-            1) clip to positive values
-            2) timestretch to timescale ?
-            3) substruct from original clipped signal
-            4) clip again
-
-        0:) So from original signal multiple times substructed different timestretched values + clipped
+4) Вкладки по типу athenum - возможность просмотра сразу нескольких одинаковых окон
 
 
-4) primeF0 chord method
-
-5) Cepstrum calculation, Qml page\component
-
-6) Opening new pages Athenum mode
-
-7) Filters\effects page
-
-8) FFT усечение половины, fft раздвижение границ - flick
-
-9) Common component for wave + something
-
-10) Massive refactoring, sepparating all features from WaveShape\WaveContour\Spectrogram\ACgraph
+X) Massive refactoring
+    1) Sepparating all features from WaveShape\WaveContour\Spectrogram\ACgraph
+    2) Common QML component for wave + something
 
 _____________________________________________________________________
 Следующие шаги:
 -----------------------------------------------------------------------
 
-Наблюдение - иногда заполнение только половины буфера фурье даёт хорошие результаты,
-Нужно исправить количество корзин - анализировать спектр, а не корзины для отображения
+    1) Подвижные начало и конец определенной ноты, пороги громкости для удаления лишних пиков
 
-Подвижные начало и конец определенной ноты, пороги громкости для удаления лишних пиков
+    2) Нахождение частоты по заданному диапазону: скользящее окно yin \ fft \ yinPP
 
-Нахождение частоты по заданному диапазону: скользящее окно yin \ fft \ yinPP
+    3) Генерация миди
 
-1) Pattern Input для записи хлопков или настукивания
-    : визуальное представление настукивания
+------------------------------------------------------------------------------
+Компоненты и фитчи для удобства редактирования:
 
-2) Piano roll для отображения Midi
+    1) Pattern Input для записи хлопков или настукивания
+        : визуальное представление настукивания
 
-3) Редактирование Audio - вырезать, удалить, скопировать, вставить, отменить
+    2) Piano roll для отображения Midi
+
+    3) Редактирование Audio - вырезать, удалить, скопировать, вставить, отменить
 
 ______________________________________________________________________
 
 ------------------------------------------------------------
-Возможное развитие (третья итерация спринта и далее):
-1) Интеграция с движком для использования гитарных таблатур, для просмотра, воспроизведения и редактирования
-2) Генеративная музыка, в контексте перцептивной музыкальной терапии
-------------------------------------------------------------
-Проигрывание налету (генерация аудио в момент запроса от системы MidiSpeaker)
+-------------------------------------------------------------
+Отложенное:
 
-Проигрывание из памяти (без сохранения на физический носитель)
+Полифония\аккорды:
+
+    1) eSACF 1, 2
+        1:
+        a) Warped linear prediction ?
+
+        b1) highpass
+        b2) half wave reclifier : clip 0 - 1
+        b3) low pass 1k
+
+        c) low pass 1k
+
+        d) b + c into SACF:
+            1) FFT like ACF + sum both into one
+            2) pow 0.67 not 2
+            3) IFFT
+            4) Take real part (half of it)
+
+        e) enchanged acf
+
+            0) in the cycle from 2 to n_peaks = timescale
+                1) clip to positive values
+                2) timestretch to timescale ?
+                3) substruct from original clipped signal
+                4) clip again
+
+            0:) So from original signal multiple times substructed different timestretched values + clipped
+
+
+    2) primeF0 chord method
+
+    3) Harmonic product spectrum
+
+    4) Chromagramm / chroma feature class claculation
+
+
+Воспроизведение:
+
+    1) Проигрывание налету (генерация аудио в момент запроса от системы MidiSpeaker)
+
+    2) Проигрывание из памяти (без сохранения на физический носитель)
 ------------------------------------------------------------------
 
 Восстановление Qt-Android дебагера на свежей linux системе:
