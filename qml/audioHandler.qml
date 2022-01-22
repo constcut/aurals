@@ -220,6 +220,7 @@ Item {
                 onClicked:  {
                     thatWindow.requestCepstrum("records/" + filenameEdit.text)
                 }
+                visible: false //Yet unknow how to use it
             }
 
         }
@@ -354,7 +355,6 @@ Item {
                 onTriggered: {
                     thatWindow.requestCepstrum("records/" + filenameEdit.text)
                 }
-                visible: false //Yet unknow how to use it
             }
         }
 
