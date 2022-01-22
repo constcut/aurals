@@ -18,6 +18,7 @@ X) Massive refactoring
     2) Common QML component for wave + something
     3) All libs as sepparated static library :
     https://stackoverflow.com/questions/10034825/how-do-i-build-a-static-library-and-executable-with-qt
+    4) Spectrum, ACF, Ceptrum etc as QML component so we can make single page with all types
 
 _____________________________________________________________________
 Следующие шаги:

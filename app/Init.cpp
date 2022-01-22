@@ -13,6 +13,7 @@
 #include "audio/wave/AudioHandler.hpp"
 #include "audio/wave/WaveShape.hpp"
 #include "audio/spectrum/Spectrograph.hpp"
+#include "audio/spectrum/Cepstrumgraph.hpp"
 
 #include "audio/features/ACFgraph.hpp"
 #include "app/StretchImage.hpp"
@@ -183,6 +184,7 @@ int mainInit(int argc, char *argv[]) {
     qmlRegisterType<aural_sight::Tapper>("mther.app", 1, 0,"Tapper");
     qmlRegisterType<aural_sight::ACGraphQML>("mther.app", 1, 0,"ACgraph");
     qmlRegisterType<aural_sight::StretchImageQML>("mther.app", 1, 0,"StretchImage");
+     qmlRegisterType<aural_sight::CepstrumgraphQML>("mther.app", 1, 0,"Cepstrumgraph");
 
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("Windows-1251")); //Настройки //KOI8-R //ISO 8859-5 //UTF-8 //Windows-1251
     QQmlApplicationEngine engine;

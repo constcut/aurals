@@ -12,5 +12,6 @@
         <file>qml/STFTQML.qml</file>
         <file>qml/CQTQML.qml</file>
         <file>qml/FiltersQML.qml</file>
+        <file>qml/CepstrumQML.qml</file>
     </qresource>
 </RCC>

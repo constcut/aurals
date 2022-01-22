@@ -75,6 +75,10 @@ ApplicationWindow {
         mainLoader.setSource("qrc:/qml/FiltersQML.qml", {"filename": filename});
     }
 
+    function requestCepstrum(filename) {
+        mainLoader.setSource("qrc:/qml/CepstrumQML.qml", {"filename": filename});
+    }
+
 
     Loader {
     id:mainLoader

@@ -200,6 +200,7 @@ DISTFILES += \
     main.qml \
     qml/ACFQML.qml \
     qml/CQTQML.qml \
+    qml/CepstrumQML.qml \
     qml/ConsoleLog.qml \
     qml/FiltersQML.qml \
     qml/MidiRenderSettings.qml \

@@ -215,6 +215,12 @@ Item {
                     thatWindow.requestFilters("records/" + filenameEdit.text)
                 }
             }
+            ToolButton {
+                text: "Cepstrum"
+                onClicked:  {
+                    thatWindow.requestCepstrum("records/" + filenameEdit.text)
+                }
+            }
 
         }
 
@@ -342,6 +348,12 @@ Item {
                 text: "Open filters"
                 onTriggered: {
                     thatWindow.requestFilters("records/" + filenameEdit.text)
+                }
+            }
+            MenuItem {
+                text: "Open cepstrum"
+                onTriggered: {
+                    thatWindow.requestCepstrum("records/" + filenameEdit.text)
                 }
             }
         }
