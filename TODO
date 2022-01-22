@@ -9,6 +9,31 @@
     + Скользящее среднее
 
 3) eSACF 1, 2
+    1:
+    a) Warped linear prediction ?
+
+    b1) highpass
+    b2) half wave reclifier : clip 0 - 1
+    b3) low pass 1k
+
+    c) low pass 1k
+
+    d) b + c into SACF:
+        1) FFT like ACF + sum both into one
+        2) pow 0.67 not 2
+        3) IFFT
+        4) Take real part (half of it)
+
+    e) enchanged acf
+
+        0) in the cycle from 2 to n_peaks = timescale
+            1) clip to positive values
+            2) timestretch to timescale ?
+            3) substruct from original clipped signal
+            4) clip again
+
+        0:) So from original signal multiple times substructed different timestretched values + clipped
+
 
 4) primeF0 chord method
 
