@@ -274,8 +274,12 @@ void SpectrographPainter::calcChroma()
     std::vector<double> chroma(12, 0.0);
 
     for (int i = 1; i < _bars.size(); ++i) {
-        const double freq = _freqStep * i;
+        const double freq = _freqStep * i; //TODO insure
         const double midiNote = calc_MidiCents(freq) / 100.0;
+
+        if (midiNote < 0.0)
+            continue;
+
         const int idx = static_cast<int>(std::round(midiNote)) % 12;
         chroma[idx] += _bars[i].value;
 
@@ -283,8 +287,6 @@ void SpectrographPainter::calcChroma()
         if (octaveIdx < 12)
             _octaveEnergy[octaveIdx] += _bars[i].value;
     }
-
-
 
     double max = std::numeric_limits<double>::min();
     for (int i = 0; i < 12; ++i) {
