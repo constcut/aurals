@@ -288,7 +288,8 @@ Item {
                         filenameEdit.text = name
                     }
                     onDoubleClicked: {
-                        thatWindow.requestWaveshape("records/" + filenameEdit.text)
+                        //thatWindow.requestWaveshape("records/" + filenameEdit.text) //TODO get back
+                        thatWindow.requestFilters("records/" + filenameEdit.text)
                     }
                     onPressAndHold: {
                         wrapper.ListView.view.currentIndex = index

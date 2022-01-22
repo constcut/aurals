@@ -98,4 +98,18 @@ Item {
         text: "Spectrum info"
     }
 
+    ComboBox {
+
+        y: specInfo.y
+        x: parent.width / 3
+
+        model: ["No window", "Hann", "Gaus", "Blackman", "Hamm"]
+        currentIndex: 0
+
+        onCurrentTextChanged: {
+            spectrum.setWindowFunction(currentIndex)
+            spectrum2.setWindowFunction(currentIndex)
+        }
+    }
+
 }
