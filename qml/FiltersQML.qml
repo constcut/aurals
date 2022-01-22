@@ -114,6 +114,8 @@ Item {
 
     ComboBox {
 
+        id: filterType
+
         y: specInfo.y
         x: parent.width / 2
 
@@ -121,7 +123,23 @@ Item {
         currentIndex: 0
 
         onCurrentTextChanged: {
-            spectrum2.setFilter(currentIndex, 1000.0)
+            spectrum2.setFilter(filterType.currentIndex,
+                                parseInt(filterFreq.currentText))
+        }
+    }
+
+    ComboBox {
+        id: filterFreq
+
+        y: specInfo.y
+        x: parent.width / 2 + filterType.width + 10
+
+        model : [250, 500, 1000, 2000]
+        currentIndex: 2
+
+        onCurrentTextChanged: {
+            spectrum2.setFilter(filterType.currentIndex,
+                                parseInt(filterFreq.currentText))
         }
     }
 

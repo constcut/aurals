@@ -182,8 +182,6 @@ void SpectrumAnalyserThread::calculateSpectrumFloat(const QByteArray &buffer) {
 void SpectrumAnalyserThread::setFilter(int idx, double freq) {
     _filterIdx = idx;
     _filterFreq = freq;
-
-    qDebug() << "Setten filter " << idx << " with freq " << freq;
 }
 
 
