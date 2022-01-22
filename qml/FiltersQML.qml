@@ -36,6 +36,7 @@ Item {
                 onClicked:{
                     var minRmStep = waveShape.getMinRmsStep()
                     spectrum.loadFloatSamples(waveShape.getFloatSamples(mouseX * minRmStep / 2.0, spectrum.getSamplesAmount()))
+                    spectrum2.setFilter(0, 1000.0)
                     spectrum2.loadFloatSamples(waveShape.getFloatSamples(mouseX * minRmStep / 2.0, spectrum.getSamplesAmount()))
                 }
                 onDoubleClicked: {
@@ -75,5 +76,26 @@ Item {
         width: parent.width
         height: parent.height / 6
         id: spectrum2
+        MouseArea {
+            anchors.fill: parent
+            function log10(val) {
+              return Math.log(val) / Math.LN10;
+            }
+            onClicked: {
+                spectrum.onPress(mouseX, mouseY, spectrum.width, spectrum.height)
+                spectrum2.onPress(mouseX, mouseY, spectrum2.width, spectrum2.height)
+                specInfo.text = spectrum2.getFreq1().toFixed(2) + "-" + spectrum2.getFreq2().toFixed(2) + " Hz"
+                +  " lvl = " + (20*log10(spectrum2.getValue())).toFixed(1) + " idx " + spectrum2.getIndex()
+                        + " val " + spectrum2.getValue().toFixed(4)
+            }
+        }
     }
+
+    Text {
+        id: specInfo
+        y : spectrum2.y + spectrum2.height + 10
+        x : 25
+        text: "Spectrum info"
+    }
+
 }

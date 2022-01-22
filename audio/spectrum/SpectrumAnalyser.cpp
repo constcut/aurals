@@ -48,6 +48,9 @@
 #include "audio/wave/AudioUtils.hpp"
 #include "audio/features/WindowFunction.hpp"
 
+#include "libs/filters/filter_common.h"
+#include "libs/filters/filter_includes.h"
+
 
 using namespace aural_sight;
 
@@ -150,12 +153,27 @@ void SpectrumAnalyserThread::calculateSpectrumFloat(const QByteArray &buffer) {
         _input[i] = windowedSample;
     }
 
+    if (_filterIdx != -1) {
+        SO_LPF lpf;
+        lpf.calculate_coeffs(1.0, _filterFreq, 44100);
+
+        for (int i = 0; i< realSamplesCount; ++i)
+            _input[i] = lpf.process(_input[i]);
+    }
+
     if (_halfCut)
         for (int i = realSamplesCount; i < _numSamples; ++i)
             _input[i] = 0.f;
 
     finishSpectrumCalculation(44100);
 }
+
+
+void SpectrumAnalyserThread::setFilter(int idx, double freq) {
+    _filterIdx = idx;
+    _filterFreq = freq;
+}
+
 
 
 void SpectrumAnalyserThread::finishSpectrumCalculation(int inputFrequency) {

@@ -187,6 +187,8 @@ namespace aural_sight {
 
         Q_INVOKABLE void changeHalfCut(bool newValue) { _analyser.changeHalfCut(newValue); }
 
+        Q_INVOKABLE void setFilter(int idx, double freq) { _analyser.setFilter(idx, freq); }
+
     public slots:
         void spectrumChanged(const qint64 position, const qint64 length,
                              const aural_sight::FrequencySpectrum &spectrum);

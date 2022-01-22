@@ -75,6 +75,8 @@ namespace aural_sight {
 
         void changeHalfCut(bool newValue) { _halfCut = newValue; }
 
+        void setFilter(int idx, double freq);
+
     public slots:
         void setWindowFunction(int idx);
         void calculateSpectrum(const QByteArray &buffer,
@@ -99,6 +101,8 @@ namespace aural_sight {
         aural_sight::WindowFunction _windowFunction;
         bool _halfCut = false;
 
+        int _filterIdx = -1;
+        double _filterFreq = 0.0;
 
         QVector<float> _window; //TODO vector
         QVector<float> _input;
@@ -135,6 +139,9 @@ namespace aural_sight {
         void setFFTLimit(int newLimit) { _fftLimit = newLimit; }
 
         void changeHalfCut(bool newValue) { _thread->changeHalfCut(newValue); }
+
+        //C++ setters depth composition предложенние
+        void setFilter(int idx, double freq) { _thread->setFilter(idx, freq); }
 
     signals:
         void spectrumChanged(const aural_sight::FrequencySpectrum &spectrum);
