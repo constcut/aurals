@@ -16,6 +16,8 @@
 X) Massive refactoring
     1) Sepparating all features from WaveShape\WaveContour\Spectrogram\ACgraph
     2) Common QML component for wave + something
+    3) All libs as sepparated static library :
+    https://stackoverflow.com/questions/10034825/how-do-i-build-a-static-library-and-executable-with-qt
 
 _____________________________________________________________________
 Следующие шаги:
