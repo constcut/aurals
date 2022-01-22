@@ -121,9 +121,9 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
     Q_ASSERT(buffer.size() == _numSamples * bytesPerSample);
     const char *ptr = buffer.constData(); //Delayed: from preloaded (загружать float сразу, без преобразований)
 
-    //TODO realsamples count as below
+    const int realSamplesCount = _halfCut ? _numSamples / 2 : _numSamples;
 
-    for (int i=0; i<_numSamples ; ++i) {
+    for (int i=0; i< realSamplesCount ; ++i) {
 
         if (i > _fftLimit) {
             _input[i] = 0.f;
@@ -136,6 +136,10 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
         }
         ptr += bytesPerSample;
     }
+
+    if (_halfCut)
+        for (int i = realSamplesCount; i < _numSamples; ++i)
+            _input[i] = 0.f;
 
     finishSpectrumCalculation(inputFrequency);
 }
