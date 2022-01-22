@@ -294,8 +294,7 @@ Item {
                         filenameEdit.text = name
                     }
                     onDoubleClicked: {
-                        //thatWindow.requestWaveshape("records/" + filenameEdit.text) //TODO get back
-                        thatWindow.requestCepstrum("records/" + filenameEdit.text)
+                        thatWindow.requestWaveshape("records/" + filenameEdit.text)
                     }
                     onPressAndHold: {
                         wrapper.ListView.view.currentIndex = index
@@ -355,6 +354,7 @@ Item {
                 onTriggered: {
                     thatWindow.requestCepstrum("records/" + filenameEdit.text)
                 }
+                visible: false //Yet unknow how to use it
             }
         }
 

@@ -11,7 +11,7 @@ using namespace aural_sight;
 bool CepstrumgraphQML::loadByteArray(QByteArray analyseData) {
 
     const size_t bytesPerSample  = 2;
-    Q_ASSERT(analyseData.size() == _windowSize * bytesPerSample);
+    Q_ASSERT(static_cast<size_t>(analyseData.size()) == _windowSize * bytesPerSample);
     const char *ptr = analyseData.constData();
 
     for (size_t i=0; i<_windowSize; ++i) {
@@ -73,6 +73,7 @@ void CepstrumgraphQML::process() {
     auto maxIt2 = std::max_element(_cepstrumV2.begin(), _cepstrumV2.end());
     auto minIt2 = std::min_element(_cepstrumV2.begin(), _cepstrumV2.end());
     qDebug() << "2) Max " << *maxIt2 << " min " << *minIt2;
+
 }
 
 
@@ -129,7 +130,7 @@ void CepstrumgraphQML::paintImage(QPainter& painter) {
 
     prepareBackground(imgPainter);
 
-    //paintBufer(imgPainter, _cepstrumV2, _windowSize /2, "red", height() / 4, 0.5f);
+    //paintBufer(imgPainter, _cepstrumV2, _windowSize /2, "red", height() / 2, 0.25f);
     paintBufer(imgPainter, _cepstrum, _windowSize /2, "green", height() / 2, 500.f);
 }
 

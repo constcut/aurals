@@ -63,14 +63,15 @@ Item {
 
 
     Text {
-        id: yinInfo
+        id: ceptrumInfo
         y : saveButton.y
         x : 25
         text: "Cepstrum info"
+        visible: false
     }
 
     Text {
-        id: yinInfo2
+        id: ceptrumInfo2
         y : saveButton.y
         x : parent.width/3
         text: "Cepstrum info"
@@ -89,9 +90,9 @@ Item {
 
     ComboBox {
         y: saveButton.y - height - 10
-        x: saveButton.x
+        x: parent.width - width - 10
         model: ["No window", "Hann", "Gaus", "Blackman", "Hamm"]
-        currentIndex: 0
+        currentIndex: 1
         onCurrentTextChanged: {
             cepstrum.setWindowFunction(currentIndex)
         }
@@ -142,6 +143,8 @@ Item {
                     anchors.fill: parent
                     onClicked: {
                         cepstrum.setCursor(mouseX)
+                        ceptrumInfo2.text = "pos= "+ mouseX
+                        //How to extract information
                     }
                 }
             }
