@@ -209,6 +209,12 @@ Item {
                     thatWindow.requestCQT("records/" + filenameEdit.text)
                 }
             }
+            ToolButton {
+                text: "Filters"
+                onClicked:  {
+                    thatWindow.requestFilters("records/" + filenameEdit.text)
+                }
+            }
 
         }
 
@@ -329,6 +335,12 @@ Item {
                 text: "Open CQT"
                 onTriggered: {
                     thatWindow.requestCQT("records/" + filenameEdit.text)
+                }
+            }
+            MenuItem {
+                text: "Open filters"
+                onTriggered: {
+                    thatWindow.requestFilters("records/" + filenameEdit.text)
                 }
             }
         }

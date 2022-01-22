@@ -71,6 +71,9 @@ ApplicationWindow {
         mainLoader.setSource("qrc:/qml/CQTQML.qml", {"filename": filename});
     }
 
+    function requestFilters(filename) {
+        mainLoader.setSource("qrc:/qml/FiltersQML.qml", {"filename": filename});
+    }
 
 
     Loader {

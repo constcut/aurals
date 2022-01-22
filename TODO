@@ -20,6 +20,10 @@
 
 8) FFT усечение половины, fft раздвижение границ - flick
 
+9) Common comopnen for wave + something
+
+10) Massive refactoring, sepparating all features from WaveShape\WaveContour\Spectrogram\ACgraph
+
 _____________________________________________________________________
 Следующие шаги:
 -----------------------------------------------------------------------

@@ -175,6 +175,7 @@ DISTFILES += \
     qml/ACFQML.qml \
     qml/CQTQML.qml \
     qml/ConsoleLog.qml \
+    qml/FiltersQML.qml \
     qml/MidiRenderSettings.qml \
     qml/PianoMap.qml \
     qml/STFTQML.qml \
