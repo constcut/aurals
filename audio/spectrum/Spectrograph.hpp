@@ -111,6 +111,7 @@ namespace aural_sight {
 
         QVector<double> _chroma;
         int _chromaIdx;
+        QVector<double> _octaveEnergy;
 
         QImage _mainImage;
         bool _imagePainted = false;
@@ -164,6 +165,7 @@ namespace aural_sight {
 
         Q_INVOKABLE QVector<double> getChroma() const { return _chroma; }
         Q_INVOKABLE int getChromaMaxIdx() const { return _chromaIdx; }
+        Q_INVOKABLE QVector<double> getOctaveEnergy() const { return _octaveEnergy; }
 
 
         Q_INVOKABLE bool clipped() const { return _gotClipping; }

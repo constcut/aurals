@@ -94,6 +94,11 @@ Item {
                         chromaGroup.text += Array(spaces).fill('&nbsp;').join('')
                     }
 
+                    chromaGroup.text += "<br><br>"
+                    var octaveEnergy = spectrum.getOctaveEnergy()
+                    for (i = 0; i < 11; ++i)
+                        chromaGroup.text += octaveEnergy[i].toFixed(2) + " "
+
                 }
                 onDoubleClicked: {
                     var minRmStep = waveShape.getMinRmsStep()

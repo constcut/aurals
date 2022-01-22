@@ -253,7 +253,7 @@ void SpectrographPainter::updateBars()
     _gapLevel = emptyBins / _bars.size();
 
     if (_gapLevel < 0.1)
-        classifySlope();
+        classifySlope(); //TODO move in SpectrimAnalyser
 
     findPeaks();
     calcChroma();
@@ -265,16 +265,26 @@ void SpectrographPainter::updateBars()
 
 void SpectrographPainter::calcChroma()
 {
+    _octaveEnergy = QVector<double>(12, 0.0);
+    _chroma = QVector<double>(12, 0.0);
+
+    if (_freqStep == 0.0)
+        return;
+
     std::vector<double> chroma(12, 0.0);
 
-    for (int i = 0; i < _bars.size(); ++i) {
+    for (int i = 1; i < _bars.size(); ++i) {
         const double freq = _freqStep * i;
         const double midiNote = calc_MidiCents(freq) / 100.0;
         const int idx = static_cast<int>(std::round(midiNote)) % 12;
         chroma[idx] += _bars[i].value;
+
+        const int octaveIdx = midiNote / 12.0;
+        if (octaveIdx < 12)
+            _octaveEnergy[octaveIdx] += _bars[i].value;
     }
 
-    _chroma = QVector<double>(12, 0.0);
+
 
     double max = std::numeric_limits<double>::min();
     for (int i = 0; i < 12; ++i) {
