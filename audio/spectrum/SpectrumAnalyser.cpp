@@ -154,11 +154,22 @@ void SpectrumAnalyserThread::calculateSpectrumFloat(const QByteArray &buffer) {
     }
 
     if (_filterIdx != -1) {
-        SO_LPF lpf;
-        lpf.calculate_coeffs(1.0, _filterFreq, 44100);
+
+        std::unique_ptr<Biquad> _filter;
+
+        if (_filterIdx == 0) {
+            _filter = std::make_unique<SO_LPF>();
+            auto ptr = dynamic_cast<SO_LPF*>(_filter.get());
+            ptr->calculate_coeffs(1.0, _filterFreq, 44100);
+        }
+        if (_filterIdx == 1) {
+            _filter = std::make_unique<SO_HPF>();
+            auto ptr = dynamic_cast<SO_HPF*>(_filter.get());
+            ptr->calculate_coeffs(1.0, _filterFreq, 44100);
+        }
 
         for (int i = 0; i< realSamplesCount; ++i)
-            _input[i] = lpf.process(_input[i]);
+            _input[i] = _filter->process(_input[i]);
     }
 
     if (_halfCut)
@@ -172,6 +183,8 @@ void SpectrumAnalyserThread::calculateSpectrumFloat(const QByteArray &buffer) {
 void SpectrumAnalyserThread::setFilter(int idx, double freq) {
     _filterIdx = idx;
     _filterFreq = freq;
+
+    qDebug() << "Setten filter " << idx << " with freq " << freq;
 }
 
 

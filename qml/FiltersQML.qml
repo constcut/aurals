@@ -35,8 +35,8 @@ Item {
 
                 onClicked:{
                     var minRmStep = waveShape.getMinRmsStep()
+                    waveShape.setWindowPosition(mouseX * minRmStep/2.0)
                     spectrum.loadFloatSamples(waveShape.getFloatSamples(mouseX * minRmStep / 2.0, spectrum.getSamplesAmount()))
-                    spectrum2.setFilter(0, 1000.0)
                     spectrum2.loadFloatSamples(waveShape.getFloatSamples(mouseX * minRmStep / 2.0, spectrum.getSamplesAmount()))
                 }
                 onDoubleClicked: {
@@ -109,6 +109,19 @@ Item {
         onCurrentTextChanged: {
             spectrum.setWindowFunction(currentIndex)
             spectrum2.setWindowFunction(currentIndex)
+        }
+    }
+
+    ComboBox {
+
+        y: specInfo.y
+        x: parent.width / 2
+
+        model: ["Low pass", "High pass"]
+        currentIndex: 0
+
+        onCurrentTextChanged: {
+            spectrum2.setFilter(currentIndex, 1000.0)
         }
     }
 
