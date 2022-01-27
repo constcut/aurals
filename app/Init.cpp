@@ -166,7 +166,7 @@ void benchmarkFFT() {
 
 void posix_death_signal(int signum)
 {
-    std::cerr << "Crash happend signal:"<<signum;
+    qDebug() << "Crash happend signal:"<<signum;
     signal(signum, SIG_DFL);
 
 
@@ -180,7 +180,7 @@ void posix_death_signal(int signum)
     QByteArray logWhole = logF.readAll();
     QByteArray logCompressed = qCompress(logWhole,9);
 
-    std::cerr << "Compressed log size "<<logCompressed.size();
+    qDebug() << "Compressed log size "<<logCompressed.size();
 
     QFile crashLog;
 
@@ -317,20 +317,18 @@ void setPosixSignals() {
 
 
 
-void copyResourcesIntoTempDir() { //TODO во временную копировать только тесты
-    static QTemporaryDir tempDir;
-    setTestLocation(tempDir.path().toStdString() + "/");
-    QDir dir;
-    QString regressionDir = tempDir.path() + "/regression/";
-    dir.mkdir(regressionDir);
-    QString regressionCheckDir = tempDir.path() + "/regression_check/";
-    dir.mkdir(regressionCheckDir);
-    QString allOutDir = tempDir.path() + "/all_out/";
-    dir.mkdir(allOutDir);
+void copyResourcesIntoTempDir() {
 
-    QString resourseSf = ":/sf/fullset.sf2";
-    QString copySf = tempDir.path() + "/fullset.sf2";
-    QFile::copy(resourseSf, copySf);
+    QString testDir = "tests";
+    setTestLocation(testDir.toStdString() + "/");
+
+    QDir dir;
+    QString regressionDir = testDir + "/regression/";
+    dir.mkdir(regressionDir);
+    QString regressionCheckDir = testDir + "/regression_check/";
+    dir.mkdir(regressionCheckDir);
+    QString allOutDir = testDir + "/all_out/";
+    dir.mkdir(allOutDir);
 
     std::unordered_map<size_t, size_t> groupLength = {
         {1, 12},
@@ -338,22 +336,31 @@ void copyResourcesIntoTempDir() { //TODO во временную копиров�
         {3, 71},
         {4, 109}
     };
+
     for (size_t groupIdx = 1; groupIdx <= 4; ++groupIdx) {
+
         size_t from = 1;
         size_t to = groupLength[groupIdx] - 1;
+
         for (size_t fileIndx = from; fileIndx <= to; ++fileIndx) {
+
             std::string testName = std::to_string(groupIdx) + "." + std::to_string(fileIndx);
             QString resourse = QString(":/own_tests/") + testName.c_str() + ".gp4";
-            QString copy = tempDir.path() + "/" + testName.c_str() + ".gp4";
-            QFile::copy(resourse, copy);
+            QString copy = testDir + "/" + testName.c_str() + ".gp4";
+
+            if (QFile::exists(copy) == false)
+                QFile::copy(resourse, copy);
 
             if (groupIdx <= 2) {
                 QString resourse1 = QString(":/regression/") + testName.c_str() + ".mid";
                 QString resourse2 = QString(":/regression/") + testName.c_str() + ".gmy";
                 QString copy1 = regressionDir + testName.c_str() + ".mid";
                 QString copy2 = regressionDir + testName.c_str() + ".gmy";
-                QFile::copy(resourse1, copy1);
-                QFile::copy(resourse2, copy2);
+
+                if (QFile::exists(copy1) == false)
+                    QFile::copy(resourse1, copy1);
+                if (QFile::exists(copy2) == false)
+                    QFile::copy(resourse2, copy2);
             }
         }
     }
@@ -409,6 +416,9 @@ int mainInit(int argc, char *argv[]) {
     QDir dir;
     if (dir.exists("records") == false)
         dir.mkdir("records");
+
+    if (dir.exists("tests") == false)
+        dir.mkdir("tests");
 
     copyResourcesIntoTempDir(); //TODO copy if not created, avoid temp dir
     runRegressionTests();

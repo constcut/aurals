@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iostream>
 
+#include "log.hpp"
 #include <QFileInfo>
 
 #include "tab/Tab.hpp"
@@ -60,12 +61,12 @@ bool aural_sight::checkHasRegression() {
             {
                 std::ofstream midiOut(midiFile, std::ios::binary);
                 bytesWritten = f->writeStream(midiOut);
-                std::cerr << "MidiSize: " << bytesWritten << " to " << testName
-                          <<  " expected: " << fSize << std::endl;
+                qDebug() << "MidiSize: " << bytesWritten << " to " << testName
+                          <<  " expected: " << fSize;
             }
 
             if (fSize != bytesWritten) {
-                std::cerr << "Files " << testName << " got a MIDI regression " << std::endl;
+                qDebug() << "Files " << testName << " got a MIDI regression ";
                 ++regressionCountMidi;
             }
             else {
@@ -84,7 +85,7 @@ bool aural_sight::checkHasRegression() {
             auto sizeOld = QFileInfo(gmyFileCheck.c_str()).size();
 
             if (sizeNew != sizeOld) {
-                std::cerr << "Files " << testName << " got a GMY regression " << std::endl;
+                qDebug() << "Files " << testName << " got a GMY regression ";
                 ++regressionCountGmy;
             }
 
@@ -92,8 +93,8 @@ bool aural_sight::checkHasRegression() {
     }
 
     if (regressionCountMidi || regressionCountGmy) {
-        std::cerr << "Total " << regressionCountMidi << " files got MIDI regression"
-                  << std::endl << "Total " << regressionCountGmy << " files got GMY regression" << std::endl;
+        qDebug() << "Total " << regressionCountMidi << " files got MIDI regression";
+        qDebug() << "Total " << regressionCountGmy << " files got GMY regression";
         return true;
     }
     return false;
@@ -129,10 +130,10 @@ void macroSimpleTest1() {
         t2.playCommand(c);
 
     if (t2.at(0)->getStatus() != 2) {
-        std::cerr << "ERROR: Tab commands failed!" << std::endl;
+        qDebug() << "ERROR: Tab commands failed!";
     }
     else
-        std::cout << "1 Simple tab commands fine" << std::endl;
+        qDebug() << "1 Simple tab commands fine";
 }
 
 
@@ -148,11 +149,11 @@ void macroSimpleTest2() {
     for (auto& c: commands)
         t2.playCommand(c);
     if (t2.at(0)->getName() != "check") {
-        std::cerr <<"ERROR: Tab commands failed!" << std::endl;
-        std::cerr <<"Track name was " << t2.at(0)->getName().c_str() << std::endl;
+        qDebug() <<"ERROR: Tab commands failed!";
+        qDebug() <<"Track name was " << t2.at(0)->getName();
     }
     else
-        std::cout << "2 Simple tab commands fine"<< std::endl;
+        qDebug() << "2 Simple tab commands fine";
 }
 
 
@@ -165,11 +166,11 @@ void macroSimpleTest3() {
     for (auto& c: commands)
         t2.playCommand(c);
     if (t2.at(0)->getInstrument() != 38) {
-        std::cerr << "ERROR: Tab commands failed!" << std::endl;
-        std::cerr << "Track instrument was " << t2.at(0)->getInstrument() << std::endl;
+        qDebug() << "ERROR: Tab commands failed!";
+        qDebug() << "Track instrument was " << t2.at(0)->getInstrument();
     }
     else
-        std::cout << "3 Simple tab commands fine" << std::endl;
+        qDebug() << "3 Simple tab commands fine";
 }
 
 
@@ -182,12 +183,12 @@ void macroSimpleTest4() {
     for (auto& c: commands)
         t2.playCommand(c);
     if (t2.at(0)->at(0)->getSignNum() != 2 || t2.at(0)->at(0)->getSignDenum() != 2) {
-        std::cerr << "ERROR: Tab commands failed!" << std::endl;
-        std::cerr << "Num den were " << t2.at(0)->at(0)->getSignNum()
-                 << " " <<  t2.at(0)->at(0)->getSignDenum()<< std::endl;
+        qDebug() << "ERROR: Tab commands failed!";
+        qDebug() << "Num den were " << t2.at(0)->at(0)->getSignNum()
+                 << " " <<  t2.at(0)->at(0)->getSignDenum();
     }
     else
-        std::cout << "4 Simple tab commands fine" << std::endl;
+        qDebug() << "4 Simple tab commands fine";
 }
 
 
@@ -201,12 +202,12 @@ void macroTrackTest1() {
     for (auto& c: commands)
         t2.playCommand(c);
     if (t2.at(0)->at(0)->getSignNum() != 2 || t2.at(0)->at(0)->getSignDenum() != 2) {
-        std::cerr << "ERROR: Track commands failed!" << std::endl;
-        std::cerr << "Num den were " << t2.at(0)->at(0)->getSignNum()
-                 << " " <<  t2.at(0)->at(0)->getSignDenum() << std::endl;
+        qDebug() << "ERROR: Track commands failed!";
+        qDebug() << "Num den were " << t2.at(0)->at(0)->getSignNum()
+                 << " " <<  t2.at(0)->at(0)->getSignDenum();
     }
     else
-        std::cout << "1 Simple track commands fine" << std::endl;
+        qDebug() << "1 Simple track commands fine";
 }
 
 
@@ -222,11 +223,11 @@ void macroTrackTest2() {
     std::string str;
     t2.at(0)->at(0)->at(0)->getText(str);
     if (str != "some") {
-        std::cerr << "ERROR: Track commands failed!" << std::endl;
-        std::cerr << str.c_str() << " vs some" << std::endl;
+        qDebug() << "ERROR: Track commands failed!";
+        qDebug() << str.c_str() << " vs some";
     }
     else
-        std::cout << "2 Simple track commands fine" << std::endl;
+        qDebug() << "2 Simple track commands fine";
 }
 
 void macroTrackTest3() {
@@ -239,24 +240,29 @@ void macroTrackTest3() {
         t2.playCommand(c);
 
     if (t2.at(0)->at(0)->at(0)->getDuration() != 4) {
-        std::cerr << "ERROR: Track commands failed!" << std::endl;
-        std::cerr << t2.at(0)->at(0)->at(0)->getDuration() << " vs X" << std::endl;
+        qDebug() << "ERROR: Track commands failed!";
+        qDebug() << t2.at(0)->at(0)->at(0)->getDuration() << " vs X";
     }
     else
-        std::cout << "3 Simple track commands fine" << std::endl;
+        qDebug() << "3 Simple track commands fine";
 }
+
+#include <QtGlobal>
 
 
 void aural_sight::runRegressionTests() {
     //greatCheckScenarioCase(1, 1, 12, 4);
     //greatCheckScenarioCase(2, 1, 38, 4);
     if (checkHasRegression()) {
-        std::cerr << "Has regression, terminating" << std::endl;
+        qDebug() << "Has regression, terminating";
+
+        #ifndef Q_OS_ANDROID
         exit(0);
+        #endif
         return;
     }
     else
-        std::cout << "Has no regression" << std::endl; //TODO also check more from 3rd group generate on oldest version
+        qDebug() << "Has no regression"; //TODO also check more from 3rd group generate on oldest version
 
     macroSimpleTest1(); //Tab commands plain
     macroSimpleTest2(); //String tab command
@@ -306,14 +312,14 @@ bool aural_sight::checkMidiIORegression() {
              auto outputSize = QFileInfo(midiFileCheck.c_str()).size();
 
              if (originalSize != outputSize) {
-                std::cerr << "Midi IO fail " << testName << std::endl;
+                qDebug() << "Midi IO fail " << testName;
                 fine = false;
              }
         }
     }
 
     if (fine)
-        std::cout << "There is not MidiIO regression" << std::endl;
+        qDebug() << "There is not MidiIO regression";
 
     return fine;
 }

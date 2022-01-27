@@ -13,7 +13,7 @@
 #include <QMediaPlayer>
 
 #include <fstream>
-#include <QDebug>
+#include "log.hpp"
 
 #include "tab/tools/MidiExport.hpp"
 
@@ -159,9 +159,9 @@ bool testGP4(std::string fileName, std::string outFileName, std::string gmyFile=
     std::ofstream midiOut(outFileName, std::ios::binary);
     size_t bytesWritten = f->writeStream(midiOut);
 
-    std::cerr << "Bytes midi written " << bytesWritten << " to " << outFileName <<  std::endl;
+    qDebug() << "Bytes midi written " << bytesWritten << " to " << outFileName;
     if (bytesWritten == 0) {
-        std::cerr << "ERROR empty file " << std::endl;
+        qDebug() << "ERROR empty file ";
     }
 
     if (gmyFile.empty() == false) {
@@ -201,7 +201,7 @@ bool testGP5(std::string fileName, std::string outFileName)
     std::ofstream midiOut(outFileName, std::ios::binary);
     size_t bytesWritten = f->writeStream(midiOut);
 
-    std::cerr << "Bytes midi written " << bytesWritten << " to " << outFileName <<  std::endl;
+    qDebug() << "Bytes midi written " << bytesWritten << " to " << outFileName;
 
 
     return true;
@@ -218,7 +218,7 @@ bool greatCheck()
     int scen = 1;
 
 
-    std::cerr << "Starting big check" << std::endl;
+    qDebug() << "Starting big check";
 
     for (size_t i = from; i <= to; ++i)
     {
@@ -245,11 +245,11 @@ bool greatCheck()
             if ( testGP4 (gp4File,outGp4)  == false ) return 0; //last true - no out
             //if ( testGP5 (gp5File,outGp5,doTheLogs) == false ) return 0;
 
-            std::cout << "done"<<std::endl;
+            std::cout << "done";
         }
         catch(...)
         {
-            std::cerr <<"Exception" << std::endl;
+            qDebug() <<"Exception";
         }
     }
 
@@ -306,7 +306,7 @@ bool aural_sight::greatCheckScenarioCase(uint32_t scen, uint32_t from, uint32_t 
         }
         catch(...)
         {
-            std::cout <<"Exception" << std::endl;
+            std::cout <<"Exception";
         }
     }
 
