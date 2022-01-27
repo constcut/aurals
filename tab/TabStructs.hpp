@@ -3,6 +3,7 @@
 
 #include "Chain.hpp"
 #include <list>
+#include <string>
 
 namespace aural_sight {
 

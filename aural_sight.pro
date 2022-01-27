@@ -1,4 +1,4 @@
-QT += quick multimedia core
+QT += quick multimedia core widgets
 CONFIG += c++17
 
 #Doesn't work on windows
@@ -14,6 +14,8 @@ QMAKE_CXXFLAGS += -std=c++17
 QMAKE_CXXFLAGS += -Wall
 
 android: QT += androidextras
+
+QMAKE_LFLAGS += -v
 
 #Wavelets are commented, yet no application for such amazing detalization
 
