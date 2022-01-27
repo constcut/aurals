@@ -29,16 +29,6 @@
 //#include "music/graphicmap.h"
 #include "midi/MidiFile.hpp"
 
-
-//FFT bench
-#include "libs/fft/FFTRealFixed.hpp"
-
-#include "libs/kiss/kiss_fftr.h"
-
-#include <vector>
-#include <chrono>
-#include <iostream>
-
 #include "app/Config.hpp"
 
 #include "app/Tests.hpp"
@@ -92,76 +82,6 @@ void copySoundfontsAndTests() {
         if (QFile::exists(file) == false)
             QFile::copy(":/sf/" + file, file);
 }
-
-
-
-
-void benchmarkFFT() {
-
-    const int bits = 12;
-    const int size = 2 << (bits-1);
-
-    FFTRealFixLen<bits> fftUnf;
-
-    std::vector<float> testVector(size, 0);
-    std::vector<float> output(size, 0);
-
-
-    for (auto& sample: testVector)
-        sample = (rand() % 30000) / 30000.0f;
-
-    auto bench = [&](auto& fft, auto name) {
-        auto start = std::chrono::high_resolution_clock::now();
-        fft.do_fft(&output[0], &testVector[0]);
-        auto end = std::chrono::high_resolution_clock::now();
-        auto durationMs = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-        //std::cout << name << " spent " << durationMs << std::endl;
-        return durationMs;
-    };
-
-
-    std::vector<kiss_fft_cpx> outKiss(size);
-
-    kiss_fftr_cfg cfg = kiss_fftr_alloc( size, 0, 0, 0 );
-    kiss_fftr( cfg , testVector.data() , outKiss.data() );
-
-    auto benchKiss = [&]() {
-        auto start = std::chrono::high_resolution_clock::now();
-        kiss_fftr( cfg , testVector.data() , outKiss.data() );
-        auto end = std::chrono::high_resolution_clock::now();
-        auto durationMs = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-        return durationMs;
-    };
-
-    qDebug() << "Sizes " << size << " and " << fftUnf.FFT_LEN;
-
-    //exit(0); */
-
-    unsigned long unfCount = 0;
-
-    unsigned long kissCount = 0;
-
-    for (size_t i = 0; i < 10000; ++i) {
-
-        for (auto& sample: testVector)
-            sample = (rand() % 30000) / 30000.0f;
-        if (i % 2 == 0) {
-            unfCount += bench(fftUnf, "UNf");
-            kissCount += benchKiss();
-        }
-        else {
-            kissCount += benchKiss();
-            unfCount += bench(fftUnf, "UNf");
-        }
-
-    }
-
-    qDebug() << "Total un fixed: " << unfCount / 1000.0;
-    qDebug() << "Total kiss: " << kissCount / 1000.0;
-
-}
-
-
 
 
 void posix_death_signal(int signum)
