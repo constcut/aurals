@@ -88,6 +88,7 @@ SOURCES += \
     tab/tools/Commands.cpp \
     tab/tools/GmyFile.cpp \
     tab/tools/GtpFiles.cpp \
+    tab/tools/MidiExport.cpp \
     tab/tools/TabClipboard.cpp \
     tab/tools/TabLoader.cpp \
     tab/tools/tab_com.cpp \
@@ -205,6 +206,7 @@ HEADERS += \
     tab/tools/Commands.hpp \
     tab/tools/GmyFile.hpp \
     tab/tools/GtpFiles.hpp \
+    tab/tools/MidiExport.hpp \
     tab/tools/TabClipboard.hpp \
     tab/tools/TabLoader.hpp
 
