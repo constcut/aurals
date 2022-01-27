@@ -1,6 +1,6 @@
 
-#ifndef MIDIMESSAGE_H
-#define MIDIMESSAGE_H
+#ifndef MidiMessage_H
+#define MidiMessage_H
 
 #include "NBytesInt.hpp"
 #include <list>
@@ -51,6 +51,7 @@ namespace aural_sight {
 
         ChannelMask = 0xF,
         EventTypeMask = 0xF0,
+        DrumTrackMask = 0x9
     };
 
 
@@ -76,8 +77,8 @@ namespace aural_sight {
 
         bool canSkipThat() const;
 
-        uint32_t readFromFile(std::ifstream& f);
-        uint32_t writeToFile(std::ofstream& f, const bool skipSomeMessages=false) const;
+        uint32_t readStream(std::ifstream& f);
+        uint32_t writeStream(std::ofstream& f, const bool skipSomeMessages=false) const;
 
         std::string nameEvent(const uint8_t eventNumber) const;
         std::string nameController(const uint8_t controllerNumber) const;

@@ -85,12 +85,12 @@ std::unique_ptr<MidiFile> aural_sight::exportMidi(Tab* tab, size_t shiftTheCurso
                     uint8_t num = newDen = bar->getSignNum();
                     for (uint8_t i = 0; i < num; ++i)
                         if (firstRun){
-                            auto noteOn = MidiSignal(NoteOnMask | DrumTrackMask, 33, 127,0);
+                            auto noteOn = MidiMessage(NoteOnMask | DrumTrackMask, 33, 127,0);
                             metronomeClickTrack.push_back(std::move(noteOn));
                             firstRun = false;
                         }
                         else {
-                            auto noteOn = MidiSignal(NoteOnMask | DrumTrackMask, 33, 127,metronomeClickSize);
+                            auto noteOn = MidiMessage(NoteOnMask | DrumTrackMask, 33, 127,metronomeClickSize);
                             metronomeClickTrack.push_back(std::move(noteOn));
                         }
                 }
@@ -449,9 +449,9 @@ void aural_sight::exportPostEffect(Beat* beat, MidiTrack* midiTrack, std::uint8_
             if (graceLen == 0)
                 graceLen = 1;
 
-            auto mSignalGraceOff = MidiSignal(NoteOffMask | channel,midiNote+2,80,graceLen-1);
+            auto mSignalGraceOff = MidiMessage(NoteOffMask | channel,midiNote+2,80,graceLen-1);
             midiTrack->push_back(std::move(mSignalGraceOff));
-            auto mSignalOn = MidiSignal(NoteOnMask | channel,midiNote,midiVelocy,1);
+            auto mSignalOn = MidiMessage(NoteOnMask | channel,midiNote,midiVelocy,1);
             midiTrack->push_back(std::move(mSignalOn));
             midiTrack->accumulate(-graceLen);
         }
@@ -492,9 +492,9 @@ void aural_sight::exportPostEffect(Beat* beat, MidiTrack* midiTrack, std::uint8_
             //pushTremoloPick - tremolo pick - trills
             short int tremoloStep = midiTrack->getAccum() / 4;
             for (size_t i = 0; i < 3; ++i) {
-                auto mSignalOff = MidiSignal(NoteOffMask | channel, midiNote, midiVelocy, tremoloStep);
+                auto mSignalOff = MidiMessage(NoteOffMask | channel, midiNote, midiVelocy, tremoloStep);
                 midiTrack->push_back(std::move(mSignalOff));
-                auto mSignalOn = MidiSignal(NoteOnMask | channel, midiNote, midiVelocy, 0);
+                auto mSignalOn = MidiMessage(NoteOnMask | channel, midiNote, midiVelocy, 0);
                 midiTrack->push_back(std::move(mSignalOn));
             }
             midiTrack->setAccum(tremoloStep);
@@ -504,7 +504,7 @@ void aural_sight::exportPostEffect(Beat* beat, MidiTrack* midiTrack, std::uint8_
         if (note->getEffects().getEffectAt(Effect::Stokatto)) {
             //stokato - stop earlier
             short halfAccum = midiTrack->getAccum() / 2;
-            auto mSignalOff = MidiSignal(NoteOffMask | channel,midiNote,midiVelocy,halfAccum);
+            auto mSignalOff = MidiMessage(NoteOffMask | channel,midiNote,midiVelocy,halfAccum);
             midiTrack->push_back(std::move(mSignalOff));
             midiTrack->setAccum(halfAccum);
         }
@@ -554,7 +554,7 @@ void aural_sight::pushBendToTrack(BendPoints* bend, MidiTrack* midiTrack, std::u
             if (midiExportLog)
                 qDebug() <<"rStep="<<rhyStep<<"; rAccum="<<rAccum<<"; pSh="<<pitchStep;
 
-            auto mSignalBendOpen = MidiSignal(PitchWheelMask | channel,0,lastShift, rAccum);
+            auto mSignalBendOpen = MidiMessage(PitchWheelMask | channel,0,lastShift, rAccum);
             midiTrack->push_back(std::move(mSignalBendOpen));
             rAccum = 0;
 
@@ -570,7 +570,7 @@ void aural_sight::pushBendToTrack(BendPoints* bend, MidiTrack* midiTrack, std::u
                 short thisMidiShift = thisShift;
                 short totalShiftNow = lastShift + shiftDone;
 
-                auto mSignalBend = MidiSignal(PitchWheelMask | channel,0,totalShiftNow,thisROffset);
+                auto mSignalBend = MidiMessage(PitchWheelMask | channel,0,totalShiftNow,thisROffset);
                 midiTrack->push_back(std::move(mSignalBend));
 
                 if (midiExportLog)
@@ -587,9 +587,9 @@ void aural_sight::pushBendToTrack(BendPoints* bend, MidiTrack* midiTrack, std::u
     }
 
     std::uint8_t lastShift = 64 + (lastH * 32) / 4; //decreased from 100
-    auto mSignalBendLast = MidiSignal(PitchWheelMask | channel, 0, lastShift, rAccum);
+    auto mSignalBendLast = MidiMessage(PitchWheelMask | channel, 0, lastShift, rAccum);
     midiTrack->push_back(std::move(mSignalBendLast));
-    auto mSignalBendClose = MidiSignal(PitchWheelMask | channel, 0, 64, 0);
+    auto mSignalBendClose = MidiMessage(PitchWheelMask | channel, 0, 64, 0);
     midiTrack->push_back(std::move(mSignalBendClose));
 
     if (midiExportLog)

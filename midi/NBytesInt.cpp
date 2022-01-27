@@ -1,8 +1,10 @@
 #include "NBytesInt.hpp"
 
 #include <vector>
+#include <QDebug>
 
-#include "log.hpp"
+extern bool midiLog;
+
 
 
 using namespace aural_sight;
@@ -24,14 +26,14 @@ NBytesInt::NBytesInt(uint32_t source) {
         push_back(byteParts[i]);
 }
 
-uint32_t aural_sight::NBytesInt::readFromFile(std::ifstream& f) {
+uint32_t NBytesInt::readFromFile(std::ifstream& f) {
     uint8_t lastByte = 0;
     do {
         f.read(reinterpret_cast<char*>(&lastByte), 1);
         push_back(lastByte & 127);
     } while (lastByte & 128);
 
-    if (enableMidiLog) {
+    if (midiLog) {
         qDebug() << "VarInt read "<<getValue()<<" "<<size();
 
         for (size_t i = 0; i < size(); ++i)
@@ -40,14 +42,14 @@ uint32_t aural_sight::NBytesInt::readFromFile(std::ifstream& f) {
     return size();
 }
 
-uint32_t aural_sight::NBytesInt::writeToFile(std::ofstream& f) const {
+uint32_t NBytesInt::writeToFile(std::ofstream& f) const {
     for (size_t i = 0; i < size(); ++i) {
         uint8_t anotherByte = operator [](i);
         if (i != size()-1)
             anotherByte |= 128;
         f << anotherByte;
     }
-    if (enableMidiLog) {
+    if (midiLog) {
         for (size_t i = 0; i < size(); ++i)
             qDebug() << "VarInt[" << i << "] = " << this->operator [](i);
         qDebug() << "VarInt write " << getValue() << " " << size();
@@ -55,7 +57,7 @@ uint32_t aural_sight::NBytesInt::writeToFile(std::ofstream& f) const {
     return size();
 }
 
-uint32_t aural_sight::NBytesInt::getValue() const {
+uint32_t NBytesInt::getValue() const {
     uint32_t value = 0;
     int bytesToCollect = size() < 4 ? size() : 4;
 

@@ -19,10 +19,10 @@ namespace aural_sight {
             uint32_t calculateHeader(bool skipSomeMessages=false);
 
             uint32_t readFromFile(std::string_view filename);
-            uint32_t readFromFile(std::ifstream& file);
+            uint32_t readStream(std::ifstream& file);
 
             uint32_t writeToFile(std::string_view filename, bool skipSomeMessages=false);
-            uint32_t writeToFile(std::ofstream& file, bool skipSomeMessages=false);
+            uint32_t writeStream(std::ofstream& file, bool skipSomeMessages=false);
 
             uint16_t getBPM() const { return _bpm; }
             void setBPM(const uint16_t newBPM) { _bpm = newBPM; }

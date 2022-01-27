@@ -12,7 +12,7 @@ using namespace aural_sight;
 MidiRender::MidiRender()
 {
     _renderFrameSize = 1024;
-    _sampleRate = 44100;
+    _sampleRate = 8000.0;
     _totalMsSpent = 0;
 }
 

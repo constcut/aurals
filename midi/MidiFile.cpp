@@ -1,12 +1,15 @@
 #include "MidiFile.hpp"
 
-#include "log.hpp"
+#include <QDebug>
+
 #include "MidiUtils.hpp"
 
 using namespace aural_sight;
 
+bool midiLog = false;
 
-uint32_t aural_sight::MidiFile::calculateHeader(bool skipSomeMessages) {
+
+uint32_t MidiFile::calculateHeader(bool skipSomeMessages) {
 
     uint32_t totalBytesCalculated = 0;
     _chunkId[0] = 'M';
@@ -22,23 +25,23 @@ uint32_t aural_sight::MidiFile::calculateHeader(bool skipSomeMessages) {
 
     for (size_t i = 0; i < size(); ++i)
         totalBytesCalculated += this->operator [](i).calculateHeader(skipSomeMessages);
-        
+
     return totalBytesCalculated;
 }
 
-aural_sight::MidiFile::MidiFile(std::string_view filename) {
+MidiFile::MidiFile(std::string_view filename) {
     readFromFile(filename);
 }
 
-uint32_t aural_sight::MidiFile::readFromFile(std::string_view filename) {
+uint32_t MidiFile::readFromFile(std::string_view filename) {
     std::string strFileName {filename};
     std::ifstream file {strFileName, std::ios::binary};
     if (file.is_open())
-        return readFromFile(file);
+        return readStream(file);
     return 0;
 }
 
-uint32_t aural_sight::MidiFile::readFromFile(std::ifstream& f) {
+uint32_t MidiFile::readStream(std::ifstream& f) {
 
     uint32_t totalBytesRead = 0;
     _chunkSize = 0;
@@ -62,19 +65,19 @@ uint32_t aural_sight::MidiFile::readFromFile(std::ifstream& f) {
     if ((_chunkId[0]!='M') || (_chunkId[1]!='T')
      || (_chunkId[2]!='h') || (_chunkId[3]!='d')) {
 
-        if (enableMidiLog)
+        if (midiLog)
             qDebug() << "Midi header corrupted - error "
                  << _chunkId[0] << _chunkId[1] << _chunkId[2] << _chunkId[3];
         return totalBytesRead;
     }
 
     if (_chunkSize != 6) {
-        if (enableMidiLog)
+        if (midiLog)
             qDebug()<< "Issue chunk size != 6";
         return totalBytesRead;
     }
 
-    if (enableMidiLog)
+    if (midiLog)
         qDebug() << "Reading midi file "<<_chunkId[0]<<_chunkId[1]<<_chunkId[2]<<_chunkId[3]<<
                 " "<<_chunkSize<<" "<<_formatType<<" "<<_tracksCount<<" "<<_timeDevisition;
 
@@ -87,15 +90,15 @@ uint32_t aural_sight::MidiFile::readFromFile(std::ifstream& f) {
     return totalBytesRead;
 }
 
-uint32_t aural_sight::MidiFile::writeToFile(std::string_view filename, bool skipSomeMessages) {
+uint32_t MidiFile::writeToFile(std::string_view filename, bool skipSomeMessages) {
     std::string strFilename(filename);
     std::ofstream file(strFilename, std::ios::binary);
-    return writeToFile(file, skipSomeMessages);
+    return writeStream(file, skipSomeMessages);
 }
 
 
 
-uint32_t aural_sight::MidiFile::writeToFile(std::ofstream& f, bool skipSomeMessages) {
+uint32_t MidiFile::writeStream(std::ofstream& f, bool skipSomeMessages) {
 
     uint32_t totalBytesWritten=0;
     calculateHeader(skipSomeMessages);
@@ -113,7 +116,7 @@ uint32_t aural_sight::MidiFile::writeToFile(std::ofstream& f, bool skipSomeMessa
 
     totalBytesWritten += 14;
 
-    if (enableMidiLog)
+    if (midiLog)
         qDebug() << "Writing midi file " << _chunkId[0] << _chunkId[1] << _chunkId[2] << _chunkId[3] <<
                 " " << _chunkSize << " " << _formatType << " " << _tracksCount << " " << _timeDevisition;
 

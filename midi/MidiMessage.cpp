@@ -1,6 +1,10 @@
 #include "MidiMessage.hpp"
 
+#include <QDebug>
 #include "log.hpp"
+
+extern bool midiLog;
+
 
 
 using namespace aural_sight;
@@ -91,7 +95,7 @@ bool MidiMessage::canSkipThat() const {
 }
 
 
-uint32_t MidiMessage::readFromFile(std::ifstream& f) {
+uint32_t MidiMessage::readStream(std::ifstream& f) {
 
     uint32_t totalBytesRead = 0;
     totalBytesRead += _timeStamp.readFromFile(f);
@@ -110,7 +114,7 @@ uint32_t MidiMessage::readFromFile(std::ifstream& f) {
             _metaBufer.push_back(byteBufer);
         }
         totalBytesRead += bytesInMetaBufer;
-        if (enableMidiLog)
+        if (midiLog)
             qDebug() << "Midi meta mes read " << _typeAndChannel << _param1 << _metaLen.getValue() << _timeStamp.getValue() << " total bytes " << totalBytesRead << " " << f.tellg();
     }
     else {
@@ -119,11 +123,11 @@ uint32_t MidiMessage::readFromFile(std::ifstream& f) {
             f.read(reinterpret_cast<char*>(&_param2), 1);
             ++totalBytesRead;
         }
-        if (enableMidiLog)
+        if (midiLog)
             qDebug() << "Midi message read " << nameEvent(eventType) << " ( " << eventType << getChannel() << " ) "
                    << static_cast<int>(_param1)  << " " << static_cast<int>(_param2) << " t: " << _timeStamp.getValue() << " total bytes " << totalBytesRead << " " << f.tellg();
         if (eventType == 0xB) {
-            if (enableMidiLog)
+            if (midiLog)
                 qDebug() << "Controller name: " << nameController(_param1);
         }
     }
@@ -237,7 +241,7 @@ std::string MidiMessage::nameController(const uint8_t controllerNumber) const
     return "Unknown_ControllerName";
 }
 
-uint32_t MidiMessage::writeToFile(std::ofstream& f, const bool skipSomeMessages) const {
+uint32_t MidiMessage::writeStream(std::ofstream& f, const bool skipSomeMessages) const {
 
     uint32_t totalBytesWritten = 0;
     if (skipSomeMessages && canSkipThat())
@@ -249,7 +253,7 @@ uint32_t MidiMessage::writeToFile(std::ofstream& f, const bool skipSomeMessages)
     totalBytesWritten += 2;
 
     if (isMetaEvent()) {
-        if (enableMidiLog)
+        if (midiLog)
             qDebug() << "Midi meta mes write " << _typeAndChannel << _param1
                 << _metaLen.getValue() << _timeStamp.getValue()
                 << " total bytes " << totalBytesWritten << " " << f.tellp();
@@ -264,7 +268,7 @@ uint32_t MidiMessage::writeToFile(std::ofstream& f, const bool skipSomeMessages)
             f << _param2;
             ++totalBytesWritten;
         }
-        if (enableMidiLog) {
+        if (midiLog) {
             qDebug() << "Midi message write " << nameEvent(eventType) << " ( " << eventType << getChannel() << " ) " << _param1 << _param2
                     << " t: " << _timeStamp.getValue() << " total bytes " << totalBytesWritten << " " << f.tellp();
             if (eventType == 0xB)
@@ -272,7 +276,7 @@ uint32_t MidiMessage::writeToFile(std::ofstream& f, const bool skipSomeMessages)
         }
     }
 
-    if (enableMidiLog) {
+    if (midiLog) {
         qDebug() << "Total bytes written in message " << totalBytesWritten;
         if (totalBytesWritten > calculateSize())
             qDebug() << "Error! overwritten " << f.tellp();

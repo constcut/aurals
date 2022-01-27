@@ -65,7 +65,7 @@ namespace aural_sight {
         quint32 _trackPosition;
 
         int _renderFrameSize;
-        double _sampleRate;
+        double _sampleRate = 8000.0;
         float _volume = -6.0;
         QString _soundfontFile = "epiano.sf2";
 
