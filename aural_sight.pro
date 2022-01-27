@@ -19,6 +19,7 @@ android: QT += androidextras
 
 SOURCES += \
     app/AndroidTools.cpp \
+    app/Config.cpp \
     app/Init.cpp \
     app/LogHandler.cpp \
     audio/features/ACFgraph.cpp \
@@ -97,6 +98,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     app/AndroidTools.hpp \
     app/Clipboard.hpp \
+    app/Config.hpp \
     app/Init.hpp \
     app/LogHandler.hpp \
     app/StretchImage.hpp \
