@@ -1,6 +1,8 @@
 #include "Base.hpp"
 #include "Threads.hpp"
 
+#include <QDirIterator>
+
 using namespace aural_sight;
 
 auto addToMap = [](auto& container, auto value) {
@@ -267,12 +269,16 @@ void BaseStatistics::start(std::string path, size_t count, size_t skip) {
 
     _path = path;
     reset();
-    const std::filesystem::path basePath{path + "base"};
+    const std::string basePath{path + "base"};
     size_t filesCount = 0;
     size_t fineFiles = 0;
 
-    for(auto const& file: std::filesystem::directory_iterator{basePath}) {
+    QDirIterator it(basePath.c_str());
+
+    while (it.hasNext()) {
         ++filesCount;
+
+        QString nextName = it.next();
 
         if (filesCount >= count)
             break;
@@ -280,7 +286,7 @@ void BaseStatistics::start(std::string path, size_t count, size_t skip) {
         if (filesCount < skip)
             continue;
 
-        std::string filePath = file.path();
+        std::string filePath = nextName.toStdString();
         if (_loader.open(filePath)) {
             auto tab = std::move(_loader.getTab());
             ++fineFiles;
@@ -288,6 +294,7 @@ void BaseStatistics::start(std::string path, size_t count, size_t skip) {
         }
         if (filesCount % 100 == 0)
             std::cout << filesCount << " files done" << std::endl;
+
     }
 
     std::cout << "Total files processed: " << fineFiles << std::endl;
