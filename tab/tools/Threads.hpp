@@ -10,24 +10,12 @@
 namespace aural_sight {
 
 
-    class AThread
-    {
-    public:
-        AThread() = default;
-
-        virtual void threadRun() = 0;
-        virtual void callUpdate() = 0;
-        virtual void noticeFinished() = 0;
-
-    };
-
-
     class Tab;
     class Track;
     class Bar;
 
 
-    class PlayAnimationThr: public AThread
+    class PlayAnimationThr
     {
     protected:
         size_t* _cursorToInc1;
@@ -44,6 +32,9 @@ namespace aural_sight {
         bool _pleaseStop;
 
     public:
+
+       virtual void callUpdate() = 0;
+       virtual void noticeFinished() = 0;
 
        void requestStop() { _pleaseStop = true; }
 
@@ -79,8 +70,7 @@ namespace aural_sight {
             threadRun();
         }
 
-        void noticeFinished() override
-        {
+        void noticeFinished() override {
             emit nowFinished();
         }
 
