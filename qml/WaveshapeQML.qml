@@ -32,6 +32,7 @@ Item {
                 width: parent.width
                 height: 250
 
+                /*
                 preventStealing: true
                 onPressed: {
                     flick.pressedX = mouseX
@@ -39,7 +40,7 @@ Item {
                 onReleased: {
                     var diff =  flick.pressedX - mouseX
                     //console.log('Move diff: ', diff) //Use for moving note start\end
-                }
+                }*/ //Kills flick
                 onClicked:{
                     var minRmStep = waveShape.getMinRmsStep()
                     waveShape.setWindowPosition(mouseX * minRmStep/2.0)
