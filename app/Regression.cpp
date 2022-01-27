@@ -41,7 +41,6 @@ bool aural_sight::checkHasRegression() {
         if (groupIdx == 4)
             break;
 
-        ++totalChecks;
 
         for (size_t fileIndx = from; fileIndx <= to; ++fileIndx) {
             std::string testName = std::to_string(groupIdx) + "." + std::to_string(fileIndx);
@@ -57,6 +56,8 @@ bool aural_sight::checkHasRegression() {
             importer.import(itfile, &tab);
             tab.postLoading();
             tab.connectTracks();
+
+            ++totalChecks;
 
 
             auto fSize = QFileInfo(midiFileCheck.c_str()).size();

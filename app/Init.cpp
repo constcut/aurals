@@ -357,8 +357,6 @@ void copyResourcesIntoTempDir() {
                 QString copy1 = regressionDir + testName.c_str() + ".mid";
                 QString copy2 = regressionDir + testName.c_str() + ".gmy";
 
-                qDebug() << "COPY " << resourse1;
-
                 if (QFile::exists(copy1) == false)
                     QFile::copy(resourse1, copy1);
                 if (QFile::exists(copy2) == false)
@@ -422,9 +420,12 @@ int mainInit(int argc, char *argv[]) {
     if (dir.exists("tests") == false)
         dir.mkdir("tests");
 
-    copyResourcesIntoTempDir(); //TODO copy if not created, avoid temp dir
+    copyResourcesIntoTempDir();
+
+#ifdef QT_DEBUG
     runRegressionTests();
     checkMidiIORegression();
+#endif
 
     int res = 0;
     try {
