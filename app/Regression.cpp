@@ -3,8 +3,9 @@
 #include <string>
 #include <unordered_map>
 #include <fstream>
-#include <filesystem>
 #include <iostream>
+
+#include <QFileInfo>
 
 #include "tab/Tab.hpp"
 #include "tab/tools/GtpFiles.hpp"
@@ -51,7 +52,8 @@ bool aural_sight::checkHasRegression() {
             tab.postLoading();
             tab.connectTracks();
 
-            auto fSize = std::filesystem::file_size(midiFileCheck);
+
+            auto fSize = QFileInfo(midiFileCheck.c_str()).size();
 
             size_t bytesWritten = 0;
             auto f = exportMidi(&tab);
@@ -78,8 +80,8 @@ bool aural_sight::checkHasRegression() {
                 exporter.saveToFile(gmyOut, &tab);
             }
 
-            auto sizeNew = std::filesystem::file_size(gmyFile);
-            auto sizeOld = std::filesystem::file_size(gmyFileCheck);
+            auto sizeNew = QFileInfo(gmyFile.c_str()).size();
+            auto sizeOld = QFileInfo(gmyFileCheck.c_str()).size();
 
             if (sizeNew != sizeOld) {
                 std::cerr << "Files " << testName << " got a GMY regression " << std::endl;
@@ -299,8 +301,9 @@ bool aural_sight::checkMidiIORegression() {
                 std::ofstream os(midiFileCheck, std::ios::binary);
                 mid.writeStream(os);
             }
-             auto originalSize = std::filesystem::file_size(midiFile);
-             auto outputSize = std::filesystem::file_size(midiFileCheck);
+
+             auto originalSize = QFileInfo(midiFile.c_str()).size();
+             auto outputSize = QFileInfo(midiFileCheck.c_str()).size();
 
              if (originalSize != outputSize) {
                 std::cerr << "Midi IO fail " << testName << std::endl;
