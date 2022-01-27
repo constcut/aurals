@@ -21,6 +21,8 @@ namespace aural_sight {
         Track* _pTrack;
 
         TabView* _tabParrent;
+
+        //TODO убрать в Core
         std::unique_ptr<ThreadLocal> _animationThread; //Подумать над хранением, возможно удастся спрятать?
         std::vector<std::unique_ptr<ThreadLocal>> _finishPool;
 
@@ -36,7 +38,7 @@ namespace aural_sight {
         Track* getTrack() const { return _pTrack; }
 
         virtual void setUI();
-        virtual bool isMovableY() { return true; } //Emm
+        virtual bool isMovableY() { return true; } //Все что будет не использоваться, убрать
 
         TrackView(Track *from): _pTrack(from) {}
 

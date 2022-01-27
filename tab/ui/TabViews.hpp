@@ -26,9 +26,8 @@ namespace aural_sight {
     private:
         std::unique_ptr<Tab> _pTab;
 
-        //std::unique_ptr<GLabel> _statusLabel;
-        //std::unique_ptr<GLabel> _bpmLabel;
 
+        //TODO убрать в Core
         std::unique_ptr<ThreadLocal> _localThr;
         std::vector<std::unique_ptr<ThreadLocal>> _finishPool;
 
@@ -56,7 +55,7 @@ namespace aural_sight {
         int getCurTrack() { return _pTab->getCurrentTrack(); }
         int getLastOpenedTrack() { return _pTab->getLastOpenedTrack(); }
 
-        void setTab(std::unique_ptr<Tab> point2Tab);// {pTab = point2Tab;}
+        void setTab(std::unique_ptr<Tab> point2Tab);
         void refreshTabStats();
         std::unique_ptr<Tab>& getTab() { return _pTab; }
 
@@ -81,7 +80,7 @@ namespace aural_sight {
         void launchAllThreads();
         void stopAllThreads();
 
-        //TODO
+        //TODO связывание с Core вместо
         //void connectAllThreadsSignal(MasterView *masterView);
 
         bool gotChanges() const;
