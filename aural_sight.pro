@@ -78,7 +78,20 @@ SOURCES += \
     midi/MidiTrack.cpp \
     midi/NBytesInt.cpp \
     music/GraphicMap.cpp \
-    music/Tapper.cpp
+    music/Tapper.cpp \
+    tab/Bar.cpp \
+    tab/Beat.cpp \
+    tab/Effects.cpp \
+    tab/Note.cpp \
+    tab/Tab.cpp \
+    tab/Track.cpp \
+    tab/tools/Commands.cpp \
+    tab/tools/GmyFile.cpp \
+    tab/tools/GtpFiles.cpp \
+    tab/tools/TabClipboard.cpp \
+    tab/tools/TabLoader.cpp \
+    tab/tools/tab_com.cpp \
+    tab/tools/track_com.cpp
 
 RESOURCES += qml.qrc \
     res/fonts.qrc \
@@ -177,7 +190,23 @@ HEADERS += \
     libs/sf/tml.h \
     libs/sf/tsf.h \
     music/GraphicMap.hpp \
-    music/Tapper.h
+    music/Tapper.h \
+    tab/Bar.hpp \
+    tab/Beat.hpp \
+    tab/BeatStructs.hpp \
+    tab/Chain.hpp \
+    tab/Effects.hpp \
+    tab/Note.hpp \
+    tab/NoteStructs.hpp \
+    tab/Tab.hpp \
+    tab/TabStructs.hpp \
+    tab/Track.hpp \
+    tab/TrackStructs.hpp \
+    tab/tools/Commands.hpp \
+    tab/tools/GmyFile.hpp \
+    tab/tools/GtpFiles.hpp \
+    tab/tools/TabClipboard.hpp \
+    tab/tools/TabLoader.hpp
 
 
 DISTFILES += \
