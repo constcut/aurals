@@ -80,8 +80,8 @@ SOURCES += \
     music/Tapper.cpp
 
 RESOURCES += qml.qrc \
-    fonts.qrc \
-    soundfonts.qrc
+    res/fonts.qrc \
+    res/soundfonts.qrc
 
 
 QML_IMPORT_PATH =
