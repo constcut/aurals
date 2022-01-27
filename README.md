@@ -24,15 +24,15 @@ Implemented test to detect MIDI files regression.
 
 Wave view and spectrograph:
 
-![mtherapp screenshot](info/screenshots/wave_and_spectrum.png)
+![mtherapp screenshot](res/info/screenshots/wave_and_spectrum.png)
 
 Wave view claps start end detection (blue is start, red is end):
 
-![mtherapp screenshot](info/screenshots/claps.png)
+![mtherapp screenshot](res/info/screenshots/claps.png)
 
 Wave view with f0 diplay (red line below)
 
-![mtherapp screenshot](info/screenshots/wave_f0.png)
+![mtherapp screenshot](res/info/screenshots/wave_f0.png)
 
 
 ## Libraries
