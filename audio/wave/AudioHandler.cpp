@@ -9,6 +9,10 @@
 #include "WavFile.hpp"
 
 //#include "midi/MidiRender.hpp"
+#include "tab/Tab.hpp"
+#include "tab/tools/TabLoader.hpp"
+#include "tab/tools/MidiExport.hpp"
+
 
 using namespace aural_sight;
 
@@ -262,6 +266,16 @@ void AudioHandler::checkMidi() {
 void AudioHandler::openMidiFile(const QString filename) {
     _render.openSoundFont();
     _midiBufer = _render.renderShort(filename);
+}
+
+
+Q_INVOKABLE void AudioHandler::openTabFile(const QString filename) {
+    GTabLoader loader;
+    loader.open(filename.toStdString());
+    auto midi = exportMidi(loader.getTab().get(), 0);
+    midi->writeToFile("tab.mid");
+    _render.openSoundFont();
+    _midiBufer = _render.renderShort("tab.mid");
 }
 
 

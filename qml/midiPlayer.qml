@@ -89,6 +89,24 @@ Item {
                 onClicked: saveFileDialog.visible = true
             }
         }
+        RowLayout {
+            spacing: 10
+
+            ComboBox {
+                id: tabCombo
+                model: 70
+
+
+            }
+            ToolButton {
+                text: "Load and play"
+                onClicked:  {
+                    var testId = parseInt(tabCombo.currentText) + 1
+                    audio.openTabFile("tests/3." + testId + ".gp4")
+                    audio.startMidiPlayer()
+                }
+            }
+        }
     }
 
 }

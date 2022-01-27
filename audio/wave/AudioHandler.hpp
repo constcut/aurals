@@ -66,6 +66,7 @@ namespace aural_sight {
         Q_INVOKABLE void checkMidi();
 
         Q_INVOKABLE void openMidiFile(const QString filename);
+        Q_INVOKABLE void openTabFile(const QString filename);
         Q_INVOKABLE void saveMidiToWav(const QString filename) const;
 
         Q_INVOKABLE void changeMidiRenderVolume(const double db) { _render.setVolumeDb(db); }
