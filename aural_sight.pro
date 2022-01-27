@@ -100,6 +100,7 @@ SOURCES += \
     tab/tools/tab_com.cpp \
     tab/tools/track_com.cpp \
     tab/ui/BarView.cpp \
+    tab/ui/TabCommands.cpp \
     tab/ui/TabViews.cpp \
     tab/ui/TrackView.cpp
 
