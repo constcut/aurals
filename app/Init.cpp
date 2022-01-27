@@ -41,7 +41,8 @@
 
 #include "app/Config.hpp"
 
-
+#include "app/Tests.hpp"
+#include "app/Regression.hpp"
 
 
 using namespace std;
@@ -408,6 +409,10 @@ int mainInit(int argc, char *argv[]) {
     QDir dir;
     if (dir.exists("records") == false)
         dir.mkdir("records");
+
+    copyResourcesIntoTempDir(); //TODO copy if not created, avoid temp dir
+    runRegressionTests();
+    checkMidiIORegression();
 
     int res = 0;
     try {
