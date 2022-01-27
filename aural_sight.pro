@@ -81,7 +81,8 @@ SOURCES += \
 
 RESOURCES += qml.qrc \
     res/fonts.qrc \
-    res/soundfonts.qrc
+    res/soundfonts.qrc \
+    res/tests.qrc
 
 
 QML_IMPORT_PATH =
