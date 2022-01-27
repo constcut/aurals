@@ -1,0 +1,103 @@
+#ifndef BARVIEW_H
+#define BARVIEW_H
+
+#include "tab/Bar.hpp"
+
+#include <QPainter>
+
+
+namespace aural_sight {
+
+    class BarView
+    {
+
+    private:
+
+        static const int stringWidth=12;
+        static const int inbarWidth=20;
+
+        Bar* _pBar;
+        int _xShift, _yShift; //TODO review + to unsinged
+        int _nStrings;
+        int _cursor;
+        int _stringCursor;
+
+        int _barNumber;
+
+        bool _sameSign;
+
+        int _selectorBegin;
+        int _selectorEnd;
+
+        bool _repBegin;
+        bool _repEnd;
+
+        int x = 0;
+        int y = 0;
+        int w = 0;
+        int h = 0;
+
+    public:
+
+        int getX() const { return x; }
+        int getY() const { return y; }
+        int getW() const { return w; }
+        int getH() const { return h; }
+
+        void setW(int newW) { w = newW; }
+        void setH(int newH) { h = newH; }
+        void setX(int newX) { x = newX; }
+        void setY(int newY) { y = newY; }
+
+        bool hit(int hX, int hY) {
+            if ((hX >= x) && (hY >= y)) {
+              int xDiff = hX - x;
+              int yDiff = hY - y;
+              if ((xDiff <= w) && (yDiff <= h))
+                  return true;
+            }
+            return false;
+        }
+
+        BarView(Bar *b, int nstr, int barNum = -1);
+
+        void setBar(Bar *newBar) {_pBar = newBar;}
+        Bar *getBar() const { return _pBar; }
+
+        int getBarsize() const { return _pBar->size(); }
+
+        void setSameSign(bool value) { _sameSign = value; }
+
+        void setSelectors(int beg, int end){_selectorBegin = beg; _selectorEnd = end;}
+        void flushSelectors() { _selectorBegin = _selectorEnd = -1; }
+
+
+        void setCursor(int cur, int strCur = -1) { _cursor = cur; _stringCursor =strCur; }
+        int getCursor() const { return _cursor; }
+
+        int getClickString(int y1) const;
+        int getClickBeat(int x1) const;
+
+        void drawNote(QPainter *painter, std::uint8_t noteDur, std::uint8_t dotted, std::uint8_t durDet,
+                      int x1, int y1);
+
+        void drawMidiNote(QPainter *painter, std::uint8_t noteDur, std::uint8_t dotted, std::uint8_t durDet, int midiNote,
+                          int x1, int y1);
+
+        void drawEffects(QPainter *painter, int x1, int y1, int w1, int h1, const ABitArray &eff);
+
+        void draw(QPainter *painter); //from beat to beat
+
+        void setShifts(int x1, int y1) {
+            _xShift =x1;
+            _yShift =y1;
+            x = x1+20;
+            y = y1+20;
+        }
+
+        void setNStrings(int ns) { _nStrings = ns; }
+    };
+
+}
+
+#endif // BARVIEW_H
