@@ -31,12 +31,17 @@ bool aural_sight::checkHasRegression() {
     GmyFile exporter;
     uint16_t regressionCountMidi = 0;
     uint32_t regressionCountGmy = 0;
+
+    size_t totalChecks = 0;
+
     for (size_t groupIdx = 1; groupIdx <= 4; ++groupIdx) {
         size_t from = 1;
         size_t to = groupLength[groupIdx] - 1;
 
-        if (groupIdx == 3)
+        if (groupIdx == 4)
             break;
+
+        ++totalChecks;
 
         for (size_t fileIndx = from; fileIndx <= to; ++fileIndx) {
             std::string testName = std::to_string(groupIdx) + "." + std::to_string(fileIndx);
@@ -97,6 +102,9 @@ bool aural_sight::checkHasRegression() {
         qDebug() << "Total " << regressionCountGmy << " files got GMY regression";
         return true;
     }
+
+    qDebug() << "Total checks for regression " << totalChecks;
+
     return false;
 }
 
@@ -282,10 +290,11 @@ bool aural_sight::checkMidiIORegression() {
 
     std::unordered_map<size_t, size_t> groupLength = {
         {1, 12},
-        {2, 39}
+        {2, 39},
+        {3, 70}
     };
 
-    for (size_t groupIdx = 1; groupIdx <= 2; ++groupIdx) {
+    for (size_t groupIdx = 1; groupIdx <= 3; ++groupIdx) {
         size_t from = 1;
         size_t to = groupLength[groupIdx] - 1;
 

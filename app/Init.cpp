@@ -351,11 +351,13 @@ void copyResourcesIntoTempDir() {
             if (QFile::exists(copy) == false)
                 QFile::copy(resourse, copy);
 
-            if (groupIdx <= 2) {
+            if (groupIdx <= 3) {
                 QString resourse1 = QString(":/regression/") + testName.c_str() + ".mid";
                 QString resourse2 = QString(":/regression/") + testName.c_str() + ".gmy";
                 QString copy1 = regressionDir + testName.c_str() + ".mid";
                 QString copy2 = regressionDir + testName.c_str() + ".gmy";
+
+                qDebug() << "COPY " << resourse1;
 
                 if (QFile::exists(copy1) == false)
                     QFile::copy(resourse1, copy1);
