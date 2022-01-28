@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <memory>
+#include <QQuickPaintedItem>
 
 #include "BarView.hpp"
 #include "tab/tools/Commands.hpp"
@@ -15,8 +16,10 @@ namespace aural_sight {
     using ViewPull = std::vector<BarView>;
 
 
-    class TrackView
+    class TrackView : public QQuickPaintedItem
     {
+        Q_OBJECT
+
     private:
         Track* _pTrack;
 
@@ -30,19 +33,15 @@ namespace aural_sight {
 
     public:
 
-        //TODO!!! WHEN APPLY QML REPLACE
-        int width() { return 0; }
-        int height() { return 0; }
-        //TODO!!! WHEN APPLY QML REPLACE
+        TrackView() = default;
+        TrackView(Track *from): _pTrack(from) {}
+        virtual ~TrackView();
 
+        void setTrack(Track* track) { _pTrack = track; }
         Track* getTrack() const { return _pTrack; }
 
         virtual void setUI();
         virtual bool isMovableY() { return true; } //Все что будет не использоваться, убрать
-
-        TrackView(Track *from): _pTrack(from) {}
-
-        virtual ~TrackView();
 
         virtual void keyevent(std::string press);
 
@@ -61,7 +60,7 @@ namespace aural_sight {
         TabView *getPa() const { return _tabParrent; }
         void setPa(TabView* tv) { _tabParrent = tv; }
 
-        void draw(QPainter *painter);
+        void paint(QPainter *painter);
 
         void prepareThread(size_t shiftTheCursor);
         void launchThread();

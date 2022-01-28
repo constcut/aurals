@@ -331,7 +331,7 @@ BarView::BarView(Bar *b,int nstr, int barNum): //stringWidth(12),inbarWidth(20),
 }
 
 
-void BarView::draw(QPainter *painter)
+void BarView::paint(QPainter *painter)
 {
     Bar *bar1 = _pBar;
     int cX = 20+_xShift;

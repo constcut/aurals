@@ -328,6 +328,8 @@ int mainInit(int argc, char *argv[]) {
     qmlRegisterType<aural_sight::CepstrumgraphQML>("mther.app", 1, 0,"Cepstrumgraph");
 
     qmlRegisterType<aural_sight::TabView>("mther.app", 1, 0, "TabView");
+    qmlRegisterType<aural_sight::TrackView>("mther.app", 1, 0, "TrackView");
+    //qmlRegisterType<aural_sight::BarView>("mther.app", 1, 0, "BarView");
 
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("Windows-1251")); //Настройки //KOI8-R //ISO 8859-5 //UTF-8 //Windows-1251
     QQmlApplicationEngine engine;

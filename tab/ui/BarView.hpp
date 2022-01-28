@@ -4,12 +4,14 @@
 #include "tab/Bar.hpp"
 
 #include <QPainter>
+//#include <QQuickPaintedItem>
 
 
 namespace aural_sight {
 
-    class BarView
+    class BarView /*: public QQuickPaintedItem*/
     {
+       // Q_OBJECT //Yet copy constructor issue - solve it
 
     private:
 
@@ -38,6 +40,9 @@ namespace aural_sight {
         int h = 0;
 
     public:
+
+        BarView() = default;
+        virtual ~BarView() = default;
 
         int getX() const { return x; }
         int getY() const { return y; }
@@ -86,7 +91,7 @@ namespace aural_sight {
 
         void drawEffects(QPainter *painter, int x1, int y1, int w1, int h1, const ABitArray &eff);
 
-        void draw(QPainter *painter); //from beat to beat
+        void paint(QPainter *painter); //from beat to beat
 
         void setShifts(int x1, int y1) {
             _xShift =x1;

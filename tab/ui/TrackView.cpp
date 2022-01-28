@@ -371,7 +371,7 @@ void TrackView::setUI()
 
 }
 
-void TrackView::draw(QPainter *painter)
+void TrackView::paint(QPainter *painter)
 {
     Track *track1 = _pTrack;
     size_t trackLen = track1->size();
@@ -493,7 +493,7 @@ void TrackView::draw(QPainter *painter)
         }
 
 
-        bView.draw(painter);
+        bView.paint(painter);
 
         if (( i == cursor ) || (barCompleteStatus==2)||(barCompleteStatus==1))
              changeColor(CONF_PARAM("colors.default"), painter);
