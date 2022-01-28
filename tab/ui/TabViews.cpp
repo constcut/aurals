@@ -110,6 +110,16 @@ void TabView::setTab(std::unique_ptr<Tab> point2Tab) {
     refreshTabStats();
 }
 
+
+void TabView::loadTab() {
+    GTabLoader loader;
+    loader.open("tests/1.1.gp4");
+    _pTab = std::move(loader.getTab());
+    update();
+    qDebug() << "Tab loaded";
+}
+
+
 void TabView::refreshTabStats() {
     stopAllThreads();
     setPlaying(false);
@@ -211,7 +221,7 @@ void TabView::ongesture(int offset, bool horizontal) {
 }
 
 
-void TabView::draw(QPainter *painter)
+void TabView::paint(QPainter *painter)
 {
     //statusLabel->draw(painter);
     //bpmLabel->draw(painter);
@@ -223,6 +233,8 @@ void TabView::draw(QPainter *painter)
 
         int yLimit = height();//getMaster()->getHeight();
         int xLimit = width(); //getMaster()->getWidth();
+
+        qDebug() << yLimit << " " << xLimit << " XY limits";
 
         //TrackView should be agregated
         for (size_t i = 0 ; i < _pTab->size(); ++i)

@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <memory>
+#include <QQuickPaintedItem>
 
 #include "tab/tools/TabClipboard.hpp"
 #include "tab/tools/Commands.hpp"
@@ -21,8 +22,10 @@ namespace aural_sight {
     int translateDefaulColor(const std::string& confParam);
 
 
-    class TabView
+    class TabView : public QQuickPaintedItem
     {
+        Q_OBJECT
+
     private:
         std::unique_ptr<Tab> _pTab;
 
@@ -35,10 +38,6 @@ namespace aural_sight {
 
     public:
 
-        //TODO!!! WHEN APPLY QML REPLACE
-        int width() { return 0; }
-        int height() { return 0; }
-        //TODO!!! WHEN APPLY QML REPLACE
 
         TabView();
         virtual ~TabView();
@@ -59,7 +58,9 @@ namespace aural_sight {
         void refreshTabStats();
         std::unique_ptr<Tab>& getTab() { return _pTab; }
 
-        void draw(QPainter *painter);
+        Q_INVOKABLE void loadTab();
+
+        void paint(QPainter *painter);
 
         virtual void keyevent(std::string press);
 

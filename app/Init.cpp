@@ -34,6 +34,8 @@
 #include "app/Tests.hpp"
 #include "app/Regression.hpp"
 
+#include "tab/ui/TabViews.hpp"
+
 
 using namespace std;
 using namespace aural_sight;
@@ -324,6 +326,8 @@ int mainInit(int argc, char *argv[]) {
     qmlRegisterType<aural_sight::ACGraphQML>("mther.app", 1, 0,"ACgraph");
     qmlRegisterType<aural_sight::StretchImageQML>("mther.app", 1, 0,"StretchImage");
     qmlRegisterType<aural_sight::CepstrumgraphQML>("mther.app", 1, 0,"Cepstrumgraph");
+
+    qmlRegisterType<aural_sight::TabView>("mther.app", 1, 0, "TabView");
 
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("Windows-1251")); //Настройки //KOI8-R //ISO 8859-5 //UTF-8 //Windows-1251
     QQmlApplicationEngine engine;

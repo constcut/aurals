@@ -45,6 +45,7 @@ Item {
 
     ColumnLayout {
 
+        id: mainLayout
         y: 30
         x: 10
 
@@ -106,6 +107,20 @@ Item {
                     audio.startMidiPlayer()
                 }
             }
+        }
+    }
+
+    TabView {
+
+        id: tabView
+
+        x: 0
+        y: mainLayout.y + mainLayout.height
+        width: parent.width
+        height: parent.height - 10 - y
+
+        Component.onCompleted: {
+            tabView.loadTab()
         }
     }
 
