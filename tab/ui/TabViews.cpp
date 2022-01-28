@@ -115,6 +115,7 @@ void TabView::loadTab() {
     GTabLoader loader;
     loader.open("tests/1.1.gp4");
     _pTab = std::move(loader.getTab());
+    refreshTabStats();
     update();
     qDebug() << "Tab loaded";
 }
@@ -346,6 +347,11 @@ void TabView::paint(QPainter *painter)
 
            painter->drawText(170,10+yPos,sX.c_str()); //mute or solo
         }
+
+        _tracksView[0]->setWidth(width());
+        _tracksView[0]->setHeight(height());
+
+        _tracksView[0]->paint(painter);
     }
 }
 

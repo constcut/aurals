@@ -320,6 +320,8 @@ int mainInit(int argc, char *argv[]) {
     else
         qWarning() << "Failed to load font";
 
+    AConfig::getInst().checkConfig();
+
     qmlRegisterType<aural_sight::WaveshapeQML>("mther.app", 1, 0, "Waveshape");
     qmlRegisterType<aural_sight::SpectrographQML>("mther.app", 1, 0,"Spectrograph");
     qmlRegisterType<aural_sight::Tapper>("mther.app", 1, 0,"Tapper");
