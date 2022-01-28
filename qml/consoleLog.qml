@@ -33,4 +33,7 @@ Item {
         Component.onCompleted:{
             refTimer.running = true
         }
+
+
+
 }

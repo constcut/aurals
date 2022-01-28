@@ -26,6 +26,11 @@ Item {
         nameFilters: [ "Midi file (*.mid *.midi)" ]
     }
 
+    function keyboardEventSend(key) {
+        console.log("KES", key)
+        //TODO
+    }
+
     FileDialog {
         id: saveFileDialog
         title: "Save midi file to wav"
@@ -130,6 +135,8 @@ Item {
 
         Component.onCompleted: {
         }
+
+
     }
 
 }

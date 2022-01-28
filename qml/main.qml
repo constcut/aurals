@@ -28,7 +28,10 @@ ApplicationWindow {
             //anchors.fill: parent
             ToolButton {
                 text: "Console"
-                onClicked: mainLoader.setSource("consoleLog.qml")
+                onClicked: {
+                    mainLoader.setSource("consoleLog.qml")
+                    mainLoader.focus = true
+                }
             }
             ToolButton {
                 text: "Audio"
@@ -36,7 +39,10 @@ ApplicationWindow {
             }
             ToolButton {
                 text: "Midi"
-                onClicked: mainLoader.setSource("midiPlayer.qml")
+                onClicked: {
+                    mainLoader.setSource("midiPlayer.qml")
+                    mainLoader.focus = true
+                }
             }
             ToolButton {
                 text: "Tap"
@@ -85,8 +91,10 @@ ApplicationWindow {
        anchors.fill: parent
 
        focus: true
+       Keys.onPressed:  {
+           mainLoader.item.keyboardEventSend(event.key)
+       }
 
-       //Keys.on
     }
 
     Component.onCompleted: {
