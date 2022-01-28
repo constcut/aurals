@@ -111,9 +111,9 @@ void TabView::setTab(std::unique_ptr<Tab> point2Tab) {
 }
 
 
-void TabView::loadTab() {
+void TabView::loadTab(QString filename) {
     GTabLoader loader;
-    loader.open("tests/1.1.gp4");
+    loader.open(filename.toStdString());
     _pTab = std::move(loader.getTab());
     refreshTabStats();
     update();

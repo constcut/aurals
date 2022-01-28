@@ -107,6 +107,15 @@ Item {
                     audio.startMidiPlayer()
                 }
             }
+            ToolButton {
+                text: "Load view"
+                onClicked: {
+                    var testId = parseInt(tabCombo.currentText) + 1
+                    var tabName = "tests/3." + testId + ".gp4"
+                    console.log(tabName, "loading tab")
+                    tabView.loadTab(tabName)
+                }
+            }
         }
     }
 
@@ -120,7 +129,6 @@ Item {
         height: parent.height - 10 - y
 
         Component.onCompleted: {
-            tabView.loadTab()
         }
     }
 

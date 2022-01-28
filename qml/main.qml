@@ -83,6 +83,10 @@ ApplicationWindow {
     Loader {
     id:mainLoader
        anchors.fill: parent
+
+       focus: true
+
+       //Keys.on
     }
 
     Component.onCompleted: {
