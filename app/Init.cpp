@@ -351,8 +351,9 @@ int mainInit(int argc, char *argv[]) {
     copyResourcesIntoTempDir();
 
 #ifdef QT_DEBUG
-    runRegressionTests();
-    checkMidiIORegression();
+    //TODO turn on on any midi\tab loaders change
+    //runRegressionTests();
+    //checkMidiIORegression();
 #endif
 
     int res = 0;
