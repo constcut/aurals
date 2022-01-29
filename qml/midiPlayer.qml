@@ -148,6 +148,13 @@ Item {
         Component.onCompleted: {
         }
 
+        MouseArea {
+            anchors.fill: parent
+            onClicked:
+                tabView.onclick(mouseX, mouseY)
+            onDoubleClicked:
+                tabView.onclick(mouseX, mouseY)
+        }
     }
 
     Dialog {
@@ -159,6 +166,14 @@ Item {
             id: trackView
             width: parent.width
             height: parent.height
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked:
+                    trackView.onclick(mouseX, mouseY)
+                onDoubleClicked:
+                    trackView.ondblclick(mouseX, mouseY)
+            }
         }
     }
 

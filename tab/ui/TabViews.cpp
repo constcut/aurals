@@ -193,6 +193,7 @@ void TabView::onclick(int x1, int y1)
         if ((awaitTrack>=0) && (chosenTrack < _pTab->size()))
                 _pTab->getCurrentTrack() = chosenTrack;
     }
+    update();
 }
 
 
@@ -234,8 +235,6 @@ void TabView::paint(QPainter *painter)
 
         int yLimit = height();//getMaster()->getHeight();
         int xLimit = width(); //getMaster()->getWidth();
-
-        qDebug() << yLimit << " " << xLimit << " XY limits";
 
         //TrackView should be agregated
         for (size_t i = 0 ; i < _pTab->size(); ++i)
@@ -348,10 +347,10 @@ void TabView::paint(QPainter *painter)
            painter->drawText(170,10+yPos,sX.c_str()); //mute or solo
         }
 
+        /*
         _tracksView[0]->setWidth(width());
         _tracksView[0]->setHeight(height());
-
-        _tracksView[0]->paint(painter);
+        _tracksView[0]->paint(painter); */ //MODE show together - better use 2 qml components
     }
 }
 

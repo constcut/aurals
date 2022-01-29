@@ -50,8 +50,8 @@ namespace aural_sight {
         virtual void onTabCommand(TabCommand command);
         virtual void onTrackCommand(TrackCommand command);
 
-        void onclick(int x1, int y1);
-        void ondblclick(int x1, int y1);
+        Q_INVOKABLE void onclick(int x1, int y1);
+        Q_INVOKABLE void ondblclick(int x1, int y1);
 
         virtual void ongesture(int offset, bool horizontal) ;
 

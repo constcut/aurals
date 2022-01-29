@@ -34,7 +34,8 @@ namespace aural_sight {
         std::unique_ptr<ThreadLocal> _localThr;
         std::vector<std::unique_ptr<ThreadLocal>> _finishPool;
 
-        std::vector<std::unique_ptr<TrackView>> _tracksView;
+        std::vector<std::unique_ptr<TrackView>> _tracksView; //Maybe add here only when we create QML
+        //And remove when it destroyed
 
     public:
 
@@ -75,8 +76,8 @@ namespace aural_sight {
 
         void addSingleTrack(Track *track);
 
-        void onclick(int x1, int y1);
-        void ondblclick(int x1, int y1);
+        Q_INVOKABLE void onclick(int x1, int y1);
+        Q_INVOKABLE void ondblclick(int x1, int y1);
 
         virtual void ongesture(int offset, bool horizontal);
 

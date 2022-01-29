@@ -203,7 +203,7 @@ void TrackView::onclick(int x1, int y1)
     }
 
 
-
+    update();
     //log << "Press "<<x1<<" "<<y1;
 }
 
@@ -333,6 +333,7 @@ void TrackView::ondblclick(int x1, int y1)
         selectionBarFirst = selectionBarLast = -1;
 
     }
+    update();
 }
 
 void TrackView::setDisplayBar(int barPosition)
@@ -383,12 +384,8 @@ void TrackView::setUI()
 
 void TrackView::paint(QPainter *painter)
 {
-    qDebug() << "Just attempt to paint";
-
     if (_pTrack == nullptr)
         return;
-
-    qDebug() << "Painting track view ";
 
     Track *track1 = _pTrack;
     size_t trackLen = track1->size();
