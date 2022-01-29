@@ -56,7 +56,10 @@ namespace aural_sight {
 
         void setTab(std::unique_ptr<Tab> point2Tab);
         void refreshTabStats();
+
         std::unique_ptr<Tab>& getTab() { return _pTab; }
+        Q_INVOKABLE int tracksCount() { return _pTab->size(); }
+
 
         Q_INVOKABLE void loadTab(QString filename);
 

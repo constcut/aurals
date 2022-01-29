@@ -119,14 +119,19 @@ Item {
                     var tabName = "tests/3." + testId + ".gp4"
                     console.log(tabName, "loading tab")
                     tabView.loadTab(tabName)
+                    trackCombo.model = tabView.tracksCount()
                 }
             }
             ToolButton {
                 text: "Open track view"
                 onClicked: {
-                    trackView.setFromTab(tabView, 0)
+                    var trackIdx = parseInt(trackCombo.currentText)
+                    trackView.setFromTab(tabView, trackIdx)
                     trackDialog.open()
                 }
+            }
+            ComboBox {
+                id: trackCombo
             }
         }
     }
