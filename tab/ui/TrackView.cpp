@@ -10,6 +10,16 @@
 using namespace aural_sight;
 
 
+void TrackView::setFromTab(QObject* pa, int trackIdx) {
+    _tabParrent = dynamic_cast<TabView*>(pa);
+    _pTrack = _tabParrent->getTab()->operator[](trackIdx).get();
+    qDebug() << "Setten tab " << _tabParrent << " and track "
+             << _pTrack;
+    qDebug() << width() << " " << height() << " width and height";
+    update();
+}
+
+
 void TrackView::launchThread()
 {
     if (_animationThread)
@@ -373,6 +383,13 @@ void TrackView::setUI()
 
 void TrackView::paint(QPainter *painter)
 {
+    qDebug() << "Just attempt to paint";
+
+    if (_pTrack == nullptr)
+        return;
+
+    qDebug() << "Painting track view ";
+
     Track *track1 = _pTrack;
     size_t trackLen = track1->size();
     int stringsN = track1->getTuning().getStringsAmount();

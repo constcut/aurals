@@ -121,6 +121,13 @@ Item {
                     tabView.loadTab(tabName)
                 }
             }
+            ToolButton {
+                text: "Open track view"
+                onClicked: {
+                    trackView.setFromTab(tabView, 0)
+                    trackDialog.open()
+                }
+            }
         }
     }
 
@@ -136,7 +143,18 @@ Item {
         Component.onCompleted: {
         }
 
+    }
 
+    Dialog {
+        id: trackDialog
+        width: 700
+        height: 400
+
+        TrackView {
+            id: trackView
+            width: parent.width
+            height: parent.height
+        }
     }
 
 }

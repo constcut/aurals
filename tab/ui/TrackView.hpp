@@ -21,9 +21,9 @@ namespace aural_sight {
         Q_OBJECT
 
     private:
-        Track* _pTrack;
+        Track* _pTrack = nullptr;
 
-        TabView* _tabParrent;
+        TabView* _tabParrent = nullptr;
 
         //TODO убрать в Core
         std::unique_ptr<ThreadLocal> _animationThread; //Подумать над хранением, возможно удастся спрятать?
@@ -39,6 +39,8 @@ namespace aural_sight {
 
         void setTrack(Track* track) { _pTrack = track; }
         Track* getTrack() const { return _pTrack; }
+
+        Q_INVOKABLE void setFromTab(QObject* pa, int trackIdx);
 
         virtual void setUI();
         virtual bool isMovableY() { return true; } //Все что будет не использоваться, убрать
