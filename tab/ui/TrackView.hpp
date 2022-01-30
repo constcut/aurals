@@ -64,9 +64,9 @@ namespace aural_sight {
 
         void paint(QPainter *painter);
 
-        void prepareThread(size_t shiftTheCursor);
-        void launchThread();
-        void stopThread();
+        Q_INVOKABLE void prepareThread(int shiftTheCursor);
+        Q_INVOKABLE void launchThread();
+        Q_INVOKABLE void stopThread();
         //void connectThreadSignal(MasterView *masterView);
         int threadSeconds() { return _animationThread->calculateSeconds(); }
 

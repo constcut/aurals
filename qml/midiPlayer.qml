@@ -158,9 +158,6 @@ Item {
         width: parent.width
         height: parent.height - 10 - y
 
-        Component.onCompleted: {
-        }
-
         MouseArea {
             anchors.fill: parent
             onClicked:
@@ -175,7 +172,25 @@ Item {
         width: 700
         height: 400
 
+        ToolButton {
+            text: "animation"
+            onClicked: {
+                trackView.prepareThread(0)//TODO on connection
+                trackView.launchThread()
+            }
+        }
+
+        ToolButton {
+            text: "Stop"
+            x: parent.width - width - 10
+            onClicked:  {
+                trackView.stopThread()
+            }
+        }
+
         TrackView {
+
+            y: 50
             id: trackView
             width: parent.width
             height: parent.height

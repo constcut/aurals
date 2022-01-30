@@ -535,7 +535,7 @@ void TrackView::paint(QPainter *painter)
 
 }
 
-void TrackView::prepareThread(size_t shiftTheCursor)
+void TrackView::prepareThread(int shiftTheCursor)
 {
     //prepare for the animation
 
@@ -552,6 +552,12 @@ void TrackView::prepareThread(size_t shiftTheCursor)
 
     _animationThread->setInc(&cursor,&cursorBeat);
     _animationThread->setupValues(_tabParrent->getTab().get(),_pTrack,shiftTheCursor);
+
+    this->connect(
+        _animationThread.get(),
+        SIGNAL(updateUI()), //+Now finished
+        SLOT(update()),
+        Qt::QueuedConnection);
 }
 
 bool TrackView::gotChanges() const
