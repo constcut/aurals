@@ -49,6 +49,23 @@ Item {
     }
 
 
+    FileDialog {
+        id: saveMidiDialog
+        title: "Save midi file" //TODO to midi + to wav
+        folder: shortcuts.home
+        selectExisting: false
+        selectMultiple: false
+        onAccepted: {
+            var midiName = saveMidiDialog.fileUrls[0].substring(7)
+            tabView.exportMidi(midiName, 0) //TODO shift
+        }
+        onRejected: {
+            saveFileDialog.close()
+        }
+        nameFilters: [ "Midi file (*.mid)" ]
+    }
+
+
     ColumnLayout {
 
         id: mainLayout
@@ -114,6 +131,10 @@ Item {
             ToolButton {
                 text: "Save wav"
                 onClicked: saveFileDialog.open()
+            }
+            ToolButton {
+                text: "Save midi"
+                onClicked: saveMidiDialog.open()
             }
         }
     }

@@ -1,4 +1,4 @@
-QFont::setPixelSize: Pixel size <= 0 (-1)
++ Model size of -111 is less than 0
 
 + Ошибка если прокликать по TabView - краш
 + Ошибка если кликать по незагруженному TrackView
