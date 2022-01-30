@@ -35,7 +35,7 @@ Item {
         }
         onRejected: {
         }
-        nameFilters: [ "Wav file (*.wav)" ]
+        nameFilters: [ "Midi file (*.wav)" ]
     }
 
 
@@ -71,7 +71,6 @@ Item {
                 onCurrentTextChanged: {
                     var trackIdx = parseInt(trackCombo.currentText)
                     trackView.setFromTab(tabView, trackIdx)
-                    trackDialog.open()
                 }
             }
             ToolButton {
@@ -112,15 +111,10 @@ Item {
         id: tabPannel
         width: parent.width
         height: 0.3 * parent.height
-        edge: Qt.BottomEdge //RightEdge
-
-        Component.onCompleted: {
-            drawerRight.open()
-        }
+        edge: Qt.BottomEdge
 
         TabView {
             id: tabView
-
             x: 0
             y: 0
             width: parent.width
