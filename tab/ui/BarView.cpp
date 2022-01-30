@@ -376,6 +376,8 @@ void BarView::paint(QPainter *painter)
 
         auto f = painter->font();
         auto fontSize = f.pixelSize();
+        if (fontSize == -1) //hotfix refact default value
+            fontSize = 14;
         f.setPixelSize(18);
         painter->setFont(f);
         painter->drawText(cX-15,cY-15+50+3,numVal.c_str());
@@ -702,6 +704,8 @@ void BarView::paint(QPainter *painter)
         {
             auto f = painter->font();
             auto fontSize = f.pixelSize();
+            if (fontSize == -1)
+                fontSize = 14;
             f.setPixelSize(9);
             painter->setFont(f);
             painter->drawText(cX+10+i*inbarWidth + inbarWidth/2,cY+stringWidth*(amountStr+1),textBeat.c_str());
