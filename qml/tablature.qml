@@ -44,8 +44,12 @@ Item {
         id: mainLayout
         y: 10
         x: 10
-
         spacing:  10
+
+        function refreshTrack() { //TODO смесить куда-то
+            var trackIdx = parseInt(trackCombo.currentText)
+            trackView.setFromTab(tabView, trackIdx)
+        }
 
         RowLayout {
             spacing: 10
@@ -61,16 +65,16 @@ Item {
                     console.log(tabName, "loading tab")
                     tabView.loadTab(tabName)
                     trackCombo.model = tabView.tracksCount()
+                    mainLayout.refreshTrack()
                     tabPannel.open()
                 }
 
-
             }
+
             ComboBox {
                 id: trackCombo
                 onCurrentTextChanged: {
-                    var trackIdx = parseInt(trackCombo.currentText)
-                    trackView.setFromTab(tabView, trackIdx)
+                    mainLayout.refreshTrack()
                 }
             }
             ToolButton {
@@ -110,7 +114,7 @@ Item {
     Drawer {
         id: tabPannel
         width: parent.width
-        height: 0.3 * parent.height
+        height: Qt.platform.os == "android" ? 0.7 * parent.height  : 0.3 * parent.height
         edge: Qt.BottomEdge
 
         TabView {
