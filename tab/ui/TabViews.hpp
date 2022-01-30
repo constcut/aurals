@@ -81,9 +81,9 @@ namespace aural_sight {
 
         virtual void ongesture(int offset, bool horizontal);
 
-        void prepareAllThreads(size_t shiftTheCursor);
-        void launchAllThreads();
-        void stopAllThreads();
+        Q_INVOKABLE void prepareAllThreads(int shiftTheCursor);
+        Q_INVOKABLE void launchAllThreads();
+        Q_INVOKABLE void stopAllThreads();
 
         //TODO связывание с Core вместо
         //void connectAllThreadsSignal(MasterView *masterView);

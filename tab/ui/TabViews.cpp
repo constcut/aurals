@@ -355,7 +355,7 @@ void TabView::paint(QPainter *painter)
 }
 
 
-void TabView::prepareAllThreads(size_t shiftTheCursor)
+void TabView::prepareAllThreads(int shiftTheCursor)
 {
     for (size_t i = 0; i <_tracksView.size(); ++i)
     {
@@ -385,6 +385,12 @@ void TabView::prepareAllThreads(size_t shiftTheCursor)
     _localThr->setLimit(timeLoop.size());
 
     qDebug() << "All threads prepared";
+
+    this->connect(
+        _localThr.get(),
+        SIGNAL(updateUI()), //+Now finished
+        SLOT(update()),
+        Qt::QueuedConnection);
 }
 
 void TabView::launchAllThreads()

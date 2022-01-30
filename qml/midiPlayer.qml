@@ -133,6 +133,19 @@ Item {
             ComboBox {
                 id: trackCombo
             }
+            ToolButton {
+                text: "animation"
+                onClicked: {
+                    tabView.prepareAllThreads(0)//TODO on TabLoad
+                    tabView.launchAllThreads()
+                }
+            }
+            ToolButton {
+                text: "stop animation"
+                onClicked:  {
+                    tabView.stopAllThreads()
+                }
+            }
         }
     }
 
