@@ -12,14 +12,13 @@ using namespace aural_sight;
 
 void TrackView::setFromTab(QObject* pa, int trackIdx) {
     _tabParrent = dynamic_cast<TabView*>(pa);
-    _pTrack = _tabParrent->getTab()->operator[](trackIdx).get();
-    qDebug() << "Setten tab " << _tabParrent << " and track "
-             << _pTrack;
-    qDebug() << width() << " " << height() << " width and height";
+    auto trackPtr = _tabParrent->getTab()->operator[](trackIdx).get();
 
     _tabParrent->addTrackView(this);
-
-    update();
+    if (trackPtr != _pTrack) {
+        _pTrack = trackPtr;
+        update();
+    }
 }
 
 
@@ -41,6 +40,9 @@ TrackView::~TrackView() {
     if (_animationThread) {
         _animationThread->requestStop();
         _animationThread->wait();
+    }
+    if (_tabParrent) {
+        _tabParrent->removeTrackView(this);
     }
 }
 

@@ -75,6 +75,7 @@ namespace aural_sight {
         bool getPlaying();
 
         void addTrackView(TrackView* trackView);
+        void removeTrackView(TrackView* trackView);
 
 
         Q_INVOKABLE void onclick(int x1, int y1);

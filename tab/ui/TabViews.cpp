@@ -94,8 +94,21 @@ TabView::TabView()
 
 
 void TabView::addTrackView(TrackView* trackView) {
-    _tracksView.push_back(trackView);
+    auto it = std::find(_tracksView.begin(), _tracksView.end(), trackView);
+    if (it == _tracksView.end())
+        _tracksView.push_back(trackView);
+    else
+        qDebug() << "Adding trackView that already exists " << trackView;
 }
+
+
+void TabView::removeTrackView(TrackView* trackView) {
+    auto it = std::find(_tracksView.begin(), _tracksView.end(), trackView);
+    if (it != _tracksView.end())
+        _tracksView.erase(it); //TODO maybe deque?
+    qDebug() << "Removing trackView " << trackView;
+}
+
 
 
 void TabView::setUI()
