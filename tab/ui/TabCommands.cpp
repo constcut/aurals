@@ -513,6 +513,11 @@ void TabView::keyPress(int code) {
         onTrackCommand(TrackCommand::StringUp);
     }
 
+    if (isdigit(code)) {
+        auto curTrack = _pTab->getCurrentTrack(); //TODO make better
+        _tracksView[curTrack]->keyevent(std::to_string(code - 48));
+        _tracksView[curTrack]->update();
+    }
 
     if (updated)
         update();
