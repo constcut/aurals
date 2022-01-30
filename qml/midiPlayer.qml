@@ -149,6 +149,15 @@ Item {
         }
     }
 
+    Component.onCompleted:  {
+        //Autoload tab for a while
+        var testId = parseInt(tabCombo.currentText) + 1
+        var tabName = "tests/3." + testId + ".gp4"
+        console.log(tabName, "loading tab")
+        tabView.loadTab(tabName)
+        trackCombo.model = tabView.tracksCount()
+    }
+
     TabView {
 
         id: tabView
