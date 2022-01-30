@@ -338,7 +338,15 @@ void setBarSign(Track* pTrack) {
 
 
 void TabView::onTrackCommand([[maybe_unused]] TrackCommand command) {
-    qDebug() << "ERROR: Track Command falling into TabView";
+
+    if (_tracksView.empty())
+        return; //TODO возможно всю обработку можно сделать в TabView, а потом вовсе вывести
+
+    auto curTrack = _pTab->getCurrentTrack();
+    //TODO это не совсем корректный вариант, так как мы ссылаемся только на то что созданно
+    //Нужно сделить за тем чтобы этот курсор был переключен на реальные треки
+
+    _tracksView[curTrack]->onTrackCommand(command);
 }
 
 
@@ -373,6 +381,8 @@ void TrackView::onTrackCommand(TrackCommand command) {
     else
         _pTrack->onTrackCommand(command);
 
+    //TODO condition?
+    update();
 }
 
 
@@ -491,13 +501,18 @@ void TabView::keyPress(int code) {
     bool updated = false;
 
     if (code == Qt::Key_Left) {
-        onTabCommand(TabCommand::MoveLeft);
-        updated = true;
+        onTrackCommand(TrackCommand::PrevBeat); //onTabCommand(TabCommand::MoveLeft); + updated
     }
-    else if (code == Qt::Key_Right) {
-        onTabCommand(TabCommand::MoveRight);
-        updated = true;
+    if (code == Qt::Key_Right) {
+        onTrackCommand(TrackCommand::NextBeat); //onTabCommand(TabCommand::MoveRight); + updated
     }
+    if (code == Qt::Key_Up) {
+        onTrackCommand(TrackCommand::StringUp);
+    }
+    if (code == Qt::Key_Down) {
+        onTrackCommand(TrackCommand::StringDown);
+    }
+
 
     if (updated)
         update();
