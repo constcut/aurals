@@ -26,10 +26,7 @@ Item {
         nameFilters: [ "Midi file (*.mid *.midi)" ]
     }
 
-    function keyboardEventSend(key) {
-        console.log("KES", key)
-        //TODO
-    }
+
 
     FileDialog {
         id: saveFileDialog
@@ -184,6 +181,10 @@ Item {
             onDoubleClicked:
                 tabView.onclick(mouseX, mouseY)
         }
+    }
+
+    function keyboardEventSend(key) {
+        tabView.keyPress(key)
     }
 
     Dialog {

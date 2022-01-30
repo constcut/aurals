@@ -484,6 +484,25 @@ void TabView::keyevent(std::string press) {
         openTrackQt(_pTab->size(),_pTab->getLastOpenedTrack(), this, press.c_str()[0]-48);
 }
 
+
+void TabView::keyPress(int code) {
+    qDebug() << "TABVIEW key event " << code;
+
+    bool updated = false;
+
+    if (code == Qt::Key_Left) {
+        onTabCommand(TabCommand::MoveLeft);
+        updated = true;
+    }
+    else if (code == Qt::Key_Right) {
+        onTabCommand(TabCommand::MoveRight);
+        updated = true;
+    }
+
+    if (updated)
+        update();
+}
+
 //Tab commands area
 
 void deleteTrack(Tab* pTab) { //TODOM

@@ -57,15 +57,19 @@ namespace aural_sight {
         std::unique_ptr<Tab>& getTab() { return _pTab; }
         Q_INVOKABLE int tracksCount() { return _pTab->size(); }
 
-
         Q_INVOKABLE void loadTab(QString filename);
+
 
         void paint(QPainter *painter);
 
+
+        Q_INVOKABLE void keyPress(int code); //KeyRelease too?
         virtual void keyevent(std::string press);
 
         virtual void onTabCommand(TabCommand command);
         virtual void onTrackCommand(TrackCommand command);
+
+
 
         void setPlaying(bool playValue) { _pTab->setPlaying(playValue); }
         bool getPlaying();
