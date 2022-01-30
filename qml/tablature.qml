@@ -37,7 +37,11 @@ Item {
         selectExisting: false
         selectMultiple: false
         onAccepted: {
-
+            var pcmName = saveFileDialog.fileUrls[0].substring(7)
+            var testId = parseInt(tabCombo.currentText) + 1
+            audio.openTabFile("tests/3." + testId + ".gp4")
+            //TODO generate new midi file (for changes)
+            audio.saveMidiToWav(pcmName)
         }
         onRejected: {
             saveFileDialog.close()
@@ -108,6 +112,10 @@ Item {
             ToolButton {
                 text: "Open file"
                 onClicked: openFileDialog.open()
+            }
+            ToolButton {
+                text: "Save wav"
+                onClicked: saveFileDialog.open()
             }
         }
     }
