@@ -68,6 +68,11 @@ Item {
             }
             ComboBox {
                 id: trackCombo
+                onCurrentTextChanged: {
+                    var trackIdx = parseInt(trackCombo.currentText)
+                    trackView.setFromTab(tabView, trackIdx)
+                    trackDialog.open()
+                }
             }
             ToolButton {
                 text: "animation"
