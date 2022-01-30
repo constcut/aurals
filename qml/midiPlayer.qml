@@ -216,7 +216,7 @@ Item {
 
         TrackView {
 
-            y: 50
+            y: 30
             id: trackView
             width: parent.width
             height: parent.height

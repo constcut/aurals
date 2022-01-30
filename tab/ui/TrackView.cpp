@@ -363,13 +363,8 @@ void TrackView::paint(QPainter *painter)
     size_t trackLen = track1->size();
     int stringsN = track1->getTuning().getStringsAmount();
 
-    int pannelShift = 10; //getMaster()->getToolBarHeight();
-    //double scaleValue = AConfig::getInstance().getScaleCoef();
-    //pannelShift /= scaleValue;
-
     int xSh=0;
-    int ySh=pannelShift; //shift for the pannel
-    ySh += 30;
+    int ySh=0;
 
     int hLimit = (height() - 50) / 100;
     hLimit *= 100;
@@ -397,9 +392,7 @@ void TrackView::paint(QPainter *painter)
     std::uint8_t lastDen = 0;
 
     if (_pTrack->isDrums())
-    {
         painter->drawText(220,55,"!Drum track!");
-    }
 
 
     for (size_t i = displayIndex; i < trackLen; ++i) //trackLen
