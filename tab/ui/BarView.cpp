@@ -703,7 +703,7 @@ void BarView::paint(QPainter *painter)
         if (textPrec)
         {
             auto f = painter->font();
-            auto fontSize = f.pixelSize();
+            auto fontSize = f.pixelSize(); //refact fix
             if (fontSize == -1)
                 fontSize = 14;
             f.setPixelSize(9);

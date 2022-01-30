@@ -58,6 +58,7 @@ namespace aural_sight {
         Q_INVOKABLE int tracksCount() { return _pTab->size(); }
 
         Q_INVOKABLE void loadTab(QString filename);
+        Q_INVOKABLE void exportMidi(QString filename, int shift);
 
 
         void paint(QPainter *painter);

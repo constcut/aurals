@@ -38,9 +38,8 @@ Item {
         selectMultiple: false
         onAccepted: {
             var pcmName = saveFileDialog.fileUrls[0].substring(7)
-            var testId = parseInt(tabCombo.currentText) + 1
-            audio.openTabFile("tests/3." + testId + ".gp4")
-            //TODO generate new midi file (for changes)
+            tabView.exportMidi("temp.mid", 0) //TODO shift
+            audio.openMidiFile("temp.mid")
             audio.saveMidiToWav(pcmName)
         }
         onRejected: {
@@ -90,10 +89,9 @@ Item {
             ToolButton {
                 text: "Play"
                 onClicked:  {
-                    tabView.prepareAllThreads(0)//
-                    var testId = parseInt(tabCombo.currentText) + 1
-                    audio.openTabFile("tests/3." + testId + ".gp4")
-                    //TODO generate new midi file (for changes)
+                    tabView.prepareAllThreads(0)//TODO shift?
+                    tabView.exportMidi("temp.mid", 0) //TODO shift
+                    audio.openMidiFile("temp.mid")
                     audio.startMidiPlayer()
                     tabView.launchAllThreads()
                 }

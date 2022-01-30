@@ -5,6 +5,7 @@
 #include "app/Config.hpp"
 #include "tab/tools/GmyFile.hpp"
 #include "tab/tools/TabLoader.hpp"
+#include "tab/tools/MidiExport.hpp"
 
 #include "tab/tools/Threads.hpp"
 
@@ -125,6 +126,12 @@ void TabView::loadTab(QString filename) {
     refreshTabStats();
     update();
     qDebug() << "Tab loaded";
+}
+
+
+void TabView::exportMidi(QString filename, int shift) {
+    auto m = ::exportMidi(_pTab.get(), shift); //TODO position
+    m->writeToFile(filename.toStdString());
 }
 
 
