@@ -42,7 +42,6 @@ namespace aural_sight {
 
         Q_INVOKABLE void setFromTab(QObject* pa, int trackIdx);
 
-        virtual void setUI();
         virtual bool isMovableY() { return true; } //Все что будет не использоваться, убрать
 
         virtual void keyevent(std::string press);

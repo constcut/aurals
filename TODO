@@ -1,15 +1,22 @@
-_Связанность компонентов при добавлении, не создавать заведомо море TrackView!
-
 -TabView offset Y
 
 + Midi обрывается чуть раньше, исправить это (дописать в конец немного тишины, чтобы избежать повтора)
 
-1) Связывание с клаввиатурой
+1) Связывание с клавиатурой
     а) передача базового key event в TabView)
+    (Использовать канал только через TabView - чтобы была единая точка доступа к таблатуре и изменениям)
     б) использование заготовленных настроек
         вероятно ремаппинг
 
 2) Отдельный компонент таблатуры (загрузка всех 3х групп тестов или из файла)
+
+    _tabParrent->getMaster()->setComboBox(0,trackNames,centerX+20,5,210,30,_tabParrent->getLastOpenedTrack());
+    _tabParrent->getMaster()->setComboBox(1,"instruments",240+centerX,5,200,30,_pTrack->getInstrument());
+    _tabParrent->getMaster()->setComboBox(2,"volume",450+centerX,5,50,30,_pTrack->getVolume());
+    _tabParrent->getMaster()->SetButton(3,"open tab view",640+butShift,20,90,15,"tabview");
+    _tabParrent->getMaster()->SetButton(4,"play",570+butShift,20,45,15,"playMidi");
+    _tabParrent->getMaster()->setComboBox(5,"mutesolo",510+centerX,5,50,30,soloMute);
+    _tabParrent->getMaster()->setComboBox(6,"pan",570+centerX,5,50,30,_pTrack->getPan());
 
 3) Меню с функциями - полное редактирование
 

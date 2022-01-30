@@ -111,11 +111,6 @@ void TabView::removeTrackView(TrackView* trackView) {
 
 
 
-void TabView::setUI()
-{
-    //if (getMaster())
-        //getMaster()->SetButton(0,"back to track",630,20,100,15,"opentrack");
-}
 
 void TabView::setTab(std::unique_ptr<Tab> point2Tab) {
     _pTab = std::move(point2Tab);

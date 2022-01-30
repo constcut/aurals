@@ -353,39 +353,6 @@ void TrackView::setDisplayBar(int barPosition)
     cursorBeat = 0;
 }
 
-void TrackView::setUI()
-{
-    /*
-    if (_tabParrent->getMaster())
-    {
-        int centerX=0;
-
-        std::string trackNames="";
-
-        for (size_t i = 0; i < _tabParrent->getTab()->size(); ++i)
-        {
-          trackNames += _tabParrent->getTab()->at(i)->getName();
-          trackNames += std::string(";");
-        }
-
-        //now-debug:here
-        _tabParrent->getMaster()->setComboBox(0,trackNames,centerX+20,5,210,30,_tabParrent->getLastOpenedTrack());
-        _tabParrent->getMaster()->setComboBox(1,"instruments",240+centerX,5,200,30,_pTrack->getInstrument());
-        _tabParrent->getMaster()->setComboBox(2,"volume",450+centerX,5,50,30,_pTrack->getVolume());
-
-        int butShift = 50;
-        _tabParrent->getMaster()->SetButton(3,"open tab view",640+butShift,20,90,15,"tabview");
-        _tabParrent->getMaster()->SetButton(4,"play",570+butShift,20,45,15,"playMidi");
-
-        std::uint8_t soloMute = _pTrack->getStatus();
-        _tabParrent->getMaster()->setComboBox(5,"mutesolo",510+centerX,5,50,30,soloMute);
-
-        _tabParrent->getMaster()->setComboBox(6,"pan",570+centerX,5,50,30,_pTrack->getPan());
-    }
-    */
-    //TODO just get rid, yet as a reminder, move all to qml part, make here setters
-
-}
 
 void TrackView::paint(QPainter *painter)
 {

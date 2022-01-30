@@ -29,13 +29,10 @@ namespace aural_sight {
     private:
         std::unique_ptr<Tab> _pTab;
 
-
-        //TODO убрать в Core
         std::unique_ptr<ThreadLocal> _localThr;
         std::vector<std::unique_ptr<ThreadLocal>> _finishPool;
 
-        std::vector<TrackView*> _tracksView; //Maybe add here only when we create QML
-        //std::unique_ptr<TrackView>
+        std::vector<TrackView*> _tracksView;
 
     public:
 
@@ -43,7 +40,6 @@ namespace aural_sight {
         TabView();
         virtual ~TabView();
 
-        virtual void setUI();
 
         void setCurrentBar(int curBar) {
             _pTab->getCurrentBar() = curBar; }
