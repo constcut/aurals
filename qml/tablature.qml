@@ -16,6 +16,11 @@ Item {
         folder: shortcuts.home
         selectMultiple: false
         onAccepted: {
+            var tabName = openFileDialog.fileUrls[0].substring(7)
+            tabView.loadTab(tabName)
+            trackCombo.model = tabView.tracksCount()
+            mainLayout.refreshTrack()
+            tabPannel.open()
         }
         onRejected: {
             openFileDialog.visible = false
@@ -27,15 +32,17 @@ Item {
 
     FileDialog {
         id: saveFileDialog
-        title: "Save tab file to midi" //TODO to midi + to wav
+        title: "Save pcm file" //TODO to midi + to wav
         folder: shortcuts.home
         selectExisting: false
         selectMultiple: false
         onAccepted: {
+
         }
         onRejected: {
+            saveFileDialog.close()
         }
-        nameFilters: [ "Midi file (*.wav)" ]
+        nameFilters: [ "Wav file (*.wav)" ]
     }
 
 
@@ -62,7 +69,6 @@ Item {
                 onCurrentTextChanged: {
                     var testId = parseInt(tabCombo.currentText) + 1
                     var tabName = "tests/3." + testId + ".gp4"
-                    console.log(tabName, "loading tab")
                     tabView.loadTab(tabName)
                     trackCombo.model = tabView.tracksCount()
                     mainLayout.refreshTrack()
@@ -98,6 +104,10 @@ Item {
             ToolButton {
                 text: "TabView"
                 onClicked: tabPannel.open()
+            }
+            ToolButton {
+                text: "Open file"
+                onClicked: openFileDialog.open()
             }
         }
     }
