@@ -91,13 +91,12 @@ TabView::TabView()
     //_bpmLabel = std::make_unique<GLabel>(300,460,"bpm=notsetyet");
 }
 
-void TabView::addSingleTrack(Track *track)
-{
-    auto tV = std::make_unique<TrackView>(track);
-    tV->setPa(this);
 
-    _tracksView.push_back(std::move(tV));
+
+void TabView::addTrackView(TrackView* trackView) {
+    _tracksView.push_back(trackView);
 }
+
 
 void TabView::setUI()
 {
@@ -132,15 +131,6 @@ void TabView::refreshTabStats() {
         _pTab->getDisplayTrack() = 0;
         _pTab->getCurrentTrack() = 0;
         _pTab->getCurrentBar() = 0;
-        //_bpmLabel->setText("bpm=" + std::to_string(_pTab->getBPM()));
-        for (size_t i = 0; i < _pTab->size(); ++i)
-            addSingleTrack(_pTab->at(i).get());
-        std::string statusBar1,statusBar2;
-        statusBar1 = "Tab Name";
-        statusBar2 = "BPM = " + std::to_string(_pTab->getBPM());
-        //getMaster()->setStatusBarMessage(1,statusBar1.c_str());
-        //getMaster()->setStatusBarMessage(2,statusBar2.c_str());
-        //getMaster()->setStatusBarMessage(0,"Tab was loaded",500);
     }
 }
 

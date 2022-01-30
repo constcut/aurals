@@ -194,8 +194,11 @@ Item {
         ToolButton {
             text: "animation"
             onClicked: {
-                trackView.prepareThread(0)//TODO on connection
-                trackView.launchThread()
+                tabView.prepareAllThreads(0)//
+                var testId = parseInt(tabCombo.currentText) + 1
+                audio.openTabFile("tests/3." + testId + ".gp4")
+                audio.startMidiPlayer()
+                tabView.launchAllThreads()
             }
         }
 
@@ -203,7 +206,7 @@ Item {
             text: "fullplay"
             x: parent.width - width - 10
             onClicked:  {
-                  trackView.prepareThread(0)//TODO on connection
+                trackView.prepareThread(0)//TODO on connection
                 var testId = parseInt(tabCombo.currentText) + 1
                 audio.openTabFile("tests/3." + testId + ".gp4")
                 audio.startMidiPlayer()

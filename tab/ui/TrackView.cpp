@@ -16,6 +16,9 @@ void TrackView::setFromTab(QObject* pa, int trackIdx) {
     qDebug() << "Setten tab " << _tabParrent << " and track "
              << _pTrack;
     qDebug() << width() << " " << height() << " width and height";
+
+    _tabParrent->addTrackView(this);
+
     update();
 }
 

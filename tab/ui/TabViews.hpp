@@ -34,8 +34,8 @@ namespace aural_sight {
         std::unique_ptr<ThreadLocal> _localThr;
         std::vector<std::unique_ptr<ThreadLocal>> _finishPool;
 
-        std::vector<std::unique_ptr<TrackView>> _tracksView; //Maybe add here only when we create QML
-        //And remove when it destroyed
+        std::vector<TrackView*> _tracksView; //Maybe add here only when we create QML
+        //std::unique_ptr<TrackView>
 
     public:
 
@@ -74,7 +74,8 @@ namespace aural_sight {
         void setPlaying(bool playValue) { _pTab->setPlaying(playValue); }
         bool getPlaying();
 
-        void addSingleTrack(Track *track);
+        void addTrackView(TrackView* trackView);
+
 
         Q_INVOKABLE void onclick(int x1, int y1);
         Q_INVOKABLE void ondblclick(int x1, int y1);
@@ -90,7 +91,7 @@ namespace aural_sight {
 
         bool gotChanges() const;
 
-        std::vector<std::unique_ptr<TrackView>>& getTracksViewRef() { return _tracksView; }
+        std::vector<TrackView*>& getTracksViewRef() { return _tracksView; }
 
     };
 
