@@ -146,6 +146,16 @@ Item {
                     tabView.stopAllThreads()
                 }
             }
+            ToolButton {
+                text: "Full play"
+                onClicked:  {
+                    tabView.prepareAllThreads(0)//
+                    var testId = parseInt(tabCombo.currentText) + 1
+                    audio.openTabFile("tests/3." + testId + ".gp4")
+                    audio.startMidiPlayer()
+                    tabView.launchAllThreads()
+                }
+            }
         }
     }
 
@@ -190,10 +200,14 @@ Item {
         }
 
         ToolButton {
-            text: "Stop"
+            text: "fullplay"
             x: parent.width - width - 10
             onClicked:  {
-                trackView.stopThread()
+                  trackView.prepareThread(0)//TODO on connection
+                var testId = parseInt(tabCombo.currentText) + 1
+                audio.openTabFile("tests/3." + testId + ".gp4")
+                audio.startMidiPlayer()
+                trackView.launchThread()
             }
         }
 
