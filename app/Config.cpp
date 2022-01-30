@@ -210,7 +210,7 @@ void AConfig::checkConfig()
     addValue("colors.panBG","gray");
     addValue("colors.curBar","black");
     addValue("colors.curBeat","gray");
-    addValue("colors.curString","8899DD"); //hmm
+    addValue("colors.curString","darkgray"); //hmm
     addValue("colors.default","gray");
     addValue("colors.exceed","darkred");
     addValue("colors.curTrack","blue");

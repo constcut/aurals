@@ -445,6 +445,8 @@ void BarView::paint(QPainter *painter)
         if (i == _stringCursor)
         {
             //painter->changeColor(APainter::colorRed);
+            //auto color = CONF_PARAM("colors.curString");
+            //qDebug() << "Ouputing string color " << color.c_str();
             changeColor(CONF_PARAM("colors.curString"), painter);
         }
 

@@ -507,10 +507,10 @@ void TabView::keyPress(int code) {
         onTrackCommand(TrackCommand::NextBeat); //onTabCommand(TabCommand::MoveRight); + updated
     }
     if (code == Qt::Key_Up) {
-        onTrackCommand(TrackCommand::StringUp);
+        onTrackCommand(TrackCommand::StringDown);
     }
     if (code == Qt::Key_Down) {
-        onTrackCommand(TrackCommand::StringDown);
+        onTrackCommand(TrackCommand::StringUp);
     }
 
 
