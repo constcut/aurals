@@ -13,5 +13,6 @@
         <file>qml/CQTQML.qml</file>
         <file>qml/FiltersQML.qml</file>
         <file>qml/CepstrumQML.qml</file>
+        <file>qml/tablature.qml</file>
     </qresource>
 </RCC>

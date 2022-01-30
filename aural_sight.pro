@@ -262,6 +262,7 @@ DISTFILES += \
     qml/consoleLog.qml \
     qml/main.qml \
     qml/midiPlayer.qml \
+    qml/tablature.qml \
     qml/tapper.qml
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android

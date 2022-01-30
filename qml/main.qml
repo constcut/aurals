@@ -38,6 +38,13 @@ ApplicationWindow {
                 onClicked: mainLoader.setSource("audioHandler.qml")
             }
             ToolButton {
+                text: "Tab"
+                onClicked: {
+                    mainLoader.setSource("tablature.qml")
+                    mainLoader.focus = true
+                }
+            }
+            ToolButton {
                 text: "Midi"
                 onClicked: {
                     mainLoader.setSource("midiPlayer.qml")
