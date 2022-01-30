@@ -78,26 +78,21 @@ Item {
                 }
             }
             ToolButton {
-                text: "animation"
-                onClicked: {
-                    tabView.prepareAllThreads(0)//TODO on TabLoad
-                    tabView.launchAllThreads()
-                }
-            }
-            ToolButton {
-                text: "stop animation"
-                onClicked:  {
-                    tabView.stopAllThreads()
-                }
-            }
-            ToolButton {
-                text: "Full play"
+                text: "Play"
                 onClicked:  {
                     tabView.prepareAllThreads(0)//
                     var testId = parseInt(tabCombo.currentText) + 1
                     audio.openTabFile("tests/3." + testId + ".gp4")
+                    //TODO generate new midi file (for changes)
                     audio.startMidiPlayer()
                     tabView.launchAllThreads()
+                }
+            }
+            ToolButton {
+                text: "Stop"
+                onClicked:  {
+                    tabView.stopAllThreads()
+                    audio.stopMidiPlayer()
                 }
             }
             ToolButton {
