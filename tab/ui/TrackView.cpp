@@ -154,6 +154,8 @@ int TrackView::horizonMove(int offset)
 
 void TrackView::onclick(int x1, int y1)
 {
+    if (_tabParrent == nullptr)
+        return;
 
     if (_tabParrent->getPlaying())
         return; //skip
@@ -214,6 +216,9 @@ void TrackView::onclick(int x1, int y1)
 
 void TrackView::ondblclick(int x1, int y1)
 {
+    if (_tabParrent == nullptr)
+        return;
+
     bool wasPressed = false;
     for (size_t i = 0; i < _barsPull.size(); ++i)
     {
