@@ -1,7 +1,5 @@
 + Model size of -111 is less than 0
 
-+) удостовериться что 8k генерация на андройде
-
 1) Редактирование параметров трека
 
     _tabParrent->getMaster()->setComboBox(0,trackNames,centerX+20,5,210,30,_tabParrent->getLastOpenedTrack());

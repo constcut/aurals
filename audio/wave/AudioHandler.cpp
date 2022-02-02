@@ -29,12 +29,14 @@ void AudioHandler::initAudioHandler() {
     _commonFormat.setSampleType(QAudioFormat::SignedInt);
     _commonFormat.setByteOrder(QAudioFormat::LittleEndian);
     _commonFormat.setCodec("audio/pcm");
-    _midiFormat.setSampleRate(44100);
+
+    _midiFormat.setSampleRate(8000); //Its default in render
     _midiFormat.setChannelCount(2);
     _midiFormat.setSampleSize(16);
     _midiFormat.setSampleType(QAudioFormat::SignedInt);
     _midiFormat.setByteOrder(QAudioFormat::LittleEndian);
     _midiFormat.setCodec("audio/pcm");
+
     initRecorder();
     initPlayer();
     initMidiPlayer();
