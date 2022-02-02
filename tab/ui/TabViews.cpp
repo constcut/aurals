@@ -157,30 +157,26 @@ void TabView::onclick(int x1, int y1)
 
 
     int awaitBar = (x1-200)/30; //TODO size_t и дополнительные рассчёты, т.к. -1 всё равно не вариант
-    int toolBarHeight = 10; //getMaster()->getToolBarHeight();
-    int awaitTrack = (y1-toolBarHeight)/30;
-    awaitTrack-=1;
+    int toolBarHeight = 10;
+    int awaitTrack = (y1-toolBarHeight)/30; //TODO как и выше, не стоит использовать -1, ограничить реальными значениями
+    awaitTrack-=1; // + расширить границы
 
     if (awaitBar >= 0){
         awaitBar += _pTab->getDisplayBar();
-        if (awaitBar == _pTab->getCurrentBar()){
-            qDebug() << "Track pressed "<<awaitTrack<<"; Bar "<<awaitBar;
-            if (awaitTrack >= 0){
-                if (awaitTrack < _pTab->size()) {
-                    auto& trackView = _tracksView[awaitTrack];
-                    _pTab->getLastOpenedTrack() = awaitTrack;
-                    trackView->setDisplayBar(awaitBar);
+        if (awaitBar == _pTab->getCurrentBar())
+        {
 
-                    /*
-                    MainView *mainView = (MainView*)getMaster()->getFirstChild();
-                    mainView->changeCurrentView(trackView.get());
-                    std::string statusBar1,statusBar2;
-                    statusBar1 = _pTab->at(awaitTrack)->getName();
-                    statusBar2 = "bar " + std::to_string( _pTab->getCurrentBar() );
-                    getMaster()->setStatusBarMessage(1,statusBar1.c_str());
-                    getMaster()->setStatusBarMessage(2,statusBar2.c_str());
-                    */
-                    //TODO throw signal to qml, and it can open track
+            qDebug() << "Track pressed "<<awaitTrack<<"; Bar "<<awaitBar;
+
+            if (awaitTrack >= 0){
+                if (awaitTrack < _tracksView.size()) {
+
+                    if (auto trackView = _tracksView[awaitTrack]; trackView != nullptr) {
+                        _pTab->getLastOpenedTrack() = awaitTrack;
+                        trackView->setDisplayBar(awaitBar);
+                        trackView->update();
+                    }
+
                 }
             }
         }
