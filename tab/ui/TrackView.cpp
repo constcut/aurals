@@ -399,6 +399,7 @@ void TrackView::paint(QPainter *painter)
     if (_pTrack->isDrums())
         painter->drawText(220,55,"!Drum track!");
 
+    changeColor(CONF_PARAM("colors.default"), painter);
 
     for (size_t i = displayIndex; i < trackLen; ++i) //trackLen
     {
