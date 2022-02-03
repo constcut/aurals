@@ -326,6 +326,105 @@ Item {
                     trackView.setStatus(currentIndex)
                 }
             }
+
+            Button {
+                text: ":" //Future menu button
+            }
+            ComboBox {
+                id: tabCommandCombo
+                model : ["SetSignTillEnd",
+                    "SaveAs",
+                    "Mute",
+                    "Solo",
+                    "MoveLeft",
+                    "MoveRight",
+                    "MoveUp",
+                    "MoveDown",
+                    "Drums",
+                    "Instument",
+                    "Panoram",
+                    "Volume",
+                    "Name",
+                    "BPM",
+                    "OpenTrack",
+                    "NewTrack",
+                    "DeleteTrack",
+                    "PlayMidi",
+                    "GenerateMidi",
+                    "PauseMidi",
+                    "AddMarker",
+                    "OpenReprise",
+                    "CloseReprise",
+                    "GotoBar",
+                    "Tune"]
+            }
+            Button {
+                text: "tab"
+            }
+            ComboBox {
+                id: trackCommandCombo
+                model: [
+                    "PlayFromStart",
+                    "GotoStart",
+                    "SetSignForSelected",
+                    "SelectionExpandLeft",
+                    "SelectionExpandRight",
+                    "InsertBar",
+                    "NextBar",
+                    "PrevBar",
+                    "NextPage",
+                    "PrevPage",
+                    "NextTrack",
+                    "PrevTrack",
+                    "StringDown",
+                    "StringUp",
+                    "PrevBeat",
+                    "NextBeat",
+                    "SetPause",
+                    "DeleteBar",
+                    "DeleteSelectedBars",
+                    "DeleteSelectedBeats",
+                    "DeleteNote",
+                    "IncDuration",
+                    "DecDuration",
+                    "PlayTrackMidi",
+                    "SaveFile",
+                    "SaveAsFromTrack",
+                    "NewBar",
+                    "SetDot",
+                    "SetTriole",
+                    "Leeg",
+                    "Dead",
+                    "Vibrato",
+                    "Slide",
+                    "Hammer",
+                    "LetRing",
+                    "PalmMute",
+                    "Harmonics",
+                    "TremoloPickings",
+                    "Trill",
+                    "Stokatto",
+                    "FadeIn",
+                    "Accent",
+                    "HeaveAccent",
+                    "Bend",
+                    "Chord",
+                    "Text",
+                    "Changes",
+                    "UpStroke",
+                    "DownStroke",
+                    "SetBarSign",
+                    "Cut",
+                    "Copy",
+                    "CopyBeat",
+                    "CopyBars",
+                    "Paste",
+                    "Undo"
+                ]
+            }
+            Button {
+                text: "track"
+            }
         }
     }
 

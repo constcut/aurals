@@ -67,8 +67,8 @@ namespace aural_sight {
         Q_INVOKABLE void keyPress(int code); //KeyRelease too?
         virtual void keyevent(std::string press);
 
-        virtual void onTabCommand(TabCommand command);
-        virtual void onTrackCommand(TrackCommand command);
+        void onTabCommand(TabCommand command);
+        void onTrackCommand(TrackCommand command);
 
 
 

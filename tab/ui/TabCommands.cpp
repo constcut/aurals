@@ -519,6 +519,9 @@ void TabView::keyPress(int code) {
         _tracksView[curTrack]->update();
     }
 
+    //TODO other keys mapping if they set for any function
+    //2 big handlers for Tab and Track commands
+
     if (updated)
         update();
 }

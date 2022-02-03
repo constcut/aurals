@@ -541,8 +541,6 @@ bool TrackView::gotChanges() const
 
 
 
-
-//Track setters and getters
 int TrackView::getInstrumet() {
     if (_pTrack != nullptr)
         return _pTrack->getInstrument();
