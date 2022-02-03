@@ -320,9 +320,17 @@ std::string percussions[]=
 
 Ошибки в воспроизведении: есть смещение звука и анимации в illi!
 
+Кажется ошибка в конце flower. До определенного момента все звучало в ритм анимации.
 
 + Model size of -111 is less than 0
 
+Repair tapper +
++++
+idea -> tapper + piano roll
+
+Android save to files on sdcard fails.. Permission?
+
++tapper midi silence hot fix
 
 ------------------------------------------------------------------------------------------
 Поиск ритмических границ:
