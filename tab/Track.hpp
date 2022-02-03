@@ -218,6 +218,7 @@ namespace aural_sight {
             //{TrackCommand::InsertNewPause, &Track::insertNewPause}, //TODO
             {TrackCommand::NextBar, &Track::moveToNextBar},
             {TrackCommand::PrevBar, &Track::moveToPrevBar},
+            {TrackCommand::NextPage, &Track::moveToNextPage},
             {TrackCommand::PrevPage, &Track::moveToPrevPage},
             {TrackCommand::NextTrack, &Track::moveToNextTrack},
             {TrackCommand::PrevTrack, &Track::moveToPrevTrack},
