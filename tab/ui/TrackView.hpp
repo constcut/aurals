@@ -72,6 +72,22 @@ namespace aural_sight {
 
         bool gotChanges() const;
 
+        //Track setters and getters
+        Q_INVOKABLE int getInstrumet();
+        Q_INVOKABLE void setInstrument(int newInstr);
+
+        Q_INVOKABLE int getVolume();
+        Q_INVOKABLE void setVolume(int newVol);
+
+        Q_INVOKABLE int getPanoram();
+        Q_INVOKABLE void setPanoram(int newPan);
+
+        Q_INVOKABLE int getStatus(); //0 - none, 1 - mute, 2 - solo
+        Q_INVOKABLE void setStatus(int newStatus);
+
+        Q_INVOKABLE QString getName();
+        Q_INVOKABLE void setName(QString newName);
+
     };
 
 }

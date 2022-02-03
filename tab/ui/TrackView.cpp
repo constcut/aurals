@@ -537,3 +537,65 @@ bool TrackView::gotChanges() const
         return true;
     return false;
 }
+
+
+
+
+
+//Track setters and getters
+int TrackView::getInstrumet() {
+    if (_pTrack != nullptr)
+        return _pTrack->getInstrument();
+    return 0;
+}
+
+void TrackView::setInstrument(int newInstr) {
+    if (_pTrack != nullptr)
+        return _pTrack->setInstrument(newInstr);
+}
+
+int TrackView::getVolume() {
+    if (_pTrack != nullptr)
+        return _pTrack->getVolume();
+    return 0;
+}
+
+void TrackView::setVolume(int newVol) {
+    if (_pTrack != nullptr)
+        return _pTrack->setVolume(newVol);
+}
+
+int TrackView::getPanoram() {
+    if (_pTrack != nullptr)
+        return _pTrack->getPan();
+    return 0;
+}
+
+void TrackView::setPanoram(int newPan) {
+    if (_pTrack != nullptr)
+        return _pTrack->setPan(newPan);
+}
+
+int TrackView::getStatus() {
+    if (_pTrack != nullptr)
+        return _pTrack->getStatus();
+    return 0;
+}
+
+void TrackView::setStatus(int newStatus) { //0 - none, 1 - mute, 2 - solo
+    if (_pTrack != nullptr)
+        return _pTrack->setStatus(newStatus);
+}
+
+QString TrackView::getName() {
+    if (_pTrack != nullptr)
+        return _pTrack->getName().c_str();
+    return "";
+}
+
+void TrackView::setName(QString newName) {
+     if (_pTrack != nullptr) {
+         auto name = newName.toStdString();
+         _pTrack->setName(name);
+     }
+}
