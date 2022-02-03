@@ -66,6 +66,9 @@ Item {
     }
 
 
+
+
+
     ColumnLayout {
 
         id: mainLayout
@@ -135,6 +138,39 @@ Item {
             ToolButton {
                 text: "Save midi"
                 onClicked: saveMidiDialog.open()
+            }
+        }
+
+        RowLayout {
+            spacing: 10
+
+            ComboBox {
+                id: instrumentCombo
+            }
+
+            Slider {
+                id: volumeSlider
+                from: 0
+                to: 16
+                ToolTip {
+                    parent: volumeSlider.handle
+                    visible: volumeSlider.hovered
+                    text: volumeSlider.value.toFixed(2)
+                }
+            }
+            Slider {
+                id: panoramSlider
+                from: -8
+                to: +8
+                ToolTip {
+                    parent: panoramSlider.handle
+                    visible: panoramSlider.hovered
+                    text: panoramSlider.value.toFixed(2)
+                }
+            }
+            ComboBox {
+                id: trackStatusCombo
+                model: ["normal", "solo", "mute"]
             }
         }
     }
