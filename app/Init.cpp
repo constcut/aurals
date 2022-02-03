@@ -1,6 +1,9 @@
 #include "Init.hpp"
 
-#include <QGuiApplication>
+//#include <QGuiApplication>
+#include <QApplication>
+
+
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QTextCodec>
@@ -298,7 +301,7 @@ int mainInit(int argc, char *argv[]) {
     qmlRegisterType<aural_sight::ConsoleLogQML>("mther.app",1,0,"ConsoleLogView");
     //qmlRegisterType<PianoQML>("mther.app",1,0,"Piano");
 
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
 
     app.setApplicationName("aural_sight");
     app.setOrganizationName("accumerite");
