@@ -260,11 +260,6 @@ void AudioHandler::stopMidiPlayer() {
 }
 
 
-void AudioHandler::checkMidi() {
-    openMidiFile("test6.mid");
-}
-
-
 void AudioHandler::openMidiFile(const QString filename) {
     _render.openSoundFont();
     _midiBufer = _render.renderShort(filename);
