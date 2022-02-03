@@ -17,10 +17,16 @@ using namespace aural_sight;
 
 void Tab::setSignsTillEnd(size_t num, size_t denom) {
     _macroCommands.push_back(TwoIntCommand<TabCommand>{TabCommand::SetSignTillEnd, num, denom});
-    for (size_t i = _currentBar; i < this->at(0)->size(); ++i){
-        this->at(0)->at(i)->setSignDenum(denom); //TODO проработать размеры, ументь их делать общими для табы, и делать полиритмию
-        this->at(0)->at(i)->setSignNum(num);
-    }
+
+    //TODO polyrithm concepts
+
+    for (size_t trackId = 0; trackId < this->size(); ++trackId)
+        for (size_t i = _currentBar; i < this->at(trackId)->size(); ++i){
+            this->at(trackId)->at(i)->setSignDenum(denom); //TODO проработать размеры, ументь их делать общими для табы, и делать полиритмию
+            this->at(trackId)->at(i)->setSignNum(num);
+
+            qDebug() << "Changing bar " << i << " on " << num << " " << denom;
+        }
 }
 
 void Tab::muteTrack() { //Move into Tab

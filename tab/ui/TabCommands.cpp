@@ -567,7 +567,7 @@ void setSignTillEnd(Tab* pTab) { //TODOM
                          "New Denum(1,2,4,8,16):", QLineEdit::Normal,
                          1,128,1,&ok);
     if (ok)
-        pTab->setSignsTillEnd(newDen, newNum);
+        pTab->setSignsTillEnd(newNum, newDen);
 
 }
 
