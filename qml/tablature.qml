@@ -360,6 +360,9 @@ Item {
             }
             Button {
                 text: "tab"
+                onClicked: {
+                    tabView.passTabCommand(tabCommandCombo.currentIndex)
+                }
             }
             ComboBox {
                 id: trackCommandCombo
@@ -424,6 +427,9 @@ Item {
             }
             Button {
                 text: "track"
+                onClicked: {
+                    tabView.passTrackCommand(trackCommandCombo.currentIndex)
+                }
             }
         }
     }

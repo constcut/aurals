@@ -70,6 +70,16 @@ namespace aural_sight {
         void onTabCommand(TabCommand command);
         void onTrackCommand(TrackCommand command);
 
+        Q_INVOKABLE void passTabCommand(int id) { //TODO register enum in QML
+            auto c = static_cast<TabCommand>(id);
+            onTabCommand(c);
+        }
+
+        Q_INVOKABLE void passTrackCommand(int id) {
+            auto c = static_cast<TrackCommand>(id);
+            onTrackCommand(c);
+        }
+
 
 
         void setPlaying(bool playValue) { _pTab->setPlaying(playValue); }
