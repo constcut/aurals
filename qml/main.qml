@@ -20,7 +20,7 @@ ApplicationWindow {
             close.accepted = true
     }
 
-
+    /*
     header: ToolBar {
 
         RowLayout {
@@ -63,6 +63,57 @@ ApplicationWindow {
                 }
                 visible: Qt.platform.os !== "android"
             }
+        }
+    }*/
+
+
+    ToolButton {
+        text: ":"
+        x: parent.width - width
+        y: 0
+        onClicked: {
+
+            mainMenu.x = parent.width - mainMenu.width
+            mainMenu.open()
+        }
+    }
+
+
+    Menu {
+        id: mainMenu
+        MenuItem {
+            text: "Console"
+            onTriggered:  mainLoader.setSource("consoleLog.qml")
+        }
+        MenuItem {
+            text: "Audio"
+            onTriggered: mainLoader.setSource("audioHandler.qml")
+        }
+        MenuItem {
+            text: "Tab"
+            onTriggered: {
+                mainLoader.setSource("tablature.qml")
+                mainLoader.focus = true
+            }
+        }
+        MenuItem {
+            text: "Midi"
+            onTriggered: {
+                mainLoader.setSource("midiPlayer.qml")
+                mainLoader.focus = true
+            }
+        }
+        MenuItem {
+            text: "Tap"
+            onTriggered: mainLoader.setSource("tapper.qml")
+        }
+        MenuItem {
+            text: "Exit"
+            onTriggered:  {
+                if (Qt.platform.os !== "android")
+                    Qt.exit(0)
+            }
+            visible: Qt.platform.os !== "android"
         }
     }
 
