@@ -79,6 +79,16 @@ Item {
         function refreshTrack() { //TODO смесить куда-то
             var trackIdx = parseInt(trackCombo.currentText)
             trackView.setFromTab(tabView, trackIdx)
+
+            var instrId = trackView.getInstrumet()
+            var volume = trackView.getVolume()
+            var panoram = trackView.getPanoram()
+            var status = trackView.getStatus()
+
+            instrumentCombo.currentIndex = instrId
+            volumeSlider.value = volume
+            panoramSlider.value = panoram - 8 //todo review!
+            trackStatusCombo.currentIndex = status
         }
 
         RowLayout {
@@ -276,6 +286,10 @@ Item {
                     "Helicopter",
                     "Applause",
                     "Gunshot"]
+
+                onCurrentTextChanged:  {
+                    trackView.setInstrument(currentIndex)
+                }
             }
 
             Slider {
@@ -287,6 +301,10 @@ Item {
                     visible: volumeSlider.hovered
                     text: volumeSlider.value.toFixed(2)
                 }
+
+                onValueChanged: {
+                    trackView.setVolume(value)
+                }
             }
             Slider {
                 id: panoramSlider
@@ -297,10 +315,16 @@ Item {
                     visible: panoramSlider.hovered
                     text: panoramSlider.value.toFixed(2)
                 }
+                onValueChanged: {
+                    trackView.setPanoram(value + 8)
+                }
             }
             ComboBox {
                 id: trackStatusCombo
-                model: ["normal", "solo", "mute"]
+                model: ["normal", "mute", "solo"]
+                onCurrentTextChanged: {
+                    trackView.setStatus(currentIndex)
+                }
             }
         }
     }
