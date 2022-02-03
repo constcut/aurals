@@ -105,6 +105,6 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
-        onClicked: mainLoader.setSource("audioHandler.qml")
+        onClicked: mainLoader.setSource("tablature.qml") // tablature audioHandler
     }
 }
