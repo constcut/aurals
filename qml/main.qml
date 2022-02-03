@@ -10,7 +10,7 @@ ApplicationWindow {
 
     id: thatWindow
     visible: true
-    visibility: "FullScreen"
+    visibility: "FullScreen" // Qt.platform.os === "android" ? "FullScreen" : "normal"
     title: "aural_sight"
 
     onClosing: {
@@ -20,59 +20,13 @@ ApplicationWindow {
             close.accepted = true
     }
 
-    /*
-    header: ToolBar {
-
-        RowLayout {
-            spacing:  10
-            //anchors.fill: parent
-            ToolButton {
-                text: "Console"
-                onClicked: {
-                    mainLoader.setSource("consoleLog.qml")
-                    mainLoader.focus = true
-                }
-            }
-            ToolButton {
-                text: "Audio"
-                onClicked: mainLoader.setSource("audioHandler.qml")
-            }
-            ToolButton {
-                text: "Tab"
-                onClicked: {
-                    mainLoader.setSource("tablature.qml")
-                    mainLoader.focus = true
-                }
-            }
-            ToolButton {
-                text: "Midi"
-                onClicked: {
-                    mainLoader.setSource("midiPlayer.qml")
-                    mainLoader.focus = true
-                }
-            }
-            ToolButton {
-                text: "Tap"
-                onClicked: mainLoader.setSource("tapper.qml")
-            }
-            ToolButton {
-                text: "Exit"
-                onClicked:  {
-                    if (Qt.platform.os !== "android")
-                        Qt.exit(0)
-                }
-                visible: Qt.platform.os !== "android"
-            }
-        }
-    }*/
-
 
     ToolButton {
+        id: mainMenuButton
         text: ":"
-        x: parent.width - width
-        y: 0
+        x: parent.width - width - 5
+        y: 5
         onClicked: {
-
             mainMenu.x = parent.width - mainMenu.width
             mainMenu.open()
         }
@@ -108,12 +62,13 @@ ApplicationWindow {
             onTriggered: mainLoader.setSource("tapper.qml")
         }
         MenuItem {
+            id: exitMenuItem
             text: "Exit"
             onTriggered:  {
                 if (Qt.platform.os !== "android")
                     Qt.exit(0)
             }
-            visible: Qt.platform.os !== "android"
+
         }
     }
 
@@ -147,15 +102,17 @@ ApplicationWindow {
     Loader {
     id:mainLoader
        anchors.fill: parent
-
        focus: true
        Keys.onPressed:  {
            mainLoader.item.keyboardEventSend(event.key)
        }
-
     }
 
     Component.onCompleted: {
+        if (Qt.platform.os === "android") {
+            exitMenuItem.visible = false
+            exitMenuItem.height = 0
+        }
         onClicked: mainLoader.setSource("tablature.qml") // tablature audioHandler
     }
 }
