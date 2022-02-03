@@ -326,6 +326,9 @@ Item {
                     trackView.setStatus(currentIndex)
                 }
             }
+        }
+        RowLayout {
+            spacing: 10
 
             Button {
                 text: ":" //Future menu button
