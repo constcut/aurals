@@ -64,12 +64,6 @@ Item {
             RowLayout {
                 spacing:  10
                 ToolButton {
-                    text: "Check midi"
-                    onClicked:  {
-                        audio.checkMidi() //LOAD default file
-                    }
-                }
-                ToolButton {
                     text: "Start midi"
                     onClicked:  {
                         audio.startMidiPlayer()

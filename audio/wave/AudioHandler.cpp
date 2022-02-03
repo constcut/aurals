@@ -263,6 +263,9 @@ void AudioHandler::stopMidiPlayer() {
 void AudioHandler::openMidiFile(const QString filename) {
     _render.openSoundFont();
     _midiBufer = _render.renderShort(filename);
+
+    _midiBufer.append((_midiFormat.sampleRate() / 2) //Half seccond of silence
+                      * _midiFormat.sampleSize() / 8, 0);
 }
 
 
