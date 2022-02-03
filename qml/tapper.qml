@@ -144,7 +144,7 @@ Item {
         }
         ToolButton{
             text: "Stop"
-            onCanceled: audio.stopMidiPlayer()
+            onClicked: audio.stopMidiPlayer()
         }
         Slider {
             from: 0.25
