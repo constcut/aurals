@@ -66,7 +66,7 @@ namespace aural_sight {
 
         int _renderFrameSize;
         double _sampleRate = 8000.0;
-        float _volume = -6.0;
+        float _volume = 0.0;
         QString _soundfontFile = "fullset.sf2";
 
         int _g_MidiChannelPreset[16];
