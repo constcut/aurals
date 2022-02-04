@@ -257,6 +257,7 @@ Item {
                     "Paste",
                     "Undo"
                 ]
+                currentIndex: 20
             }
             ToolButton {
                 text: "!"

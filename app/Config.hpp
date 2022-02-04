@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <vector>
 
-#define CONF_PARAM(z) AConfig::getInst().values[ z ]
+#define CONF_PARAM(z) AConfig::getInst().values[ z ] //TODO maybe replace with QSettings
 
 
 

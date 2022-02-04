@@ -639,16 +639,32 @@ void Track::deleteSelectedBeats() {
 
 
 void Track::deleteNote() {
+
+    qDebug() << "Delete note " << _cursor << " " << _cursorBeat;
+
     if (at(_cursor)->at(_cursorBeat)->size())
     {
         ReversableCommand command(ReversableType::DeleteNote);
         command.setPosition(0,_cursor,_cursorBeat);
-        auto note = std::move(at(_cursor)->at(_cursorBeat)->at(_stringCursor+1));
-        command.storedNotes.push_back(std::move(note));
-        if (note->getFret()!=255) {
-            //delete one note
-            at(_cursor)->at(_cursorBeat)->deleteNote(_stringCursor+1);//shift from 0 to 1
-            commandSequence.push_back(std::move(command));
+
+        auto& beatRef = at(_cursor)->at(_cursorBeat);
+
+        if (beatRef->getNote(_stringCursor+1) != nullptr) {
+
+            for (size_t i = 0; i < beatRef->size(); ++i)
+                if (beatRef->at(i)->getStringNumber() == _stringCursor + 1)
+                {
+                    auto noteFret = beatRef->at(i)->getFret();
+                    if (noteFret != 255) {
+
+                        //auto note = std::move(beatRef->at(i));
+                        beatRef->deleteNote(_stringCursor + 1); //TODO return note ptr
+
+                        //command.storedNotes.push_back(std::move(note));
+                        //commandSequence.push_back(std::move(command));
+                    }
+                    break;
+                }
         }
     }
     else
