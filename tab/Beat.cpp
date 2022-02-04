@@ -71,15 +71,17 @@ void Beat::setEffects(Effect eValue) {
 }
 
 
-void Beat::deleteNote(int string) {
+std::unique_ptr<Note> Beat::deleteNote(int string) {
     for (size_t i = 0; i < size(); ++i) {
         if (string == at(i)->getStringNumber()) {
+            auto note = std::move(at(i));
             remove(i);
             if (size() == 0)
                 setPause(true);
-            return;
+            return note;
         }
     }
+    return {};
 }
 
 

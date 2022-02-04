@@ -645,26 +645,16 @@ void Track::deleteNote() {
     if (at(_cursor)->at(_cursorBeat)->size())
     {
         ReversableCommand command(ReversableType::DeleteNote);
-        command.setPosition(0,_cursor,_cursorBeat);
+        command.setPosition(0, _cursor, _cursorBeat);
 
         auto& beatRef = at(_cursor)->at(_cursorBeat);
+        auto notePtr = beatRef->getNote(_stringCursor + 1);
 
-        if (beatRef->getNote(_stringCursor+1) != nullptr) {
-
-            for (size_t i = 0; i < beatRef->size(); ++i)
-                if (beatRef->at(i)->getStringNumber() == _stringCursor + 1)
-                {
-                    auto noteFret = beatRef->at(i)->getFret();
-                    if (noteFret != 255) {
-
-                        //auto note = std::move(beatRef->at(i));
-                        beatRef->deleteNote(_stringCursor + 1); //TODO return note ptr
-
-                        //command.storedNotes.push_back(std::move(note));
-                        //commandSequence.push_back(std::move(command));
-                    }
-                    break;
-                }
+        if (notePtr != nullptr)
+        {
+            auto note = beatRef->deleteNote(_stringCursor + 1);
+            command.storedNotes.push_back(std::move(note));
+            commandSequence.push_back(std::move(command));
         }
     }
     else
@@ -679,7 +669,7 @@ void Track::deleteNote() {
             at(_cursor)->remove(_cursorBeat);
             connectAll(); //optimize
 
-            ReversableCommand command(ReversableType::DeleteNote,packedValue);
+            ReversableCommand command(ReversableType::DeleteNote, packedValue);
             command.setPosition(0,_cursor,_cursorBeat,dot); //wow wow know it
             commandSequence.push_back(std::move(command));
 

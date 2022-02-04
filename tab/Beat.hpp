@@ -46,7 +46,7 @@ namespace aural_sight {
         void setPause(bool pause) { _isPaused = pause; }
         bool getPause() const { return _isPaused; }
 
-        void deleteNote(int string);
+        std::unique_ptr<Note> deleteNote(int string);
         Note* getNote(int string) const;
 
         void setFret(std::uint8_t fret, int string);
