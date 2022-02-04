@@ -150,20 +150,6 @@ Item {
                 }
             }
 
-
-            ToolButton {
-                text: "Menu"
-                onClicked: tabMenu.open()
-            }
-        }
-
-
-        RowLayout {
-            spacing: 10
-
-            Button {
-                text: ":" //Future menu button
-            }
             ComboBox {
                 id: tabCommandCombo
                 model : ["SetSignTillEnd",
@@ -193,7 +179,7 @@ Item {
                     "Tune"]
             }
             Button {
-                text: "tab"
+                text: "!"
                 onClicked: {
                     tabView.passTabCommand(tabCommandCombo.currentIndex)
                 }
@@ -260,10 +246,15 @@ Item {
                 ]
             }
             Button {
-                text: "track"
+                text: "!"
                 onClicked: {
                     tabView.passTrackCommand(trackCommandCombo.currentIndex)
                 }
+            }
+
+            ToolButton {
+                text: "__Menu__"
+                onClicked: tabMenu.open()
             }
         }
     }
