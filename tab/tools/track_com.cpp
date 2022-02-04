@@ -640,8 +640,6 @@ void Track::deleteSelectedBeats() {
 
 void Track::deleteNote() {
 
-    qDebug() << "Delete note " << _cursor << " " << _cursorBeat;
-
     if (at(_cursor)->at(_cursorBeat)->size())
     {
         ReversableCommand command(ReversableType::DeleteNote);
