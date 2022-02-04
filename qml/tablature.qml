@@ -116,6 +116,7 @@ Item {
         function refreshTrack() { //TODO смесить куда-то
             var trackIdx = parseInt(trackCombo.currentText)
             trackView.setFromTab(tabView, trackIdx)
+            tabView.setTrackIdx(trackIdx)
 
             var instrId = trackView.getInstrumet()
             var volume = trackView.getVolume()
@@ -462,18 +463,18 @@ Item {
 
         TabView {
             id: tabView
-            //x: 0
             y: trackLayout.height
             width: parent.width
             height: parent.height
 
+            /*
             MouseArea {
                 anchors.fill: parent
                 onClicked:
-                    tabView.onclick(mouseX, mouseY) //TODO can crash
+                    tabView.onclick(mouseX, mouseY)
                 onDoubleClicked:
                     tabView.onclick(mouseX, mouseY)
-            }
+            }*/ //blocked for a while, not the best option to use those old features
         }
     }
 

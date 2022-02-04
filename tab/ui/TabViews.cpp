@@ -237,6 +237,8 @@ void TabView::paint(QPainter *painter)
         int yLimit = height();//getMaster()->getHeight();
         int xLimit = width(); //getMaster()->getWidth();
 
+        changeColor(CONF_PARAM("colors.default"), painter);
+
         //TrackView should be agregated
         for (size_t i = 0 ; i < _pTab->size(); ++i)
         {
