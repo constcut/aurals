@@ -228,6 +228,7 @@ namespace aural_sight {
             {TrackCommand::NextBeat, &Track::moveToNextBeat},
             {TrackCommand::SetPause, &Track::setTrackPause},
             {TrackCommand::DeleteBar, &Track::deleteBar},
+            {TrackCommand::DeleteNote, &Track::deleteNote},
             {TrackCommand::DeleteSelectedBars, &Track::deleteSelectedBars},
             {TrackCommand::DeleteSelectedBeats, &Track::deleteSelectedBeats},
             {TrackCommand::IncDuration, &Track::incDuration},
