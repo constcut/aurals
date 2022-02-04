@@ -66,6 +66,43 @@ Item {
     }
 
 
+    Menu {
+        id: tabMenu
+        MenuItem {
+            text: "Play"
+            onTriggered:  {
+                tabView.prepareAllThreads(0)//TODO shift?
+                tabView.exportMidi("temp.mid", 0) //TODO shift
+                audio.openMidiFile("temp.mid")
+                audio.startMidiPlayer()
+                tabView.launchAllThreads()
+            }
+        }
+        MenuItem {
+            text: "Stop"
+            onTriggered:  {
+                tabView.stopAllThreads()
+                audio.stopMidiPlayer()
+            }
+        }
+        MenuItem {
+            text: "TabView"
+            onTriggered: tabPannel.open()
+        }
+        MenuItem {
+            text: "Open file"
+            onTriggered: openFileDialog.open()
+        }
+        MenuItem {
+            text: "Save wav"
+            onTriggered: saveFileDialog.open()
+        }
+        MenuItem {
+            text: "Save midi"
+            onTriggered: saveMidiDialog.open()
+        }
+    }
+
 
 
 
@@ -94,6 +131,10 @@ Item {
         RowLayout {
             spacing: 10
 
+            Text {
+                text: "Test:"
+            }
+
             ComboBox {
                 id: tabCombo
                 model: 70
@@ -107,41 +148,12 @@ Item {
                     mainLayout.refreshTrack()
                     tabPannel.open()
                 }
-
             }
 
+
             ToolButton {
-                text: "Play"
-                onClicked:  {
-                    tabView.prepareAllThreads(0)//TODO shift?
-                    tabView.exportMidi("temp.mid", 0) //TODO shift
-                    audio.openMidiFile("temp.mid")
-                    audio.startMidiPlayer()
-                    tabView.launchAllThreads()
-                }
-            }
-            ToolButton {
-                text: "Stop"
-                onClicked:  {
-                    tabView.stopAllThreads()
-                    audio.stopMidiPlayer()
-                }
-            }
-            ToolButton {
-                text: "TabView"
-                onClicked: tabPannel.open()
-            }
-            ToolButton {
-                text: "Open file"
-                onClicked: openFileDialog.open()
-            }
-            ToolButton {
-                text: "Save wav"
-                onClicked: saveFileDialog.open()
-            }
-            ToolButton {
-                text: "Save midi"
-                onClicked: saveMidiDialog.open()
+                text: "Menu"
+                onClicked: tabMenu.open()
             }
         }
 
