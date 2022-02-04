@@ -110,12 +110,6 @@ Item {
 
             }
 
-            ComboBox {
-                id: trackCombo
-                onCurrentTextChanged: {
-                    mainLayout.refreshTrack()
-                }
-            }
             ToolButton {
                 text: "Play"
                 onClicked:  {
@@ -278,6 +272,13 @@ Item {
             id: trackLayout
 
             ComboBox {
+                id: trackCombo
+                onCurrentTextChanged: {
+                    mainLayout.refreshTrack()
+                }
+            }
+
+            ComboBox {
                 id: instrumentCombo
                 Layout.minimumWidth: implicitIndicatorWidth
                 model : [ //TODO ui C++ item to get QList of QStings
@@ -419,6 +420,7 @@ Item {
                 id: volumeSlider
                 from: 0
                 to: 16
+                stepSize: 1
                 ToolTip {
                     parent: volumeSlider.handle
                     visible: volumeSlider.hovered
@@ -433,6 +435,7 @@ Item {
                 id: panoramSlider
                 from: -8
                 to: +8
+                stepSize: 1
                 ToolTip {
                     parent: panoramSlider.handle
                     visible: panoramSlider.hovered
