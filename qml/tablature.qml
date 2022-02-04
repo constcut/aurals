@@ -511,10 +511,14 @@ Item {
 
         MouseArea {
             anchors.fill: parent
-            onClicked:
+            onClicked: {
                 trackView.onclick(mouseX, mouseY)
-            onDoubleClicked:
+                trackView.focus = true
+            }
+            onDoubleClicked: {
                 trackView.ondblclick(mouseX, mouseY)
+                trackView.focus = true
+            }
         }
     }
 

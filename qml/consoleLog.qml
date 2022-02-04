@@ -11,13 +11,6 @@ Item {
             y: 10
             width: parent.width - 10
             height: 400
-
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    consoleLog.update()
-                }
-            }
         }
 
         Timer {
