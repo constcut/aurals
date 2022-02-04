@@ -10,8 +10,22 @@ ApplicationWindow {
 
     id: thatWindow
     visible: true
-    visibility: "FullScreen" // Qt.platform.os === "android" ? "FullScreen" : "normal"
     title: "aural_sight"
+
+    Component.onCompleted: {
+        if (Qt.platform.os === "android") {
+            exitMenuItem.visible = false
+            exitMenuItem.height = 0
+            thatWindow.visibility = "FullScreen"
+        }
+        else {
+            thatWindow.width = 1280
+            thatWindow.height = 600
+        }
+
+        onClicked: mainLoader.setSource("tablature.qml") // tablature audioHandler
+    }
+
 
     onClosing: {
         if (Qt.platform.os == "android")
@@ -108,11 +122,5 @@ ApplicationWindow {
        }
     }
 
-    Component.onCompleted: {
-        if (Qt.platform.os === "android") {
-            exitMenuItem.visible = false
-            exitMenuItem.height = 0
-        }
-        onClicked: mainLoader.setSource("tablature.qml") // tablature audioHandler
-    }
+
 }
