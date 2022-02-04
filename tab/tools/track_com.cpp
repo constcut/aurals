@@ -675,11 +675,9 @@ void Track::deleteNote() {
             std::uint8_t det =  at(_cursor)->at(_cursorBeat)->getDurationDetail();
             std::uint8_t dot =  at(_cursor)->at(_cursorBeat)->getDotted();
             packedValue = dur;
-            packedValue |= det<<3;
-            auto& beat = at(_cursor)->at(_cursorBeat);
+            packedValue |= det << 3;
             at(_cursor)->remove(_cursorBeat);
-            connectAll(); //oups?
-            beat = nullptr  ;//cleanup
+            connectAll(); //optimize
 
             ReversableCommand command(ReversableType::DeleteNote,packedValue);
             command.setPosition(0,_cursor,_cursorBeat,dot); //wow wow know it
