@@ -94,11 +94,15 @@ Item {
             onTriggered: openFileDialog.open()
         }
         MenuItem {
-            text: "Save wav"
+            text: "Save as"
+            onTriggered: tabView.passTabCommand(1) //TODO enum
+        }
+        MenuItem {
+            text: "Export wav"
             onTriggered: saveFileDialog.open()
         }
         MenuItem {
-            text: "Save midi"
+            text: "Export midi"
             onTriggered: saveMidiDialog.open()
         }
     }
@@ -156,6 +160,7 @@ Item {
                 }
             }
 
+            /*
             ComboBox {
                 id: tabCommandCombo
                 model : ["SetSignTillEnd",
@@ -190,7 +195,8 @@ Item {
                 onClicked: {
                     tabView.passTabCommand(tabCommandCombo.currentIndex)
                 }
-            }
+            }*/
+
             ComboBox {
                 id: trackCommandCombo
                 model: [
@@ -284,6 +290,17 @@ Item {
                 }
             }
 
+            //Actions: "BPM",
+            //"NewTrack",
+            //"DeleteTrack",
+            //"AddMarker",
+            //"OpenReprise",
+            //"CloseReprise",
+            //"GotoBar",
+            //"Tune"
+            //"SetSignTillEnd"
+
+            //TODO other settings : drums, name
             ComboBox {
                 id: instrumentCombo
                 Layout.minimumWidth: implicitIndicatorWidth
@@ -465,7 +482,7 @@ Item {
             id: tabView
             y: trackLayout.height
             width: parent.width
-            height: parent.height
+            height: parent.height + 100 //TODO calculate value + add flick for vertical
 
             /*
             MouseArea {
@@ -475,7 +492,13 @@ Item {
                 onDoubleClicked:
                     tabView.onclick(mouseX, mouseY)
             }*/ //blocked for a while, not the best option to use those old features
+            //Return only bar selection, avoid track selection!
         }
+
+        /*          "MoveLeft",
+                    "MoveRight",
+                    "MoveUp",
+                    "MoveDown", navigation? */
     }
 
 
