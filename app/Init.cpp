@@ -336,6 +336,19 @@ int mainInit(int argc, char *argv[]) {
     qmlRegisterType<aural_sight::TrackView>("mther.app", 1, 0, "TrackView");
     //qmlRegisterType<aural_sight::BarView>("mther.app", 1, 0, "BarView");
 
+
+    QDir dir;
+    if (dir.exists("records") == false) {
+        if (dir.mkdir("records") == false)
+            qDebug() << "Failed to create records directory";
+    }
+    if (dir.exists("tests") == false) {
+        if (dir.mkdir("tests") == false)
+            qDebug() << "Failed to create tests directory";
+    }
+    copyResourcesIntoTempDir();
+
+
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("Windows-1251")); //Настройки //KOI8-R //ISO 8859-5 //UTF-8 //Windows-1251
     QQmlApplicationEngine engine;
     aural_sight::AudioHandler audio;
@@ -344,14 +357,6 @@ int mainInit(int argc, char *argv[]) {
     if (engine.rootObjects().isEmpty())
         return -1;
 
-    QDir dir;
-    if (dir.exists("records") == false)
-        dir.mkdir("records");
-
-    if (dir.exists("tests") == false)
-        dir.mkdir("tests");
-
-    copyResourcesIntoTempDir();
 
 #ifdef QT_DEBUG
     //TODO turn on on any midi\tab loaders change
