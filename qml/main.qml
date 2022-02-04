@@ -51,7 +51,10 @@ ApplicationWindow {
         id: mainMenu
         MenuItem {
             text: "Console"
-            onTriggered:  mainLoader.setSource("consoleLog.qml")
+            onTriggered: {
+                mainLoader.setSource("consoleLog.qml")
+                mainLoader.focus = true
+            }
         }
         MenuItem {
             text: "Audio"
@@ -121,6 +124,7 @@ ApplicationWindow {
            mainLoader.item.keyboardEventSend(event.key)
        }
     }
+
 
 
 }

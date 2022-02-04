@@ -5,28 +5,31 @@ Item {
 
     anchors.fill: parent
     id:item
-        ConsoleLogView {
 
-            id: consoleLog
-            y: 10
-            width: parent.width - 10
-            height: 400
+    ConsoleLogView {
+
+        id: consoleLog
+        y: 10
+        width: parent.width - 10
+        height: 400
+    }
+
+    Timer {
+        id: refTimer
+        interval: 1000
+        onTriggered: {
+            consoleLog.update()
         }
+        repeat: true
+        running: false
+    }
 
-        Timer {
-            id: refTimer
-            interval: 1000
-            onTriggered: {
-                consoleLog.update()
-            }
-            repeat: true
-            running: false
-        }
+    Component.onCompleted:{
+        refTimer.running = true
+    }
 
-        Component.onCompleted:{
-            refTimer.running = true
-        }
-
-
+    function keyboardEventSend(key) {
+        console.log("Pressed key: ", key)
+    }
 
 }
