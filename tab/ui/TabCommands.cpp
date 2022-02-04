@@ -346,7 +346,7 @@ void TabView::onTrackCommand([[maybe_unused]] TrackCommand command) {
     //TODO это не совсем корректный вариант, так как мы ссылаемся только на то что созданно
     //Нужно сделить за тем чтобы этот курсор был переключен на реальные треки
 
-    _tracksView[curTrack]->onTrackCommand(command);
+    _tracksView[0]->onTrackCommand(command); //curTrack не нужен нам в таком контексте, сейчас у нас 1 view
 }
 
 
@@ -514,9 +514,9 @@ void TabView::keyPress(int code) {
     }
 
     if (isdigit(code)) {
-        auto curTrack = _pTab->getCurrentTrack(); //TODO make better
-        _tracksView[curTrack]->keyevent(std::to_string(code - 48));
-        _tracksView[curTrack]->update();
+        //auto curTrack = _pTab->getCurrentTrack(); //TODO make better
+        _tracksView[0]->keyevent(std::to_string(code - 48));
+        _tracksView[0]->update();
     }
 
     //TODO other keys mapping if they set for any function
