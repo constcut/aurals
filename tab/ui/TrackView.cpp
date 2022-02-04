@@ -548,8 +548,10 @@ int TrackView::getInstrumet() {
 }
 
 void TrackView::setInstrument(int newInstr) {
-    if (_pTrack != nullptr)
-        return _pTrack->setInstrument(newInstr);
+    if (_pTrack != nullptr) {
+        _pTrack->setInstrument(newInstr);
+        _tabParrent->update();
+    }
 }
 
 int TrackView::getVolume() {
@@ -559,8 +561,10 @@ int TrackView::getVolume() {
 }
 
 void TrackView::setVolume(int newVol) {
-    if (_pTrack != nullptr)
-        return _pTrack->setVolume(newVol);
+    if (_pTrack != nullptr) {
+        _pTrack->setVolume(newVol);
+        _tabParrent->update();
+    }
 }
 
 int TrackView::getPanoram() {
@@ -570,8 +574,11 @@ int TrackView::getPanoram() {
 }
 
 void TrackView::setPanoram(int newPan) {
-    if (_pTrack != nullptr)
-        return _pTrack->setPan(newPan);
+    if (_pTrack != nullptr) {
+        _pTrack->setPan(newPan);
+        _tabParrent->update();
+    }
+
 }
 
 int TrackView::getStatus() {
@@ -581,8 +588,10 @@ int TrackView::getStatus() {
 }
 
 void TrackView::setStatus(int newStatus) { //0 - none, 1 - mute, 2 - solo
-    if (_pTrack != nullptr)
-        return _pTrack->setStatus(newStatus);
+    if (_pTrack != nullptr) {
+        _pTrack->setStatus(newStatus);
+        _tabParrent->update();
+    }
 }
 
 QString TrackView::getName() {
@@ -595,5 +604,6 @@ void TrackView::setName(QString newName) {
      if (_pTrack != nullptr) {
          auto name = newName.toStdString();
          _pTrack->setName(name);
+         _tabParrent->update();
      }
 }
