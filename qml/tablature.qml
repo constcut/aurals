@@ -131,6 +131,11 @@ Item {
         RowLayout {
             spacing: 10
 
+            ToolButton {
+                text: "__Menu__"
+                onClicked: tabMenu.open()
+            }
+
             Text {
                 text: "Test:"
             }
@@ -178,8 +183,9 @@ Item {
                     "GotoBar",
                     "Tune"]
             }
-            Button {
+            ToolButton {
                 text: "!"
+                width: 30
                 onClicked: {
                     tabView.passTabCommand(tabCommandCombo.currentIndex)
                 }
@@ -245,16 +251,12 @@ Item {
                     "Undo"
                 ]
             }
-            Button {
+            ToolButton {
                 text: "!"
+                width: 30
                 onClicked: {
                     tabView.passTrackCommand(trackCommandCombo.currentIndex)
                 }
-            }
-
-            ToolButton {
-                text: "__Menu__"
-                onClicked: tabMenu.open()
             }
         }
     }
