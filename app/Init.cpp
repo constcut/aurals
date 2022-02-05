@@ -17,7 +17,7 @@
 
 #include <signal.h>
 
-#include "log.hpp"
+#include "app/log.hpp"
 #include "app/LogHandler.hpp"
 
 #include "audio/wave/AudioHandler.hpp"

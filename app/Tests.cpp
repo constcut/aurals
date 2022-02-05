@@ -13,7 +13,7 @@
 #include <QMediaPlayer>
 
 #include <fstream>
-#include "log.hpp"
+#include "app/log.hpp"
 
 #include "tab/tools/MidiExport.hpp"
 

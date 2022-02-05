@@ -1,7 +1,7 @@
 #include "MidiMessage.hpp"
 
 #include <QDebug>
-#include "log.hpp"
+#include "app/log.hpp"
 
 extern bool midiLog;
 

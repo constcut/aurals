@@ -130,6 +130,7 @@ HEADERS += \
     app/Regression.hpp \
     app/StretchImage.hpp \
     app/Tests.hpp \
+    app/log.hpp \
     audio/features/ACFgraph.hpp \
     audio/features/PeaksOperations.hpp \
     audio/features/WindowFunction.hpp \
@@ -194,7 +195,6 @@ HEADERS += \
     #libs/wavelet/wavefunc.h \
     #libs/wavelet/wavelib.h \
     #libs/wavelet/wtmath.h \
-    log.hpp \
     midi/MidiEngine.hpp \
     midi/MidiFile.hpp \
     midi/MidiMessage.hpp \

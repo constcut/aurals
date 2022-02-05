@@ -6,7 +6,7 @@
 #include <QQuickPaintedItem>
 #include <QPainter>
 
-#include "log.hpp"
+#include "app/log.hpp"
 
 namespace aural_sight {
 

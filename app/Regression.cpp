@@ -5,7 +5,7 @@
 #include <fstream>
 #include <iostream>
 
-#include "log.hpp"
+#include "app/log.hpp"
 #include <QFileInfo>
 
 #include "tab/Tab.hpp"
