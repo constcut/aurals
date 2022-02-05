@@ -266,6 +266,14 @@ Item {
                     tabView.passTrackCommand(trackCommandCombo.currentIndex)
                 }
             }
+
+            ToolButton {
+                text: "+"
+                width: 30
+                onClicked:  {
+                    editPannel.visible = !editPannel.visible
+                }
+            }
         }
     }
 
@@ -521,6 +529,56 @@ Item {
                 trackView.focus = true
             }
         }
+    }
+
+    Rectangle {
+        visible: false
+        id: editPannel
+
+        border.color: "darkgray"
+
+        x: 0
+        y: parent.height * 0.8
+        width: parent.width
+        height: parent.height - y
+
+        RowLayout {
+
+            x: parent.width - width
+
+            Image {
+                source: "qrc:/icons/0.png"
+            }
+            Image {
+                source: "qrc:/icons/1.png"
+            }
+            Image {
+                source: "qrc:/icons/2.png"
+            }
+            Image {
+                source: "qrc:/icons/3.png"
+            }
+            Image {
+                source: "qrc:/icons/4.png"
+            }
+            Image {
+                source: "qrc:/icons/5.png"
+            }
+            Image {
+                source: "qrc:/icons/6.png"
+            }
+            Image {
+                source: "qrc:/icons/7.png"
+            }
+            Image {
+                source: "qrc:/icons/8.png"
+            }
+            Image {
+                source: "qrc:/icons/9.png"
+            }
+        }
+
+
     }
 
 
