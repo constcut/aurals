@@ -522,7 +522,7 @@ Item {
                     id: showAnimation
                     target: editPannel
                     property: "y"
-                    to: tablatureItem.height - 36 * 3
+                    to: tablatureItem.height - tablatureItem.buttonSize * 3 - tablatureItem.buttonSpacing * 2
                 }
 
                 PropertyAnimation {
