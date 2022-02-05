@@ -8,7 +8,7 @@ import mther.app 1.0
 
 Item {
 
-    id: midiPlayerItem
+    id: tablatureItem
 
     FileDialog {
         id: openFileDialog
@@ -108,180 +108,7 @@ Item {
     }
 
 
-
-
-    ColumnLayout {
-
-        id: mainLayout
-        y: 10
-        x: 10
-        spacing:  10
-
-        function refreshTrack() { //TODO смесить куда-то
-            var trackIdx = parseInt(trackCombo.currentText)
-            trackView.setFromTab(tabView, trackIdx)
-            tabView.setTrackIdx(trackIdx)
-
-            var instrId = trackView.getInstrumet()
-            var volume = trackView.getVolume()
-            var panoram = trackView.getPanoram()
-            var status = trackView.getStatus()
-
-            instrumentCombo.currentIndex = instrId
-            volumeSlider.value = volume
-            panoramSlider.value = panoram - 8 //todo review!
-            trackStatusCombo.currentIndex = status
-        }
-
-        RowLayout {
-            spacing: 10
-
-            ToolButton {
-                text: "__Menu__"
-                onClicked: tabMenu.open()
-            }
-
-            Text {
-                text: "Test:"
-            }
-
-            ComboBox {
-                id: tabCombo
-                model: 70
-                currentIndex: 0
-
-                onCurrentTextChanged: {
-                    var testId = parseInt(tabCombo.currentText) + 1
-                    var tabName = "tests/3." + testId + ".gp4"
-                    tabView.loadTab(tabName)
-                    trackCombo.model = tabView.tracksCount()
-                    mainLayout.refreshTrack()
-                    tabPannel.open()
-                }
-            }
-
-            /*
-            ComboBox {
-                id: tabCommandCombo
-                model : ["SetSignTillEnd",
-                    "SaveAs",
-                    "Mute",
-                    "Solo",
-                    "MoveLeft",
-                    "MoveRight",
-                    "MoveUp",
-                    "MoveDown",
-                    "Drums",
-                    "Instument",
-                    "Panoram",
-                    "Volume",
-                    "Name",
-                    "BPM",
-                    "OpenTrack",
-                    "NewTrack",
-                    "DeleteTrack",
-                    "PlayMidi",
-                    "GenerateMidi",
-                    "PauseMidi",
-                    "AddMarker",
-                    "OpenReprise",
-                    "CloseReprise",
-                    "GotoBar",
-                    "Tune"]
-            }
-            ToolButton {
-                text: "!"
-                width: 30
-                onClicked: {
-                    tabView.passTabCommand(tabCommandCombo.currentIndex)
-                }
-            }*/
-
-            ComboBox {
-                id: trackCommandCombo
-                model: [
-                    "PlayFromStart",
-                    "GotoStart",
-                    "SetSignForSelected",
-                    "SelectionExpandLeft",
-                    "SelectionExpandRight",
-                    "InsertBar",
-                    "NextBar",
-                    "PrevBar",
-                    "NextPage",
-                    "PrevPage",
-                    "NextTrack",
-                    "PrevTrack",
-                    "StringDown",
-                    "StringUp",
-                    "PrevBeat",
-                    "NextBeat",
-                    "SetPause",
-                    "DeleteBar",
-                    "DeleteSelectedBars",
-                    "DeleteSelectedBeats",
-                    "DeleteNote",
-                    "IncDuration",
-                    "DecDuration",
-                    "PlayTrackMidi",
-                    "SaveFile",
-                    "SaveAsFromTrack",
-                    "NewBar",
-                    "SetDot",
-                    "SetTriole",
-                    "Leeg",
-                    "Dead",
-                    "Vibrato",
-                    "Slide",
-                    "Hammer",
-                    "LetRing",
-                    "PalmMute",
-                    "Harmonics",
-                    "TremoloPickings",
-                    "Trill",
-                    "Stokatto",
-                    "FadeIn",
-                    "Accent",
-                    "HeaveAccent",
-                    "Bend",
-                    "Chord",
-                    "Text",
-                    "Changes",
-                    "UpStroke",
-                    "DownStroke",
-                    "SetBarSign",
-                    "Cut",
-                    "Copy",
-                    "CopyBeat",
-                    "CopyBars",
-                    "Paste",
-                    "Undo"
-                ]
-                //currentIndex: 20
-            }
-            ToolButton {
-                text: "!"
-                width: 30
-                onClicked: {
-                    tabView.passTrackCommand(trackCommandCombo.currentIndex)
-                }
-            }
-
-            ToolButton {
-                text: "+"
-                width: 30
-                onClicked:  {
-                    editPannel.visible = !editPannel.visible //TODO animation on y?
-                }
-            }
-        }
-    }
-
-
-
-
-
-    Drawer {
+    Drawer { //Moved to help fast ediitig pannel options
         id: tabPannel
         width: parent.width
         height: Qt.platform.os == "android" ? 0.7 * parent.height  : 0.3 * parent.height
@@ -511,6 +338,210 @@ Item {
     }
 
 
+
+    ColumnLayout {
+
+        id: mainLayout
+        y: 10
+        x: 10
+        spacing:  10
+
+        function refreshTrack() { //TODO смесить куда-то
+            var trackIdx = parseInt(trackCombo.currentText)
+            trackView.setFromTab(tabView, trackIdx)
+            tabView.setTrackIdx(trackIdx)
+
+            var instrId = trackView.getInstrumet()
+            var volume = trackView.getVolume()
+            var panoram = trackView.getPanoram()
+            var status = trackView.getStatus()
+
+            instrumentCombo.currentIndex = instrId
+            volumeSlider.value = volume
+            panoramSlider.value = panoram - 8 //todo review!
+            trackStatusCombo.currentIndex = status
+        }
+
+        RowLayout {
+            spacing: 10
+
+            ToolButton {
+                text: "__Menu__"
+                onClicked: tabMenu.open()
+            }
+
+            Text {
+                text: "Test:"
+            }
+
+            ComboBox {
+                id: tabCombo
+                model: 70
+                currentIndex: 0
+
+                onCurrentTextChanged: {
+                    var testId = parseInt(tabCombo.currentText) + 1
+                    var tabName = "tests/3." + testId + ".gp4"
+                    tabView.loadTab(tabName)
+                    trackCombo.model = tabView.tracksCount()
+                    mainLayout.refreshTrack()
+                    tabPannel.open()
+                }
+            }
+
+            /*
+            ComboBox {
+                id: tabCommandCombo
+                model : ["SetSignTillEnd",
+                    "SaveAs",
+                    "Mute",
+                    "Solo",
+                    "MoveLeft",
+                    "MoveRight",
+                    "MoveUp",
+                    "MoveDown",
+                    "Drums",
+                    "Instument",
+                    "Panoram",
+                    "Volume",
+                    "Name",
+                    "BPM",
+                    "OpenTrack",
+                    "NewTrack",
+                    "DeleteTrack",
+                    "PlayMidi",
+                    "GenerateMidi",
+                    "PauseMidi",
+                    "AddMarker",
+                    "OpenReprise",
+                    "CloseReprise",
+                    "GotoBar",
+                    "Tune"]
+            }
+            ToolButton {
+                text: "!"
+                width: 30
+                onClicked: {
+                    tabView.passTabCommand(tabCommandCombo.currentIndex)
+                }
+            }*/
+
+            ComboBox {
+                id: trackCommandCombo
+                model: [
+                    "PlayFromStart",
+                    "GotoStart",
+                    "SetSignForSelected",
+                    "SelectionExpandLeft",
+                    "SelectionExpandRight",
+                    "InsertBar",
+                    "NextBar",
+                    "PrevBar",
+                    "NextPage",
+                    "PrevPage",
+                    "NextTrack",
+                    "PrevTrack",
+                    "StringDown",
+                    "StringUp",
+                    "PrevBeat",
+                    "NextBeat",
+                    "SetPause",
+                    "DeleteBar",
+                    "DeleteSelectedBars",
+                    "DeleteSelectedBeats",
+                    "DeleteNote",
+                    "IncDuration",
+                    "DecDuration",
+                    "PlayTrackMidi",
+                    "SaveFile",
+                    "SaveAsFromTrack",
+                    "NewBar",
+                    "SetDot",
+                    "SetTriole",
+                    "Leeg",
+                    "Dead",
+                    "Vibrato",
+                    "Slide",
+                    "Hammer",
+                    "LetRing",
+                    "PalmMute",
+                    "Harmonics",
+                    "TremoloPickings",
+                    "Trill",
+                    "Stokatto",
+                    "FadeIn",
+                    "Accent",
+                    "HeaveAccent",
+                    "Bend",
+                    "Chord",
+                    "Text",
+                    "Changes",
+                    "UpStroke",
+                    "DownStroke",
+                    "SetBarSign",
+                    "Cut",
+                    "Copy",
+                    "CopyBeat",
+                    "CopyBars",
+                    "Paste",
+                    "Undo"
+                ]
+                //currentIndex: 20
+            }
+            ToolButton {
+                text: "!"
+                width: 30
+                onClicked: {
+                    tabView.passTrackCommand(trackCommandCombo.currentIndex)
+                }
+            }
+
+            ToolButton {
+                text: "+"
+                width: 30
+
+                PropertyAnimation {
+                    id: showAnimation
+                    target: editPannel
+                    property: "y"
+                    to: tablatureItem.height - 36 * 3
+                }
+
+                PropertyAnimation {
+                    id: hideAnimation
+                    target: editPannel
+                    property: "y"
+                    to: tablatureItem.height
+                }
+
+                property bool shown: true
+
+                onClicked: {
+                    if (shown) {
+                        hideAnimation.start()
+                        shown = false
+                    }
+                    else {
+                        showAnimation.start()
+                        shown = true
+                    }
+
+                }
+
+                /*{
+                    editPannel.visible = !editPannel.visible //TODO animation on y?
+                }*/
+            }
+        }
+    }
+
+
+
+
+
+
+
+
     TrackView {
 
         y: mainLayout.y + mainLayout.height + 5
@@ -532,7 +563,7 @@ Item {
     }
 
     Rectangle {
-        visible: false
+        visible: true
         id: editPannel
 
         border.color: "darkgray"
