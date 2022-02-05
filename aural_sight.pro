@@ -107,7 +107,9 @@ SOURCES += \
 RESOURCES += qml.qrc \
     res/fonts.qrc \
     res/soundfonts.qrc \
-    res/tests.qrc
+    res/tests.qrc \
+    res/icons.qrc \
+    res/icons2.qrc
 
 
 QML_IMPORT_PATH =
