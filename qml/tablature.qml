@@ -390,6 +390,7 @@ Item {
             }
 
             ToolButton {
+                icon.source: "qrc:/icons/play.png"
                 onClicked: {
                     tabView.prepareAllThreads(tabView.getCurrentBar())//TODO shift?
                     tabView.exportMidi("temp.mid", tabView.getCurrentBar()) //TODO shift
@@ -399,6 +400,7 @@ Item {
                 }
             }
             ToolButton {
+                icon.source: "qrc:/icons/x.png"
                 onClicked:  {
                     tabView.stopAllThreads()
                     audio.stopMidiPlayer()
