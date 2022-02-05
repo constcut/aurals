@@ -233,7 +233,7 @@ HEADERS += \
 DISTFILES += \
     ConsoleLog.qml \
     OpenTab.qml \
-    TODO \
+    res/TODO \
     Tablature.qml \
     PianoMap.qml \
     android/AndroidManifest.xml \
