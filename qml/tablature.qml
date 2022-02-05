@@ -271,7 +271,7 @@ Item {
                 text: "+"
                 width: 30
                 onClicked:  {
-                    editPannel.visible = !editPannel.visible
+                    editPannel.visible = !editPannel.visible //TODO animation on y?
                 }
             }
         }
@@ -538,48 +538,110 @@ Item {
         border.color: "darkgray"
 
         x: 0
-        y: parent.height * 0.8
+        y: parent.height - 36 * 3 //3 rows of icons
         width: parent.width
         height: parent.height - y
 
         RowLayout {
-
             x: parent.width - width
 
-            Image {
-                source: "qrc:/icons/0.png"
-            }
-            Image {
-                source: "qrc:/icons/1.png"
-            }
-            Image {
-                source: "qrc:/icons/2.png"
-            }
-            Image {
-                source: "qrc:/icons/3.png"
-            }
-            Image {
-                source: "qrc:/icons/4.png"
-            }
-            Image {
-                source: "qrc:/icons/5.png"
-            }
-            Image {
-                source: "qrc:/icons/6.png"
-            }
-            Image {
-                source: "qrc:/icons/7.png"
-            }
-            Image {
-                source: "qrc:/icons/8.png"
-            }
-            Image {
-                source: "qrc:/icons/9.png"
-            }
-        }
+            Repeater { //TODO custom layouts to create pannels like people want
+                model: 10
+                Image {
+                    property int digitIdx: index
+                    source: "qrc:/icons/" + index + ".png"
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked:   tabView.keyPress(digitIdx + 48) //ascii digit
+                    }
+                } //Image
+            } //Repeater
+        } //RowLayout - digits
 
 
-    }
+        RowLayout {
+            x: parent.width - width
+            y: 36
+
+            Repeater { //TODO custom layouts to create pannels like people want
+                model: 3
+
+                Image {
+
+                    property int idx: index
+                    source: "qrc:/icons/" + indexToName(index) + ".png"
+
+                    function indexToName(idx) { //TODO or move to main item
+                        if (idx === 0)
+                            return "prevBar"
+                        if (idx === 1)
+                            return "^"
+                        if (idx === 2)
+                            return "nextBar"
+                    }
+
+                    function indexToAction(idx) {
+                        if (idx === 0)
+                            return Tab.PrevBar
+                        if (idx === 1)
+                            return Tab.StringDown
+                        if (idx === 2)
+                            return Tab.NextBar
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            tabView.passTrackCommand(indexToAction(idx))
+                        }
+                    }
+                } //Image
+            } //Repeater
+        } //RowLayout - arrows
+
+        RowLayout {
+            x: parent.width - width
+            y: 36*2
+
+            Repeater { //TODO custom layouts to create pannels like people want
+                model: 3
+
+                Image {
+                    property int idx: index
+                    source: "qrc:/icons/" + indexToName(index) + ".png"
+
+                    function indexToName(idx) {
+                        if (idx === 0)
+                            return "prev"
+                        if (idx === 1)
+                            return "V"
+                        if (idx === 2)
+                            return "next"
+                    }
+
+                    function indexToAction(idx) {
+                        if (idx === 0)
+                            return Tab.PrevBeat
+                        if (idx === 1)
+                            return Tab.StringUp
+                        if (idx === 2)
+                            return Tab.NextBeat
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked:  {
+                            tabView.passTrackCommand(indexToAction(idx))
+                        }
+                    }
+                } //Image
+            } //Repeater
+        } //RowLayout - arrows
+
+
+
+    } //edit panel
 
 
     function keyboardEventSend(key) {
