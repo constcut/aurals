@@ -596,7 +596,7 @@ Item {
             y: 36
 
             Repeater { //TODO custom layouts to create pannels like people want
-                model: 3
+                model: 4
 
                 Image {
 
@@ -610,6 +610,8 @@ Item {
                             return "^"
                         if (idx === 2)
                             return "nextBar"
+                        if (idx === 3)
+                            return "del" //TODO list property https://stackoverflow.com/questions/26733011/how-to-declare-list-property-in-qml
                     }
 
                     function indexToAction(idx) {
@@ -619,6 +621,8 @@ Item {
                             return Tab.StringDown
                         if (idx === 2)
                             return Tab.NextBar
+                        if (idx === 3)
+                            return Tab.DeleteNote
                     }
 
                     MouseArea {
@@ -636,7 +640,7 @@ Item {
             y: 36*2
 
             Repeater { //TODO custom layouts to create pannels like people want
-                model: 3
+                model: 4
 
                 Image {
                     property int idx: index
@@ -649,6 +653,8 @@ Item {
                             return "V"
                         if (idx === 2)
                             return "next"
+                        if (idx === 3)
+                            return "undo"
                     }
 
                     function indexToAction(idx) {
@@ -658,6 +664,8 @@ Item {
                             return Tab.StringUp
                         if (idx === 2)
                             return Tab.NextBeat
+                        if (idx === 3)
+                            return Tab.Undo
                     }
 
                     MouseArea {
