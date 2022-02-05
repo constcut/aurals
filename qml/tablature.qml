@@ -389,6 +389,17 @@ Item {
                 }
             }
 
+            ToolButton {
+                text: play
+                onClicked: {
+                    tabView.prepareAllThreads(tabView.getCurrentBar())//TODO shift?
+                    tabView.exportMidi("temp.mid", tabView.getCurrentBar()) //TODO shift
+                    audio.openMidiFile("temp.mid")
+                    audio.startMidiPlayer()
+                    tabView.launchAllThreads()
+                }
+            }
+
             /*
             ComboBox {
                 id: tabCommandCombo
