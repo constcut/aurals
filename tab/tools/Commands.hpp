@@ -8,6 +8,14 @@
 #include <string>
 #include <fstream>
 
+#include <QObject>
+
+#include "tab/Note.hpp" //needed only because tab\track commands are not sepparated with reversable - split in 2 headers TODO
+#include "tab/Beat.hpp"
+#include "tab/Bar.hpp"
+
+
+
 
 namespace aural_sight {
 
@@ -23,7 +31,7 @@ namespace aural_sight {
         TwoIntTrackCommand
     };
 
-
+    Q_NAMESPACE
     enum class TabCommand {
         SetSignTillEnd,
         SaveAs,
@@ -51,7 +59,9 @@ namespace aural_sight {
         GotoBar,
         Tune
     };
+    Q_ENUM_NS(TabCommand)
 
+    Q_NAMESPACE
     enum class TrackCommand {
         PlayFromStart,
         GotoStart,
@@ -118,6 +128,7 @@ namespace aural_sight {
         DownM,
         Figering
     };
+    Q_ENUM_NS(TrackCommand)
 
 
 
@@ -175,7 +186,6 @@ namespace aural_sight {
         DeleteRangeOfBars = 22,
         DeleteRangeOfBeats = 23
     };
-
 
 
 

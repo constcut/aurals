@@ -39,6 +39,8 @@
 
 #include "tab/ui/TabViews.hpp"
 
+#include "tab/tools/Commands.hpp"
+
 
 using namespace std;
 using namespace aural_sight;
@@ -336,6 +338,8 @@ int mainInit(int argc, char *argv[]) {
     qmlRegisterType<aural_sight::TrackView>("mther.app", 1, 0, "TrackView");
     //qmlRegisterType<aural_sight::BarView>("mther.app", 1, 0, "BarView");
 
+    qmlRegisterUncreatableMetaObject(aural_sight::staticMetaObject,
+        "mther.app", 1, 0, "Tab", "Error: object creation for enum not supported");
 
     QDir dir;
     if (dir.exists("records") == false) {

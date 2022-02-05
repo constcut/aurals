@@ -95,7 +95,7 @@ Item {
         }
         MenuItem {
             text: "Save as"
-            onTriggered: tabView.passTabCommand(1) //TODO enum
+            onTriggered: tabView.onTabCommand(Tab.SaveAs) //TODO normal save (only for gmy files, if other then first save as)
         }
         MenuItem {
             text: "Export wav"
