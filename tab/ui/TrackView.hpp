@@ -52,7 +52,7 @@ namespace aural_sight {
         Q_INVOKABLE void onclick(int x1, int y1);
         Q_INVOKABLE void ondblclick(int x1, int y1);
 
-        virtual void ongesture(int offset, bool horizontal) ;
+        Q_INVOKABLE void ongesture(int offset, bool horizontal);
 
         int horizonMove(int offset);
 

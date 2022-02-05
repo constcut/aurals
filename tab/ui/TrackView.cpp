@@ -501,7 +501,7 @@ void TrackView::paint(QPainter *painter)
 
     //if (ySh <= (hLimit))
     {
-        ++lastSeen;
+        ++lastSeen; //TODO review не будет ли тут бесконечного роста?
     }
 
 }

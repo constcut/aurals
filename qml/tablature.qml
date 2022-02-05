@@ -71,8 +71,8 @@ Item {
         MenuItem {
             text: "Play"
             onTriggered:  {
-                tabView.prepareAllThreads(0)//TODO shift?
-                tabView.exportMidi("temp.mid", 0) //TODO shift
+                tabView.prepareAllThreads(tabView.getCurrentBar())//TODO shift?
+                tabView.exportMidi("temp.mid", tabView.getCurrentBar()) //TODO shift
                 audio.openMidiFile("temp.mid")
                 audio.startMidiPlayer()
                 tabView.launchAllThreads()
@@ -549,6 +549,8 @@ Item {
         width: parent.width
         height: parent.height - y
 
+        property int lastPress: 0
+
         MouseArea {
             anchors.fill: parent
             onClicked: {
@@ -558,6 +560,13 @@ Item {
             onDoubleClicked: {
                 trackView.ondblclick(mouseX, mouseY)
                 trackView.focus = true
+            }
+            onPressed:  {
+                trackView.lastPress = mouseY
+            }
+            onReleased: {
+                var offset = mouseY - trackView.lastPress
+                trackView.ongesture(offset, false)
             }
         }
     }
