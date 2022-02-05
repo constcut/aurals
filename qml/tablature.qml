@@ -554,12 +554,6 @@ Item {
     }
 
 
-
-
-
-
-
-
     TrackView {
 
         y: mainLayout.y + mainLayout.height + 5
@@ -589,6 +583,11 @@ Item {
         }
     }
 
+
+    property int buttonSize: 40
+    property int buttonSpacing: 5
+
+
     Rectangle {
         visible: true
         id: editPannel
@@ -596,7 +595,7 @@ Item {
         border.color: "darkgray"
 
         x: 0
-        y: parent.height - 36 * 3 //3 rows of icons
+        y: parent.height - tablatureItem.buttonSize * 3 - tablatureItem.buttonSpacing * 2
         width: parent.width
         height: parent.height - y
 
@@ -605,30 +604,26 @@ Item {
 
             Repeater { //TODO custom layouts to create pannels like people want
                 model: 10
-                Image {
-                    property int digitIdx: index
-                    source: "qrc:/icons/" + index + ".png"
 
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked:   tabView.keyPress(digitIdx + 48) //ascii digit
-                    }
-                } //Image
+                ToolButton {
+                    property int digitIdx: index
+                    icon.source: "qrc:/icons/" + index + ".png"
+                    onClicked: tabView.keyPress(digitIdx + 48) //ascii digit
+                }
             } //Repeater
         } //RowLayout - digits
 
 
         RowLayout {
             x: parent.width - width
-            y: 36
+            y: tablatureItem.buttonSize + tablatureItem.buttonSpacing
 
             Repeater { //TODO custom layouts to create pannels like people want
                 model: 4
 
-                Image {
-
+                ToolButton {
                     property int idx: index
-                    source: "qrc:/icons/" + indexToName(index) + ".png"
+                    icon.source: "qrc:/icons/" + indexToName(index) + ".png"
 
                     function indexToName(idx) { //TODO or move to main item
                         if (idx === 0)
@@ -652,26 +647,23 @@ Item {
                             return Tab.DeleteNote
                     }
 
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: {
-                            tabView.passTrackCommand(indexToAction(idx))
-                        }
-                    }
-                } //Image
+                    onClicked: tabView.passTrackCommand(indexToAction(idx))
+                }
+
             } //Repeater
         } //RowLayout - arrows
 
         RowLayout {
             x: parent.width - width
-            y: 36*2
+            y: tablatureItem.buttonSize * 2 + tablatureItem.buttonSpacing * 2
 
             Repeater { //TODO custom layouts to create pannels like people want
                 model: 4
 
-                Image {
+
+                ToolButton {
                     property int idx: index
-                    source: "qrc:/icons/" + indexToName(index) + ".png"
+                    icon.source: "qrc:/icons/" + indexToName(index) + ".png"
 
                     function indexToName(idx) {
                         if (idx === 0)
@@ -695,13 +687,8 @@ Item {
                             return Tab.Undo
                     }
 
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked:  {
-                            tabView.passTrackCommand(indexToAction(idx))
-                        }
-                    }
-                } //Image
+                    onClicked: tabView.passTrackCommand(indexToAction(idx))
+                }
             } //Repeater
         } //RowLayout - arrows
 
