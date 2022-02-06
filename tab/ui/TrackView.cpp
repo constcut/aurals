@@ -390,7 +390,12 @@ void TrackView::paint(QPainter *painter)
 
     if (cursor < displayIndex)
         displayIndex = cursor;
-    if (cursor > (lastSeen - 1))
+
+    size_t seenShift = 1;
+    if (lastSeen == _pTrack->size() - 1)
+        seenShift = 0; //There maybe supper rare issue if last bar isn't on screen now)
+
+    if (cursor > lastSeen - seenShift)
         displayIndex = cursor;
 
     if (displayIdxOnStart != displayIndex)
