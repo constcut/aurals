@@ -396,9 +396,6 @@ void TrackView::paint(QPainter *painter)
     if (displayIdxOnStart != displayIndex)
         imagePainted = false;
 
-    qDebug() << "Painted " << imagePainted << " " << displayIndex << " " << lastSeen;
-    qDebug() << width() << " " << height();
-
     if (imagePainted == false) {
 
         _prepared = QImage(width(), height(), QImage::Format_ARGB32);
@@ -466,18 +463,23 @@ void TrackView::paint(QPainter *painter)
             //TODO maybe we have to use some limit, for supper long tabs
         }
 
-        ++lastSeen;
+        //++lastSeen;
         //TODO move into subfunction ^
     }
 
     painter->drawImage(QPoint{0,0}, _prepared);
 
-    BarView& bView = _barsPull[cursor];
+    size_t pos = cursor - displayIndex;
 
-    changeColor(CONF_PARAM("colors.curBar"), painter);
-    bView.setCursor(cursorBeat, stringCursor + 1);
-    bView.paint(painter);
-    changeColor(CONF_PARAM("colors.default"), painter);
+    if (pos < _barsPull.size()) {
+
+        BarView& bView = _barsPull[cursor - displayIndex];
+
+        changeColor(CONF_PARAM("colors.curBar"), painter);
+        bView.setCursor(cursorBeat, stringCursor + 1);
+        bView.paint(painter);
+        changeColor(CONF_PARAM("colors.default"), painter);
+    }
 
 }
 
