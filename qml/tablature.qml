@@ -554,11 +554,13 @@ Item {
                         hideAnimation.start()
                         shown = false
                         //trackViewScroll.height += editPannel.height
+                        //flick.height += editPannel.height
                     }
                     else {
                         showAnimation.start()
                         shown = true
                         //trackViewScroll.height -= editPannel.height
+                        //flick.height += editPannel.height
                     }
                     //TODO add scroll area reduce
                 }
@@ -571,7 +573,7 @@ Item {
         y: mainLayout.y + mainLayout.height + 5
         id: trackViewScroll
         width: parent.width
-        height: parent.height - y //- editPannel.height
+        height: parent.height - y - editPannel.height
 
         clip: true
 
