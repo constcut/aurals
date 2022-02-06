@@ -321,6 +321,8 @@ Item {
             width: parent.width
             height: parent.height + 100 //TODO calculate value + add flick for vertical
 
+            // Возможно разбить на 2 компонента, 1 заголовок треков, другой серия тактов, и второй поместить в Scroll Area
+
             /*
             MouseArea {
                 anchors.fill: parent
@@ -354,7 +356,6 @@ Item {
 
             var realHeight = trackView.getPixelHeight(); //Optimize as we paint twice
             flick.contentHeight = realHeight
-
 
             instrumentCombo.currentIndex = trackView.getInstrumet()
             volumeSlider.value = trackView.getVolume()
@@ -539,10 +540,12 @@ Item {
                     if (shown) {
                         hideAnimation.start()
                         shown = false
+                        //trackViewScroll.height += editPannel.height
                     }
                     else {
                         showAnimation.start()
                         shown = true
+                        //trackViewScroll.height -= editPannel.height
                     }
                     //TODO add scroll area reduce
                 }
@@ -555,15 +558,24 @@ Item {
         y: mainLayout.y + mainLayout.height + 5
         id: trackViewScroll
         width: parent.width
-        height: parent.height - y
+        height: parent.height - y - editPannel.height
 
+        clip: true
 
         Flickable {
             id: flick
+
+            boundsBehavior : Flickable.StopAtBounds
+            boundsMovement : Flickable.StopAtBounds
+
             width: parent.width
             height: parent.height
             contentWidth: parent.width
-            contentHeight:  parent.height * 3 //TODO setable
+            contentHeight:  parent.height
+
+            onFlickEnded: {
+                flick.returnToBounds()
+            }
 
             TrackView {
 
