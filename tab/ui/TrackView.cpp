@@ -401,12 +401,22 @@ void TrackView::paint(QPainter *painter)
     if (displayIdxOnStart != displayIndex)
         imagePainted = false;
 
-    if (imagePainted == false) {
+    bool avoidImage = true;
+
+    if (imagePainted == false || avoidImage) {
 
         _prepared = QImage(width(), height(), QImage::Format_ARGB32);
 
         QPainter imgPainter(&_prepared);
         imgPainter.fillRect(0, 0, width(), height(), QBrush(QColor(Qt::white)));
+
+        QPainter* trackPainter = &imgPainter;
+        if (avoidImage)
+            trackPainter = painter;
+
+        auto f = imgPainter.font();
+        f.setPixelSize(14);
+        imgPainter.setFont(f);
 
         //TODO move into subfunction:
         _barsPull.clear(); //not always - to optimize
@@ -456,12 +466,12 @@ void TrackView::paint(QPainter *painter)
             std::uint8_t barCompleteStatus = curBar->getCompleteStatus(); //TODO avoid recalculations
 
             if (barCompleteStatus == 2 || barCompleteStatus == 1)
-                changeColor(CONF_PARAM("colors.exceed"), &imgPainter);
+                changeColor(CONF_PARAM("colors.exceed"), trackPainter);
 
-            bView.paint(&imgPainter);
+            bView.paint(trackPainter);
 
             if (barCompleteStatus == 2 || barCompleteStatus == 1)
-                 changeColor(CONF_PARAM("colors.default"), &imgPainter);
+                 changeColor(CONF_PARAM("colors.default"), trackPainter);
 
             xSh += bView.getW();
             _barsPull.push_back(bView);
@@ -472,7 +482,8 @@ void TrackView::paint(QPainter *painter)
         //TODO move into subfunction ^
     }
 
-    painter->drawImage(QPoint{0,0}, _prepared);
+    if (avoidImage == false)
+        painter->drawImage(QPoint{0,0}, _prepared);
 
     size_t pos = cursor - displayIndex;
 
@@ -480,9 +491,13 @@ void TrackView::paint(QPainter *painter)
 
         BarView& bView = _barsPull[cursor - displayIndex];
 
+        auto f = painter->font();
+        f.setPixelSize(14);
+        painter->setFont(f);
+
         changeColor(CONF_PARAM("colors.curBar"), painter);
         bView.setCursor(cursorBeat, stringCursor + 1);
-        bView.paint(painter);
+        bView.paint(painter); //TODO paint only cursor
         changeColor(CONF_PARAM("colors.default"), painter);
     }
 
