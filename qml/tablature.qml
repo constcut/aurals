@@ -352,15 +352,14 @@ Item {
             trackView.setFromTab(tabView, trackIdx)
             tabView.setTrackIdx(trackIdx)
 
-            var instrId = trackView.getInstrumet()
-            var volume = trackView.getVolume()
-            var panoram = trackView.getPanoram()
-            var status = trackView.getStatus()
+            var realHeight = trackView.getPixelHeight(); //Optimize as we paint twice
+            flick.contentHeight = realHeight
 
-            instrumentCombo.currentIndex = instrId
-            volumeSlider.value = volume
-            panoramSlider.value = panoram - 8 //todo review!
-            trackStatusCombo.currentIndex = status
+
+            instrumentCombo.currentIndex = trackView.getInstrumet()
+            volumeSlider.value = trackView.getVolume()
+            panoramSlider.value = trackView.getPanoram() - 8 //todo review tab view
+            trackStatusCombo.currentIndex = trackView.getStatus() //TODO enum
         }
 
         RowLayout {
@@ -545,12 +544,8 @@ Item {
                         showAnimation.start()
                         shown = true
                     }
-
+                    //TODO add scroll area reduce
                 }
-
-                /*{
-                    editPannel.visible = !editPannel.visible //TODO animation on y?
-                }*/
             }
         }
     }

@@ -458,7 +458,7 @@ void TrackView::paint(QPainter *painter)
             xSh = 0;
             ySh += bView.getH(); // there was 100 hardcoded
 
-            if (ySh >= (hLimit+480)){
+            if (ySh >= (hLimit + 480)) {
                 return; //stop that (there was a pannel)
             }
         }
@@ -505,6 +505,40 @@ void TrackView::paint(QPainter *painter)
     }
 
 }
+
+
+
+int TrackView::getPixelHeight() {
+
+    size_t trackLen = _pTrack->size();
+    int stringsN = _pTrack->getTuning().getStringsAmount();
+
+    int xSh = 0;
+    int ySh = 0;
+    int border = width();
+    int lastHeight = 0;
+
+    for (size_t i = 0; i < trackLen; ++i) //trackLen
+    {
+        auto& curBar = _pTrack->at(i);
+        BarView bView(curBar.get(), stringsN,i);
+
+        int xShNEXT = xSh + bView.getW() + 15; //TODO all constants configurable
+
+        if (xShNEXT > border) {
+            xSh = 0;
+            ySh += bView.getH();
+        }
+
+        bView.setShifts(xSh, ySh);
+        xSh += bView.getW();
+        lastHeight = bView.getH();
+    }
+
+    return ySh + lastHeight;
+}
+
+
 
 void TrackView::prepareThread(int shiftTheCursor)
 {

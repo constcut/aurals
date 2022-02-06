@@ -63,6 +63,8 @@ namespace aural_sight {
 
         void paint(QPainter *painter);
 
+        Q_INVOKABLE int getPixelHeight();
+
         Q_INVOKABLE void prepareThread(int shiftTheCursor);
         Q_INVOKABLE void launchThread();
         Q_INVOKABLE void stopThread();
