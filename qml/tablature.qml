@@ -556,34 +556,55 @@ Item {
     }
 
 
-    TrackView {
-
+    ScrollView {
         y: mainLayout.y + mainLayout.height + 5
-        id: trackView
+        id: trackViewScroll
         width: parent.width
         height: parent.height - y
 
-        property int lastPress: 0
 
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                trackView.onclick(mouseX, mouseY)
-                trackView.focus = true
+        Flickable {
+            id: flick
+            width: parent.width
+            height: parent.height
+            contentWidth: parent.width
+            contentHeight:  parent.height * 3 //TODO setable
+
+            TrackView {
+
+                id: trackView
+                width: parent.width
+                height: parent.height * 3
+
+                property int lastPress: 0
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        trackView.onclick(mouseX, mouseY)
+                        trackView.focus = true
+                    }
+                    onDoubleClicked: {
+                        trackView.ondblclick(mouseX, mouseY)
+                        trackView.focus = true
+                    }
+
+                    /*
+                    onPressed:  {
+                        trackView.lastPress = mouseY
+                    }
+                    onReleased: {
+                        var offset = mouseY - trackView.lastPress
+                        trackView.ongesture(offset, false)
+                    }*/
+                }
             }
-            onDoubleClicked: {
-                trackView.ondblclick(mouseX, mouseY)
-                trackView.focus = true
-            }
-            onPressed:  {
-                trackView.lastPress = mouseY
-            }
-            onReleased: {
-                var offset = mouseY - trackView.lastPress
-                trackView.ongesture(offset, false)
-            }
+
         }
+
     }
+
+
 
 
     property int buttonSize: 40
