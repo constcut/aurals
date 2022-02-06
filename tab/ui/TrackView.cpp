@@ -368,8 +368,18 @@ void TrackView::paint(QPainter *painter)
     if (lastWidth != width() || lastHeight != height())
         imagePainted = false;
 
+    //TODO здесь осуществлять перерассчёт позиций линий, каждая линия это вектор с номерами тактов
+    //+ Сразу же создать объекты BarView - их нужно будет менять только при смене width
+
+    //Таким образом для + - линии - нужно узнать в какой линии мы находимся, и переключить на 0 индекс в нужной линии
+
+    //display изменяется если линия текущего display и курсор отличаются
+    //(возможно позже проще будет разделить анимацию от выделения - чтобы в этом режиме не скролить по нажатию)
+    //Но для начала можно просто выключать этот режим за пределами воспроизведения, и включать при начале
+
     lastWidth = width();
     lastHeight = height();
+
 
     size_t trackLen = _pTrack->size(); //Earlier there was only track 1
     int stringsN = _pTrack->getTuning().getStringsAmount();
