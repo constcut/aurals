@@ -229,8 +229,6 @@ void AConfig::checkConfig()
     addValue("colors.button.bgspecial","darkgray");
 
 
-
-
     addValue("effects.vibrato","vib");
     addValue("effects.slide","sli");
     addValue("effects.hammer","ham");

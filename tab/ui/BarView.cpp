@@ -415,7 +415,7 @@ void BarView::paint(QPainter *painter)
         int toBegin = -3;
 
         for (int l=0; l<2; ++l)
-        painter->drawLine(toBegin+cX+l,cY+stringWidth/2,toBegin+cX+l,cY+amountStr*stringWidth-stringWidth/2);
+            painter->drawLine(toBegin+cX+l,cY+stringWidth/2,toBegin+cX+l,cY+amountStr*stringWidth-stringWidth/2);
 
         painter->drawEllipse(toBegin+cX+5,cY+stringWidth*2,3,3);
         painter->drawEllipse(toBegin+cX+5,cY+stringWidth*5,3,3);
@@ -429,7 +429,7 @@ void BarView::paint(QPainter *painter)
             toBegin -= 15;
 
         for (int l=0; l<2; ++l)
-        painter->drawLine(toBegin+cX+l,cY+stringWidth/2,toBegin+cX+l,cY+amountStr*stringWidth-stringWidth/2);
+            painter->drawLine(toBegin+cX+l,cY+stringWidth/2,toBegin+cX+l,cY+amountStr*stringWidth-stringWidth/2);
 
         std::string repCount =  std::to_string(bar1->getRepeatTimes());
         painter->drawText(toBegin+cX-9,cY+stringWidth*2-3,repCount.c_str());
@@ -482,9 +482,11 @@ void BarView::paint(QPainter *painter)
 
         auto tuning = track->getTuning();
 
-        for (size_t j = 0; j < curBeat->size(); ++j) {
+        for (size_t j = 0; j < curBeat->size(); ++j)
+        {
             auto& curNote = curBeat->at(j);
-            if (curNote) {
+            if (curNote)
+            {
                 int noteTune = 0;
                 int midiNote = 0;
 
@@ -495,11 +497,11 @@ void BarView::paint(QPainter *painter)
 
                 if (CONF_PARAM("showNotesView")=="1")
                 {
-                drawMidiNote(painter,curBeat->getDuration(),
-                             curBeat->getDotted(),curBeat->getDurationDetail(),
-                             midiNote,
-                             cX+10+i*inbarWidth + inbarWidth/2,
-                             cY+(stringWidth-3)*(amountStr+5));
+                    drawMidiNote(painter,curBeat->getDuration(),
+                                 curBeat->getDotted(),curBeat->getDurationDetail(),
+                                 midiNote,
+                                 cX+10+i*inbarWidth + inbarWidth/2,
+                                 cY+(stringWidth-3)*(amountStr+5));
                 }
                 else
                 {
@@ -722,7 +724,7 @@ void BarView::paint(QPainter *painter)
         else
             drawNote(painter, curBeat->getDuration(),curBeat->getDotted(),curBeat->getDurationDetail(),
                      cX+10+i*inbarWidth + inbarWidth/2,
-                     cY+stringWidth*(amountStr+1));
+                     cY+stringWidth*(amountStr));
 
         //OR DRAW MANY NOTES
         if (i==_cursor)
