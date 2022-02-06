@@ -380,19 +380,19 @@ void TrackView::paint(QPainter *painter)
     }
 
 
-    Track *track1 = _pTrack;
-    size_t trackLen = track1->size();
-    int stringsN = track1->getTuning().getStringsAmount();
+    size_t trackLen = _pTrack->size(); //Earlier there was only track 1
+    int stringsN = _pTrack->getTuning().getStringsAmount();
 
-    int xSh=0;
-    int ySh=0;
+    int xSh = 0;
+    int ySh = 0;
 
-    int hLimit = (height() - 50) / 100;
-    hLimit *= 100;
-
+    //TODO get back when  we paint currents
+    /*
     size_t& cursor = _pTrack->cursor();
     size_t& cursorBeat = _pTrack->cursorBeat();
-    size_t& stringCursor = _pTrack->stringCursor();
+    size_t& stringCursor = _pTrack->stringCursor();*/
+
+
 
     /*
     size_t& lastSeen = _pTrack->lastSeen(); //Probably remove if QImage doesn't lag
@@ -407,12 +407,11 @@ void TrackView::paint(QPainter *painter)
     std::uint8_t lastNum = 0;
     std::uint8_t lastDen = 0;
 
-
     changeColor(CONF_PARAM("colors.default"), painter);
 
     for (size_t i = 0; i < trackLen; ++i) //0 vs displayIndex that was before
     {
-        auto& curBar = track1->at(i);
+        auto& curBar = _pTrack->at(i);
 
         std::uint8_t curNum = curBar->getSignNum();
         std::uint8_t curDen = curBar->getSignDenum();
@@ -423,59 +422,46 @@ void TrackView::paint(QPainter *painter)
         if (alwaysShowSign)
             sameSign = false;
 
-        if ((curNum != lastNum) ||(curDen != lastDen))
-        {
-                sameSign = false;
-                lastNum = curNum;
-                lastDen = curDen;
+        if ((curNum != lastNum) ||(curDen != lastDen)) {
+            sameSign = false;
+            lastNum = curNum;
+            lastDen = curDen;
         }
 
         BarView bView(curBar.get(),stringsN,i);
-
-
-
         bView.setSameSign(sameSign);
-
-        //if (ySh <= (hLimit))
-            //lastSeen = i;
 
         int xShNEXT = xSh + bView.getW()+15;
         int border = width();
 
         if (xShNEXT > border) {
             xSh = 0;
-            ySh += bView.getH(); // there was 100 hardcoded
-
-            if (ySh >= (hLimit + 480)) {
-                return; //stop that (there was a pannel)
-            }
+            ySh += bView.getH();
         }
 
         bView.setShifts(xSh,ySh);
-        std::uint8_t barCompleteStatus = curBar->getCompleteStatus(); //avoid recalculations
+        std::uint8_t barCompleteStatus = curBar->getCompleteStatus(); //TODO avoid recalculations
 
-        if ( i == cursor ) {
-            changeColor(CONF_PARAM("colors.curBar"), painter);
-            if (i==cursor)
-                bView.setCursor(cursorBeat,stringCursor+1);
-        }
-        else {
-            //refact add another color
-            if ((barCompleteStatus==2)||(barCompleteStatus==1))
-                changeColor(CONF_PARAM("colors.exceed"), painter);
-        }
-
+        if (barCompleteStatus == 2 || barCompleteStatus == 1)
+            changeColor(CONF_PARAM("colors.exceed"), painter);
 
         bView.paint(painter);
 
-        if (( i == cursor ) || (barCompleteStatus==2)||(barCompleteStatus==1))
+        if (barCompleteStatus == 2 || barCompleteStatus == 1)
              changeColor(CONF_PARAM("colors.default"), painter);
 
-
         xSh += bView.getW();
-
         _barsPull.push_back(bView);
     }
+
+
+    /*
+    if ( i == cursor ) {
+        changeColor(CONF_PARAM("colors.curBar"), painter);
+        if (i==cursor)
+            bView.setCursor(cursorBeat,stringCursor+1);
+    } */ //+back to normal!
+
 
 
     //++lastSeen;
