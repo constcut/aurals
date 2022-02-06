@@ -357,6 +357,24 @@ void TabView::paint(QPainter *painter)
     }
 }
 
+int TabView::getTimeLineBar() {
+
+    size_t current = _pTab->getCurrentBar();
+    auto& pTrack = _pTab->at(0);
+
+    if (current != 0)
+    {
+        Bar *barPtr = pTrack->at(current).get();
+        const auto& timeLoop = pTrack->getTimeLoop();
+        for (size_t i = 0; i < timeLoop.size();++i) {
+             if (timeLoop.at(i) == barPtr)
+                 return i;
+        }
+    }
+
+    return 0;
+}
+
 
 void TabView::prepareAllThreads(int shiftTheCursor)
 {

@@ -71,8 +71,9 @@ Item {
         MenuItem {
             text: "Play"
             onTriggered:  {
-                tabView.prepareAllThreads(tabView.getCurrentBar())//TODO shift?
-                tabView.exportMidi("temp.mid", tabView.getCurrentBar()) //TODO shift
+                var currentPosition = tabView.getTimeLineBar()
+                tabView.prepareAllThreads(currentPosition)
+                tabView.exportMidi("temp.mid", currentPosition)
                 audio.openMidiFile("temp.mid")
                 audio.startMidiPlayer()
                 tabView.launchAllThreads()
@@ -392,8 +393,9 @@ Item {
             ToolButton {
                 icon.source: "qrc:/icons/play.png"
                 onClicked: {
-                    tabView.prepareAllThreads(tabView.getCurrentBar())//TODO shift?
-                    tabView.exportMidi("temp.mid", tabView.getCurrentBar()) //TODO shift
+                    var currentPosition = tabView.getTimeLineBar()
+                    tabView.prepareAllThreads(currentPosition)
+                    tabView.exportMidi("temp.mid", currentPosition)
                     audio.openMidiFile("temp.mid")
                     audio.startMidiPlayer()
                     tabView.launchAllThreads()

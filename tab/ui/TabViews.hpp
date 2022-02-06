@@ -44,7 +44,7 @@ namespace aural_sight {
         void setCurrentBar(int curBar) {
             _pTab->getCurrentBar() = curBar; }
 
-        Q_INVOKABLE int getCurrentBar() { return _pTab->getCurrentBar(); }
+        Q_INVOKABLE int getTimeLineBar();
 
         virtual bool isMovableX() { return true; }
         virtual bool isMovableY() { return true; }
