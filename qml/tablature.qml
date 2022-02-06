@@ -538,7 +538,7 @@ Item {
                     to: tablatureItem.height
                 }
 
-                property bool shown: true
+                property bool shown: false
 
                 onClicked: {
                     if (shown) {
@@ -627,7 +627,7 @@ Item {
         border.color: "darkgray"
 
         x: 0
-        y: parent.height - tablatureItem.buttonSize * 3 - tablatureItem.buttonSpacing * 2
+        y: parent.height //- tablatureItem.buttonSize * 3 - tablatureItem.buttonSpacing * 2
         width: parent.width
         height: parent.height - y
 

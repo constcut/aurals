@@ -446,8 +446,8 @@ void TrackView::paint(QPainter *painter)
                 xSh = 0;
                 ySh += bView.getH();
 
-                if (ySh >= (hLimit + 480)) //Check constant
-                    break;; //stop that (there was a pannel)
+                if (ySh >= (hLimit)) //Check constant
+                    break; //stop that (there was a pannel)
             }
 
             bView.setShifts(xSh,ySh);
