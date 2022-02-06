@@ -374,24 +374,87 @@ void TrackView::paint(QPainter *painter)
     lastWidth = width();
     lastHeight = height();
 
-    if (imagePainted == false) {
-        _prepared = QImage(width(), height(), QImage::Format_ARGB32);
-        QPainter imgPainter(&_prepared);
-    }
-
-
     size_t trackLen = _pTrack->size(); //Earlier there was only track 1
     int stringsN = _pTrack->getTuning().getStringsAmount();
 
     int xSh = 0;
     int ySh = 0;
 
-    //TODO get back when  we paint currents
-    /*
+
+    if (imagePainted == false) {
+        _prepared = QImage(width(), height(), QImage::Format_ARGB32);
+        QPainter imgPainter(&_prepared);
+
+        //TODO move into subfunction:
+        _barsPull.clear(); //not always - to optimize
+
+        std::uint8_t lastNum = 0;
+        std::uint8_t lastDen = 0;
+
+        changeColor(CONF_PARAM("colors.default"), &imgPainter);
+
+        for (size_t i = 0; i < trackLen; ++i) //0 vs displayIndex that was before
+        {
+            auto& curBar = _pTrack->at(i);
+
+            std::uint8_t curNum = curBar->getSignNum();
+            std::uint8_t curDen = curBar->getSignDenum();
+            bool sameSign = true;
+
+            static bool alwaysShowSign = CONF_PARAM("TrackView.alwaysShowBarSign") == "1";
+
+            if (alwaysShowSign)
+                sameSign = false;
+
+            if ((curNum != lastNum) ||(curDen != lastDen)) {
+                sameSign = false;
+                lastNum = curNum;
+                lastDen = curDen;
+            }
+
+            BarView bView(curBar.get(),stringsN,i);
+            bView.setSameSign(sameSign);
+
+            int xShNEXT = xSh + bView.getW()+15;
+            int border = width();
+
+            if (xShNEXT > border) {
+                xSh = 0;
+                ySh += bView.getH();
+            }
+
+            bView.setShifts(xSh,ySh);
+            std::uint8_t barCompleteStatus = curBar->getCompleteStatus(); //TODO avoid recalculations
+
+            if (barCompleteStatus == 2 || barCompleteStatus == 1)
+                changeColor(CONF_PARAM("colors.exceed"), &imgPainter);
+
+            bView.paint(&imgPainter);
+
+            if (barCompleteStatus == 2 || barCompleteStatus == 1)
+                 changeColor(CONF_PARAM("colors.default"), &imgPainter);
+
+            xSh += bView.getW();
+            _barsPull.push_back(bView);
+        }
+
+        //TODO move into subfunction ^
+
+    }
+
+    painter->drawImage(QPoint{0,0}, _prepared);
+
+    //YET this would be a dirty code, refact later, there is a small chance that we had to roll back or repair lastSeen + display idx
     size_t& cursor = _pTrack->cursor();
     size_t& cursorBeat = _pTrack->cursorBeat();
-    size_t& stringCursor = _pTrack->stringCursor();*/
+    size_t& stringCursor = _pTrack->stringCursor();
 
+    BarView& bView = _barsPull[cursor];
+
+    changeColor(CONF_PARAM("colors.curBar"), painter);
+    bView.setCursor(cursorBeat, stringCursor + 1);
+    bView.paint(painter);
+    changeColor(CONF_PARAM("colors.default"), painter);
 
 
     /*
@@ -401,67 +464,6 @@ void TrackView::paint(QPainter *painter)
         displayIndex = cursor;
     if (cursor > (lastSeen-1))
         displayIndex = cursor;*/
-
-    _barsPull.clear(); //not always - to optimize
-
-    std::uint8_t lastNum = 0;
-    std::uint8_t lastDen = 0;
-
-    changeColor(CONF_PARAM("colors.default"), painter);
-
-    for (size_t i = 0; i < trackLen; ++i) //0 vs displayIndex that was before
-    {
-        auto& curBar = _pTrack->at(i);
-
-        std::uint8_t curNum = curBar->getSignNum();
-        std::uint8_t curDen = curBar->getSignDenum();
-        bool sameSign = true;
-
-        static bool alwaysShowSign = CONF_PARAM("TrackView.alwaysShowBarSign") == "1";
-
-        if (alwaysShowSign)
-            sameSign = false;
-
-        if ((curNum != lastNum) ||(curDen != lastDen)) {
-            sameSign = false;
-            lastNum = curNum;
-            lastDen = curDen;
-        }
-
-        BarView bView(curBar.get(),stringsN,i);
-        bView.setSameSign(sameSign);
-
-        int xShNEXT = xSh + bView.getW()+15;
-        int border = width();
-
-        if (xShNEXT > border) {
-            xSh = 0;
-            ySh += bView.getH();
-        }
-
-        bView.setShifts(xSh,ySh);
-        std::uint8_t barCompleteStatus = curBar->getCompleteStatus(); //TODO avoid recalculations
-
-        if (barCompleteStatus == 2 || barCompleteStatus == 1)
-            changeColor(CONF_PARAM("colors.exceed"), painter);
-
-        bView.paint(painter);
-
-        if (barCompleteStatus == 2 || barCompleteStatus == 1)
-             changeColor(CONF_PARAM("colors.default"), painter);
-
-        xSh += bView.getW();
-        _barsPull.push_back(bView);
-    }
-
-
-    /*
-    if ( i == cursor ) {
-        changeColor(CONF_PARAM("colors.curBar"), painter);
-        if (i==cursor)
-            bView.setCursor(cursorBeat,stringCursor+1);
-    } */ //+back to normal!
-
 
 
     //++lastSeen;
