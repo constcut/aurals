@@ -350,12 +350,16 @@ Item {
         spacing:  10
 
         function refreshTrack() { //TODO смесить куда-то
+
+            console.log("Call refresh track")
+
             var trackIdx = parseInt(trackCombo.currentText)
             trackView.setFromTab(tabView, trackIdx)
             tabView.setTrackIdx(trackIdx)
 
-            var realHeight = trackView.getPixelHeight(); //Optimize as we paint twice
-            flick.contentHeight = realHeight
+            //var realHeight = trackView.getPixelHeight();
+            //flick.contentHeight = realHeight
+            //We can have long flick but it sucks on android
 
             instrumentCombo.currentIndex = trackView.getInstrumet()
             volumeSlider.value = trackView.getVolume()
@@ -558,7 +562,7 @@ Item {
         y: mainLayout.y + mainLayout.height + 5
         id: trackViewScroll
         width: parent.width
-        height: parent.height - y - editPannel.height
+        height: parent.height - y //- editPannel.height
 
         clip: true
 
@@ -573,15 +577,12 @@ Item {
             contentWidth: parent.width
             contentHeight:  parent.height
 
-            onFlickEnded: {
-                flick.returnToBounds()
-            }
 
             TrackView {
 
                 id: trackView
                 width: parent.width
-                height: parent.height * 3
+                height: parent.height
 
                 property int lastPress: 0
 

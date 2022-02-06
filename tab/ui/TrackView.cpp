@@ -17,6 +17,7 @@ void TrackView::setFromTab(QObject* pa, int trackIdx) {
     _tabParrent->addTrackView(this);
     if (trackPtr != _pTrack) {
         _pTrack = trackPtr;
+        imagePainted = false;
         update();
     }
 }
@@ -364,10 +365,6 @@ void TrackView::paint(QPainter *painter)
     if (_pTrack == nullptr)
         return;
 
-    bool imagePainted = false;
-    int lastWidth = 0;
-    int lastHeight = 0;
-
     if (lastWidth != width() || lastHeight != height())
         imagePainted = false;
 
@@ -379,11 +376,35 @@ void TrackView::paint(QPainter *painter)
 
     int xSh = 0;
     int ySh = 0;
+    BarView forH(_pTrack->at(0).get(), stringsN, 0); //Opt
+    int hLimit = height() - forH.getH(); //Limit to avoid painting bar in bottom
 
+    size_t& cursor = _pTrack->cursor();
+    size_t& cursorBeat = _pTrack->cursorBeat();
+    size_t& stringCursor = _pTrack->stringCursor();
+
+    size_t& lastSeen = _pTrack->lastSeen(); //Probably remove if QImage doesn't lag
+    size_t& displayIndex = _pTrack->displayIndex(); //Probably remove if QImage doesn't lag TODO
+
+    size_t displayIdxOnStart = displayIndex;
+
+    if (cursor < displayIndex)
+        displayIndex = cursor;
+    if (cursor > (lastSeen - 1))
+        displayIndex = cursor;
+
+    if (displayIdxOnStart != displayIndex)
+        imagePainted = false;
+
+    qDebug() << "Painted " << imagePainted << " " << displayIndex << " " << lastSeen;
+    qDebug() << width() << " " << height();
 
     if (imagePainted == false) {
+
         _prepared = QImage(width(), height(), QImage::Format_ARGB32);
+
         QPainter imgPainter(&_prepared);
+        imgPainter.fillRect(0, 0, width(), height(), QBrush(QColor(Qt::white)));
 
         //TODO move into subfunction:
         _barsPull.clear(); //not always - to optimize
@@ -393,7 +414,7 @@ void TrackView::paint(QPainter *painter)
 
         changeColor(CONF_PARAM("colors.default"), &imgPainter);
 
-        for (size_t i = 0; i < trackLen; ++i) //0 vs displayIndex that was before
+        for (size_t i = displayIndex; i < trackLen; ++i)
         {
             auto& curBar = _pTrack->at(i);
 
@@ -415,12 +436,18 @@ void TrackView::paint(QPainter *painter)
             BarView bView(curBar.get(),stringsN,i);
             bView.setSameSign(sameSign);
 
+            if (ySh <= (hLimit))
+                lastSeen = i;
+
             int xShNEXT = xSh + bView.getW()+15;
             int border = width();
 
             if (xShNEXT > border) {
                 xSh = 0;
                 ySh += bView.getH();
+
+                if (ySh >= (hLimit + 480)) //Check constant
+                    break;; //stop that (there was a pannel)
             }
 
             bView.setShifts(xSh,ySh);
@@ -436,18 +463,14 @@ void TrackView::paint(QPainter *painter)
 
             xSh += bView.getW();
             _barsPull.push_back(bView);
+            //TODO maybe we have to use some limit, for supper long tabs
         }
 
+        ++lastSeen;
         //TODO move into subfunction ^
-
     }
 
     painter->drawImage(QPoint{0,0}, _prepared);
-
-    //YET this would be a dirty code, refact later, there is a small chance that we had to roll back or repair lastSeen + display idx
-    size_t& cursor = _pTrack->cursor();
-    size_t& cursorBeat = _pTrack->cursorBeat();
-    size_t& stringCursor = _pTrack->stringCursor();
 
     BarView& bView = _barsPull[cursor];
 
@@ -456,17 +479,6 @@ void TrackView::paint(QPainter *painter)
     bView.paint(painter);
     changeColor(CONF_PARAM("colors.default"), painter);
 
-
-    /*
-    size_t& lastSeen = _pTrack->lastSeen(); //Probably remove if QImage doesn't lag
-    size_t& displayIndex = _pTrack->displayIndex(); //Probably remove if QImage doesn't lag TODO
-    if (cursor < displayIndex)
-        displayIndex = cursor;
-    if (cursor > (lastSeen-1))
-        displayIndex = cursor;*/
-
-
-    //++lastSeen;
 }
 
 

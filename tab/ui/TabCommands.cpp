@@ -341,12 +341,8 @@ void TabView::onTrackCommand([[maybe_unused]] TrackCommand command) {
 
     if (_tracksView.empty())
         return; //TODO возможно всю обработку можно сделать в TabView, а потом вовсе вывести
-
-    auto curTrack = _pTab->getCurrentTrack();
-    //TODO это не совсем корректный вариант, так как мы ссылаемся только на то что созданно
-    //Нужно сделить за тем чтобы этот курсор был переключен на реальные треки
-
-    _tracksView[0]->onTrackCommand(command); //curTrack не нужен нам в таком контексте, сейчас у нас 1 view
+    //auto curTrack = _pTab->getCurrentTrack(); //На текущий момент поддерживаем только 1 отображение
+    _tracksView[0]->onTrackCommand(command);
 }
 
 
@@ -381,7 +377,7 @@ void TrackView::onTrackCommand(TrackCommand command) {
     else
         _pTrack->onTrackCommand(command);
 
-    //TODO condition?
+    imagePainted = false; //TODO only on editing
     update();
 }
 

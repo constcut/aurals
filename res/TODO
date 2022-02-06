@@ -356,12 +356,10 @@ if (selectionBarFirst!=-1)
 
 + another reminder
 
-//int hLimit = (height() - 50) / 100;
-//hLimit *= 100;
 
 
-//if (ySh <= (hLimit))
-    //lastSeen = i;
+
+
 
 int xShNEXT = xSh + bView.getW()+15;
 int border = width();
