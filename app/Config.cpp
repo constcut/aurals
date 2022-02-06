@@ -186,7 +186,7 @@ void AConfig::printValues() const
     }
  }
 
-void AConfig::checkConfig()
+void AConfig::checkConfig() //TODO clean
 {
     addValue("TabView.genAMusic","g");
     addValue("TabView.genMidi","h");
@@ -206,28 +206,32 @@ void AConfig::checkConfig()
     addValue("TrackView.save","s");
     addValue("TrackView.quickOpen","y");
     addValue("Main.open","open");
+
+
     addValue("colors.background","white");
     addValue("colors.panBG","gray");
+
+    addValue("colors.default","black");
+
     addValue("colors.curBar","black");
-    addValue("colors.curBeat","gray");
-    addValue("colors.curString","darkgray"); //hmm
-    addValue("colors.default","gray");
+    addValue("colors.curBeat","red");
+    addValue("colors.curString","lightgray");
+
     addValue("colors.exceed","darkred");
     addValue("colors.curTrack","blue");
+
     addValue("colors.selection","darkgreen");
 
     addValue("colors.combo.background","gray");
     addValue("colors.combo.pressed","darkgray");
     addValue("colors.combo.focus","white");
     addValue("colors.combo.hover","darkblue");
-
     addValue("colors.button.background","gray");
     addValue("colors.button.pressed","darkgray");
     addValue("colors.button.focus","white");
     addValue("colors.button.hover","darkblue");
 
     addValue("colors.button.bgspecial","darkgray");
-
 
     addValue("effects.vibrato","vib");
     addValue("effects.slide","sli");
