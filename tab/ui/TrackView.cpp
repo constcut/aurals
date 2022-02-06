@@ -405,7 +405,7 @@ void TrackView::paint(QPainter *painter)
 
     if (imagePainted == false || avoidImage) {
 
-        _prepared = QImage(width(), height(), QImage::Format_ARGB32);
+        _prepared = QImage(width(), height(), QImage::Format_ARGB32_Premultiplied);
 
         QPainter imgPainter(&_prepared);
         imgPainter.fillRect(0, 0, width(), height(), QBrush(QColor(Qt::white)));
