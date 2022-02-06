@@ -10,6 +10,8 @@ Item {
 
     id: tablatureItem
 
+    property bool useScrollArea: false
+
     FileDialog {
         id: openFileDialog
         title: "Please choose a tab file"
@@ -105,6 +107,10 @@ Item {
         MenuItem {
             text: "Export midi"
             onTriggered: saveMidiDialog.open()
+        }
+        MenuItem {
+            text: "Use scroll area"
+            onTriggered: tablatureItem.useScrollArea = !tablatureItem.useScrollArea
         }
     }
 
@@ -357,8 +363,11 @@ Item {
             trackView.setFromTab(tabView, trackIdx)
             tabView.setTrackIdx(trackIdx)
 
-            //var realHeight = trackView.getPixelHeight();
-            //flick.contentHeight = realHeight
+            if (Qt.platform.os != "android" && useScrollArea) {
+                var realHeight = trackView.getPixelHeight();
+                flick.contentHeight = realHeight
+                //But then we missing autoscroll
+            }
             //We can have long flick but it sucks on android
 
             instrumentCombo.currentIndex = trackView.getInstrumet()
