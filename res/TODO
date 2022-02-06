@@ -319,6 +319,40 @@ std::string percussions[]=
 z) PDF экспорт
  : https://forum.qt.io/topic/68805/combine-multiple-images-into-a-single-pdf/8
 
+--------------------------------------------------------------------------------
+
+Old selection draws:
+
+just after barview creation in trackview
+
+
+int& selectionBeatFirst = _pTrack->selectBeatFirst();
+int& selectionBeatLast = _pTrack->selectBeatLast();
+int& selectionBarFirst = _pTrack->selectBarFirst();
+int& selectionBarLast = _pTrack->selectBarLast();
+
+if (selectionBarFirst!=-1)
+{
+    if ((i >= selectionBarFirst)&&
+        (i <= selectionBarLast))
+    {
+        //if one - then same (first)
+        //if last - then second (last)
+        //if middle - -1(whole)
+        if (selectionBarLast == selectionBarFirst)
+            bView.setSelectors(selectionBeatFirst,selectionBeatLast);
+        else
+        {
+            if (selectionBarFirst == i)
+                bView.setSelectors(selectionBeatFirst, -1);
+            else if (selectionBarLast == i)
+                 bView.setSelectors(0,selectionBeatLast);
+            else
+                bView.setSelectors(0,-1); //in the middle
+        }
+
+    }
+}
 
 ----------------------------------------------------------------------------------
 

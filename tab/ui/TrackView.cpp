@@ -364,6 +364,22 @@ void TrackView::paint(QPainter *painter)
     if (_pTrack == nullptr)
         return;
 
+    bool imagePainted = false;
+    int lastWidth = 0;
+    int lastHeight = 0;
+
+    if (lastWidth != width() || lastHeight != height())
+        imagePainted = false;
+
+    lastWidth = width();
+    lastHeight = height();
+
+    if (imagePainted == false) {
+        _prepared = QImage(width(), height(), QImage::Format_ARGB32);
+        QPainter imgPainter(&_prepared);
+    }
+
+
     Track *track1 = _pTrack;
     size_t trackLen = track1->size();
     int stringsN = track1->getTuning().getStringsAmount();
@@ -377,31 +393,24 @@ void TrackView::paint(QPainter *painter)
     size_t& cursor = _pTrack->cursor();
     size_t& cursorBeat = _pTrack->cursorBeat();
     size_t& stringCursor = _pTrack->stringCursor();
-    size_t& lastSeen = _pTrack->lastSeen();
-    size_t& displayIndex = _pTrack->displayIndex();
-    int& selectionBeatFirst = _pTrack->selectBeatFirst();
-    int& selectionBeatLast = _pTrack->selectBeatLast();
-    int& selectionBarFirst = _pTrack->selectBarFirst();
-    int& selectionBarLast = _pTrack->selectBarLast();
 
-    //to automate scroll
+    /*
+    size_t& lastSeen = _pTrack->lastSeen(); //Probably remove if QImage doesn't lag
+    size_t& displayIndex = _pTrack->displayIndex(); //Probably remove if QImage doesn't lag TODO
     if (cursor < displayIndex)
         displayIndex = cursor;
-
     if (cursor > (lastSeen-1))
-        displayIndex = cursor;
+        displayIndex = cursor;*/
 
     _barsPull.clear(); //not always - to optimize
 
     std::uint8_t lastNum = 0;
     std::uint8_t lastDen = 0;
 
-    if (_pTrack->isDrums())
-        painter->drawText(220,55,"!Drum track!");
 
     changeColor(CONF_PARAM("colors.default"), painter);
 
-    for (size_t i = displayIndex; i < trackLen; ++i) //trackLen
+    for (size_t i = 0; i < trackLen; ++i) //0 vs displayIndex that was before
     {
         auto& curBar = track1->at(i);
 
@@ -423,33 +432,12 @@ void TrackView::paint(QPainter *painter)
 
         BarView bView(curBar.get(),stringsN,i);
 
-        if (selectionBarFirst!=-1)
-        {
-            if ((i >= selectionBarFirst)&&
-                (i <= selectionBarLast))
-            {
-                //if one - then same (first)
-                //if last - then second (last)
-                //if middle - -1(whole)
-                if (selectionBarLast == selectionBarFirst)
-                    bView.setSelectors(selectionBeatFirst,selectionBeatLast);
-                else
-                {
-                    if (selectionBarFirst == i)
-                        bView.setSelectors(selectionBeatFirst, -1);
-                    else if (selectionBarLast == i)
-                         bView.setSelectors(0,selectionBeatLast);
-                    else
-                        bView.setSelectors(0,-1); //in the middle
-                }
 
-            }
-        }
 
         bView.setSameSign(sameSign);
 
-        if (ySh <= (hLimit))
-            lastSeen = i;
+        //if (ySh <= (hLimit))
+            //lastSeen = i;
 
         int xShNEXT = xSh + bView.getW()+15;
         int border = width();
@@ -486,24 +474,11 @@ void TrackView::paint(QPainter *painter)
 
         xSh += bView.getW();
 
-        //if (ySh <= (hLimit))
-        {
-            _barsPull.push_back(bView);
-        }
-
-        if (i == cursor)
-        {
-            //old cursor lines
-            //painter->drawLine(xSh,ySh+20*track1->tuning.getStringsAmount(),xSh+bView.getW(),ySh+20*track1->tuning.getStringsAmount());
-            //painter->drawLine(xSh+cursorBeat*12,5+ySh+20*track1->tuning.getStringsAmount(),xSh+cursorBeat*12+12,5+ySh+20*track1->tuning.getStringsAmount());
-        }
+        _barsPull.push_back(bView);
     }
 
-    //if (ySh <= (hLimit))
-    {
-        ++lastSeen; //TODO review не будет ли тут бесконечного роста?
-    }
 
+    //++lastSeen;
 }
 
 

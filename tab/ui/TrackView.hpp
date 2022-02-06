@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include <QQuickPaintedItem>
+#include <QImage>
 
 #include "BarView.hpp"
 #include "tab/tools/Commands.hpp"
@@ -30,6 +31,12 @@ namespace aural_sight {
         std::vector<std::unique_ptr<ThreadLocal>> _finishPool;
 
         ViewPull _barsPull;
+
+        bool imagePainted = false;
+        int lastWidth = 0;
+        int lastHeight = 0;
+
+        QImage _prepared;
 
     public:
 
