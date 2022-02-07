@@ -221,15 +221,19 @@ void TabView::keyPress(int code) {
     if (code == Qt::Key_Left) {
         onTrackCommand(TrackCommand::PrevBeat); //onTabCommand(TabCommand::MoveLeft); + updated
     }
-    if (code == Qt::Key_Right) {
+    else if (code == Qt::Key_Right) {
         onTrackCommand(TrackCommand::NextBeat); //onTabCommand(TabCommand::MoveRight); + updated
     }
-    if (code == Qt::Key_Up) {
+    else if (code == Qt::Key_Up) {
         onTrackCommand(TrackCommand::StringDown);
     }
-    if (code == Qt::Key_Down) {
+    else if (code == Qt::Key_Down) {
         onTrackCommand(TrackCommand::StringUp);
     }
+    else if (code == Qt::Key_Backspace || code == Qt::Key_Delete) {
+        onTrackCommand(TrackCommand::DeleteNote);
+    }
+
 
     if (isdigit(code)) {
         _tracksView[0]->keyevent(std::to_string(code - 48));
