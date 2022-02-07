@@ -87,39 +87,6 @@ void handleKeyInput(int digit, int& digitPress, Track* pTrack, size_t cursor, si
 }
 
 
-
-void saveAsFromTrack(TabView* tabParent) {
-    auto fd = std::make_unique<QFileDialog>();
-
-    fd->setStyleSheet("QScrollBar:horizontal {\
-                        border: 2px solid grey;\
-                        background: #32CC99;\
-                        height: 15px;\
-                        margin: 0px 20px 0 20px;\
-                    }\
-                    QLineEdit { height: 20px; \
-                    }");
-
-    fd->setViewMode(QFileDialog::List);
-
-    std::string dir="";
-#ifdef __ANDROID_API__
-    dir="/sdcard/";
-    fd->setDirectory("/sdcard/");
-    QScreen *screen = QApplication::screens().at(0);
-    fd->setGeometry(0,0,screen->geometry().width(),screen->geometry().height());
-#endif
-
-    QString saveFileName = fd->getSaveFileName(0,"Save tab as",dir.c_str(),"Guitarmy files (*.gmy)");
-    GmyFile gmyFile;
-    std::string  gfileName = saveFileName.toStdString();
-    std::ofstream file(gfileName, std::ios::binary);
-    gmyFile.saveToFile(file,tabParent->getTab().get());
-    return;
-}
-
-
-
 void setTextOnBeat(Track *track) {
     auto& beat = track->at(track->cursor())->at(track->cursorBeat());
     std::string beatText;
@@ -172,8 +139,6 @@ void TrackView::onTrackCommand(TrackCommand command) {
 
     if (command == TrackCommand::SetSignForSelected)
       changeBarSignsQt(_pTrack, selectionBarFirst, selectionBarLast);
-    else if (command == TrackCommand::SaveAsFromTrack)
-        saveAsFromTrack(_tabParrent);
     else if (command == TrackCommand::Text)
         setTextOnBeat(_pTrack);
     else if (command == TrackCommand::SetBarSign)

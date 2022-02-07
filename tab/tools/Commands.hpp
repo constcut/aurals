@@ -35,7 +35,7 @@ namespace aural_sight {
     Q_NAMESPACE
     enum class TabCommand { //Make all reversable
         SetSignTillEnd,
-        SaveAs,
+        SaveAs, //Move to QML
         Mute, //Make reversable use from tab
         Solo, //Make reversable use from tab
         MoveLeft,
@@ -82,7 +82,6 @@ namespace aural_sight {
         DeleteNote,
         IncDuration,
         DecDuration,
-        SaveAsFromTrack, //Move to qml
         NewBar,
         SetDot,
         SetTriole,
