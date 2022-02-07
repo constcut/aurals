@@ -96,8 +96,8 @@ namespace aural_sight {
         void setShifts(int x1, int y1) {
             _xShift =x1;
             _yShift =y1;
-            x = x1+20;
-            y = y1+20;
+            x = x1 + 20;
+            y = y1 + 20;
         }
 
         void setNStrings(int ns) { _nStrings = ns; }

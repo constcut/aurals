@@ -448,6 +448,59 @@ void TrackView::paintMainArea(QPainter *painter) {
 }
 
 
+
+void TrackView::fillBarsPool() {
+
+    size_t trackLen = _pTrack->size();
+    int stringsN = _pTrack->getTuning().getStringsAmount();
+
+    std::uint8_t lastNum = 0;
+    std::uint8_t lastDen = 0;
+
+    int xSh = 0;
+    int ySh = 0;
+
+    for (size_t i = 0; i < trackLen; ++i)
+    {
+        auto& curBar = _pTrack->at(i);
+
+        std::uint8_t curNum = curBar->getSignNum();
+        std::uint8_t curDen = curBar->getSignDenum();
+        bool sameSign = true;
+
+        static bool alwaysShowSign = CONF_PARAM("TrackView.alwaysShowBarSign") == "1";
+
+        if (alwaysShowSign)
+            sameSign = false;
+
+        if ((curNum != lastNum) ||(curDen != lastDen)) {
+            sameSign = false;
+            lastNum = curNum;
+            lastDen = curDen;
+        }
+
+        BarView bView(curBar.get(), stringsN,i);
+        bView.setSameSign(sameSign);
+
+        int xShNEXT = xSh + bView.getW()+15;
+        int border = width();
+
+        if (xShNEXT > border) {
+            xSh = 0;
+            ySh += bView.getH();
+        }
+
+        bView.setShifts(xSh, ySh);
+
+        xSh += bView.getW();
+        _barsPull.push_back(bView);
+    }
+
+    //Full bar pool created - create also lines
+
+}
+
+
 void TrackView::paint(QPainter *painter)
 {
     if (_pTrack == nullptr)
@@ -455,6 +508,11 @@ void TrackView::paint(QPainter *painter)
 
     if (lastWidth != width() || lastHeight != height()) {
         //Update pull
+
+        //fillBarsPool();
+
+        lastWidth = width();
+        lastHeight = height();
     }
 
     //TODO здесь осуществлять перерассчёт позиций линий, каждая линия это вектор с номерами тактов
@@ -466,8 +524,6 @@ void TrackView::paint(QPainter *painter)
     //(возможно позже проще будет разделить анимацию от выделения - чтобы в этом режиме не скролить по нажатию)
     //Но для начала можно просто выключать этот режим за пределами воспроизведения, и включать при начале
 
-    lastWidth = width();
-    lastHeight = height();
 
     auto f = painter->font();
     f.setPixelSize(14);
