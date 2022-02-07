@@ -156,7 +156,6 @@ void setBarSign(Track* pTrack) {
 
 
 
-
 void TabView::onTrackCommand([[maybe_unused]] TrackCommand command) {
 
     if (_tracksView.empty())
@@ -168,9 +167,6 @@ void TabView::onTrackCommand([[maybe_unused]] TrackCommand command) {
 
 void TrackView::onTrackCommand(TrackCommand command) {
 
-    size_t& cursor = _pTrack->cursor(); //TODO get rid slowly
-    size_t& cursorBeat = _pTrack->cursorBeat();
-    size_t& stringCursor = _pTrack->stringCursor();
     int& selectionBarFirst = _pTrack->selectBarFirst();
     int& selectionBarLast = _pTrack->selectBarLast();
 
@@ -217,7 +213,6 @@ void TrackView::onTabCommand(TabCommand command) {
 }
 
 
-
 void TabView::keyPress(int code) {
     qDebug() << "TABVIEW key event " << code;
 
@@ -240,7 +235,6 @@ void TabView::keyPress(int code) {
         _tracksView[0]->keyevent(std::to_string(code - 48));
         _tracksView[0]->update();
     }
-
     //TODO other keys mapping if they set for any function
     //2 big handlers for Tab and Track commands
 
@@ -248,10 +242,10 @@ void TabView::keyPress(int code) {
         update();
 }
 
-//Tab commands area
 
 
-void changeTrackName(Tab* pTab) { //TODOM
+
+void changeTrackName(Tab* pTab) {
     bool ok=false;
     //refact inputs to gview
     QString newName = QInputDialog::getText(0,"Input",
@@ -261,15 +255,6 @@ void changeTrackName(Tab* pTab) { //TODOM
        pTab->changeTrackName(stdName);
 }
 
-void changeTrackVolume(Tab* pTab)  { //TODOM
-    bool ok=false;
-    int newVol = QInputDialog::getInt(0,"Input",
-                         "Vol Instrument:", QLineEdit::Normal,
-                         0,16,1, &ok);
-    if (ok)
-        pTab->changeTrackVolume(newVol);
-
-}
 
 void setSignTillEnd(Tab* pTab) { //TODOM
     bool ok=false;
@@ -287,6 +272,7 @@ void setSignTillEnd(Tab* pTab) { //TODOM
 
 }
 
+
 void setMarker(Tab* pTab) {
     bool ok=false;
     QString markerText= QInputDialog::getText(0,"Input",
@@ -296,6 +282,7 @@ void setMarker(Tab* pTab) {
         pTab->setMarker(stdMarkerText);
     }
 }
+
 
 void goToBar(Tab* pTab) {
     size_t trackLen = pTab->at(0)->size();
@@ -429,6 +416,7 @@ void closeReprise(Tab* pTab) { //TODO argument repeat times
     }
 }
 
+
 int changeTrackBpm(Tab* pTab) {
     bool ok=false;
     int newBpm = QInputDialog::getInt(0,"Input",
@@ -449,8 +437,6 @@ void TabView::onTabCommand(TabCommand command) {
         saveAs(_pTab.get());
     else if (command == TabCommand::SetSignTillEnd)  //TODO хэндлеры для более простого вызова
         setSignTillEnd(_pTab.get());
-    else if (command == TabCommand::Volume)
-        ::changeTrackVolume(_pTab.get());
     else if (command == TabCommand::Name)
         ::changeTrackName(_pTab.get());
     else if (command == TabCommand::AddMarker)
