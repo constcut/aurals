@@ -301,32 +301,32 @@ BarView::BarView(Bar *b,int nstr, int barNum): //stringWidth(12),inbarWidth(20),
     _repEnd=false;
 
     const size_t barLen = b->size();
-    h = stringWidth * (nstr + 1); //
+    _h = stringWidth * (nstr + 1); //
 
     if (CONF_PARAM("TrackView.largeNotes") == "1")
-        h = stringWidth*(nstr+2);
+        _h = stringWidth*(nstr+2);
 
-    h += 10; //mini shift from last
-    w = (barLen + 1) * inbarWidth;
+    _h += 10; //mini shift from last
+    _w = (barLen + 1) * inbarWidth;
 
     if (CONF_PARAM("upsideDownNotes") == "1")
-        h+= 10;
+        _h+= 10;
 
     if (CONF_PARAM("showNotesView") == "1") {
-       h += (stringWidth-3)*(5);
-       h += 75;
-       h += 20; //to ensure bass would be ok
+       _h += (stringWidth-3)*(5);
+       _h += 75;
+       _h += 20; //to ensure bass would be ok
        if (CONF_PARAM("upsideDownNotes")=="0")
-           h+=10;
+           _h+=10;
     }
 
     if (b->getRepeat() & 1) {
         _repBegin = true;
-        w += 15;
+        _w += 15;
     }
     if (b->getRepeat() & 2) {
         _repEnd = true;
-        w += 15;
+        _w += 15;
     }
 }
 
@@ -334,8 +334,8 @@ BarView::BarView(Bar *b,int nstr, int barNum): //stringWidth(12),inbarWidth(20),
 void BarView::paint(QPainter *painter)
 {
     Bar *bar1 = _pBar;
-    int cX = x;
-    int cY = y;
+    int cX = _x;
+    int cY = _y;
 
     Track *track = bar1->getParent();
     bool isSelected = false;
@@ -423,7 +423,7 @@ void BarView::paint(QPainter *painter)
 
     if (_repEnd)
     {
-        int toBegin = w-10;
+        int toBegin = _w-10;
 
         if (_repBegin)
             toBegin -= 15;
@@ -890,7 +890,7 @@ void BarView::drawEffects(QPainter *painter, int x1, int y1, int w1, int h1, con
 
 int BarView::getClickString(int y1) const
 {
-    int yOffset = y1-y;
+    int yOffset = y1 - _y;
     int stringIndex = yOffset/12; //12 stringWidth
     //attention
     //unknown issue
@@ -902,7 +902,7 @@ int BarView::getClickBeat(int x1) const
 {
     if (_repBegin) x1 -= 15;
 
-    int xOffset = x1-x;
+    int xOffset = x1-_x;
     int beatIndex = xOffset/inbarWidth;
     //--beatIndex;
     return beatIndex;
