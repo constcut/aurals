@@ -106,120 +106,6 @@ void saveRawAudio(QByteArray& ba, QString location) {
 }
 
 
-std::chrono::steady_clock::time_point lastCall = std::chrono::steady_clock::now();
-
-void playTrack(TabView* tabParrent, std::unique_ptr<ThreadLocal>& localThr, size_t& cursorBeat,
-               size_t cursor, Track* pTrack) { //TODO объединить - воспроизведение должно быть из одного источника запускаться
-
-    auto newCall = std::chrono::steady_clock::now();
-    auto duration = newCall - lastCall;
-    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
-    lastCall = newCall;
-
-    if (ms < 200) {
-        //qDebug() << "Skipped continued press " << ms;
-        return;
-    }
-
-
-    if (tabParrent->getPlaying()==true) {
-        if (localThr)
-           if (localThr->getStatus()) {
-                //animation stopped
-                tabParrent->setPlaying(false);
-                //cursor = displayIndex; //auto repeat from page
-                cursorBeat = 0;
-            }
-    }
-
-    if (tabParrent->getPlaying() == false) {
-        //to start not from begin always
-        size_t shiftTheCursor = 0;
-        if (cursor != 0){
-            Bar *barPtr = pTrack->at(cursor).get();
-
-            const auto& timeLoop = pTrack->getTimeLoop();
-            for (size_t i = 0; i < timeLoop.size();++i){
-                 if (timeLoop.at(i) == barPtr){
-                     shiftTheCursor = i;
-                     break;
-                 }
-            }
-        }
-
-        pTrack->connectAll();
-
-        auto& tab = tabParrent->getTab();
-        tab->connectTracks();
-        auto generatedMidi = exportMidi(tab.get(), shiftTheCursor);
-
-        /*
-        if ((CONF_PARAM("mergeMidiTracks")=="1") || (press=="playMerge")){
-            MidiTrack *newTrack = MidiEngine::uniteFileToTrack(&generatedMidi);
-            generatedMidi.clear();
-            generatedMidi.add(newTrack);
-        }*/
-
-        std::string fullOutName = AConfig::getInst().testsLocation + std::string("midiOutput.mid");
-
-        std::ofstream outFile2(fullOutName, std::ios::binary);
-
-        if (!outFile2.is_open())
-            qDebug() << "Failed to open out file :(";
-        else
-            qDebug() <<"File opened " << fullOutName.c_str();
-
-        generatedMidi->writeStream(outFile2);
-        outFile2.close();
-
-        if (CONF_PARAM("midi.config").empty() == false){
-            qDebug() << "Midi config " << CONF_PARAM("midi.config").c_str();
-            //MidiToPcm generator(CONF_PARAM("midi.config"));
-            std::string outputSound = AConfig::getInst().testsLocation + std::string("waveOutput.wav");
-            //generator.convert(fullOutName,outputSound); //TODO sf mit
-
-            MidiRender render;
-            std::string sfPath = AConfig::getInst().testsLocation + "fullset.sf2";
-            render.openSoundFont(sfPath.c_str());
-
-            auto midiPath = AConfig::getInst().testsLocation + "midiOutput.mid";
-            //midiPath = "/home/punnalyse/Downloads/TinySoundFont-master/examples/venture.mid";
-
-            auto qa = render.renderShort(midiPath.c_str());
-            qDebug() << "Generated " << qa.size() << " bytes ";
-            saveRawAudio(qa, outputSound.c_str());
-        }
-        tabParrent->prepareAllThreads(shiftTheCursor);
-
-        //tabParrent->connectAllThreadsSignal(mw); //TODO
-
-
-        std::string midiConfig = CONF_PARAM("midi.config");
-
-        if (CONF_PARAM("midi.config").empty() == false) {
-            ///NEED TO SEND start_record_output waveOutput.wav
-            //mw->pushForceKey("start_record_output waveOutput.wav");
-            //TODO AudioHandler
-        }
-        else {
-            //STARTMIDI
-        }
-        tabParrent->launchAllThreads();
-        tabParrent->setPlaying(true);
-    }
-    else {
-
-        if (CONF_PARAM("midi.config").empty() == false)
-            ;//mw->pushForceKey("stop_record_output"); //TODO AudioHandler
-        else
-            ;//MidiEngine::stopDefaultFile();
-
-        tabParrent->stopAllThreads();
-        tabParrent->setPlaying(false);
-    }
-}
-
-
 
 void saveAsFromTrack(TabView* tabParent) {
     auto fd = std::make_unique<QFileDialog>();
@@ -337,8 +223,6 @@ void TrackView::onTrackCommand(TrackCommand command) {
     }
     else if (command == TrackCommand::SetSignForSelected)
       changeBarSignsQt(_pTrack, selectionBarFirst, selectionBarLast);
-    else if (command == TrackCommand::PlayTrackMidi) //TODO единый вызов запуска (играется не 1 трек) //|| (press=="playMerge")
-        playTrack(_tabParrent, _animationThread, cursorBeat, cursor, _pTrack);
     else if (command == TrackCommand::SaveAsFromTrack)
         saveAsFromTrack(_tabParrent);
     else if (command == TrackCommand::Bend)
