@@ -13,194 +13,141 @@ void BarView::drawMidiNote(QPainter *painter, std::uint8_t noteDur, std::uint8_t
     int xPoint = x1;
     int yPoint = y1;
 
-    //most important is verical shft thats made from
-    //midi note value
-
-   // int sevenTh = midiNote/7;
-
     int lineToStand = midiNote - 20; //40
-
-
     yPoint += (stringWidth-3)*11; //was *6
     yPoint -=2; //now set on 40
 
     int yNote = (stringWidth-3)/2;
 
-    ///if (lineToStand == position[i])
-    //THEN sign is used to be #
-
-
     int position[] = {2,5,7,10,12,14,17,19, 22,24,26,29,31,34,36,38,41,43,46,48,
                      50,53,55,58,60,62,65,67,70,72,74,77,79,82,84,86};
 
-
-
     bool needSignSharp =false;
     for (size_t i = 0; i < sizeof(position)/sizeof(int); ++i)
-    {
         if (position[i]==lineToStand)
             needSignSharp = true;
-    }
-
 
     int diezCount = 0;
 
     for (size_t i = 0; i < sizeof(position)/sizeof(int); ++i)
     {
-        int index = sizeof(position)/sizeof(int) - 1 -i;
-        //from the end
-        if (lineToStand >= position[index])
-        {
+        int index = sizeof(position)/sizeof(int) - 1 - i;
+        if (lineToStand >= position[index]) {
             --lineToStand;
             ++diezCount;
        }
     }
 
 
-
     lineToStand -= 12; //20 more notes were addded for bass
-
     yNote -= lineToStand*(stringWidth-3)/2;
 
 
-
-    //prepare all default parameters here
-
-    int mainRadius = 5;
-
+    int mainRadius = 5; //all constants to config
     int radiusShift = 0;
-
     int note32 = 4;
     int note16 = 6;
     int note8 = 8;
-    int note4 = 10; //names are wrong.. abit
-
+    int note4 = 10;
     int noteTail = 6;
     int noteTailEnd = 10;
 
-
-    //shift them
     if (CONF_PARAM("TrackView.largeNotes")=="1")
     {
         note4 *= 2;
         note8 *= 2;
         note16 *= 2;
         note32 *= 2;
-
         noteTailEnd += 3;
-
         yPoint += 10;
-
         mainRadius += 3;
         radiusShift = 2;
-        //and fill inside(
     }
 
-
     yNote -= radiusShift;
-
-
 
     if (CONF_PARAM("TrackView.largeNotes")=="1")
         drawEllipse(QColor("black"), painter, xPoint-radiusShift,yPoint-radiusShift+yNote,mainRadius,mainRadius);
     else
     {
         drawEllipse(painter, xPoint - radiusShift, yPoint - radiusShift + yNote, mainRadius, mainRadius);
-        drawEllipse(painter, xPoint+1,yPoint+1+yNote,3,3);
-        drawEllipse(painter, xPoint+2,yPoint+2+yNote,2,2);
+        drawEllipse(painter, xPoint + 1, yPoint + 1 + yNote, 3, 3);
+        drawEllipse(painter, xPoint + 2, yPoint + 2 + yNote, 2, 2);
     }
 
     if (needSignSharp)
     {
-        painter->drawLine(xPoint-radiusShift-5,yPoint-radiusShift+yNote,
-                          xPoint-radiusShift,yPoint-radiusShift+yNote);
+        painter->drawLine(xPoint - radiusShift - 5, yPoint - radiusShift + yNote,
+                          xPoint - radiusShift, yPoint - radiusShift + yNote);
 
-        painter->drawLine(xPoint-radiusShift-5,yPoint-radiusShift+yNote-2,
-                          xPoint-radiusShift,yPoint-radiusShift+yNote-2);
+        painter->drawLine(xPoint - radiusShift - 5, yPoint - radiusShift + yNote - 2,
+                          xPoint - radiusShift, yPoint - radiusShift + yNote - 2);
 
-        painter->drawLine(xPoint-radiusShift-2,yPoint-radiusShift+yNote-3,
-                          xPoint-radiusShift-2,yPoint-radiusShift+yNote+1);
+        painter->drawLine(xPoint - radiusShift - 2, yPoint - radiusShift + yNote - 3,
+                          xPoint - radiusShift - 2, yPoint - radiusShift + yNote + 1);
 
-        painter->drawLine(xPoint-radiusShift-4,yPoint-radiusShift+yNote-3,
-                          xPoint-radiusShift-4,yPoint-radiusShift+yNote+1);
+        painter->drawLine(xPoint - radiusShift - 4, yPoint - radiusShift + yNote - 3,
+                          xPoint - radiusShift - 4, yPoint - radiusShift + yNote + 1);
     }
 
-    int nU = 1; //note up or normal -1 \ 1
-
-    if (CONF_PARAM("upsideDownNotes")=="1")
-        nU = -1;
-
+    int noteUpsideDownCoef = 1;
+    if (CONF_PARAM("upsideDownNotes") == "1")
+        noteUpsideDownCoef = -1;
 
     if (dotted)
-        painter->drawEllipse(xPoint+7,yPoint+yNote,2,2); //check fine on large
-
+        painter->drawEllipse(xPoint + 7, yPoint + yNote, 2, 2); //check fine on large
 
     if (noteDur >= 1)
-        painter->drawLine(xPoint+noteTail,yPoint+yNote,xPoint+noteTail,yPoint-note4*nU+yNote); //line (1+)
+        painter->drawLine(xPoint + noteTail, yPoint + yNote, xPoint + noteTail,
+                          yPoint - note4 * noteUpsideDownCoef + yNote);
 
-    if (noteDur >=3)
-        painter->drawLine(xPoint+noteTail,yPoint-note4*nU+yNote,xPoint+noteTailEnd,yPoint-note4*nU+yNote-3); //flow 1 (3+)
-    if (noteDur >=4)
-        painter->drawLine(xPoint+noteTail,yPoint-note8*nU+yNote,xPoint+noteTailEnd,yPoint-note8*nU+yNote-3); //flow 2 (4+)
-    if (noteDur >=5)
-        painter->drawLine(xPoint+noteTail,yPoint-note16*nU+yNote,xPoint+noteTailEnd,yPoint-note16*nU+yNote-3); //flow 3 (5+)
-    if (noteDur >=6)
-        painter->drawLine(xPoint+noteTail,yPoint-note32*nU+yNote,xPoint+noteTailEnd,yPoint-note32*nU+yNote-3); //flow 4 (6)
+    if (noteDur >= 3)
+        painter->drawLine(xPoint + noteTail, yPoint - note4 * noteUpsideDownCoef + yNote,
+                          xPoint + noteTailEnd, yPoint - note4 * noteUpsideDownCoef + yNote - 3);
+
+    if (noteDur >= 4)
+        painter->drawLine(xPoint + noteTail, yPoint - note8 * noteUpsideDownCoef + yNote,
+                          xPoint + noteTailEnd, yPoint - note8 * noteUpsideDownCoef + yNote - 3);
+
+    if (noteDur >= 5)
+        painter->drawLine(xPoint + noteTail, yPoint - note16 * noteUpsideDownCoef + yNote,
+                          xPoint + noteTailEnd, yPoint - note16 * noteUpsideDownCoef + yNote - 3);
+
+    if (noteDur >= 6)
+        painter->drawLine(xPoint+noteTail, yPoint - note32 * noteUpsideDownCoef + yNote,
+                          xPoint+noteTailEnd, yPoint - note32 * noteUpsideDownCoef + yNote - 3);
 
     if (durDet)
-        painter->drawText(xPoint+6,yPoint+5,std::to_string(durDet).c_str());
-
-    //DRAW LINE AS ITERATION
-
-///     painter->drawLine(xPoint,cY+(stringWidth-3)
-///     *(amountStr+5+lines),cX+10+barLen*inbarWidth,
-///     cY+(stringWidth-3)*(amountStr+5+lines));
+        painter->drawText(xPoint + 6, yPoint + 5, std::to_string(durDet).c_str());
 
 
-    int beginIndex = 0; ///0
-    int endIndex = lineToStand/2; //14
-
+    int beginIndex = 0;
+    int endIndex = lineToStand/2;
     beginIndex = lineToStand/2;
-    //endIndex = 12;
 
     int lowerestBorder =  0;
 
     if (lineToStand<5)
     {
-        if (lineToStand < -6)
-        {
+        if (lineToStand < -6) {
             beginIndex = -6;
-
-            int smoothIndex = beginIndex*-1 - 2;
-
-            yPoint += (stringWidth-3)*smoothIndex;
+            int smoothIndex = -beginIndex - 2;
+            yPoint += (stringWidth - 3)*smoothIndex;
         }
     }
-    else
-    {
-        if (lineToStand >= 16)
-        {
-            beginIndex = 6;
-        }
-        //beginIndex = 7;
-    }
-
-    //
+    else if (lineToStand >= 16)
+        beginIndex = 6;
 
     for (int i = lowerestBorder; i < beginIndex; ++i)
-        yPoint -= stringWidth-3;
+        yPoint -= stringWidth - 3;
 
     for (int i = beginIndex ; i <= endIndex; ++i)
     {
         int smallMove = -3;
         int decreaseElse = 0; //-3
 
-        //if (i == lineToStand/2)
-           // decreaseElse = 0;
-
-
-        painter->drawLine(xPoint-radiusShift+smallMove,yPoint+radiusShift/2,
-                          xPoint+radiusShift+mainRadius/2+smallMove+decreaseElse,yPoint+radiusShift/2);
+        painter->drawLine(xPoint - radiusShift + smallMove, yPoint + radiusShift / 2,
+                          xPoint + radiusShift + mainRadius / 2 + smallMove+decreaseElse, yPoint + radiusShift / 2);
 
         yPoint -= stringWidth-3;
     }
