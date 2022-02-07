@@ -446,7 +446,6 @@ Item {
             ComboBox {
                 id: trackCommandCombo
                 model: [
-                    "PlayFromStart",
                     "GotoStart",
                     "SetSignForSelected",
                     "SelectionExpandLeft",
@@ -456,8 +455,6 @@ Item {
                     "PrevBar",
                     "NextPage",
                     "PrevPage",
-                    "NextTrack",
-                    "PrevTrack",
                     "StringDown",
                     "StringUp",
                     "PrevBeat",
@@ -469,8 +466,6 @@ Item {
                     "DeleteNote",
                     "IncDuration",
                     "DecDuration",
-                    "PlayTrackMidi",
-                    "SaveFile",
                     "SaveAsFromTrack",
                     "NewBar",
                     "SetDot",

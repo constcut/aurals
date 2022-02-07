@@ -62,7 +62,6 @@ namespace aural_sight {
 
     Q_NAMESPACE
     enum class TrackCommand {
-        PlayFromStart, //Removed
         GotoStart,
         SetSignForSelected,
         SelectionExpandLeft,
@@ -72,8 +71,6 @@ namespace aural_sight {
         PrevBar,
         NextPage,
         PrevPage,
-        NextTrack, //Removed
-        PrevTrack, //Removed
         StringDown,
         StringUp,
         PrevBeat,
@@ -85,9 +82,7 @@ namespace aural_sight {
         DeleteNote,
         IncDuration,
         DecDuration,
-        PlayTrackMidi, //Removed
-        SaveFile, //Removed
-        SaveAsFromTrack, //Removed
+        SaveAsFromTrack, //Move to qml
         NewBar,
         SetDot,
         SetTriole,
