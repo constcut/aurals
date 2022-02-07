@@ -75,7 +75,7 @@ And there is tablature editor\viewer, yet in development:
 
 ## Libraries
 
-Project uses 2 libraries:
+Project uses several libraries:
 
 * TinySoundFont
 
