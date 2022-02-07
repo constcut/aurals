@@ -21,7 +21,7 @@ namespace aural_sight {
     {
     public:
 
-        Tab() :_isPlaying(false), _displayTrack(0), _currentTrack(0),
+        Tab() :_isPlaying(false), _currentTrack(0),
             _currentBar(0), _displayBar(0) {}
 
         virtual ~Tab() = default;
@@ -65,14 +65,12 @@ namespace aural_sight {
 
     private: //TODO всё перенести в TabCommandHandler который будет friend
 
-        size_t _displayTrack;
         size_t _currentTrack;
         size_t _currentBar;
         size_t _displayBar;
 
     public:
 
-        size_t& getDisplayTrack() { return _displayTrack; }
         size_t& getCurrentTrack() { return _currentTrack; }
         size_t& getCurrentBar() { return _currentBar; }
         size_t& getDisplayBar() { return _displayBar; }

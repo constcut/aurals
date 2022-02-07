@@ -120,7 +120,6 @@ void TabView::refreshTabStats() {
 
     if (_pTab) {
         _pTab->getDisplayBar() = 0;
-        _pTab->getDisplayTrack() = 0;
         _pTab->getCurrentTrack() = 0;
         _pTab->getCurrentBar() = 0;
     }
@@ -132,7 +131,6 @@ void TabView::onclick(int x1, int y1)
     if (_pTab==0)
         return;
 
-
     int awaitBar = (x1-200)/30; //TODO size_t и дополнительные рассчёты, т.к. -1 всё равно не вариант
     int toolBarHeight = 10;
     int awaitTrack = (y1-toolBarHeight)/30; //TODO как и выше, не стоит использовать -1, ограничить реальными значениями
@@ -142,9 +140,6 @@ void TabView::onclick(int x1, int y1)
         awaitBar += _pTab->getDisplayBar();
         if (awaitBar == _pTab->getCurrentBar())
         {
-
-            qDebug() << "Track pressed "<<awaitTrack<<"; Bar "<<awaitBar;
-
             if (awaitTrack >= 0){
                 if (awaitTrack < _tracksView.size()) {
 
@@ -160,16 +155,14 @@ void TabView::onclick(int x1, int y1)
         else
             if (awaitBar < _pTab->at(0)->size()) {
                 _pTab->getCurrentBar() = awaitBar;
-                size_t chosenTrack = _pTab->getDisplayTrack() + awaitTrack;
-                if ((awaitTrack>=0) && (chosenTrack < _pTab->size()))
-                        _pTab->getCurrentTrack() = chosenTrack;
+                if (awaitTrack >= 0 && awaitTrack < _pTab->size())
+                        _pTab->getCurrentTrack() = awaitTrack;
             }
     }
     else {
         ++awaitTrack;
-        size_t chosenTrack = _pTab->getDisplayTrack() + awaitTrack;
-        if ((awaitTrack>=0) && (chosenTrack < _pTab->size()))
-                _pTab->getCurrentTrack() = chosenTrack;
+        if (awaitTrack >= 0 && awaitTrack < _pTab->size())
+                _pTab->getCurrentTrack() = awaitTrack;
     }
     update();
 }
@@ -194,33 +187,33 @@ void TabView::paint(QPainter *painter)
         //TrackView should be agregated
         for (size_t i = 0 ; i < _pTab->size(); ++i)
         {
-           size_t trackIndex = i + _pTab->getDisplayTrack();
-           if (trackIndex >= _pTab->size())
-            break;
-           std::string trackVal = std::to_string(trackIndex+1) +" " + _pTab->at(trackIndex)->getName();
-           //int pannelShift = getMaster()->getToolBarHeight();
-           int yPos = (i+1)*30; //pannelShift+(i+2)*30;
-           if (yPos > (yLimit-100))
+            if (i >= _pTab->size())
+                break;
+
+            std::string trackVal = std::to_string(i+1) +" " + _pTab->at(i)->getName();
+
+            int yPos = (i+1) * 30; //pannelShift+(i+2)*30;
+            if (yPos > yLimit - 100)
                break;
-           if (trackIndex == _pTab->getCurrentTrack())
+
+            if (i == _pTab->getCurrentTrack())
                 aural_sight::changeColor(CONF_PARAM("colors.curTrack"), painter);
 
-           painter->drawText(20,yPos,trackVal.c_str());
-           //painter->drawEllipse(10,yPos,5,5);
-           painter->drawRect(7,yPos-10,10,10);
+            painter->drawText(20, yPos,trackVal.c_str());
+            painter->drawRect(7, yPos-10, 10, 10);
 
-           if (trackIndex == _pTab->getCurrentTrack())
+            if (i == _pTab->getCurrentTrack())
                aural_sight::changeColor(CONF_PARAM("colors.default"), painter);
 
-           std::uint8_t trackStat = _pTab->at(trackIndex)->getStatus();
-           if (trackStat==1)
+            std::uint8_t trackStat = _pTab->at(i)->getStatus();
+            if (trackStat==1)
             painter->drawText(9,yPos+3,"m");
-           else
+            else
                if (trackStat==2)
                 painter->drawText(9,yPos+3,"s");
 
 
-           auto& tr = _pTab->at(trackIndex);
+           auto& tr = _pTab->at(i);
            for (size_t j = 0 ; j < tr->size(); ++j)
            {
                size_t barIndex = j + _pTab->getDisplayBar();
