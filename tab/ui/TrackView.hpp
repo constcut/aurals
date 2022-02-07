@@ -86,7 +86,10 @@ namespace aural_sight {
 
         void fillBarsPool();
 
-        std::vector<std::vector<size_t>> linesIdxs;
+        std::vector<std::vector<size_t>> _linesIdxs;
+
+        void moveNextPage();
+        void movePrevPage();
 
     public:
         //Track setters and getters

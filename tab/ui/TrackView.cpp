@@ -463,7 +463,7 @@ void TrackView::fillBarsPool() {
 
     std::vector<size_t> currentLine;
 
-    linesIdxs.clear();
+    _linesIdxs.clear();
     _barsPool.clear();
 
     for (size_t i = 0; i < trackLen; ++i)
@@ -496,7 +496,7 @@ void TrackView::fillBarsPool() {
             xSh = 0;
             ySh += bView.getH();
 
-            linesIdxs.push_back(currentLine);
+            _linesIdxs.push_back(currentLine);
             currentLine.clear();
         }
 
@@ -509,14 +509,45 @@ void TrackView::fillBarsPool() {
     }
 
     if (currentLine.empty() == false)
-        linesIdxs.push_back(currentLine);
+        _linesIdxs.push_back(currentLine);
 
+}
+
+
+void TrackView::moveNextPage() {
+
+    size_t& displayIndex = _pTrack->displayIndex();
+
+    size_t currentLine = 0; //TODO subfun on refact
+    for (auto& line: _linesIdxs) {
+        if (find(line.begin(), line.end(), displayIndex) != line.end())
+            break;
+        ++currentLine;
+    }
+
+    if (currentLine < _linesIdxs.size() - 1)
+        displayIndex = _linesIdxs[currentLine + 1][0];
+}
+
+void TrackView::movePrevPage() {
+
+    size_t& displayIndex = _pTrack->displayIndex();
+
+    size_t currentLine = 0; //TODO subfun on refact
+    for (auto& line: _linesIdxs) {
+        if (find(line.begin(), line.end(), displayIndex) != line.end())
+            break;
+        ++currentLine;
+    }
+
+    if (currentLine != 0)
+        displayIndex = _linesIdxs[currentLine - 1][0];
 }
 
 
 void TrackView::paintByLines(QPainter *painter) {
 
-    if (linesIdxs.empty())
+    if (_linesIdxs.empty())
         return;
 
     size_t& displayIndex = _pTrack->displayIndex();
@@ -524,7 +555,7 @@ void TrackView::paintByLines(QPainter *painter) {
     size_t cursor = _pTrack->cursor();
 
     auto scrollLine = [&]() {
-        for (auto& line: linesIdxs)
+        for (auto& line: _linesIdxs)
             if (find(line.begin(), line.end(), cursor) != line.end()) {
                 displayIndex = line[0];
                 break;
@@ -541,16 +572,16 @@ void TrackView::paintByLines(QPainter *painter) {
 
     size_t currentLine = 0;
 
-    for (auto& line: linesIdxs) {
+    for (auto& line: _linesIdxs) {
         if (find(line.begin(), line.end(), displayIndex) != line.end())
             break;
         ++currentLine;
     }
 
 
-    for (size_t i = 0; i < linesIdxs.size(); ++i) {
+    for (size_t i = 0; i < _linesIdxs.size(); ++i) {
         int ySh = _barsPool[0].getH() * (i - currentLine);
-        for (size_t barIdx: linesIdxs[i]) {
+        for (size_t barIdx: _linesIdxs[i]) {
             auto& barView = _barsPool[barIdx];
             barView.setY(ySh + 20);
         }
@@ -560,10 +591,10 @@ void TrackView::paintByLines(QPainter *painter) {
 
     for (size_t i = currentLine; i < currentLine + possibleLines; ++i)
     {
-        if (i == linesIdxs.size())
+        if (i == _linesIdxs.size())
             break;
 
-        for (size_t barIdx: linesIdxs[i])
+        for (size_t barIdx: _linesIdxs[i])
         {
             if (cursor != barIdx)
             {

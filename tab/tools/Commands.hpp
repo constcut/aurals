@@ -119,6 +119,10 @@ namespace aural_sight {
         CopyBars,
         Paste,
         Undo,
+
+        PrevLine,
+        NextLine,
+
         //Next commands yet not implemented
         QuickOpen,
         Tapping,
