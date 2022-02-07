@@ -24,7 +24,7 @@ Implemented test to detect MIDI files regression.
 
 Wave view and spectrograph:
 
-![mtherapp screenshot](res/info/screenshots/wave_and_spectrum.png)
+![mtherapp screenshot](res/info/screenshots/wave_fft.png)
 
 Wave view claps start end detection (blue is start, red is end):
 
@@ -33,6 +33,44 @@ Wave view claps start end detection (blue is start, red is end):
 Wave view with f0 diplay (red line below)
 
 ![mtherapp screenshot](res/info/screenshots/wave_f0.png)
+
+Short time fourier transform:
+
+![mtherapp screenshot](res/info/screenshots/stft.png)
+
+Constant-Q transform:
+
+![mtherapp screenshot](res/info/screenshots/constq.png)
+
+Autocorelation and Yin visualization:
+
+![mtherapp screenshot](res/info/screenshots/acf.png)
+
+Filters comparison visualization (yet only low and high pass + both):
+
+![mtherapp screenshot](res/info/screenshots/filters.png)
+
+Cepstrum visualization:
+
+![mtherapp screenshot](res/info/screenshots/cepstrum.png)
+
+Most of the visualization could be saved as image.
+
+To access all types of audio analysis there is a simple recorder:
+
+![mtherapp screenshot](res/info/screenshots/recorder.png)
+
+There is midi player based on sound fonts:
+
+![mtherapp screenshot](res/info/screenshots/midi.png)
+
+There is tapping function, that lets you tap rhythm on screen, and save it to pcm or midi:
+
+![mtherapp screenshot](res/info/screenshots/tapping.png)
+
+And there is tablature editor\viewer, yet in development:
+
+![mtherapp screenshot](res/info/screenshots/tab.png)
 
 
 ## Libraries
@@ -43,8 +81,9 @@ Project uses 2 libraries:
 
 https://github.com/schellingb/TinySoundFont
 
-* FFTReal
+* FFTReal (tiny tweaked)
 
 https://github.com/cyrilcode/fft-real
 
-Both libraries have permissing MIT license, that help use same license for this project.
+
+All libraries have permissive license, that help use same license for this project.
