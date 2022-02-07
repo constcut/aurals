@@ -179,8 +179,6 @@ void TrackView::onclick(int x1, int y1)
 
         if (_barsPool.at(i).hit(x1,y1))
         {
-            qDebug() << "Hit " << i;
-
             BarView *bV = &(_barsPool.at(i)); //it must be that way i know it
             //may be refact to make Poly<BarView>
 
@@ -525,14 +523,20 @@ void TrackView::paintByLines(QPainter *painter) {
     size_t& lastSeen = _pTrack->lastSeen();
     size_t cursor = _pTrack->cursor();
 
+    auto scrollLine = [&]() {
+        for (auto& line: linesIdxs)
+            if (find(line.begin(), line.end(), cursor) != line.end()) {
+                displayIndex = line[0];
+                break;
+            }
+    };
+
 
     if (cursor < displayIndex)
-        displayIndex = cursor; //TODO find line but not the index, and replace display index with displayLine
-
-    qDebug() << "C " << cursor << " ls " << lastSeen;
+        scrollLine();
 
     if (lastSeen && cursor > lastSeen)
-        displayIndex = cursor;
+        scrollLine();
 
 
     size_t currentLine = 0;
@@ -579,9 +583,8 @@ void TrackView::paint(QPainter *painter)
         return;
 
     if (lastWidth != width() || lastHeight != height()) { //TODO только когда меняется width
-        //Update pull
 
-        fillBarsPool();
+        fillBarsPool(); //may have tiny issues on resize, because lining would change
 
         lastWidth = width();
         lastHeight = height();
