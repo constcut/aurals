@@ -160,98 +160,84 @@ void BarView::drawNote(QPainter *painter, std::uint8_t noteDur, std::uint8_t dot
     int xPoint = x1;
     int yPoint = y1;
 
-
-    //prepare all default parameters here
-
-    int mainRadius = 5;
-
+    int mainRadius = 5; //TODO as above - precalculate somewhere
     int radiusShift = 0;
-
     int note32 = 4;
     int note16 = 6;
     int note8 = 8;
-    int note4 = 10; //names are wrong.. abit
-
+    int note4 = 10;
     int noteTail = 6;
     int noteTailEnd = 10;
 
-
-    //shift them
-    if (CONF_PARAM("TrackView.largeNotes")=="1")
+    if (CONF_PARAM("TrackView.largeNotes") == "1")
     {
         note4 *= 2;
         note8 *= 2;
         note16 *= 2;
         note32 *= 2;
-
         noteTailEnd += 3;
-
         yPoint += 10;
-
         mainRadius += 3;
         radiusShift = 2;
-        //and fill inside(
     }
 
-    //paint now
+    int notesUpsideDownCoef = 1;
 
-    int nU = 1; //note up or normal -1 \ 1
-
-    if (CONF_PARAM("upsideDownNotes")=="1")
-        nU = -1;
+    if (CONF_PARAM("upsideDownNotes") == "1")
+        notesUpsideDownCoef = -1;
 
     if (noteDur >= 2)
     {
-        //Must get filled - in another manner
-
-        if (CONF_PARAM("TrackView.largeNotes")=="1")
-            drawEllipse(QColor("black"), painter, xPoint-radiusShift,yPoint-radiusShift,mainRadius,mainRadius);
+        if (CONF_PARAM("TrackView.largeNotes") == "1")
+            drawEllipse(QColor("black"), painter, xPoint - radiusShift, yPoint - radiusShift, mainRadius, mainRadius);
         else
         {
-            painter->drawEllipse(xPoint-radiusShift,yPoint-radiusShift,mainRadius,mainRadius);
-
-        painter->drawEllipse(xPoint+1,yPoint+1,3,3); //inner circle ( 2+)
-        painter->drawEllipse(xPoint+2,yPoint+2,2,2); //inner circle ( 2+)
+            painter->drawEllipse(xPoint - radiusShift, yPoint - radiusShift, mainRadius, mainRadius);
+            painter->drawEllipse(xPoint + 1, yPoint + 1, 3, 3);
+            painter->drawEllipse(xPoint + 2, yPoint + 2, 2, 2);
         }
     }
     else
-        painter->drawEllipse(xPoint-radiusShift,yPoint-radiusShift,mainRadius,mainRadius); //default circle
+        painter->drawEllipse(xPoint - radiusShift, yPoint - radiusShift, mainRadius, mainRadius);
 
 
     if (dotted)
-        painter->drawEllipse(xPoint+7,yPoint,2,2); //check fine on large
+        painter->drawEllipse(xPoint + 7, yPoint, 2, 2);
 
     if (noteDur >= 1)
-        painter->drawLine(xPoint+noteTail,yPoint,xPoint+noteTail,yPoint-note4*nU); //line (1+)
+        painter->drawLine(xPoint + noteTail, yPoint, xPoint + noteTail, yPoint - note4 * notesUpsideDownCoef);
 
-    if (noteDur >=3)
-        painter->drawLine(xPoint+noteTail,yPoint-note4*nU,xPoint+noteTailEnd,yPoint-note4*nU); //flow 1 (3+)
-    if (noteDur >=4)
-        painter->drawLine(xPoint+noteTail,yPoint-note8*nU,xPoint+noteTailEnd,yPoint-note8*nU); //flow 2 (4+)
-    if (noteDur >=5)
-        painter->drawLine(xPoint+noteTail,yPoint-note16*nU,xPoint+noteTailEnd,yPoint-note16*nU); //flow 3 (5+)
-    if (noteDur >=6)
-        painter->drawLine(xPoint+noteTail,yPoint-note32*nU,xPoint+noteTailEnd,yPoint-note32*nU); //flow 4 (6)
-
+    if (noteDur >= 3)
+        painter->drawLine(xPoint + noteTail, yPoint - note4 * notesUpsideDownCoef,
+                          xPoint + noteTailEnd, yPoint - note4 * notesUpsideDownCoef);
+    if (noteDur >= 4)
+        painter->drawLine(xPoint + noteTail, yPoint - note8 * notesUpsideDownCoef,
+                          xPoint + noteTailEnd, yPoint - note8 * notesUpsideDownCoef);
+    if (noteDur >= 5)
+        painter->drawLine(xPoint + noteTail, yPoint - note16 * notesUpsideDownCoef,
+                          xPoint + noteTailEnd, yPoint - note16 * notesUpsideDownCoef);
+    if (noteDur >= 6)
+        painter->drawLine(xPoint + noteTail, yPoint - note32 * notesUpsideDownCoef,
+                          xPoint + noteTailEnd, yPoint - note32 * notesUpsideDownCoef);
     if (durDet)
-        painter->drawText(xPoint+6,yPoint+5,std::to_string(durDet).c_str());
+        painter->drawText(xPoint + 6, yPoint + 5, std::to_string(durDet).c_str());
 }
 
-BarView::BarView(Bar *b,int nstr, int barNum): //stringWidth(12),inbarWidth(20),
-    _pBar(b),_nStrings(nstr),_cursor(-1),_stringCursor(-1)
-  ,_barNumber(barNum),_sameSign(false)
-{
-    _selectorBegin=-1;
-    _selectorEnd=-1;
 
-    _repBegin=false;
-    _repEnd=false;
+BarView::BarView(Bar *b,int nstr, int barNum):
+    _pBar(b), _nStrings(nstr), _cursor(-1), _stringCursor(-1),
+    _barNumber(barNum), _sameSign(false)
+{
+    _selectorBegin = -1;
+    _selectorEnd = -1;
+    _repBegin = false;
+    _repEnd = false;
 
     const size_t barLen = b->size();
-    _h = stringWidth * (nstr + 1); //
+    _h = stringWidth * (nstr + 1);
 
     if (CONF_PARAM("TrackView.largeNotes") == "1")
-        _h = stringWidth*(nstr+2);
+        _h = stringWidth*(nstr + 2);
 
     _h += 10; //mini shift from last
     _w = (barLen + 1) * inbarWidth;
@@ -301,29 +287,15 @@ void BarView::paint(QPainter *painter)
         isSelected = true;
     }
 
-    //check widht and height
-    //painter->drawRect(cX,cY,w,h);
-
     if (_sameSign == false)
     {
-        //SKIP in another mode
         std::string numVal,denVal;
         numVal = std::to_string( bar1->getSignNum() );
         denVal = std::to_string( bar1->getSignDenum() );
 
-        /* to new
-        int repeat = pBar->getRepeat();
-        if (repeat == 1)
-            numVal<<".B";
-        if (repeat == 2)
-            denVal<<".E";
-        if (repeat == 3)
-            numVal<<".C";
-            */
-
         auto f = painter->font();
         auto fontSize = f.pixelSize();
-        if (fontSize == -1) //hotfix refact default value
+        if (fontSize == -1)
             fontSize = 14;
         f.setPixelSize(18);
         painter->setFont(f);
@@ -334,24 +306,24 @@ void BarView::paint(QPainter *painter)
     }
 
     if (_repBegin)
-        cX += 15;
-    //else
-    {  //always
-        cX -=10; //decreace bar size
-    }
+        cX += 5;
+    else
+        cX -=10;
 
     if (_barNumber!=-1)
     {
         std::string numberLabel = std::to_string(_barNumber + 1);
         int xMiniSHift = 0;
-        if ((_barNumber+1) >= 10)
-            xMiniSHift -= 5;
-        if ((_barNumber+1) >= 100)
+
+        if ((_barNumber + 1) >= 10)
             xMiniSHift -= 5;
 
-        if (_repBegin) xMiniSHift-=15;
+        if ((_barNumber + 1) >= 100)
+            xMiniSHift -= 5;
 
-        painter->drawText(cX+xMiniSHift,cY+15+3,numberLabel.c_str());
+        if (_repBegin) xMiniSHift -= 15;
+
+        painter->drawText(cX+xMiniSHift, cY + 15 + 3, numberLabel.c_str());
     }
 
     size_t barLen = bar1->size();
@@ -362,56 +334,49 @@ void BarView::paint(QPainter *painter)
         int toBegin = -3;
 
         for (int l=0; l<2; ++l)
-            painter->drawLine(toBegin+cX+l,cY+stringWidth/2,toBegin+cX+l,cY+amountStr*stringWidth-stringWidth/2);
+            painter->drawLine(toBegin + cX + l, cY + stringWidth / 2, toBegin + cX + l,
+                              cY + amountStr * stringWidth - stringWidth / 2);
 
-        painter->drawEllipse(toBegin+cX+5,cY+stringWidth*2,3,3);
-        painter->drawEllipse(toBegin+cX+5,cY+stringWidth*5,3,3);
+        painter->drawEllipse(toBegin + cX + 5, cY + stringWidth * 2, 3, 3);
+        painter->drawEllipse(toBegin + cX + 5, cY + stringWidth * 5, 3, 3);
     }
 
     if (_repEnd)
     {
-        int toBegin = _w-10;
-
+        int toBegin = _w - 10;
         if (_repBegin)
             toBegin -= 15;
 
-        for (int l=0; l<2; ++l)
-            painter->drawLine(toBegin+cX+l,cY+stringWidth/2,toBegin+cX+l,cY+amountStr*stringWidth-stringWidth/2);
+        for (int l = 0; l < 2; ++l)
+            painter->drawLine(toBegin + cX + l, cY + stringWidth / 2,
+                              toBegin + cX + l, cY + amountStr * stringWidth - stringWidth / 2);
 
         std::string repCount =  std::to_string(bar1->getRepeatTimes());
-        painter->drawText(toBegin+cX-9,cY+stringWidth*2-3,repCount.c_str());
-        painter->drawEllipse(toBegin+cX-9,cY+stringWidth*2,3,3); //default color fill refact?
-        painter->drawEllipse(toBegin+cX-9,cY+stringWidth*5,3,3);
+        painter->drawText(toBegin + cX- 9, cY + stringWidth * 2 - 3, repCount.c_str());
+        painter->drawEllipse(toBegin + cX - 9, cY + stringWidth * 2, 3, 3);
+        painter->drawEllipse(toBegin + cX - 9, cY + stringWidth * 5, 3, 3);
     }
 
-
-
-    //const int stringWidth = 12;
-    //const int inbarWidth = 20;
 
     for (int i = 1 ; i < (amountStr+1); ++i)
     {
         if (i == _stringCursor)
-        {
-            //painter->changeColor(APainter::colorRed);
-            //auto color = CONF_PARAM("colors.curString");
-            //qDebug() << "Ouputing string color " << color.c_str();
             changeColor(CONF_PARAM("colors.curString"), painter);
-        }
 
-        painter->drawLine(cX+10,cY+i*stringWidth-stringWidth/2,cX+10+barLen*inbarWidth,cY+i*stringWidth-stringWidth/2);
+        painter->drawLine(cX + 10, cY + i * stringWidth - stringWidth / 2,
+                          cX + 10 + barLen * inbarWidth, cY + i * stringWidth - stringWidth / 2);
 
 
         if (i == _stringCursor)
-        {
-            //painter->changeColor(APainter::colorGreen);
             changeColor(CONF_PARAM("colors.curBar"), painter);
-        }
     }
 
     //start and end lines
-    painter->drawLine(cX+10+0*inbarWidth,cY + stringWidth/2,cX+10+0*inbarWidth,cY+stringWidth*amountStr - stringWidth/2);
-    painter->drawLine(cX+10+barLen*inbarWidth,cY + stringWidth/2,cX+10+barLen*inbarWidth,cY+stringWidth*amountStr - stringWidth/2);
+    painter->drawLine(cX + 10, cY + stringWidth / 2,
+                      cX + 10, cY + stringWidth * amountStr - stringWidth / 2);
+
+    painter->drawLine(cX + 10 + barLen * inbarWidth, cY + stringWidth / 2,
+                      cX + 10 + barLen * inbarWidth, cY + stringWidth * amountStr - stringWidth / 2);
 
     auto [barMarker, colorMark] = bar1->getMarker();
     bool markerPrec = barMarker.empty() == false;
@@ -419,14 +384,10 @@ void BarView::paint(QPainter *painter)
     bool wasNoBeatEffects = true;
     for (size_t i = 0; i < barLen; ++i) {
 
-        if (i == _cursor) {
-            //painter->changeColor(APainter::colorBlue);
+        if (i == _cursor)
              changeColor(CONF_PARAM("colors.curBeat"), painter);
-        }
-
 
         auto& curBeat = bar1->at(i);
-
         auto tuning = track->getTuning();
 
         for (size_t j = 0; j < curBeat->size(); ++j)
@@ -450,24 +411,11 @@ void BarView::paint(QPainter *painter)
                                  cX+10+i*inbarWidth + inbarWidth/2,
                                  cY+(stringWidth-3)*(amountStr+5));
                 }
-                else
-                {
-                    /*
-                    if (j==0)
-                    {
-                        drawMidiNote(painter,curBeat->getDuration(),
-                                     curBeat->getDotted(),curBeat->getDurationDetail(),
-                                     midiNote,
-                                     cX+10+i*inbarWidth + inbarWidth/2,
-                                     cY+(stringWidth-3)*(amountStr+5));
-                    }
-                    */
-                }
 
-                bool letRing = curNote->getEffects().getEffectAt(Effect::LetRing);
-                bool palmMute = curNote->getEffects().getEffectAt(Effect::PalmMute);
-                bool ghostNote = curNote->getEffects().getEffectAt(Effect::GhostNote);
-                bool harmonics = curNote->getEffects().getEffectAt(Effect::HarmonicsV4);
+
+
+
+
 
                 std::string noteVal;
 
@@ -475,15 +423,15 @@ void BarView::paint(QPainter *painter)
 
                 if (noteState != 3) //not x note
                 {
-                    if (noteState == 2) {
+                    if (noteState == 2)
                         noteVal = "_" + std::to_string( curNote->getFret() );
-                    }
                     else
                         noteVal = std::to_string( curNote->getFret() );
                 }
                 else
                     noteVal = "x"; //x note
 
+                bool ghostNote = curNote->getEffects().getEffectAt(Effect::GhostNote);
                 if (ghostNote) {
                     std::string sX ="(" +  noteVal + ")";
                     noteVal.clear();
@@ -496,81 +444,83 @@ void BarView::paint(QPainter *painter)
                     miniShift /= 2;
 
                 int currentString = curNote->getStringNumber();
-
-                std::string thatBack = CONF_PARAM("colors.background");
+                std::string currentBackground = CONF_PARAM("colors.background");
 
                 if (isSelected)
                 {
                     if (_selectorEnd == -1)//till end
                     {
                         if (i >= _selectorBegin)
-                            thatBack = CONF_PARAM("colors.selection");
+                            currentBackground = CONF_PARAM("colors.selection");
                     }
                     else
                     {
                         if (_selectorBegin == 0)
                         {
                             if (i<=_selectorEnd)
-                                thatBack = CONF_PARAM("colors.selection");
+                                currentBackground = CONF_PARAM("colors.selection");
                         }
                         else
                         {
                             //not zero start not -1 end
                             if ((i<=_selectorEnd) && (i >= _selectorBegin))
-                                    thatBack = CONF_PARAM("colors.selection");
+                                    currentBackground = CONF_PARAM("colors.selection");
                         }
 
                     }
                 }
 
-                painter->fillRect(cX+10+i*inbarWidth + inbarWidth/4,
-                                  cY+stringWidth*currentString-stringWidth,
-                                  inbarWidth - inbarWidth/4, stringWidth, QColor(thatBack.c_str())); //BG color
+                painter->fillRect(cX + 10 + i * inbarWidth + inbarWidth / 4,
+                                  cY + stringWidth * currentString - stringWidth,
+                                  inbarWidth - inbarWidth / 4, stringWidth, QColor(currentBackground.c_str())); //BG color
                 //DRAW effects
 
+                bool palmMute = curNote->getEffects().getEffectAt(Effect::PalmMute);
                 if (palmMute)
-                    painter->drawRect(cX+10+i*inbarWidth + inbarWidth/4,
-                                      cY+stringWidth*currentString-stringWidth,
-                                      inbarWidth - inbarWidth/4, stringWidth);
+                    painter->drawRect(cX + 10 + i * inbarWidth + inbarWidth / 4,
+                                      cY + stringWidth * currentString - stringWidth,
+                                      inbarWidth - inbarWidth / 4, stringWidth);
 
+                bool letRing = curNote->getEffects().getEffectAt(Effect::LetRing);
                 if (letRing)
-                    painter->drawEllipse(cX+10+i*inbarWidth + inbarWidth/4,
-                                         cY+stringWidth*currentString-stringWidth,
-                                         inbarWidth - inbarWidth/4, stringWidth);
+                    painter->drawEllipse(cX + 10 + i * inbarWidth + inbarWidth / 4,
+                                         cY + stringWidth * currentString - stringWidth,
+                                         inbarWidth - inbarWidth / 4, stringWidth);
+
+                bool harmonics = curNote->getEffects().getEffectAt(Effect::HarmonicsV4);
                 if (harmonics)
                 {
                     //change midi note?
-                    int XBegin = cX+10+i*inbarWidth + inbarWidth/4;
-                    int XEnd = inbarWidth - inbarWidth/4 + XBegin;
+                    int XBegin = cX + 10 + i * inbarWidth + inbarWidth / 4;
+                    int XEnd = inbarWidth - inbarWidth / 4 + XBegin;
 
-                    int YBegin = cY+stringWidth*currentString-stringWidth;
+                    int YBegin = cY+stringWidth * currentString - stringWidth;
                     int YEnd = stringWidth + YBegin;
 
-                    XBegin -= 2; YBegin -=2;
-                    XEnd += 2; YEnd += 2;
+                    XBegin -= 2;
+                    YBegin -=2;
+                    XEnd += 2;
+                    YEnd += 2;
 
-                    painter->drawLine(XBegin,(YBegin+YEnd)/2,
-                                      (XBegin+XEnd)/2,YBegin);
-                    painter->drawLine((XBegin+XEnd)/2,YBegin,XEnd,(YBegin+YEnd)/2);
-                    painter->drawLine(XEnd,(YBegin+YEnd)/2,(XBegin+XEnd)/2,YEnd);
-                    painter->drawLine((XBegin+XEnd)/2,YEnd,XBegin,(YBegin+YEnd)/2);
+                    painter->drawLine(XBegin, (YBegin+YEnd) / 2, (XBegin+XEnd) / 2, YBegin);
+                    painter->drawLine((XBegin+XEnd) / 2,YBegin, XEnd, (YBegin+YEnd) / 2);
+                    painter->drawLine(XEnd, (YBegin+YEnd) / 2, (XBegin+XEnd) / 2, YEnd);
+                    painter->drawLine((XBegin+XEnd) / 2, YEnd, XBegin, (YBegin + YEnd) / 2);
                 }
 
 
-                drawEffects(painter, cX+10+i*inbarWidth,
-                            cY+stringWidth*currentString,
-                            inbarWidth - inbarWidth/4, stringWidth,
-                            curNote->getEffects());
+                drawEffects(painter, cX + 10 + i * inbarWidth, cY + stringWidth * currentString,
+                            inbarWidth - inbarWidth / 4, stringWidth, curNote->getEffects());
 
                 int centerBoeder = 1;
+                if (ghostNote)
+                    miniShift -= 3;
 
-                if (ghostNote) miniShift -= 3;
+                painter->drawText(cX + 10 + i * inbarWidth + miniShift,
+                                  cY + stringWidth * currentString - centerBoeder, noteVal.c_str());
 
-                painter->drawText(cX+10+i*inbarWidth + miniShift,
-                                  cY+stringWidth*currentString
-                                  -centerBoeder,noteVal.c_str());
-
-                if (ghostNote) miniShift += 3;
+                if (ghostNote)
+                    miniShift += 3;
             }
         }
 
