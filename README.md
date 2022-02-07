@@ -14,7 +14,12 @@ Current status is pre-alpha, no releases yet.
 * Audio qml component, to explore sound using root mean square, with start\end note peaks finder and F0
 * Spectrograph component using fast fourier transform with various parameters
 * Possible noise detection in fft window (yet very plain)
+* STFT computation and visualization
+* Constant-Q computation and visualization
+* Cepstrum calculation
+* Autocorrelation visualization and YIN algorithm visualization
 * Tapping componet, to tap rhythm using mouse\mobile device screen with export to midi\pcm
+* Guitar tablature components - to view and edit guitar tabs
 * QML logger component - to read logs on mobile screen (or without running application from command line)
 
 Application contains several soundfonts and midi files to check functionality,
