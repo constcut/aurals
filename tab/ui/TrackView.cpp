@@ -537,17 +537,31 @@ void TrackView::movePrevLine() {
 
     size_t& displayIndex = _pTrack->displayIndex();
     size_t& cursor = _pTrack->cursor();
+    size_t lastSeen = _pTrack->lastSeen();
 
-    size_t currentLine = 0; //TODO subfun on refact
+    size_t currentLine = 0; //TODO subfun on refact find line
     for (auto& line: _linesIdxs) {
         if (find(line.begin(), line.end(), displayIndex) != line.end())
             break;
         ++currentLine;
     }
 
+    size_t cursorLine = 0; //TODO subfun on refact find line
+    for (auto& line: _linesIdxs) {
+        if (find(line.begin(), line.end(), cursor) != line.end())
+            break;
+        ++cursorLine;
+    }
+
     if (currentLine != 0) {
         displayIndex = _linesIdxs[currentLine - 1][0];
-        //insure cursor fine
+
+        int diff = cursorLine - (currentLine - 1);
+        int possibleLines = height() / _barsPool[0].getH();
+
+        if ( diff > possibleLines ) {
+            cursor = displayIndex;
+        }
     }
 }
 
