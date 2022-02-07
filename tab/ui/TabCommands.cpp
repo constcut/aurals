@@ -341,7 +341,7 @@ void TabView::onTrackCommand([[maybe_unused]] TrackCommand command) {
 
     if (_tracksView.empty())
         return; //TODO возможно всю обработку можно сделать в TabView, а потом вовсе вывести
-    //auto curTrack = _pTab->getCurrentTrack(); //На текущий момент поддерживаем только 1 отображение
+     //На текущий момент поддерживаем только 1 отображение
     _tracksView[0]->onTrackCommand(command);
 }
 
@@ -476,21 +476,10 @@ void generateMidiQt(Tab* pTab) {
 }
 
 
-void openTrackQt(size_t tracksLen, int& lastOpenedTrack, TabView* tabView, size_t digit) {
-    if (digit && digit <= tracksLen) {
-        TrackView *trackView = tabView->getTracksViewRef()[digit-1]; //А обновление интерфейса в модуль Qt TODO выше
-        lastOpenedTrack = digit-1;
-        //MainView *mainView = (MainView*)tabView->getMaster()->getFirstChild();
-        //mainView->changeCurrentView(trackView);
-
-        //TODO signal to qml
-    }
-}
 
 
 void TabView::keyevent(std::string press) {
-    if (isdigit(*(press.c_str()))) //The only one left here
-        openTrackQt(_pTab->size(),_pTab->getLastOpenedTrack(), this, press.c_str()[0]-48);
+    //Removed old way to switch track by digit
 }
 
 
@@ -513,7 +502,6 @@ void TabView::keyPress(int code) {
     }
 
     if (isdigit(code)) {
-        //auto curTrack = _pTab->getCurrentTrack(); //TODO make better
         _tracksView[0]->keyevent(std::to_string(code - 48));
         _tracksView[0]->update();
     }
@@ -946,13 +934,8 @@ void TabView::onTabCommand(TabCommand command) {
         ;//getMaster()->setComboBox(1,"instruments",240,5,200,30, changeTrackInstrument(_pTab.get())); //Only UI feature
     else if (command == TabCommand::Panoram)
         ;//getMaster()->setComboBox(6,"pan",570,5,50,30, changeTrackPanoram(_pTab.get())); //Как и выше сбивает UI при отмене ввода
-    else if (command == TabCommand::BPM) {
-        auto newBpm = changeTrackBpm(_pTab.get());
-        //_bpmLabel->setText("bpm=" + std::to_string(newBpm)); //Сейчас обновляет каждый раз, даже при отмене - стоит продумать это при разделении Qt ввода и ядра библиотеки TODO
-        //getMaster()->setStatusBarMessage(2,"BPM= " + std::to_string(newBpm));
-    }         
-    else if (command == TabCommand::OpenTrack)
-        openTrackQt(_pTab->size(),_pTab->getLastOpenedTrack(), this, _pTab->getDisplayTrack() + 1); //TODO эту часть внутрь движка - разделяя с QT);
+    else if (command == TabCommand::BPM)
+        changeTrackBpm(_pTab.get());
     else if (command == TabCommand::NewTrack) {
        _pTab->createNewTrack(); refreshTabStats(); } //Второе нужно для обновления
     else if (command == TabCommand::PlayMidi) //Если нам понадобится playMerge оно осталось только в git истории

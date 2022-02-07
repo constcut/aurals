@@ -85,13 +85,6 @@ void aural_sight::drawEllipse(QPainter *painter, int x, int y, int w, int h) {
 int scaleCoef = 1;
 
 
-//Tab view
-TabView::TabView()
-{
-    //_statusLabel = std::make_unique<GLabel>(50,460,"file was loaded.");
-    //_bpmLabel = std::make_unique<GLabel>(300,460,"bpm=notsetyet");
-}
-
 
 
 void TabView::addTrackView(TrackView* trackView) {
@@ -172,7 +165,7 @@ void TabView::onclick(int x1, int y1)
                 if (awaitTrack < _tracksView.size()) {
 
                     if (auto trackView = _tracksView[awaitTrack]; trackView != nullptr) {
-                        _pTab->getLastOpenedTrack() = awaitTrack;
+                        _pTab->getCurrentTrack() = awaitTrack;
                         trackView->setDisplayBar(awaitBar);
                         trackView->update();
                     }

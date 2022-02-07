@@ -47,7 +47,7 @@ namespace aural_sight {
         Volume,
         Name,
         BPM,
-        OpenTrack,
+        OpenTrack, //Removed
         NewTrack,
         DeleteTrack,
         PlayMidi,

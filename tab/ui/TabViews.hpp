@@ -36,22 +36,20 @@ namespace aural_sight {
 
     public:
 
-
-        TabView();
+        TabView() = default;
         virtual ~TabView();
-
 
         void setCurrentBar(int curBar) {
             _pTab->getCurrentBar() = curBar; }
 
         Q_INVOKABLE int getTimeLineBar();
 
-        virtual bool isMovableX() { return true; }
-        virtual bool isMovableY() { return true; }
+        Q_INVOKABLE int getCurTrack() { return _pTab->getCurrentTrack(); }
+        Q_INVOKABLE void setTrackIdx(int idx) {
+            _pTab->getCurrentTrack() = idx;
+            update();
+        }
 
-
-        int getCurTrack() { return _pTab->getCurrentTrack(); }
-        int getLastOpenedTrack() { return _pTab->getLastOpenedTrack(); }
 
         void setTab(std::unique_ptr<Tab> point2Tab);
         void refreshTabStats();
@@ -61,11 +59,6 @@ namespace aural_sight {
 
         Q_INVOKABLE void loadTab(QString filename);
         Q_INVOKABLE void exportMidi(QString filename, int shift);
-
-        Q_INVOKABLE void setTrackIdx(int idx) {
-            _pTab->getCurrentTrack() = idx;
-            update();
-        }
 
 
         void paint(QPainter *painter);

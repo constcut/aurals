@@ -786,7 +786,7 @@ void Track::clipboardCopyBar() {
     }
     else {
         Tab* pTab = parent;
-        int trackInd = pTab->getLastOpenedTrack();
+        int trackInd = pTab->getCurrentTrack();
         AClipboard::current()->setBeginIndexes(trackInd, _selectionBarFirst, _selectionBeatFirst);
         AClipboard::current()->setClipboardType(ClipboardType::SingleBeatCopy); //copy single beat
         AClipboard::current()->setEndIndexes(trackInd, _selectionBarLast, _selectionBeatLast);
@@ -797,7 +797,7 @@ void Track::clipboardCopyBar() {
 
 void Track::clipboarCopyBeat() {
     Tab* pTab = parent;
-    int trackInd = pTab->getLastOpenedTrack();
+    int trackInd = pTab->getCurrentTrack();
 
     if (_selectionBarFirst == -1)
     {
@@ -818,7 +818,7 @@ void Track::clipboarCopyBeat() {
 
 void Track::clipboardCopyBars() {
     Tab* pTab = parent;
-    int trackInd = pTab->getLastOpenedTrack();
+    int trackInd = pTab->getCurrentTrack();
     //copyIndex = cursor;
     if (_selectionBarFirst == -1) {
         AClipboard::current()->setBeginIndexes(trackInd, _cursor);
@@ -837,7 +837,6 @@ void Track::clipboardCopyBars() {
 void Track::clipboardCutBar() {
     auto& bar = at(_cursor);
     if (_selectionBarFirst == -1) {
-        //int trackInd=tabParrent->getLastOpenedTrack();
         Bar *cloner = new Bar; //TODO memory leak - переделать весь буфер обмена на unique
         cloner->flush();
         cloner->clone(bar.get());
