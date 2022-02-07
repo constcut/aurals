@@ -1,5 +1,6 @@
-# mtherapp
-Engine for music and voice applications, including music therapy
+# Aurals
+Engine for music and voice analysis, and music creation.
+There is a hope to extend it into music therapy applications.
 
 This application was developed with Qt 5.15.2 using QML. Tested on linux/android/windows.
 
