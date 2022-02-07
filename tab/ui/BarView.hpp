@@ -78,6 +78,8 @@ namespace aural_sight {
 
         void setCursor(int cur, int strCur = -1) { _cursor = cur; _stringCursor =strCur; }
         int getCursor() const { return _cursor; }
+        void flushCursor() {  _cursor = -1; _stringCursor = -1; }
+
 
         int getClickString(int y1) const;
         int getClickBeat(int x1) const;

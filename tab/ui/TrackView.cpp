@@ -491,7 +491,6 @@ void TrackView::fillBarsPool() {
         int xShNEXT = xSh + bView.getW() + 15;
         int border = width();
 
-        currentLine.push_back(i);
 
         if (xShNEXT > border) {
             xSh = 0;
@@ -500,6 +499,8 @@ void TrackView::fillBarsPool() {
             linesIdxs.push_back(currentLine);
             currentLine.clear();
         }
+
+        currentLine.push_back(i);
 
         bView.setShifts(xSh, ySh);
 
@@ -518,8 +519,8 @@ void TrackView::paintByLines(QPainter *painter) {
     if (linesIdxs.empty())
         return;
 
-    size_t trackLen = _pTrack->size();
     size_t& displayIndex = _pTrack->displayIndex();
+    size_t& cursor = _pTrack->cursor();
 
     size_t currentLine = 0;
 
@@ -529,14 +530,8 @@ void TrackView::paintByLines(QPainter *painter) {
         ++currentLine;
     }
 
-    size_t startIdx = linesIdxs[currentLine][0];
 
-    int hLimit = height() - _barsPool[0].getH();
-
-    int possibleLines = hLimit / _barsPool[0].getH();
-
-    qDebug() << "Possible lines " << possibleLines;
-
+    int possibleLines = height() / _barsPool[0].getH();
 
     for (size_t i = currentLine; i < currentLine + possibleLines; ++i) {
         if (i == linesIdxs.size())
@@ -550,24 +545,13 @@ void TrackView::paintByLines(QPainter *painter) {
             auto& barView = _barsPool[barIdx];
             barView.setY(ySh + 20); //TODO revie this little shifts logic
 
-            barView.paint(painter);
+            if (cursor != barIdx) {
+                barView.flushCursor();
+                barView.paint(painter);
+            }
         }
     }
 
-    /*
-    for (size_t i = startIdx; i < trackLen; ++i)
-    {
-        //auto& curBar = _pTrack->at(i);
-
-        //TODO incomplete colors
-        BarView& bView = _barsPool[i];
-
-        if (bView.getY() > hLimit)
-            break;
-
-        bView.paint(painter);
-
-    }*/
 }
 
 
