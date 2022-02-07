@@ -179,10 +179,12 @@ void TrackView::onclick(int x1, int y1)
 
         if (_barsPool.at(i).hit(x1,y1))
         {
+            qDebug() << "Hit " << i;
+
             BarView *bV = &(_barsPool.at(i)); //it must be that way i know it
             //may be refact to make Poly<BarView>
 
-            size_t realIndex = i + displayIndex;
+            size_t realIndex = i;
             //set cursor from press
             cursor = realIndex;
 
@@ -361,7 +363,7 @@ void TrackView::setDisplayBar(int barPosition)
 
 
 
-void TrackView::paintMainArea(QPainter *painter) {
+void TrackView::paintMainArea(QPainter *painter) { //Remains for a while befor refactoring
 
     size_t trackLen = _pTrack->size(); //Earlier there was only track 1
     int stringsN = _pTrack->getTuning().getStringsAmount();
@@ -520,7 +522,18 @@ void TrackView::paintByLines(QPainter *painter) {
         return;
 
     size_t& displayIndex = _pTrack->displayIndex();
-    size_t& cursor = _pTrack->cursor();
+    size_t& lastSeen = _pTrack->lastSeen();
+    size_t cursor = _pTrack->cursor();
+
+
+    if (cursor < displayIndex)
+        displayIndex = cursor; //TODO find line but not the index, and replace display index with displayLine
+
+    qDebug() << "C " << cursor << " ls " << lastSeen;
+
+    if (lastSeen && cursor > lastSeen)
+        displayIndex = cursor;
+
 
     size_t currentLine = 0;
 
@@ -531,27 +544,32 @@ void TrackView::paintByLines(QPainter *painter) {
     }
 
 
-    int possibleLines = height() / _barsPool[0].getH();
-
-    for (size_t i = currentLine; i < currentLine + possibleLines; ++i) {
-        if (i == linesIdxs.size())
-            break;
-
+    for (size_t i = 0; i < linesIdxs.size(); ++i) {
         int ySh = _barsPool[0].getH() * (i - currentLine);
-
         for (size_t barIdx: linesIdxs[i]) {
-
-            //TODO complete status
             auto& barView = _barsPool[barIdx];
-            barView.setY(ySh + 20); //TODO revie this little shifts logic
-
-            if (cursor != barIdx) {
-                barView.flushCursor();
-                barView.paint(painter);
-            }
+            barView.setY(ySh + 20);
         }
     }
 
+    int possibleLines = height() / _barsPool[0].getH();
+
+    for (size_t i = currentLine; i < currentLine + possibleLines; ++i)
+    {
+        if (i == linesIdxs.size())
+            break;
+
+        for (size_t barIdx: linesIdxs[i])
+        {
+            if (cursor != barIdx)
+            {
+                auto& barView = _barsPool[barIdx];
+                barView.flushCursor();
+                barView.paint(painter);
+            }
+            lastSeen = barIdx;
+        }
+    }
 }
 
 
@@ -578,18 +596,17 @@ void TrackView::paint(QPainter *painter)
 
     paintByLines(painter);
 
-    size_t& cursor = _pTrack->cursor();
-    size_t& cursorBeat = _pTrack->cursorBeat();
-    size_t& stringCursor = _pTrack->stringCursor();
-    size_t& displayIndex = _pTrack->displayIndex();
+    size_t cursor = _pTrack->cursor();
+    size_t cursorBeat = _pTrack->cursorBeat();
+    size_t stringCursor = _pTrack->stringCursor();
 
     size_t pos = cursor; //cursor - displayIndex;
 
     if (pos < _barsPool.size())
     {
-        BarView& bView = _barsPool[cursor - displayIndex];
+        BarView& bView = _barsPool[cursor];
         changeColor(CONF_PARAM("colors.curBar"), painter);
-        bView.setCursor(cursorBeat, stringCursor + 1);
+        bView.setCursor(cursorBeat, stringCursor + 1); //If playing - no cursor string TODO
         bView.paint(painter); //TODO paint only cursor
         changeColor(CONF_PARAM("colors.default"), painter);
     }
