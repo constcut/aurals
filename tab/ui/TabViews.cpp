@@ -40,9 +40,9 @@ int aural_sight::translateDefaulColor(const std::string& confParam){
     return numColor;
 }
 
+
 void aural_sight::changeColor(const std::string& color, QPainter* src)
 {
-    //saveColor();
     int colorS = aural_sight::translateDefaulColor(color);
     switch (colorS)
     {
@@ -65,15 +65,16 @@ void aural_sight::changeColor(const std::string& color, QPainter* src)
         case 16: src->setPen(Qt::darkRed); break;
 
     }
-    //storeValue = colorS;
 }
+
 
 void aural_sight::drawEllipse(QColor c, QPainter *painter, int x, int y, int w, int h) {
     QBrush startBra = painter->brush();
     painter->setBrush(c);
     painter->drawEllipse(x,y,w,h);
-    painter->setBrush(startBra); //return brach back
+    painter->setBrush(startBra);
 }
+
 
 
 void aural_sight::drawEllipse(QPainter *painter, int x, int y, int w, int h) {
@@ -82,28 +83,18 @@ void aural_sight::drawEllipse(QPainter *painter, int x, int y, int w, int h) {
 
 
 
-int scaleCoef = 1;
-
-
-
-
 void TabView::addTrackView(TrackView* trackView) {
     auto it = std::find(_tracksView.begin(), _tracksView.end(), trackView);
     if (it == _tracksView.end())
         _tracksView.push_back(trackView);
-    else
-        qDebug() << "Adding trackView that already exists " << trackView;
 }
 
 
 void TabView::removeTrackView(TrackView* trackView) {
     auto it = std::find(_tracksView.begin(), _tracksView.end(), trackView);
     if (it != _tracksView.end())
-        _tracksView.erase(it); //TODO maybe deque?
-    qDebug() << "Removing trackView " << trackView;
+        _tracksView.erase(it);
 }
-
-
 
 
 void TabView::loadTab(QString filename) {
@@ -112,7 +103,6 @@ void TabView::loadTab(QString filename) {
     _pTab = std::move(loader.getTab());
     refreshTabStats();
     update();
-    qDebug() << "Tab loaded";
 }
 
 

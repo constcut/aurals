@@ -396,10 +396,8 @@ void TrackView::keyevent(std::string press) //TODO масштабные макр
         reactOnComboTrackViewQt(press, _pTrack);
     else if (isdigit(press[0]))
         handleKeyInput(press[0]-48, _pTrack->digitPress(), _pTrack, cursor, cursorBeat, stringCursor, _pTrack->commandSequence);
-    else {
-        qDebug() << "Key event falls into TabView from TrackView " << press.c_str();
-        _tabParrent->keyevent(press); //TODO проверить
-    }//TODO перепроверить что все команды работают без повторного запуска через TabView
+    else
+        qDebug() << "Key event not handled in TrackView: " << press.c_str();
 }
 
 //Tab commands functions, TODO cover under some engine inside of TAB
