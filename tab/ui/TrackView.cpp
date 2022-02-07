@@ -17,7 +17,6 @@ void TrackView::setFromTab(QObject* pa, int trackIdx) {
     _tabParrent->addTrackView(this);
     if (trackPtr != _pTrack) {
         _pTrack = trackPtr;
-        imagePainted = false;
         update();
     }
 }
@@ -360,13 +359,103 @@ void TrackView::setDisplayBar(int barPosition)
 }
 
 
+
+void TrackView::paintMainArea(QPainter *painter) {
+
+    size_t trackLen = _pTrack->size(); //Earlier there was only track 1
+    int stringsN = _pTrack->getTuning().getStringsAmount();
+
+    int xSh = 0;
+    int ySh = 0;
+    BarView forH(_pTrack->at(0).get(), stringsN, 0); //Opt
+    int hLimit = height() - forH.getH(); //Limit to avoid painting bar in bottom
+
+
+    size_t& lastSeen = _pTrack->lastSeen();
+    size_t& displayIndex = _pTrack->displayIndex();
+    size_t& cursor = _pTrack->cursor();
+
+    if (cursor < displayIndex)
+        displayIndex = cursor;
+
+    size_t seenShift = 1;
+    if (lastSeen == _pTrack->size() - 1)
+        seenShift = 0; //There maybe supper rare issue if last bar isn't on screen now)
+
+    if (cursor > lastSeen - seenShift)
+        displayIndex = cursor;
+
+
+    //TODO move into subfunction:
+    _barsPull.clear(); //not always - to optimize
+
+    std::uint8_t lastNum = 0;
+    std::uint8_t lastDen = 0;
+
+    changeColor(CONF_PARAM("colors.default"), painter);
+
+    for (size_t i = displayIndex; i < trackLen; ++i)
+    {
+        auto& curBar = _pTrack->at(i);
+
+        std::uint8_t curNum = curBar->getSignNum();
+        std::uint8_t curDen = curBar->getSignDenum();
+        bool sameSign = true;
+
+        static bool alwaysShowSign = CONF_PARAM("TrackView.alwaysShowBarSign") == "1";
+
+        if (alwaysShowSign)
+            sameSign = false;
+
+        if ((curNum != lastNum) ||(curDen != lastDen)) {
+            sameSign = false;
+            lastNum = curNum;
+            lastDen = curDen;
+        }
+
+        BarView bView(curBar.get(),stringsN,i);
+        bView.setSameSign(sameSign);
+
+        if (ySh <= (hLimit))
+            lastSeen = i;
+
+        int xShNEXT = xSh + bView.getW()+15;
+        int border = width();
+
+        if (xShNEXT > border) {
+            xSh = 0;
+            ySh += bView.getH();
+
+            if (ySh >= (hLimit)) //Check constant
+                break; //stop that (there was a pannel)
+        }
+
+        bView.setShifts(xSh,ySh);
+        std::uint8_t barCompleteStatus = curBar->getCompleteStatus(); //TODO avoid recalculations
+
+        if (barCompleteStatus == 2 || barCompleteStatus == 1)
+            changeColor(CONF_PARAM("colors.exceed"), painter);
+
+        bView.paint(painter);
+
+        if (barCompleteStatus == 2 || barCompleteStatus == 1)
+             changeColor(CONF_PARAM("colors.default"), painter);
+
+        xSh += bView.getW();
+        _barsPull.push_back(bView);
+        //TODO maybe we have to use some limit, for supper long tabs
+    }
+}
+
+
 void TrackView::paint(QPainter *painter)
 {
     if (_pTrack == nullptr)
         return;
 
-    if (lastWidth != width() || lastHeight != height())
-        imagePainted = false;
+    if (lastWidth != width() || lastHeight != height()) {
+        //Update pull
+    }
 
     //TODO здесь осуществлять перерассчёт позиций линий, каждая линия это вектор с номерами тактов
     //+ Сразу же создать объекты BarView - их нужно будет менять только при смене width
@@ -380,131 +469,22 @@ void TrackView::paint(QPainter *painter)
     lastWidth = width();
     lastHeight = height();
 
+    auto f = painter->font();
+    f.setPixelSize(14);
+    painter->setFont(f);
 
-    size_t trackLen = _pTrack->size(); //Earlier there was only track 1
-    int stringsN = _pTrack->getTuning().getStringsAmount();
-
-    int xSh = 0;
-    int ySh = 0;
-    BarView forH(_pTrack->at(0).get(), stringsN, 0); //Opt
-    int hLimit = height() - forH.getH(); //Limit to avoid painting bar in bottom
+    paintMainArea(painter);
 
     size_t& cursor = _pTrack->cursor();
     size_t& cursorBeat = _pTrack->cursorBeat();
     size_t& stringCursor = _pTrack->stringCursor();
-
-    size_t& lastSeen = _pTrack->lastSeen(); //Probably remove if QImage doesn't lag
-    size_t& displayIndex = _pTrack->displayIndex(); //Probably remove if QImage doesn't lag TODO
-
-    size_t displayIdxOnStart = displayIndex;
-
-    if (cursor < displayIndex)
-        displayIndex = cursor;
-
-    size_t seenShift = 1;
-    if (lastSeen == _pTrack->size() - 1)
-        seenShift = 0; //There maybe supper rare issue if last bar isn't on screen now)
-
-    if (cursor > lastSeen - seenShift)
-        displayIndex = cursor;
-
-    if (displayIdxOnStart != displayIndex)
-        imagePainted = false;
-
-    bool avoidImage = true;
-
-    if (imagePainted == false || avoidImage) {
-
-        _prepared = QImage(width(), height(), QImage::Format_ARGB32_Premultiplied);
-
-        QPainter imgPainter(&_prepared);
-        imgPainter.fillRect(0, 0, width(), height(), QBrush(QColor(Qt::white)));
-
-        QPainter* trackPainter = &imgPainter;
-        if (avoidImage)
-            trackPainter = painter;
-
-        auto f = imgPainter.font();
-        f.setPixelSize(14);
-        imgPainter.setFont(f);
-
-        //TODO move into subfunction:
-        _barsPull.clear(); //not always - to optimize
-
-        std::uint8_t lastNum = 0;
-        std::uint8_t lastDen = 0;
-
-        changeColor(CONF_PARAM("colors.default"), &imgPainter);
-
-        for (size_t i = displayIndex; i < trackLen; ++i)
-        {
-            auto& curBar = _pTrack->at(i);
-
-            std::uint8_t curNum = curBar->getSignNum();
-            std::uint8_t curDen = curBar->getSignDenum();
-            bool sameSign = true;
-
-            static bool alwaysShowSign = CONF_PARAM("TrackView.alwaysShowBarSign") == "1";
-
-            if (alwaysShowSign)
-                sameSign = false;
-
-            if ((curNum != lastNum) ||(curDen != lastDen)) {
-                sameSign = false;
-                lastNum = curNum;
-                lastDen = curDen;
-            }
-
-            BarView bView(curBar.get(),stringsN,i);
-            bView.setSameSign(sameSign);
-
-            if (ySh <= (hLimit))
-                lastSeen = i;
-
-            int xShNEXT = xSh + bView.getW()+15;
-            int border = width();
-
-            if (xShNEXT > border) {
-                xSh = 0;
-                ySh += bView.getH();
-
-                if (ySh >= (hLimit)) //Check constant
-                    break; //stop that (there was a pannel)
-            }
-
-            bView.setShifts(xSh,ySh);
-            std::uint8_t barCompleteStatus = curBar->getCompleteStatus(); //TODO avoid recalculations
-
-            if (barCompleteStatus == 2 || barCompleteStatus == 1)
-                changeColor(CONF_PARAM("colors.exceed"), trackPainter);
-
-            bView.paint(trackPainter);
-
-            if (barCompleteStatus == 2 || barCompleteStatus == 1)
-                 changeColor(CONF_PARAM("colors.default"), trackPainter);
-
-            xSh += bView.getW();
-            _barsPull.push_back(bView);
-            //TODO maybe we have to use some limit, for supper long tabs
-        }
-
-        //++lastSeen;
-        //TODO move into subfunction ^
-    }
-
-    if (avoidImage == false)
-        painter->drawImage(QPoint{0,0}, _prepared);
+    size_t& displayIndex = _pTrack->displayIndex();
 
     size_t pos = cursor - displayIndex;
 
-    if (pos < _barsPull.size()) {
-
+    if (pos < _barsPull.size())
+    {
         BarView& bView = _barsPull[cursor - displayIndex];
-
-        auto f = painter->font();
-        f.setPixelSize(14);
-        painter->setFont(f);
-
         changeColor(CONF_PARAM("colors.curBar"), painter);
         bView.setCursor(cursorBeat, stringCursor + 1);
         bView.paint(painter); //TODO paint only cursor

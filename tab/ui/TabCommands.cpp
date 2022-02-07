@@ -377,7 +377,6 @@ void TrackView::onTrackCommand(TrackCommand command) {
     else
         _pTrack->onTrackCommand(command);
 
-    imagePainted = false; //TODO only on editing
     update();
 }
 

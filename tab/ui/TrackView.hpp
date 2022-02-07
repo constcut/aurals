@@ -32,11 +32,8 @@ namespace aural_sight {
 
         ViewPull _barsPull;
 
-        bool imagePainted = false;
         int lastWidth = 0;
         int lastHeight = 0;
-
-        QImage _prepared;
 
     public:
 
@@ -81,6 +78,12 @@ namespace aural_sight {
 
         bool gotChanges() const;
 
+    private:
+
+        void paintMainArea(QPainter *painter);
+
+
+    public:
         //Track setters and getters
         Q_INVOKABLE int getInstrumet();
         Q_INVOKABLE void setInstrument(int newInstr);
