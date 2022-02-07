@@ -85,5 +85,21 @@ https://github.com/schellingb/TinySoundFont
 
 https://github.com/cyrilcode/fft-real
 
+* KISS fft
+
+https://github.com/mborgerding/kissfft
+
+* Constant-Q Library (tweaked for float samples)
+
+https://code.soundsoftware.ac.uk/projects/constant-q-cpp
+
+* DSP IIR realtime filter library
+
+https://github.com/berndporr/iir1
+
+* Wavelib - wavelet library (currently turned of, but library is in the repo)
+
+https://github.com/rafat/wavelib
+
 
 All libraries have permissive license, that help use same license for this project.
