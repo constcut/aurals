@@ -126,29 +126,25 @@ void TabView::refreshTabStats() {
 }
 
 
-
-void TabView::paint(QPainter *painter)
+void TabView::paint(QPainter *painter) //Ugly function, removed all but bars, and paint them in flick, they press welcomes back
 {
-    //statusLabel->draw(painter);
-    //bpmLabel->draw(painter);
 
    if (_pTab != 0)
     {
         if (_pTab->playing())
             _pTab->getDisplayBar()=_pTab->getCurrentBar();
 
-        int yLimit = height();//getMaster()->getHeight();
-        int xLimit = width(); //getMaster()->getWidth();
+        int yLimit = height();
+        int xLimit = width();
 
         changeColor(CONF_PARAM("colors.default"), painter);
 
-        //TrackView should be agregated
         for (size_t i = 0 ; i < _pTab->size(); ++i)
         {
             if (i >= _pTab->size())
                 break;
 
-            std::string trackVal = std::to_string(i+1) +" " + _pTab->at(i)->getName();
+            std::string trackVal = std::to_string(i + 1) + " " + _pTab->at(i)->getName();
 
             int yPos = (i+1) * 30; //pannelShift+(i+2)*30;
             if (yPos > yLimit - 100)
@@ -164,8 +160,9 @@ void TabView::paint(QPainter *painter)
                aural_sight::changeColor(CONF_PARAM("colors.default"), painter);
 
             std::uint8_t trackStat = _pTab->at(i)->getStatus();
+
             if (trackStat==1)
-            painter->drawText(9,yPos+3,"m");
+                painter->drawText(9,yPos+3,"m");
             else
                if (trackStat==2)
                 painter->drawText(9,yPos+3,"s");
@@ -215,11 +212,11 @@ void TabView::paint(QPainter *painter)
                        if (reprize == 3)
                            rep = ":|:";
 
-                       painter->drawText(200+30*j,80-60,rep.c_str());
+                       painter->drawText(200+30*j, 80-60,rep.c_str());
                    }
 
                    if (isMarkerHere){
-                        painter->drawText(200+30*j,70-60,markerText.c_str());
+                        painter->drawText(200+30*j, 70-60,markerText.c_str());
                    }
                }
                painter->drawRect(200 + 30 * j, yPos, 20, 20);
@@ -229,36 +226,32 @@ void TabView::paint(QPainter *painter)
 
            std::string sX = std::to_string(tr->size());
            int border = width() - 20;
-           painter->drawText(border,10+yPos,sX.c_str());
+           painter->drawText(border, 10+yPos, sX.c_str());
 
            sX.clear();
-           std::uint8_t vol =  tr->getVolume();//pTab->GpCompMidiChannels[port*chan].volume; //tr->getVolume();
+           std::uint8_t vol =  tr->getVolume();
            sX = "vol " + std::to_string(vol);
-           painter->drawText(70,10+yPos,sX.c_str());
+           painter->drawText(70, +yPos,sX.c_str());
 
            sX.clear();
-           std::uint8_t pan =  tr->getPan();//pTab->GpCompMidiChannels[port*chan].balance;//tr->getPan();
+           std::uint8_t pan =  tr->getPan();
            int intPan = pan - 7;
            sX = "pan " + std::to_string(intPan);
-           painter->drawText(110,10+yPos,sX.c_str());
+           painter->drawText(110, 10+yPos,sX.c_str());
 
            sX.clear();
-           std::uint8_t ins =  tr->getInstrument();//pTab->GpCompMidiChannels[port*chan].instrument;//tr->getPan();
+           std::uint8_t ins =  tr->getInstrument();
 
            if (tr->isDrums() == false)
             sX = std::to_string(ins) + "i";
            else
                sX ="d" + std::to_string(ins);
 
-           painter->drawText(170,10+yPos,sX.c_str()); //mute or solo
+           painter->drawText(170, 10 + yPos, sX.c_str()); //mute or solo
         }
-
-        /*
-        _tracksView[0]->setWidth(width());
-        _tracksView[0]->setHeight(height());
-        _tracksView[0]->paint(painter); */ //MODE show together - better use 2 qml components
     }
 }
+
 
 int TabView::getTimeLineBar() {
 
@@ -281,23 +274,20 @@ int TabView::getTimeLineBar() {
 
 void TabView::prepareAllThreads(int shiftTheCursor)
 {
-    for (size_t i = 0; i <_tracksView.size(); ++i)
-    {
+    for (size_t i = 0; i <_tracksView.size(); ++i) {
         _tracksView[i]->prepareThread(shiftTheCursor);
         int thrLenSeconds = _tracksView[i]->threadSeconds();
-        qDebug() << "Thread "<<i<<" seconds "<<thrLenSeconds;
     }
 
     auto& pTrack = _pTab->at(0);
 
     if (_localThr) {
         _localThr->requestStop();
-        //localThr->wait();
-        _finishPool.push_back(std::move(_localThr)); //Consumes memory TODO checker to delete finished
+        _finishPool.push_back(std::move(_localThr));
     }
 
     _localThr = std::make_unique<ThreadLocal>();
-    _localThr->setInc(&_pTab->getCurrentBar(), nullptr); //oh shhhi 2nd arg
+    _localThr->setInc(&_pTab->getCurrentBar(), nullptr);
     _localThr->setBPM(_pTab->getBPM());
 
     const auto& timeLoop = pTrack->getTimeLoop();
@@ -308,8 +298,6 @@ void TabView::prepareAllThreads(int shiftTheCursor)
     }
     _localThr->setLimit(timeLoop.size());
 
-    qDebug() << "All threads prepared";
-
     this->connect(
         _localThr.get(),
         SIGNAL(updateUI()), //+Now finished
@@ -317,19 +305,19 @@ void TabView::prepareAllThreads(int shiftTheCursor)
         Qt::QueuedConnection);
 }
 
+
+
 void TabView::launchAllThreads()
 {
-
     for (size_t i = 0; i <_tracksView.size(); ++i)
         _tracksView[i]->launchThread();
-
-    //return;
 
     if (_localThr)
         _localThr->start();
 
     setPlaying(true);
 }
+
 
 void TabView::stopAllThreads()
 {
@@ -338,10 +326,8 @@ void TabView::stopAllThreads()
     for (size_t i = 0; i <_tracksView.size(); ++i)
         _tracksView[i]->stopThread();
 
-    if (_localThr) {
+    if (_localThr)
         _localThr->requestStop();
-        //localThr->wait();
-    }
 }
 
 
@@ -352,21 +338,6 @@ TabView::~TabView() {
     }
 }
 
-
-/*
-void TabView::connectAllThreadsSignal(MasterView *masterView)
-{
-    for (size_t i = 0; i <_tracksView.size(); ++i)
-        _tracksView[i]->connectThreadSignal(masterView);
-
-   // masterView->connectThread(localThr);
-
-   masterView->connectMainThread(_localThr);
-}*/
-
-
-
-// ------------OVER the changes--------------------
 
 
 bool TabView::gotChanges() const
