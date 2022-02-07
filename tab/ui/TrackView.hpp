@@ -72,6 +72,8 @@ namespace aural_sight {
         void moveNextLine();
         void movePrevLine();
 
+        size_t getLineOfBar(size_t idx);
+
     public:
 
         Q_INVOKABLE int getInstrumet();

@@ -109,8 +109,8 @@ void TrackView::fillBarsPool() {
     std::uint8_t lastNum = 0;
     std::uint8_t lastDen = 0;
 
-    int xSh = 0;
-    int ySh = 0;
+    int xPos = 0;
+    int yPos = 0;
 
     std::vector<size_t> currentLine;
 
@@ -139,13 +139,13 @@ void TrackView::fillBarsPool() {
         BarView bView(curBar.get(), stringsN,i);
         bView.setSameSign(sameSign);
 
-        int xShNEXT = xSh + bView.getW() + 15;
+        int xShNEXT = xPos + bView.getW() + 15;
         int border = width();
 
 
         if (xShNEXT > border) {
-            xSh = 0;
-            ySh += bView.getH();
+            xPos = 0;
+            yPos += bView.getH();
 
             _linesIdxs.push_back(currentLine);
             currentLine.clear();
@@ -153,9 +153,9 @@ void TrackView::fillBarsPool() {
 
         currentLine.push_back(i);
 
-        bView.setShifts(xSh, ySh);
+        bView.setShifts(xPos, yPos);
 
-        xSh += bView.getW();
+        xPos += bView.getW();
         _barsPool.push_back(bView);
     }
 
@@ -165,17 +165,22 @@ void TrackView::fillBarsPool() {
 }
 
 
+size_t TrackView::getLineOfBar(size_t idx) {
+    size_t currentLine = 0;
+    for (auto& line: _linesIdxs) {
+        if (find(line.begin(), line.end(), idx) != line.end())
+            break;
+        ++currentLine;
+    }
+    return currentLine;
+}
+
+
 void TrackView::moveNextLine() {
 
     size_t& displayIndex = _pTrack->displayIndex();
     size_t& cursor = _pTrack->cursor();
-
-    size_t currentLine = 0; //TODO subfun on refact
-    for (auto& line: _linesIdxs) {
-        if (find(line.begin(), line.end(), displayIndex) != line.end())
-            break;
-        ++currentLine;
-    }
+    const size_t currentLine = getLineOfBar(displayIndex);
 
     if (currentLine < _linesIdxs.size() - 1) {
         displayIndex = _linesIdxs[currentLine + 1][0];
@@ -184,46 +189,36 @@ void TrackView::moveNextLine() {
     }
 }
 
+
 void TrackView::movePrevLine() {
 
     size_t& displayIndex = _pTrack->displayIndex();
     size_t& cursor = _pTrack->cursor();
 
-    size_t currentLine = 0; //TODO subfun on refact find line
-    for (auto& line: _linesIdxs) {
-        if (find(line.begin(), line.end(), displayIndex) != line.end())
-            break;
-        ++currentLine;
-    }
+    const size_t currentLine = getLineOfBar(displayIndex);
+    const size_t cursorLine = getLineOfBar(cursor);
 
-    size_t cursorLine = 0; //TODO subfun on refact find line
-    for (auto& line: _linesIdxs) {
-        if (find(line.begin(), line.end(), cursor) != line.end())
-            break;
-        ++cursorLine;
-    }
-
-    if (currentLine != 0) {
+    if (currentLine != 0)
+    {
         displayIndex = _linesIdxs[currentLine - 1][0];
 
-        int diff = cursorLine - (currentLine - 1);
-        int possibleLines = height() / _barsPool[0].getH();
+        const int diff = cursorLine - (currentLine - 1);
+        const int possibleLines = height() / _barsPool[0].getH();
 
-        if ( diff > possibleLines ) {
+        if ( diff > possibleLines )
             cursor = displayIndex;
-        }
     }
 }
 
 
-void TrackView::paintByLines(QPainter *painter) {
+void TrackView::paintByLines(QPainter* painter) {
 
     if (_linesIdxs.empty())
         return;
 
     size_t& displayIndex = _pTrack->displayIndex();
     size_t& lastSeen = _pTrack->lastSeen();
-    size_t cursor = _pTrack->cursor();
+    const size_t cursor = _pTrack->cursor();
 
     auto scrollLine = [&]() {
         for (auto& line: _linesIdxs)
@@ -233,32 +228,21 @@ void TrackView::paintByLines(QPainter *painter) {
             }
     };
 
-
     if (cursor < displayIndex)
         scrollLine();
-
     if (lastSeen && cursor > lastSeen)
         scrollLine();
 
+    const size_t currentLine = getLineOfBar(displayIndex);
 
-    size_t currentLine = 0;
-
-    for (auto& line: _linesIdxs) {
-        if (find(line.begin(), line.end(), displayIndex) != line.end())
-            break;
-        ++currentLine;
+    for (size_t i = 0; i < _linesIdxs.size(); ++i)
+    {
+        int yPos = _barsPool[0].getH() * (i - currentLine);
+        for (size_t barIdx: _linesIdxs[i])
+            _barsPool[barIdx].setY(yPos + 20);
     }
 
-
-    for (size_t i = 0; i < _linesIdxs.size(); ++i) {
-        int ySh = _barsPool[0].getH() * (i - currentLine);
-        for (size_t barIdx: _linesIdxs[i]) {
-            auto& barView = _barsPool[barIdx];
-            barView.setY(ySh + 20);
-        }
-    }
-
-    int possibleLines = height() / _barsPool[0].getH();
+    const int possibleLines = height() / _barsPool[0].getH();
 
     for (size_t i = currentLine; i < currentLine + possibleLines; ++i)
     {
@@ -294,10 +278,9 @@ void TrackView::paint(QPainter *painter)
     if (_pTrack == nullptr)
         return;
 
-    if (+_lastWidth != width() || _lastHeight != height()) { //TODO только когда меняется width
-
-        fillBarsPool(); //may have tiny issues on resize, because lining would change
-
+    if (_lastWidth != width() || _lastHeight != height())
+    {
+        fillBarsPool();
         _lastWidth = width();
         _lastHeight = height();
     }
@@ -307,17 +290,13 @@ void TrackView::paint(QPainter *painter)
     f.setPixelSize(14);
     painter->setFont(f);
 
-    //paintMainArea(painter);
-
     paintByLines(painter);
 
     size_t cursor = _pTrack->cursor();
     size_t cursorBeat = _pTrack->cursorBeat();
     int stringCursor = _pTrack->stringCursor();
 
-    size_t pos = cursor; //cursor - displayIndex;
-
-    if (pos < _barsPool.size())
+    if (cursor < _barsPool.size())
     {
         BarView& bView = _barsPool[cursor];
         changeColor(CONF_PARAM("colors.curBar"), painter);
@@ -336,43 +315,38 @@ void TrackView::paint(QPainter *painter)
 
 int TrackView::getFullPixelHeight() {
 
-    size_t trackLen = _pTrack->size();
-    int stringsN = _pTrack->getTuning().getStringsAmount();
+    const size_t trackLen = _pTrack->size();
+    const int stringsN = _pTrack->getTuning().getStringsAmount();
+    const int widthBorder = width();
 
-    int xSh = 0;
-    int ySh = 0;
-    int border = width();
+    int xPos = 0;
+    int yPos = 0;
     int lastHeight = 0;
 
-    for (size_t i = 0; i < trackLen; ++i) //trackLen
+    for (size_t i = 0; i < trackLen; ++i)
     {
         auto& curBar = _pTrack->at(i);
         BarView bView(curBar.get(), stringsN,i);
 
-        int xShNEXT = xSh + bView.getW() + 15; //TODO all constants configurable
-
-        if (xShNEXT > border) {
-            xSh = 0;
-            ySh += bView.getH();
+        if (int nextX = xPos + bView.getW() + 15; nextX > widthBorder) { //TODO all constants as params
+            xPos = 0;
+            yPos += bView.getH();
         }
 
-        bView.setShifts(xSh, ySh);
-        xSh += bView.getW();
+        bView.setShifts(xPos, yPos);
+        xPos += bView.getW();
         lastHeight = bView.getH();
     }
 
-    return ySh + lastHeight;
+    return yPos + lastHeight;
 }
 
 
 
 void TrackView::prepareThread(int shiftTheCursor)
 {
-    //prepare for the animation
-
     if (_animationThread) {
         _animationThread->requestStop();
-        //localThr->wait();
         _finishPool.push_back(std::move(_animationThread)); //Clear a pool
     }
 
@@ -386,10 +360,13 @@ void TrackView::prepareThread(int shiftTheCursor)
 
     this->connect(
         _animationThread.get(),
-        SIGNAL(updateUI()), //+Now finished
+        SIGNAL(updateUI()),
         SLOT(update()),
         Qt::QueuedConnection);
+
+    //TODO finished animation? + line switched animation?
 }
+
 
 bool TrackView::gotChanges() const
 {
@@ -399,13 +376,12 @@ bool TrackView::gotChanges() const
 }
 
 
-
-
 int TrackView::getInstrumet() {
     if (_pTrack != nullptr)
         return _pTrack->getInstrument();
     return 0;
 }
+
 
 void TrackView::setInstrument(int newInstr) {
     if (_pTrack != nullptr) {
@@ -414,11 +390,13 @@ void TrackView::setInstrument(int newInstr) {
     }
 }
 
+
 int TrackView::getVolume() {
     if (_pTrack != nullptr)
         return _pTrack->getVolume();
     return 0;
 }
+
 
 void TrackView::setVolume(int newVol) {
     if (_pTrack != nullptr) {
@@ -427,11 +405,13 @@ void TrackView::setVolume(int newVol) {
     }
 }
 
+
 int TrackView::getPanoram() {
     if (_pTrack != nullptr)
         return _pTrack->getPan();
     return 0;
 }
+
 
 void TrackView::setPanoram(int newPan) {
     if (_pTrack != nullptr) {
@@ -441,11 +421,13 @@ void TrackView::setPanoram(int newPan) {
 
 }
 
+
 int TrackView::getStatus() {
     if (_pTrack != nullptr)
         return _pTrack->getStatus();
     return 0;
 }
+
 
 void TrackView::setStatus(int newStatus) { //0 - none, 1 - mute, 2 - solo
     if (_pTrack != nullptr) {
@@ -454,11 +436,13 @@ void TrackView::setStatus(int newStatus) { //0 - none, 1 - mute, 2 - solo
     }
 }
 
+
 QString TrackView::getName() {
     if (_pTrack != nullptr)
         return _pTrack->getName().c_str();
     return "";
 }
+
 
 void TrackView::setName(QString newName) {
      if (_pTrack != nullptr) {
