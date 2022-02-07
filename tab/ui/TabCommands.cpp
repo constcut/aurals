@@ -25,29 +25,6 @@ using namespace aural_sight;
 
 //Trackview events:
 
-void reactOnComboTrackViewQt(const std::string& press, Track* pTrack) { //TODO keyeventsUI
-    std::string rest = press.substr(4);
-    size_t separator = rest.find(":");
-    std::string combo = rest.substr(0,separator);
-    std::string item = rest.substr(separator+1);
-    int itemNum = atoi(item.c_str());
-    if (combo=="0") //Это выбор другого трека
-    {
-        char mini[2]={0};
-        mini[0] = itemNum + 49;
-        //mw->pushForceKey("esc");
-        //mw->pushForceKey(mini);
-    }
-    if (combo=="1")
-        pTrack->setInstrument(itemNum);
-    if (combo=="2")
-        pTrack->setVolume(itemNum);
-    if (combo=="5")
-        pTrack->setStatus(itemNum);
-    if (combo=="6")
-        pTrack->setPan(itemNum);
-}
-
 
 
 
@@ -392,9 +369,7 @@ void TrackView::keyevent(std::string press) //TODO масштабные макр
     size_t& cursorBeat = _pTrack->cursorBeat();
     size_t& stringCursor = _pTrack->stringCursor();
 
-    if (press.substr(0,4)=="com:")
-        reactOnComboTrackViewQt(press, _pTrack);
-    else if (isdigit(press[0]))
+    if (isdigit(press[0]))
         handleKeyInput(press[0]-48, _pTrack->digitPress(), _pTrack, cursor, cursorBeat, stringCursor, _pTrack->commandSequence);
     else
         qDebug() << "Key event not handled in TrackView: " << press.c_str();
