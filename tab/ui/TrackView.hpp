@@ -82,6 +82,8 @@ namespace aural_sight {
 
         void paintMainArea(QPainter *painter);
 
+        void fillBarsPool();
+
 
     public:
         //Track setters and getters
