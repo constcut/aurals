@@ -32,26 +32,26 @@ namespace aural_sight {
     };
 
     Q_NAMESPACE
-    enum class TabCommand {
+    enum class TabCommand { //Make all reversable
         SetSignTillEnd,
         SaveAs,
-        Mute, //Removed
-        Solo, //Removed
+        Mute, //Make reversable use from tab
+        Solo, //Make reversable use from tab
         MoveLeft,
         MoveRight,
         MoveUp,
         MoveDown,
-        Drums, //Removed
-        Instument, //Removed (or has to)
-        Panoram, //Removed (or has to)
-        Volume, //Removed (or has to)
-        Name, //Removed (or has to)
+        Drums, //Make reversable use from tab
+        Instument, //Make reversable use from tab
+        Panoram,//Make reversable use from tab
+        Volume, //Make reversable use from tab
+        Name, //Make reversable use from tab
         BPM,
         OpenTrack, //Removed
         NewTrack,
-        DeleteTrack, //Removed
-        PlayMidi,
-        GenerateMidi,
+        DeleteTrack, //
+        PlayMidi, //Removed
+        GenerateMidi, //Removed
         PauseMidi,
         AddMarker,
         OpenReprise,

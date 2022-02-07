@@ -218,72 +218,6 @@ void TrackView::onTabCommand(TabCommand command) {
 
 
 
-void playPressedQt(Tab* pTab, std::unique_ptr<ThreadLocal>& localThr, size_t currentBar, TabView *tabView) {
-    //pre action for repeat
-    if (tabView->getPlaying()==true)
-        if (localThr)
-            if (localThr->getStatus())
-                tabView->setPlaying(false);
-
-    if (tabView->getPlaying() == false) {
-        size_t shiftTheCursor = 0;
-        if (currentBar != 0) {
-            Bar *barPtr = pTab->at(0)->at(currentBar).get();
-            const auto& timeLoop = pTab->at(0)->getTimeLoop();
-            for (size_t i = 0; i < timeLoop.size();++i)
-                 if (timeLoop.at(i) == barPtr) {
-                     shiftTheCursor = i;
-                     break;
-                 }
-        }
-        //Разделить все этапы с интерфейсом TODO
-        pTab->connectTracks();
-        auto generatedMidi = exportMidi(pTab,shiftTheCursor);
-
-        std::string fullOutName = AConfig::getInst().testsLocation + std::string("midiOutput.mid");
-        std::ofstream outFile2(fullOutName, std::ios::binary);
-        if (!outFile2.is_open())
-            qDebug() << "Failed to open out file :(";
-        else
-            qDebug() <<"File opened "<<fullOutName.c_str();
-
-        generatedMidi->writeStream(outFile2);
-        outFile2.close();
-
-        tabView->prepareAllThreads(shiftTheCursor);
-        //tabView->connectAllThreadsSignal(tabView->getMaster()); //TODO
-       //STARTMIDI
-        tabView->launchAllThreads();
-        tabView->setPlaying(true);
-    }
-    else
-    {
-        //MidiEngine::stopDefaultFile();
-        tabView->stopAllThreads();
-        tabView->setPlaying(false);
-    }
-}
-
-void generateMidiQt(Tab* pTab) {
-    auto generatedMidi = exportMidi(pTab);
-
-    std::string fullOutName = AConfig::getInst().testsLocation + std::string("midiOutput.mid");
-    std::ofstream outFile2(fullOutName, std::ios::binary);
-
-    if (! outFile2.is_open()){
-        qDebug() << "Failed to open out file :(";
-        //statusLabel->setText("failed to open generated");
-    }
-    size_t outFileSize2 = generatedMidi->writeStream(outFile2);
-    qDebug() << "File wroten. " << outFileSize2 << " bytes. ";
-    outFile2.close();
-    //generatedMidi->printToStream(std::cout); //att?
-    //statusLabel->setText("generation done. p for play");
-}
-
-
-
-
 void TabView::keyPress(int code) {
     qDebug() << "TABVIEW key event " << code;
 
@@ -731,10 +665,6 @@ void TabView::onTabCommand(TabCommand command) {
         changeTrackBpm(_pTab.get());
     else if (command == TabCommand::NewTrack) {
        _pTab->createNewTrack(); refreshTabStats(); } //Второе нужно для обновления
-    else if (command == TabCommand::PlayMidi) //Если нам понадобится playMerge оно осталось только в git истории
-        playPressedQt(_pTab.get(), _localThr, _pTab->getCurrentBar(), this);
-    else if (command == TabCommand::GenerateMidi)
-        generateMidiQt(_pTab.get());
     else if (command == TabCommand::GotoBar)
         goToBar(_pTab.get());
     //if (press == "alt");//TODO
