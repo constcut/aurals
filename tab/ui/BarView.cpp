@@ -291,7 +291,7 @@ void BarView::drawNote(QPainter *painter, std::uint8_t noteDur, std::uint8_t dot
 }
 
 BarView::BarView(Bar *b,int nstr, int barNum): //stringWidth(12),inbarWidth(20),
-    _pBar(b),_xShift(0),_yShift(0),_nStrings(nstr),_cursor(-1),_stringCursor(-1)
+    _pBar(b),_nStrings(nstr),_cursor(-1),_stringCursor(-1)
   ,_barNumber(barNum),_sameSign(false)
 {
     _selectorBegin=-1;
@@ -334,8 +334,8 @@ BarView::BarView(Bar *b,int nstr, int barNum): //stringWidth(12),inbarWidth(20),
 void BarView::paint(QPainter *painter)
 {
     Bar *bar1 = _pBar;
-    int cX = 20+_xShift;
-    int cY = 20+_yShift;
+    int cX = x;
+    int cY = y;
 
     Track *track = bar1->getParent();
     bool isSelected = false;

@@ -19,7 +19,6 @@ namespace aural_sight {
         static const int inbarWidth=20;
 
         Bar* _pBar;
-        int _xShift, _yShift; //TODO review + to unsinged
         int _nStrings;
         int _cursor;
         int _stringCursor;
@@ -94,10 +93,8 @@ namespace aural_sight {
         void paint(QPainter *painter); //from beat to beat
 
         void setShifts(int x1, int y1) {
-            _xShift =x1;
-            _yShift =y1;
             x = x1 + 20;
-            y = y1 + 20;
+            y = y1 + 20; //TODO move this logic outside?
         }
 
         void setNStrings(int ns) { _nStrings = ns; }
