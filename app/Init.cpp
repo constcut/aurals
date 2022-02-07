@@ -305,7 +305,7 @@ int mainInit(int argc, char *argv[]) {
 
     QApplication app(argc, argv);
 
-    app.setApplicationName("aural_sight");
+    app.setApplicationName("aurals");
     app.setOrganizationName("accumerite");
     app.setOrganizationDomain("acc.u.merite");
 

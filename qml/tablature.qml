@@ -339,9 +339,7 @@ Item {
         x: 10
         spacing:  10
 
-        function refreshTrack() { //TODO смесить куда-то
-
-            console.log("Call refresh track")
+        function refreshTrack() {
 
             var trackIdx = parseInt(trackCombo.currentText)
             trackView.setFromTab(tabView, trackIdx)
@@ -352,7 +350,6 @@ Item {
                 flick.contentHeight = realHeight
                 //But then we missing autoscroll
             }
-            //We can have long flick but it sucks on android
 
             instrumentCombo.currentIndex = trackView.getInstrumet()
             volumeSlider.value = trackView.getVolume()

@@ -10,7 +10,7 @@ ApplicationWindow {
 
     id: thatWindow
     visible: true
-    title: "aural_sight"
+    title: "aurals"
 
     Component.onCompleted: {
         if (Qt.platform.os === "android") {
