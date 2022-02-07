@@ -569,7 +569,17 @@ void TrackView::paintByLines(QPainter *painter) {
             {
                 auto& barView = _barsPool[barIdx];
                 barView.flushCursor();
+
+                std::uint8_t barCompleteStatus = _pTrack->at(barIdx)->getCompleteStatus(); //TODO avoid recalculations
+
+                if (barCompleteStatus == 2 || barCompleteStatus == 1)
+                    changeColor(CONF_PARAM("colors.exceed"), painter);
+
                 barView.paint(painter);
+
+                if (barCompleteStatus == 2 || barCompleteStatus == 1)
+                     changeColor(CONF_PARAM("colors.default"), painter);
+
             }
             lastSeen = barIdx;
         }
