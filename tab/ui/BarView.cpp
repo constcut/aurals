@@ -648,21 +648,17 @@ void BarView::paint(QPainter *painter)
     flushSelectors();
 }
 
+
 void BarView::drawEffects(QPainter *painter, int x1, int y1, int w1, int h1, const ABitArray& eff)
 {
     if (eff.getEffectAt(Effect::HeavyAccented))
     {
-        //accented
         painter->drawLine(x1+w1/2,y1-h1,x1+2+w1/2,y1-3-h1);
         painter->drawLine(x1+2+w1/2,y1-3-h1,x1+4+w1/2,y1-h1);
     }
 
     if (eff.getEffectAt(Effect::Bend))
-    {
-        //bend
         painter->drawLine(x1+w1, y1-h1/2, x1+w1+6, y1-h1-6);
-
-    }
 
     if (eff.getEffectAt(Effect::TremoloPick))
     {
@@ -678,69 +674,55 @@ void BarView::drawEffects(QPainter *painter, int x1, int y1, int w1, int h1, con
 
     if (eff.getEffectAt(Effect::Vibrato))
     {
-        //vibratto turned on
-        x1+=inbarWidth/2;
-        y1-=3*stringWidth/4;
-
-        painter->drawLine(x1,y1,x1+2,y1-2);
-        painter->drawLine(x1+2,y1-2,x1+4,y1);
-        painter->drawLine(x1+4,y1,x1+6,y1-2);
-        painter->drawLine(x1+6,y1-2,x1+8,y1);
-        painter->drawLine(x1+8,y1,x1+10,y1-2);
+        x1 += inbarWidth / 2;
+        y1 -= 3 * stringWidth / 4;
+        painter->drawLine(x1, y1, x1 + 2, y1 - 2);
+        painter->drawLine(x1 + 2, y1 - 2, x1 + 4, y1);
+        painter->drawLine(x1 + 4, y1, x1 + 6, y1 - 2);
+        painter->drawLine(x1 + 6, y1 - 2, x1 + 8, y1);
+        painter->drawLine(x1 + 8, y1, x1 + 10, y1 -2);
     }
 
     if (eff.getEffectAt(Effect::Legato))
     {
-        //legato turned on
-        x1+=inbarWidth/2;
-        y1-=3*stringWidth/4;
-
-        painter->drawLine(x1,y1,x1+7,y1-3);
-        painter->drawLine(x1+7,y1-3,x1+14,y1);
+        x1 += inbarWidth / 2;
+        y1 -= 3 * stringWidth / 4;
+        painter->drawLine(x1, y1, x1 + 7, y1 - 3);
+        painter->drawLine(x1 + 7, y1 - 3, x1 + 14, y1);
     }
 
-    //by the way third left free
     if (eff.inRange(Effect::Hammer,Effect::SlideUpV2))
     {
-        //some of slides turned on
-
-        if (eff.getEffectAt(Effect::Slide)||eff.getEffectAt(Effect::LegatoSlide))
+        if (eff.getEffectAt(Effect::Slide) || eff.getEffectAt(Effect::LegatoSlide))
         {
-            //4 normal
-            //5 legatto slide
+            x1 += 3 * inbarWidth / 4;
+            y1 -= stringWidth / 2;
 
-            x1+=3*inbarWidth/4;
-            y1-=stringWidth/2;
+            painter->drawLine(x1, y1 - 2, x1 + 14, y1 + 4);
 
-            painter->drawLine(x1,y1-2,x1+14,y1+4);
-
-            x1-=inbarWidth/4;
-            y1-=stringWidth/4;
+            x1 -= inbarWidth / 4;
+            y1 -= stringWidth / 4;
 
             if (eff.getEffectAt(Effect::LegatoSlide))
             {
-                painter->drawLine(x1,y1,x1+7,y1-3);
-                painter->drawLine(x1+7,y1-3,x1+14,y1);
+                painter->drawLine(x1, y1, x1 + 7, y1 - 3);
+                painter->drawLine(x1 + 7, y1 - 3, x1 + 14, y1);
             }
         }
 
-        //8+6 slides down
-        if (eff.getEffectAt(Effect::SlideDownV2)||eff.getEffectAt(Effect::SlideDownV1))
+        if (eff.getEffectAt(Effect::SlideDownV2) || eff.getEffectAt(Effect::SlideDownV1))
         {
-            x1+=3*inbarWidth/4;
-            y1-=stringWidth/2;
-
-            painter->drawLine(x1,y1-2,x1+10,y1+7);
+            x1 += 3 * inbarWidth / 4;
+            y1 -= stringWidth / 2;
+            painter->drawLine(x1, y1 - 2, x1 + 10, y1 + 7);
         }
-
-        //9+7 slides up
 
         if (eff.getEffectAt(Effect::SlideUpV2)||eff.getEffectAt(Effect::SlideUpV1))
         {
-            x1+=3*inbarWidth/4;
-            y1-=stringWidth/2;
+            x1 +=  3 *inbarWidth / 4;
+            y1 -= stringWidth / 2;
 
-            painter->drawLine(x1,y1+7,x1+10,y1-2);
+            painter->drawLine(x1, y1 + 7, x1 + 10, y1 - 2);
         }
         ///2.19 is only guidence
         //1 normal 2 from -1 to 12
@@ -753,9 +735,7 @@ void BarView::drawEffects(QPainter *painter, int x1, int y1, int w1, int h1, con
 int BarView::getClickString(int y1) const
 {
     int yOffset = y1 - _y;
-    int stringIndex = yOffset/12; //12 stringWidth
-    //attention
-    //unknown issue
+    int stringIndex = yOffset / stringWidth;
     return stringIndex;
 }
 
@@ -764,9 +744,9 @@ int BarView::getClickBeat(int x1) const
 {
     if (_repBegin) x1 -= 15;
 
-    int xOffset = x1-_x;
-    int beatIndex = xOffset/inbarWidth;
-    //--beatIndex;
+    int xOffset = x1 - _x;
+    int beatIndex = xOffset / inbarWidth;
+
     return beatIndex;
 }
 
