@@ -391,7 +391,7 @@ Item {
             ComboBox {
                 id: tabCombo
                 model: 70
-                currentIndex: 0
+                currentIndex: 20
 
                 onCurrentTextChanged: {
                     var testId = parseInt(tabCombo.currentText) + 1
@@ -517,7 +517,9 @@ Item {
                     "CopyBeat",
                     "CopyBars",
                     "Paste",
-                    "Undo"
+                    "Undo",
+                    "PrevLine",
+                    "NextLine"
                 ]
                 //currentIndex: 20
             }
