@@ -47,111 +47,7 @@ TrackView::~TrackView() {
     }
 }
 
-/*
-void TrackView::connectThreadSignal(MasterView *masterView) {
-    masterView->connectThread(_animationThread);
-}
-*/
 
-void TrackView::ongesture(int offset, bool horizontal)
-{
-    if (horizontal){
-        //x offset
-        /* forbiden for a while
-        int restOffset = offset;
-        while (restOffset != 0)
-        restOffset = horizonMove(restOffset);
-        */
-        //there could be selection for
-    }
-    else{
-        size_t& cursor = _pTrack->cursor();
-        size_t& displayIndex = _pTrack->displayIndex();
-        //y offset
-        if (offset < 0) {
-            /*
-            int quant = offset/-80;
-                displayIndex = cursor += quant;
-            cursorBeat=0;
-            if (displayIndex > pTrack->size())
-                cursor = displayIndex = pTrack->size()-1;
-            */
-
-            int absOffset = -1*offset;
-            int shiftTo = 0;
-            int curY = _barsPool[0].getY();
-
-            while (absOffset>0) {
-                int barY = _barsPool[shiftTo].getY();
-                if (barY > curY) {
-                    absOffset -= (barY-curY);
-                    curY=barY;
-                    if (absOffset < _barsPool[0].getH()) {
-                        //--shiftTo;
-                        break;
-                    }
-                }
-                ++shiftTo;
-            }
-
-
-            size_t trackLen = _pTrack->size();
-            displayIndex = cursor  +=shiftTo;
-
-            if (trackLen <= displayIndex){
-
-                displayIndex = trackLen;
-                if (trackLen)
-                    --displayIndex;
-
-                cursor=displayIndex;
-            }
-            qDebug()<<"Shifting to "<<shiftTo;
-        }
-        else {
-            size_t& cursorBeat = _pTrack->cursorBeat();
-            size_t quant = offset/80;
-            if (cursor > quant)
-                displayIndex = cursor -= quant;
-            else
-                displayIndex = cursor = 0;
-            cursorBeat=0;
-
-        }
-        _tabParrent->setCurrentBar(cursor);
-        //verticalMove - same way but skips whole line - height is always the same
-    }
-}
-
-int TrackView::horizonMove(int offset)
-{
-    //index 0 only for first iteration
-
-    BarView *bV = &(_barsPool.at(0));
-
-    int absOffset = offset > 0? offset: offset*-1;
-    int rest = offset;
-
-    if (absOffset > bV->getW()){
-
-        size_t& displayIndex = _pTrack->displayIndex();
-        size_t& lastSeen = _pTrack->lastSeen();
-
-            if (offset > 0){
-                if ((displayIndex+1) < (lastSeen-1))
-                    ++displayIndex;
-                rest -= bV->getW();
-            }
-            else {
-                if (displayIndex > 0)
-                    --displayIndex;
-                rest += bV->getW();
-            }
-       return rest;
-    }
-
-    return 0;
-}
 
 void TrackView::onclick(int x1, int y1)
 {
@@ -215,137 +111,6 @@ void TrackView::onclick(int x1, int y1)
     //log << "Press "<<x1<<" "<<y1;
 }
 
-void TrackView::ondblclick(int x1, int y1)
-{
-    if (_tabParrent == nullptr)
-        return;
-
-    bool wasPressed = false;
-    for (size_t i = 0; i < _barsPool.size(); ++i)
-    {
-        /*
-        log << "Bar "<<i<<" "<<barsPull.getV(i).getX()<<
-               " "<<barsPull.getV(i).getY()<<" "<<
-               " "<<barsPull.getV(i).getW()<<" "<<
-               " "<<barsPull.getV(i).getH()<<"; hits-"<<
-               (int)(barsPull.getV(i).hit(x1,y1));
-               */
-
-        if (_barsPool.at(i).hit(x1,y1))
-        {
-            BarView *bar = &(_barsPool.at(i));
-            BarView *bV = bar; //(dynamic_cast<BarView*>(bar)); //it must be that way i know it
-            //may be refact to make Poly<BarView>
-
-            if (bV == 0) continue;
-
-            int beatClick = bV->getClickBeat(x1);
-            //Bar *hitBar = bV->getBar();
-            int fullBar = bV->getBarsize();
-
-
-            if (fullBar <= beatClick)
-                continue;
-
-            qDebug() << "Bar hits "<<beatClick<<" of "<<fullBar;
-
-            size_t& displayIndex = _pTrack->displayIndex();
-            int& selectionBeatFirst = _pTrack->selectBeatFirst();
-            int& selectionBeatLast = _pTrack->selectBeatLast();
-            int& selectionBarFirst = _pTrack->selectBarFirst();
-            int& selectionBarLast = _pTrack->selectBarLast();
-
-            if (selectionBeatFirst == -1) {
-                selectionBeatFirst = selectionBeatLast =  bV->getClickBeat(x1);
-                selectionBarFirst = selectionBarLast = i+displayIndex;
-            }
-            else
-            {
-                if (i + displayIndex > selectionBarLast)
-                {
-                    selectionBeatLast =  bV->getClickBeat(x1);
-                    selectionBarLast = i + displayIndex;
-                }
-                else
-                if (i + displayIndex < selectionBarFirst)
-                {
-                    selectionBeatFirst =   bV->getClickBeat(x1);
-                    selectionBarFirst = i + displayIndex;
-                }
-                else
-                {
-                    if (selectionBarFirst == selectionBarLast)
-                    {
-                        int addBeat = bV->getClickBeat(x1);
-                        if (addBeat > selectionBeatLast)
-                            selectionBeatLast = addBeat;
-                        if (addBeat < selectionBarFirst)
-                            selectionBeatFirst = addBeat;
-                    }
-                    else
-                    {
-                        int addBeat = bV->getClickBeat(x1);
-                        //if (addBeat > selectionBeatLast)
-                        if (i + displayIndex == selectionBarLast)
-                        {
-                            selectionBeatLast = addBeat;
-                        }
-                        else //if (addBeat < selectionBeatfirstt)
-                        if (i + displayIndex == selectionBarFirst)
-                        {
-                            selectionBeatFirst = addBeat;
-                        }
-                        else
-                        {
-                            if (i + displayIndex ==selectionBarLast-1)
-                            {
-                                //pre last bar
-                                if (addBeat==_pTrack->at(i+displayIndex)->size()-1)
-                                {
-                                    //its last beat
-                                    if (selectionBeatLast == 0)
-                                    {
-                                        //and current beat is irst in last bar
-                                        selectionBeatLast = addBeat;
-                                        --selectionBarLast;
-                                    }
-                                }
-                            }
-
-                            if ( i+ displayIndex == selectionBarFirst + 1)
-                            {
-                                //pre last bar
-                                if (addBeat==0)
-                                {
-                                    //its last beat
-                                    if (selectionBeatFirst == _pTrack->at(i + displayIndex-1)->size() - 1)
-                                    {
-                                        //and current beat is irst in last bar
-                                        selectionBeatFirst = 0;
-                                        ++selectionBarFirst;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            wasPressed = true;
-        }
-    }
-
-    if (wasPressed == false) {
-        int& selectionBeatFirst = _pTrack->selectBeatFirst();
-        int& selectionBeatLast = _pTrack->selectBeatLast();
-        int& selectionBarFirst = _pTrack->selectBarFirst();
-        int& selectionBarLast = _pTrack->selectBarLast();
-        selectionBeatFirst = selectionBeatLast =  -1;
-        selectionBarFirst = selectionBarLast = -1;
-
-    }
-    update();
-}
 
 void TrackView::setDisplayBar(int barPosition)
 {
@@ -537,7 +302,6 @@ void TrackView::movePrevLine() {
 
     size_t& displayIndex = _pTrack->displayIndex();
     size_t& cursor = _pTrack->cursor();
-    size_t lastSeen = _pTrack->lastSeen();
 
     size_t currentLine = 0; //TODO subfun on refact find line
     for (auto& line: _linesIdxs) {
@@ -644,12 +408,12 @@ void TrackView::paint(QPainter *painter)
     if (_pTrack == nullptr)
         return;
 
-    if (lastWidth != width() || lastHeight != height()) { //TODO только когда меняется width
+    if (+_lastWidth != width() || _lastHeight != height()) { //TODO только когда меняется width
 
         fillBarsPool(); //may have tiny issues on resize, because lining would change
 
-        lastWidth = width();
-        lastHeight = height();
+        _lastWidth = width();
+        _lastHeight = height();
     }
 
 
@@ -684,7 +448,7 @@ void TrackView::paint(QPainter *painter)
 
 
 
-int TrackView::getPixelHeight() {
+int TrackView::getFullPixelHeight() {
 
     size_t trackLen = _pTrack->size();
     int stringsN = _pTrack->getTuning().getStringsAmount();

@@ -611,14 +611,6 @@ Item {
                         trackView.focus = true
                     }
 
-                    /*
-                    onPressed:  {
-                        trackView.lastPress = mouseY
-                    }
-                    onReleased: {
-                        var offset = mouseY - trackView.lastPress
-                        trackView.ongesture(offset, false)
-                    }*/
                 }
             }
 
