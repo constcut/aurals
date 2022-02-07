@@ -170,11 +170,7 @@ void TrackView::onTrackCommand(TrackCommand command) {
     int& selectionBarFirst = _pTrack->selectBarFirst();
     int& selectionBarLast = _pTrack->selectBarLast();
 
-    if (command == TrackCommand::PlayFromStart) {
-        _pTrack->gotoTrackStart();
-        onTabCommand(TabCommand::PlayMidi);
-    }
-    else if (command == TrackCommand::SetSignForSelected)
+    if (command == TrackCommand::SetSignForSelected)
       changeBarSignsQt(_pTrack, selectionBarFirst, selectionBarLast);
     else if (command == TrackCommand::SaveAsFromTrack)
         saveAsFromTrack(_tabParrent);

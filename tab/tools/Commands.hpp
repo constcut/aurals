@@ -31,6 +31,7 @@ namespace aural_sight {
         TwoIntTrackCommand
     };
 
+
     Q_NAMESPACE
     enum class TabCommand { //Make all reversable
         SetSignTillEnd,
@@ -47,11 +48,8 @@ namespace aural_sight {
         Volume, //Make reversable use from tab
         Name, //Make reversable use from tab
         BPM,
-        OpenTrack, //Removed
         NewTrack,
-        DeleteTrack, //
-        PlayMidi, //Removed
-        GenerateMidi, //Removed
+        DeleteTrack, //Undo?
         PauseMidi,
         AddMarker,
         OpenReprise,
@@ -61,9 +59,10 @@ namespace aural_sight {
     };
     Q_ENUM_NS(TabCommand)
 
+
     Q_NAMESPACE
     enum class TrackCommand {
-        PlayFromStart,
+        PlayFromStart, //Removed
         GotoStart,
         SetSignForSelected,
         SelectionExpandLeft,
