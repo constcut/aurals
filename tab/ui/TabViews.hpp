@@ -82,9 +82,6 @@ namespace aural_sight {
         void removeTrackView(TrackView* trackView);
 
 
-        Q_INVOKABLE void onclick(int x1, int y1);
-
-
         Q_INVOKABLE void prepareAllThreads(int shiftTheCursor);
         Q_INVOKABLE void launchAllThreads();
         Q_INVOKABLE void stopAllThreads();

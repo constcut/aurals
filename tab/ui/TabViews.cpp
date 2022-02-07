@@ -126,48 +126,6 @@ void TabView::refreshTabStats() {
 }
 
 
-void TabView::onclick(int x1, int y1)
-{
-    if (_pTab==0)
-        return;
-
-    int awaitBar = (x1-200)/30; //TODO size_t и дополнительные рассчёты, т.к. -1 всё равно не вариант
-    int toolBarHeight = 10;
-    int awaitTrack = (y1-toolBarHeight)/30; //TODO как и выше, не стоит использовать -1, ограничить реальными значениями
-    awaitTrack-=1; // + расширить границы
-
-    if (awaitBar >= 0){
-        awaitBar += _pTab->getDisplayBar();
-        if (awaitBar == _pTab->getCurrentBar())
-        {
-            if (awaitTrack >= 0){
-                if (awaitTrack < _tracksView.size()) {
-
-                    if (auto trackView = _tracksView[awaitTrack]; trackView != nullptr) {
-                        _pTab->getCurrentTrack() = awaitTrack;
-                        trackView->setDisplayBar(awaitBar);
-                        trackView->update();
-                    }
-
-                }
-            }
-        }
-        else
-            if (awaitBar < _pTab->at(0)->size()) {
-                _pTab->getCurrentBar() = awaitBar;
-                if (awaitTrack >= 0 && awaitTrack < _pTab->size())
-                        _pTab->getCurrentTrack() = awaitTrack;
-            }
-    }
-    else {
-        ++awaitTrack;
-        if (awaitTrack >= 0 && awaitTrack < _pTab->size())
-                _pTab->getCurrentTrack() = awaitTrack;
-    }
-    update();
-}
-
-
 
 void TabView::paint(QPainter *painter)
 {

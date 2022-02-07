@@ -326,24 +326,8 @@ Item {
             y: trackLayout.height
             width: parent.width
             height: parent.height + 100 //TODO calculate value + add flick for vertical
-
-            // Возможно разбить на 2 компонента, 1 заголовок треков, другой серия тактов, и второй поместить в Scroll Area
-
-            /*
-            MouseArea {
-                anchors.fill: parent
-                onClicked:
-                    tabView.onclick(mouseX, mouseY)
-                onDoubleClicked:
-                    tabView.onclick(mouseX, mouseY)
-            }*/ //blocked for a while, not the best option to use those old features
-            //Return only bar selection, avoid track selection!
         }
-
-        /*          "MoveLeft",
-                    "MoveRight",
-                    "MoveUp",
-                    "MoveDown", navigation? */
+        // Возможно разбить на 2 компонента, 1 заголовок треков, другой серия тактов, и второй поместить в Scroll Area
     }
 
 
