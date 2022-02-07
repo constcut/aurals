@@ -466,7 +466,6 @@ Item {
                     "DeleteNote",
                     "IncDuration",
                     "DecDuration",
-                    "SaveAsFromTrack",
                     "NewBar",
                     "SetDot",
                     "SetTriole",
