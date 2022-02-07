@@ -86,8 +86,8 @@ namespace aural_sight {
         IncDuration,
         DecDuration,
         PlayTrackMidi, //Removed
-        SaveFile,
-        SaveAsFromTrack,
+        SaveFile, //Removed
+        SaveAsFromTrack, //Removed
         NewBar,
         SetDot,
         SetTriole,

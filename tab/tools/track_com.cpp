@@ -692,17 +692,6 @@ void Track::decDuration() {
 }
 
 
-void Track::saveFromTrack() {
-    GmyFile gmyFile;
-    std::string gfilename =  std::string(AConfig::getInst().testsLocation)  + "first.gmy";
-    //std::cerr << "Test loc " << AConfig::getInst().testsLocation << std::endl;
-    std::ofstream file(gfilename.c_str());
-    Tab* pTab =  parent;
-    gmyFile.saveToFile(file, pTab);
-    file.close();
-    return;
-}
-
 
 void Track::newBar() {
     auto addition = std::make_unique<Bar>();

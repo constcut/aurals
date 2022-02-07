@@ -255,7 +255,7 @@ namespace aural_sight {
             {TrackCommand::CopyBars, &Track::clipboardCopyBars},
             {TrackCommand::Paste, &Track::clipboardPaste},
             {TrackCommand::Undo, &Track::undoOnTrack},
-            {TrackCommand::SaveFile, &Track::saveFromTrack}};
+            };
 
 
         std::unordered_map<TrackCommand, void (Tab::*)(size_t)> intHandlers =  {
