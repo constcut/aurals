@@ -62,7 +62,7 @@ To access all types of audio analysis there is a simple recorder:
 
 There is midi player based on sound fonts:
 
-![mtherapp screenshot](res/info/screenshots/midi.png)
+![mtherapp screenshot](res/info/screenshots/midi_2.png)
 
 There is tapping function, that lets you tap rhythm on screen, and save it to pcm or midi:
 
