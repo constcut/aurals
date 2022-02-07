@@ -30,7 +30,7 @@ namespace aural_sight {
         std::unique_ptr<ThreadLocal> _animationThread; //Подумать над хранением, возможно удастся спрятать?
         std::vector<std::unique_ptr<ThreadLocal>> _finishPool;
 
-        ViewPull _barsPull;
+        ViewPull _barsPool;
 
         int lastWidth = 0;
         int lastHeight = 0;
@@ -82,8 +82,11 @@ namespace aural_sight {
 
         void paintMainArea(QPainter *painter);
 
+        void paintByLines(QPainter *painter);
+
         void fillBarsPool();
 
+        std::vector<std::vector<size_t>> linesIdxs;
 
     public:
         //Track setters and getters

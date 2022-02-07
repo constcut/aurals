@@ -17,6 +17,7 @@ void TrackView::setFromTab(QObject* pa, int trackIdx) {
     _tabParrent->addTrackView(this);
     if (trackPtr != _pTrack) {
         _pTrack = trackPtr;
+        fillBarsPool();
         update();
     }
 }
@@ -78,14 +79,14 @@ void TrackView::ongesture(int offset, bool horizontal)
 
             int absOffset = -1*offset;
             int shiftTo = 0;
-            int curY = _barsPull[0].getY();
+            int curY = _barsPool[0].getY();
 
             while (absOffset>0) {
-                int barY = _barsPull[shiftTo].getY();
+                int barY = _barsPool[shiftTo].getY();
                 if (barY > curY) {
                     absOffset -= (barY-curY);
                     curY=barY;
-                    if (absOffset < _barsPull[0].getH()) {
+                    if (absOffset < _barsPool[0].getH()) {
                         //--shiftTo;
                         break;
                     }
@@ -126,7 +127,7 @@ int TrackView::horizonMove(int offset)
 {
     //index 0 only for first iteration
 
-    BarView *bV = &(_barsPull.at(0));
+    BarView *bV = &(_barsPool.at(0));
 
     int absOffset = offset > 0? offset: offset*-1;
     int rest = offset;
@@ -166,7 +167,7 @@ void TrackView::onclick(int x1, int y1)
     size_t& displayIndex = _pTrack->displayIndex();
 
     //touch and mouse events on first note
-    for (size_t i = 0; i < _barsPull.size(); ++i)
+    for (size_t i = 0; i < _barsPool.size(); ++i)
     {
         /*
         log << "Bar "<<i<<" "<<barsPull.getV(i).getX()<<
@@ -176,9 +177,9 @@ void TrackView::onclick(int x1, int y1)
                (int)(barsPull.getV(i).hit(x1,y1));
                */
 
-        if (_barsPull.at(i).hit(x1,y1))
+        if (_barsPool.at(i).hit(x1,y1))
         {
-            BarView *bV = &(_barsPull.at(i)); //it must be that way i know it
+            BarView *bV = &(_barsPool.at(i)); //it must be that way i know it
             //may be refact to make Poly<BarView>
 
             size_t realIndex = i + displayIndex;
@@ -220,7 +221,7 @@ void TrackView::ondblclick(int x1, int y1)
         return;
 
     bool wasPressed = false;
-    for (size_t i = 0; i < _barsPull.size(); ++i)
+    for (size_t i = 0; i < _barsPool.size(); ++i)
     {
         /*
         log << "Bar "<<i<<" "<<barsPull.getV(i).getX()<<
@@ -230,9 +231,9 @@ void TrackView::ondblclick(int x1, int y1)
                (int)(barsPull.getV(i).hit(x1,y1));
                */
 
-        if (_barsPull.at(i).hit(x1,y1))
+        if (_barsPool.at(i).hit(x1,y1))
         {
-            BarView *bar = &(_barsPull.at(i));
+            BarView *bar = &(_barsPool.at(i));
             BarView *bV = bar; //(dynamic_cast<BarView*>(bar)); //it must be that way i know it
             //may be refact to make Poly<BarView>
 
@@ -387,7 +388,7 @@ void TrackView::paintMainArea(QPainter *painter) {
 
 
     //TODO move into subfunction:
-    _barsPull.clear(); //not always - to optimize
+    _barsPool.clear(); //not always - to optimize
 
     std::uint8_t lastNum = 0;
     std::uint8_t lastDen = 0;
@@ -442,7 +443,7 @@ void TrackView::paintMainArea(QPainter *painter) {
              changeColor(CONF_PARAM("colors.default"), painter);
 
         xSh += bView.getW();
-        _barsPull.push_back(bView);
+        _barsPool.push_back(bView);
         //TODO maybe we have to use some limit, for supper long tabs
     }
 }
@@ -459,6 +460,11 @@ void TrackView::fillBarsPool() {
 
     int xSh = 0;
     int ySh = 0;
+
+    std::vector<size_t> currentLine;
+
+    linesIdxs.clear();
+    _barsPool.clear();
 
     for (size_t i = 0; i < trackLen; ++i)
     {
@@ -482,22 +488,86 @@ void TrackView::fillBarsPool() {
         BarView bView(curBar.get(), stringsN,i);
         bView.setSameSign(sameSign);
 
-        int xShNEXT = xSh + bView.getW()+15;
+        int xShNEXT = xSh + bView.getW() + 15;
         int border = width();
+
+        currentLine.push_back(i);
 
         if (xShNEXT > border) {
             xSh = 0;
             ySh += bView.getH();
+
+            linesIdxs.push_back(currentLine);
+            currentLine.clear();
         }
 
         bView.setShifts(xSh, ySh);
 
         xSh += bView.getW();
-        _barsPull.push_back(bView);
+        _barsPool.push_back(bView);
     }
 
-    //Full bar pool created - create also lines
+    if (currentLine.empty() == false)
+        linesIdxs.push_back(currentLine);
 
+}
+
+
+void TrackView::paintByLines(QPainter *painter) {
+
+    if (linesIdxs.empty())
+        return;
+
+    size_t trackLen = _pTrack->size();
+    size_t& displayIndex = _pTrack->displayIndex();
+
+    size_t currentLine = 0;
+
+    for (auto& line: linesIdxs) {
+        if (find(line.begin(), line.end(), displayIndex) != line.end())
+            break;
+        ++currentLine;
+    }
+
+    size_t startIdx = linesIdxs[currentLine][0];
+
+    int hLimit = height() - _barsPool[0].getH();
+
+    int possibleLines = hLimit / _barsPool[0].getH();
+
+    qDebug() << "Possible lines " << possibleLines;
+
+
+    for (size_t i = currentLine; i < currentLine + possibleLines; ++i) {
+        if (i == linesIdxs.size())
+            break;
+
+        int ySh = _barsPool[0].getH() * (i - currentLine);
+
+        for (size_t barIdx: linesIdxs[i]) {
+
+            //TODO complete status
+            auto& barView = _barsPool[barIdx];
+            barView.setY(ySh + 20); //TODO revie this little shifts logic
+
+            barView.paint(painter);
+        }
+    }
+
+    /*
+    for (size_t i = startIdx; i < trackLen; ++i)
+    {
+        //auto& curBar = _pTrack->at(i);
+
+        //TODO incomplete colors
+        BarView& bView = _barsPool[i];
+
+        if (bView.getY() > hLimit)
+            break;
+
+        bView.paint(painter);
+
+    }*/
 }
 
 
@@ -506,41 +576,34 @@ void TrackView::paint(QPainter *painter)
     if (_pTrack == nullptr)
         return;
 
-    if (lastWidth != width() || lastHeight != height()) {
+    if (lastWidth != width() || lastHeight != height()) { //TODO только когда меняется width
         //Update pull
 
-        //fillBarsPool();
+        fillBarsPool();
 
         lastWidth = width();
         lastHeight = height();
     }
-
-    //TODO здесь осуществлять перерассчёт позиций линий, каждая линия это вектор с номерами тактов
-    //+ Сразу же создать объекты BarView - их нужно будет менять только при смене width
-
-    //Таким образом для + - линии - нужно узнать в какой линии мы находимся, и переключить на 0 индекс в нужной линии
-
-    //display изменяется если линия текущего display и курсор отличаются
-    //(возможно позже проще будет разделить анимацию от выделения - чтобы в этом режиме не скролить по нажатию)
-    //Но для начала можно просто выключать этот режим за пределами воспроизведения, и включать при начале
 
 
     auto f = painter->font();
     f.setPixelSize(14);
     painter->setFont(f);
 
-    paintMainArea(painter);
+    //paintMainArea(painter);
+
+    paintByLines(painter);
 
     size_t& cursor = _pTrack->cursor();
     size_t& cursorBeat = _pTrack->cursorBeat();
     size_t& stringCursor = _pTrack->stringCursor();
     size_t& displayIndex = _pTrack->displayIndex();
 
-    size_t pos = cursor - displayIndex;
+    size_t pos = cursor; //cursor - displayIndex;
 
-    if (pos < _barsPull.size())
+    if (pos < _barsPool.size())
     {
-        BarView& bView = _barsPull[cursor - displayIndex];
+        BarView& bView = _barsPool[cursor - displayIndex];
         changeColor(CONF_PARAM("colors.curBar"), painter);
         bView.setCursor(cursorBeat, stringCursor + 1);
         bView.paint(painter); //TODO paint only cursor
