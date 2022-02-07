@@ -50,8 +50,6 @@ namespace aural_sight {
             update();
         }
 
-
-        void setTab(std::unique_ptr<Tab> point2Tab);
         void refreshTabStats();
 
         std::unique_ptr<Tab>& getTab() { return _pTab; }
@@ -60,17 +58,14 @@ namespace aural_sight {
         Q_INVOKABLE void loadTab(QString filename);
         Q_INVOKABLE void exportMidi(QString filename, int shift);
 
-
         void paint(QPainter *painter);
 
-
-        Q_INVOKABLE void keyPress(int code); //KeyRelease too?
-        virtual void keyevent(std::string press);
+        Q_INVOKABLE void keyPress(int code);
 
         void onTabCommand(TabCommand command);
         void onTrackCommand(TrackCommand command);
 
-        Q_INVOKABLE void passTabCommand(int id) { //TODO register enum in QML
+        Q_INVOKABLE void passTabCommand(int id) {
             auto c = static_cast<TabCommand>(id);
             onTabCommand(c);
         }
@@ -80,8 +75,6 @@ namespace aural_sight {
             onTrackCommand(c);
         }
 
-
-
         void setPlaying(bool playValue) { _pTab->setPlaying(playValue); }
         bool getPlaying();
 
@@ -90,21 +83,16 @@ namespace aural_sight {
 
 
         Q_INVOKABLE void onclick(int x1, int y1);
-        Q_INVOKABLE void ondblclick(int x1, int y1);
 
-        virtual void ongesture(int offset, bool horizontal);
 
         Q_INVOKABLE void prepareAllThreads(int shiftTheCursor);
         Q_INVOKABLE void launchAllThreads();
         Q_INVOKABLE void stopAllThreads();
 
-        //TODO связывание с Core вместо
-        //void connectAllThreadsSignal(MasterView *masterView);
 
         bool gotChanges() const;
 
         std::vector<TrackView*>& getTracksViewRef() { return _tracksView; }
-
     };
 
 }

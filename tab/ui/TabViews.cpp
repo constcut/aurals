@@ -106,12 +106,6 @@ void TabView::removeTrackView(TrackView* trackView) {
 
 
 
-void TabView::setTab(std::unique_ptr<Tab> point2Tab) {
-    _pTab = std::move(point2Tab);
-    refreshTabStats();
-}
-
-
 void TabView::loadTab(QString filename) {
     GTabLoader loader;
     loader.open(filename.toStdString());
@@ -190,31 +184,6 @@ void TabView::onclick(int x1, int y1)
     update();
 }
 
-
-void TabView::ondblclick(int x1, int y1) {
-   onclick(x1,y1);
-}
-
-
-void TabView::ongesture(int offset, bool horizontal) {
-    int quant = offset/25;
-    if (horizontal) {
-        size_t nextCursor = quant + _pTab->getDisplayBar();
-        if (nextCursor<0)
-            nextCursor=0;
-        else
-            if (nextCursor > _pTab->at(0)->size())
-                nextCursor = _pTab->at(0)->size()-1;
-        _pTab->getDisplayBar() = nextCursor;
-    }
-    else {
-        if (quant >= 2)
-            keyevent("^^^"); //TODO with command
-        else
-            if (quant <= -2)
-                keyevent("vvv");
-    }
-}
 
 
 void TabView::paint(QPainter *painter)

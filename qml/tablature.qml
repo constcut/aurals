@@ -606,7 +606,6 @@ Item {
                         trackView.focus = true
                     }
                     onDoubleClicked: {
-                        //trackView.ondblclick(mouseX, mouseY)
                         trackView.onclick(mouseX, mouseY)
                         trackView.focus = true
                     }

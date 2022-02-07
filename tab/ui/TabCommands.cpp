@@ -478,11 +478,6 @@ void generateMidiQt(Tab* pTab) {
 
 
 
-void TabView::keyevent(std::string press) {
-    //Removed old way to switch track by digit
-}
-
-
 void TabView::keyPress(int code) {
     qDebug() << "TABVIEW key event " << code;
 
