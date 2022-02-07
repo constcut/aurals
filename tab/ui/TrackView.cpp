@@ -611,7 +611,7 @@ void TrackView::paint(QPainter *painter)
 
     size_t cursor = _pTrack->cursor();
     size_t cursorBeat = _pTrack->cursorBeat();
-    size_t stringCursor = _pTrack->stringCursor();
+    int stringCursor = _pTrack->stringCursor();
 
     size_t pos = cursor; //cursor - displayIndex;
 
@@ -619,6 +619,10 @@ void TrackView::paint(QPainter *painter)
     {
         BarView& bView = _barsPool[cursor];
         changeColor(CONF_PARAM("colors.curBar"), painter);
+
+        if (_tabParrent->getPlaying())
+            stringCursor = -1;
+
         bView.setCursor(cursorBeat, stringCursor + 1); //If playing - no cursor string TODO
         bView.paint(painter); //TODO paint only cursor
         changeColor(CONF_PARAM("colors.default"), painter);

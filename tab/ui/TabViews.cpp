@@ -417,7 +417,6 @@ void TabView::prepareAllThreads(int shiftTheCursor)
 void TabView::launchAllThreads()
 {
 
-
     for (size_t i = 0; i <_tracksView.size(); ++i)
         _tracksView[i]->launchThread();
 
@@ -425,10 +424,14 @@ void TabView::launchAllThreads()
 
     if (_localThr)
         _localThr->start();
+
+    setPlaying(true);
 }
 
 void TabView::stopAllThreads()
 {
+    setPlaying(false);
+
     for (size_t i = 0; i <_tracksView.size(); ++i)
         _tracksView[i]->stopThread();
 
