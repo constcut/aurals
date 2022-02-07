@@ -382,19 +382,6 @@ void Track::moveToNextPage() {
 }
 
 
-void Track::moveToNextTrack() {
-    Tab* pTab = parent;
-    pTab->moveCursorOfTrackDown();
-    _digitPress = -1;
-}
-
-
-void Track::moveToPrevTrack() {
-    Tab* pTab = parent;
-    pTab->moveCursorOfTrackUp();
-    _digitPress = -1;
-}
-
 
 void Track::moveToStringUp() {
     if ((_stringCursor+1) < _tuning.getStringsAmount())

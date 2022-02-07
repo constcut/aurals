@@ -508,12 +508,6 @@ void TabView::keyPress(int code) {
 
 //Tab commands area
 
-void deleteTrack(Tab* pTab) { //TODOM
-    bool ok=false;
-    int inp = QInputDialog::getInt(0,"Delete track","Delete track",0,0,1,1,&ok);
-    if ((ok) && (inp))
-        pTab->deleteTrack();
-}
 
 void changeTrackName(Tab* pTab) { //TODOM
     bool ok=false;
@@ -919,8 +913,6 @@ void TabView::onTabCommand(TabCommand command) {
         ::changeTrackVolume(_pTab.get());
     else if (command == TabCommand::Name)
         ::changeTrackName(_pTab.get());
-    else if (command == TabCommand::DeleteTrack)
-        ::deleteTrack(_pTab.get());
     else if (command == TabCommand::AddMarker)
         setMarker(_pTab.get());
     else if (command == TabCommand::Instument)

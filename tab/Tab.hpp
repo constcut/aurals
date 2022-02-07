@@ -79,19 +79,12 @@ namespace aural_sight {
 
         void createNewTrack();
 
-        void muteTrack(); //current
-        void soloTrack();
-        void changeDrumsFlag();
         void midiPause();
         void openReprise();
         void closeReprise();
 
         void moveCursorInTrackRight();
         void moveCursorInTrackLeft();
-        void moveCursorOfTrackUp();
-        void moveCursorOfTrackDown();
-
-        void deleteTrack();
 
         void setSignsTillEnd(size_t num, size_t denom);
         void changeTrackVolume(size_t newVol);
@@ -146,15 +139,10 @@ namespace aural_sight {
 
     private:
         std::unordered_map<TabCommand, void (Tab::*)()> _handlers =  {
-            {TabCommand::Mute, &Tab::muteTrack},
-            {TabCommand::Solo, &Tab::soloTrack},
             {TabCommand::MoveRight, &Tab::moveCursorInTrackRight},
             {TabCommand::MoveLeft, &Tab::moveCursorInTrackLeft},
-            {TabCommand::MoveUp, &Tab::moveCursorOfTrackUp},
-            {TabCommand::MoveDown, &Tab::moveCursorOfTrackDown},
             {TabCommand::PauseMidi, &Tab::midiPause},
             {TabCommand::OpenReprise, &Tab::openReprise},
-            {TabCommand::Drums, &Tab::changeDrumsFlag},
             {TabCommand::NewTrack, &Tab::createNewTrack}};
 
 

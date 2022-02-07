@@ -145,8 +145,7 @@ namespace aural_sight {
         void moveToPrevBar();
         void moveToPrevPage();
         void moveToNextPage();
-        void moveToNextTrack();
-        void moveToPrevTrack();
+
         void moveToStringUp();
         void moveToStringDown();
         void moveToPrevBeat();
@@ -220,8 +219,6 @@ namespace aural_sight {
             {TrackCommand::PrevBar, &Track::moveToPrevBar},
             {TrackCommand::NextPage, &Track::moveToNextPage},
             {TrackCommand::PrevPage, &Track::moveToPrevPage},
-            {TrackCommand::NextTrack, &Track::moveToNextTrack},
-            {TrackCommand::PrevTrack, &Track::moveToPrevTrack},
             {TrackCommand::StringDown, &Track::moveToStringDown},
             {TrackCommand::StringUp, &Track::moveToStringUp},
             {TrackCommand::PrevBeat, &Track::moveToPrevBeat},

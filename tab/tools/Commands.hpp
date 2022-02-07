@@ -35,21 +35,21 @@ namespace aural_sight {
     enum class TabCommand {
         SetSignTillEnd,
         SaveAs,
-        Mute,
-        Solo,
+        Mute, //Removed
+        Solo, //Removed
         MoveLeft,
         MoveRight,
         MoveUp,
         MoveDown,
-        Drums,
-        Instument,
-        Panoram,
-        Volume,
-        Name,
+        Drums, //Removed
+        Instument, //Removed (or has to)
+        Panoram, //Removed (or has to)
+        Volume, //Removed (or has to)
+        Name, //Removed (or has to)
         BPM,
         OpenTrack, //Removed
         NewTrack,
-        DeleteTrack,
+        DeleteTrack, //Removed
         PlayMidi,
         GenerateMidi,
         PauseMidi,
@@ -73,8 +73,8 @@ namespace aural_sight {
         PrevBar,
         NextPage,
         PrevPage,
-        NextTrack,
-        PrevTrack,
+        NextTrack, //Removed
+        PrevTrack, //Removed
         StringDown,
         StringUp,
         PrevBeat,

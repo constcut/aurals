@@ -29,22 +29,6 @@ void Tab::setSignsTillEnd(size_t num, size_t denom) {
         }
 }
 
-void Tab::muteTrack() { //Move into Tab
-    std::uint8_t curStat = this->at(_displayTrack)->getStatus();
-    if (curStat==1)
-        this->at(_displayTrack)->setStatus(0);
-    else
-        this->at(_displayTrack)->setStatus(1);
-}
-
-
-void Tab::soloTrack() { //Move into Tab
-    std::uint8_t curStat = this->at(_displayTrack)->getStatus();
-    if (curStat==2)
-        this->at(_displayTrack)->setStatus(0);
-    else
-        this->at(_displayTrack)->setStatus(2); //Make enum TODO
-}
 
 void Tab::moveCursorInTrackRight() {
     if (_displayBar < at(0)->size() - 1)
@@ -57,28 +41,6 @@ void Tab::moveCursorInTrackLeft() {
 }
 
 
-void Tab::moveCursorOfTrackUp() {
-    if (_displayTrack > 0) {
-        --_displayTrack;
-        _currentTrack = _displayTrack;
-    }
-}
-
-void Tab::moveCursorOfTrackDown() {
-    if (_displayTrack < size()){
-        ++_displayTrack;
-        if (_currentTrack < _displayTrack)
-            _currentTrack = _displayTrack;
-    }
-}
-
-
-void Tab::changeDrumsFlag() {
-    auto& pTrack = this->at(_displayTrack);
-    bool drums = pTrack->isDrums();
-    drums = !drums;
-    pTrack->setDrums(drums);
-}
 
 
 
@@ -165,13 +127,6 @@ void Tab::createNewTrack() {
     pTab->connectTracks();
 }
 
-
-
-void Tab::deleteTrack() {
-    this->remove(_displayTrack);
-    if (_displayTrack)
-        --_displayTrack;
-}
 
 
 void Tab::midiPause() {
