@@ -33,7 +33,6 @@ void TrackView::stopThread()
 {
     if (_animationThread) {
         _animationThread->requestStop();
-        //localThr->wait();
     }
 }
 
@@ -48,67 +47,42 @@ TrackView::~TrackView() {
 }
 
 
-
 void TrackView::onclick(int x1, int y1)
 {
-    if (_tabParrent == nullptr)
+    if (_tabParrent == nullptr || _tabParrent->getPlaying())
         return;
-
-    if (_tabParrent->getPlaying())
-        return; //skip
 
     size_t& cursor = _pTrack->cursor();
     size_t& cursorBeat = _pTrack->cursorBeat();
     size_t& stringCursor = _pTrack->stringCursor();
-    size_t& displayIndex = _pTrack->displayIndex();
 
-    //touch and mouse events on first note
     for (size_t i = 0; i < _barsPool.size(); ++i)
     {
-        /*
-        log << "Bar "<<i<<" "<<barsPull.getV(i).getX()<<
-               " "<<barsPull.getV(i).getY()<<" "<<
-               " "<<barsPull.getV(i).getW()<<" "<<
-               " "<<barsPull.getV(i).getH()<<"; hits-"<<
-               (int)(barsPull.getV(i).hit(x1,y1));
-               */
-
         if (_barsPool.at(i).hit(x1,y1))
         {
-            BarView *bV = &(_barsPool.at(i)); //it must be that way i know it
-            //may be refact to make Poly<BarView>
-
-            size_t realIndex = i;
-            //set cursor from press
-            cursor = realIndex;
+            BarView *bV = &_barsPool.at(i);
+            cursor = i;
 
             int beatClick = bV->getClickBeat(x1);
-            int stringClick = bV->getClickString(y1);
+            const int stringClick = bV->getClickString(y1);
+            const int stringUpperBarrier = _pTrack->getTuning().getStringsAmount();
 
-            int stringUpperBarrier = _pTrack->getTuning().getStringsAmount();
-
-            //++beatClick;
-            if (beatClick >= _pTrack->at(cursor)->size())
+            if (beatClick >= static_cast<int>(_pTrack->at(cursor)->size()))
                 --beatClick;
 
-            if (beatClick>0)
+            if (beatClick > 0)
                 cursorBeat = beatClick;
             else
                 cursorBeat = 0;
 
-            if ((stringClick >= 0) && (stringClick < stringUpperBarrier))
+            if (stringClick >= 0 && stringClick < stringUpperBarrier)
                 stringCursor = stringClick;
 
             _pTrack->digitPress() = -1;
-
             _tabParrent->setCurrentBar(cursor);
-            //getMaster()->pleaseRepaint();
         }
     }
-
-
     update();
-    //log << "Press "<<x1<<" "<<y1;
 }
 
 
@@ -124,94 +98,6 @@ void TrackView::setDisplayBar(int barPosition)
     cursorBeat = 0;
 }
 
-
-
-void TrackView::paintMainArea(QPainter *painter) { //Remains for a while befor refactoring
-
-    size_t trackLen = _pTrack->size(); //Earlier there was only track 1
-    int stringsN = _pTrack->getTuning().getStringsAmount();
-
-    int xSh = 0;
-    int ySh = 0;
-    BarView forH(_pTrack->at(0).get(), stringsN, 0); //Opt
-    int hLimit = height() - forH.getH(); //Limit to avoid painting bar in bottom
-
-
-    size_t& lastSeen = _pTrack->lastSeen();
-    size_t& displayIndex = _pTrack->displayIndex();
-    size_t& cursor = _pTrack->cursor();
-
-    if (cursor < displayIndex)
-        displayIndex = cursor;
-
-    size_t seenShift = 1;
-    if (lastSeen == _pTrack->size() - 1)
-        seenShift = 0; //There maybe supper rare issue if last bar isn't on screen now)
-
-    if (cursor > lastSeen - seenShift)
-        displayIndex = cursor;
-
-
-    //TODO move into subfunction:
-    _barsPool.clear(); //not always - to optimize
-
-    std::uint8_t lastNum = 0;
-    std::uint8_t lastDen = 0;
-
-    changeColor(CONF_PARAM("colors.default"), painter);
-
-    for (size_t i = displayIndex; i < trackLen; ++i)
-    {
-        auto& curBar = _pTrack->at(i);
-
-        std::uint8_t curNum = curBar->getSignNum();
-        std::uint8_t curDen = curBar->getSignDenum();
-        bool sameSign = true;
-
-        static bool alwaysShowSign = CONF_PARAM("TrackView.alwaysShowBarSign") == "1";
-
-        if (alwaysShowSign)
-            sameSign = false;
-
-        if ((curNum != lastNum) ||(curDen != lastDen)) {
-            sameSign = false;
-            lastNum = curNum;
-            lastDen = curDen;
-        }
-
-        BarView bView(curBar.get(),stringsN,i);
-        bView.setSameSign(sameSign);
-
-        if (ySh <= (hLimit))
-            lastSeen = i;
-
-        int xShNEXT = xSh + bView.getW()+15;
-        int border = width();
-
-        if (xShNEXT > border) {
-            xSh = 0;
-            ySh += bView.getH();
-
-            if (ySh >= (hLimit)) //Check constant
-                break; //stop that (there was a pannel)
-        }
-
-        bView.setShifts(xSh,ySh);
-        std::uint8_t barCompleteStatus = curBar->getCompleteStatus(); //TODO avoid recalculations
-
-        if (barCompleteStatus == 2 || barCompleteStatus == 1)
-            changeColor(CONF_PARAM("colors.exceed"), painter);
-
-        bView.paint(painter);
-
-        if (barCompleteStatus == 2 || barCompleteStatus == 1)
-             changeColor(CONF_PARAM("colors.default"), painter);
-
-        xSh += bView.getW();
-        _barsPool.push_back(bView);
-        //TODO maybe we have to use some limit, for supper long tabs
-    }
-}
 
 
 

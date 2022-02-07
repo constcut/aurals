@@ -364,7 +364,7 @@ Item {
             tabView.setTrackIdx(trackIdx)
 
             if (Qt.platform.os != "android" && useScrollArea) {
-                var realHeight = trackView.getPixelHeight();
+                var realHeight = trackView.getFullPixelHeight();
                 flick.contentHeight = realHeight
                 //But then we missing autoscroll
             }

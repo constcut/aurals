@@ -65,7 +65,6 @@ namespace aural_sight {
 
     private:
 
-        void paintMainArea(QPainter *painter);
         void paintByLines(QPainter *painter);
 
         void fillBarsPool();
