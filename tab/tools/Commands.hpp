@@ -106,10 +106,10 @@ namespace aural_sight {
         FadeIn,
         Accent,
         HeaveAccent,
-        Bend,
-        Chord,
+        Bend, //Request must come from qml
+        Chord, //But we need save reversable ^ (both)
         Text,
-        Changes,
+        Changes, //As above
         UpStroke,
         DownStroke,
         SetBarSign,

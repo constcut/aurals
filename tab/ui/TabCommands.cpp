@@ -23,9 +23,6 @@
 
 using namespace aural_sight;
 
-//Trackview events:
-
-
 
 
 void changeBarSignsQt(Track* pTrack, [[maybe_unused]] int&  selectionBarFirst, [[maybe_unused]] int& selectionBarLast) {
@@ -43,7 +40,6 @@ void changeBarSignsQt(Track* pTrack, [[maybe_unused]] int&  selectionBarFirst, [
     if (ok)
         pTrack->changeBarSigns(newNum,newDen);
 }
-
 
 
 
@@ -91,21 +87,6 @@ void handleKeyInput(int digit, int& digitPress, Track* pTrack, size_t cursor, si
 }
 
 
-void saveRawAudio(QByteArray& ba, QString location) {
-    QString defaultRecFile = location;
-    QFile f;
-    f.setFileName(defaultRecFile);
-    ///int compressedSize = compress.size(); //TODO compress
-    if (f.open(QIODevice::WriteOnly)) {
-        qDebug() << "Collector size was "<<ba.size();
-        f.write(ba);
-        f.flush();
-    }
-    else
-        qDebug() << "Open file for raw record error;";
-}
-
-
 
 void saveAsFromTrack(TabView* tabParent) {
     auto fd = std::make_unique<QFileDialog>();
@@ -139,24 +120,6 @@ void saveAsFromTrack(TabView* tabParent) {
 
 
 
-void setBendOnNote(Note* currentNote) {
-
-   if (currentNote->getEffects().getEffectAt(Effect::Bend)) {
-
-        BendPoints *bend = currentNote->getBendPtr();
-        //BendInput::setPtrNote(currentNote);
-        //BendInput::setPtrBend(bend);
-   }
-   else {
-        //BendInput::setPtrBend(currentNote->getBendPtr());
-        //BendInput::setPtrNote(currentNote);
-   }
-   /*
-    if (mw)
-        mw->pushForceKey("bend_view");*/ //TODO
-}
-
-
 void setTextOnBeat(Track *track) {
     auto& beat = track->at(track->cursor())->at(track->cursorBeat());
     std::string beatText;
@@ -171,12 +134,6 @@ void setTextOnBeat(Track *track) {
     }
 }
 
-
-void setChangesOnBeat(Beat* beat) {
-    /*ChangesInput::setPtrBeat(beat);
-    if (mw)
-        mw->pushForceKey("change_view");*/ //TODO
-}
 
 void setBarSign(Track* pTrack) {
     bool ok=false;
@@ -225,14 +182,8 @@ void TrackView::onTrackCommand(TrackCommand command) {
       changeBarSignsQt(_pTrack, selectionBarFirst, selectionBarLast);
     else if (command == TrackCommand::SaveAsFromTrack)
         saveAsFromTrack(_tabParrent);
-    else if (command == TrackCommand::Bend)
-        setBendOnNote(_pTrack->at(cursor)->at(cursorBeat)->getNote(stringCursor+1));
-    else if (command == TrackCommand::Chord)
-        ;// { if (getMaster()) getMaster()->pushForceKey("chord_view"); }
     else if (command == TrackCommand::Text)
         setTextOnBeat(_pTrack);
-    else if (command == TrackCommand::Changes)
-        setChangesOnBeat(_pTrack->at(cursor)->at(cursorBeat).get());
     else if (command == TrackCommand::SetBarSign)
         setBarSign(_pTrack);
     else if (command == TrackCommand::PrevLine)
@@ -259,8 +210,6 @@ void TrackView::keyevent(std::string press) //TODO масштабные макр
         qDebug() << "Key event not handled in TrackView: " << press.c_str();
 }
 
-//Tab commands functions, TODO cover under some engine inside of TAB
-//And make handlers for all the functions (used them without arguments)
 
 
 void TrackView::onTabCommand(TabCommand command) {
