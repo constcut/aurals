@@ -374,10 +374,10 @@ void TrackView::onTrackCommand(TrackCommand command) {
         setChangesOnBeat(_pTrack->at(cursor)->at(cursorBeat).get());
     else if (command == TrackCommand::SetBarSign)
         setBarSign(_pTrack);
-    else if (command == TrackCommand::PrevPage)
-        movePrevPage();
-    else if (command == TrackCommand::NextPage)
-        moveNextPage();
+    else if (command == TrackCommand::PrevLine)
+        movePrevLine();
+    else if (command == TrackCommand::NextLine)
+        moveNextLine();
     else
         _pTrack->onTrackCommand(command);
 

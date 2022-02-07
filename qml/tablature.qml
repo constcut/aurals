@@ -683,11 +683,11 @@ Item {
 
                     function indexToAction(idx) {
                         if (idx === 0)
-                            return Tab.PrevBar
+                            return Tab.PrevLine
                         if (idx === 1)
                             return Tab.StringDown
                         if (idx === 2)
-                            return Tab.NextBar
+                            return Tab.NextLine
                         if (idx === 3)
                             return Tab.DeleteNote
                     }

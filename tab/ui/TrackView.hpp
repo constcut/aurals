@@ -88,8 +88,8 @@ namespace aural_sight {
 
         std::vector<std::vector<size_t>> _linesIdxs;
 
-        void moveNextPage();
-        void movePrevPage();
+        void moveNextLine();
+        void movePrevLine();
 
     public:
         //Track setters and getters

@@ -514,9 +514,10 @@ void TrackView::fillBarsPool() {
 }
 
 
-void TrackView::moveNextPage() {
+void TrackView::moveNextLine() {
 
     size_t& displayIndex = _pTrack->displayIndex();
+    size_t& cursor = _pTrack->cursor();
 
     size_t currentLine = 0; //TODO subfun on refact
     for (auto& line: _linesIdxs) {
@@ -525,13 +526,17 @@ void TrackView::moveNextPage() {
         ++currentLine;
     }
 
-    if (currentLine < _linesIdxs.size() - 1)
+    if (currentLine < _linesIdxs.size() - 1) {
         displayIndex = _linesIdxs[currentLine + 1][0];
+        if (cursor < displayIndex)
+            cursor = displayIndex;
+    }
 }
 
-void TrackView::movePrevPage() {
+void TrackView::movePrevLine() {
 
     size_t& displayIndex = _pTrack->displayIndex();
+    size_t& cursor = _pTrack->cursor();
 
     size_t currentLine = 0; //TODO subfun on refact
     for (auto& line: _linesIdxs) {
@@ -540,8 +545,10 @@ void TrackView::movePrevPage() {
         ++currentLine;
     }
 
-    if (currentLine != 0)
+    if (currentLine != 0) {
         displayIndex = _linesIdxs[currentLine - 1][0];
+        //insure cursor fine
+    }
 }
 
 
