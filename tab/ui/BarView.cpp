@@ -408,8 +408,8 @@ void BarView::paint(QPainter *painter)
                     drawMidiNote(painter,curBeat->getDuration(),
                                  curBeat->getDotted(),curBeat->getDurationDetail(),
                                  midiNote,
-                                 cX+10+i*inbarWidth + inbarWidth/2,
-                                 cY+(stringWidth-3)*(amountStr+5));
+                                 cX + 10 + i * inbarWidth + inbarWidth / 2,
+                                 cY + (stringWidth - 3) * (amountStr+5));
                 }
 
 
@@ -526,9 +526,8 @@ void BarView::paint(QPainter *painter)
 
         if (curBeat->getPause())
         {
-            //3 and 4 is like current string
-            painter->drawText(cX+10+i*inbarWidth+ inbarWidth/2,cY+stringWidth*3,"z");
-            painter->drawText(cX+10+i*inbarWidth+ inbarWidth/2,cY+stringWidth*4,"z");
+            painter->drawText(cX+10+i*inbarWidth+ inbarWidth/2,cY + stringWidth * 3,"z");
+            painter->drawText(cX+10+i*inbarWidth+ inbarWidth/2,cY + stringWidth * 4,"z");
         }
 
 
@@ -542,63 +541,54 @@ void BarView::paint(QPainter *painter)
             durVal += "[" + std::to_string( trump );
 
 
-        //painter->drawText(cX+10+i*inbarWidth,cY+stringWidth*(amountStr+1), // downerdurVal.c_str());
-        //draw beat eff
-        bool upStroke = curBeat->getEffects().getEffectAt(Effect::UpStroke);
         bool downStroke = curBeat->getEffects().getEffectAt(Effect::DownStroke);
+        if (downStroke) {
+            painter->drawLine(cX + 10 + i * inbarWidth + inbarWidth / 2, cY,
+                              cX + 10 + i * inbarWidth + inbarWidth / 2, cY + stringWidth * (amountStr));
+
+            painter->drawLine(cX + 10 + i * inbarWidth + inbarWidth / 2, cY + stringWidth * (amountStr),
+                              cX + 10 + i * inbarWidth + inbarWidth / 2-2, cY + stringWidth * (amountStr)-3);
+
+            painter->drawLine(cX + 10 + i * inbarWidth + inbarWidth / 2, cY + stringWidth * (amountStr),
+                              cX + 10 + i * inbarWidth + inbarWidth / 2+2, cY + stringWidth * (amountStr)-3);
+        }
+
+        bool upStroke = curBeat->getEffects().getEffectAt(Effect::UpStroke);
+        if (upStroke)
+        {
+            painter->drawLine(cX + 10 + i * inbarWidth + inbarWidth / 2, cY ,
+                              cX + 10 + i * inbarWidth + inbarWidth / 2, cY + stringWidth * (amountStr));
+
+            painter->drawLine(cX + 10 + i * inbarWidth + inbarWidth / 2, cY,
+                              cX + 10 + i * inbarWidth + inbarWidth / 2-2, cY + 3);
+
+            painter->drawLine(cX + 10 + i * inbarWidth + inbarWidth / 2, cY,
+                              cX + 10 + i * inbarWidth + inbarWidth / 2 + 2, cY + 3);
+        }
+
+        bool fadeIn = curBeat->getEffects().getEffectAt(Effect::FadeIn);
+        if (fadeIn)
+        {
+            painter->drawLine(cX + 10 + i * inbarWidth + inbarWidth / 2,cY + stringWidth * (amountStr)+stringWidth/2,
+                              cX + 10 + i * inbarWidth + inbarWidth / 2+5,cY + stringWidth * (amountStr)+stringWidth/2-3);
+
+            painter->drawLine(cX + 10 + i * inbarWidth + inbarWidth / 2,cY + stringWidth * (amountStr)+stringWidth/2,
+                              cX + 10 + i * inbarWidth + inbarWidth / 2+5,cY + stringWidth * (amountStr)+stringWidth/2+3);
+
+            wasNoBeatEffects = false;
+        }
 
         bool changes = curBeat->getEffects().getEffectAt(Effect::Changes);
+        if (changes)
+        {
+            painter->drawRect(cX + 10 + i * inbarWidth + inbarWidth / 2,cY + stringWidth * (amountStr),inbarWidth,stringWidth);
+            painter->drawText(cX + 10 + i * inbarWidth + inbarWidth / 2,cY + stringWidth * (amountStr+1),"ch");//could replace with bpm value
+
+            wasNoBeatEffects = false;
+        }
 
         std::string textBeat; curBeat->getText(textBeat);
         bool textPrec = textBeat.empty()==false;
-
-        //chord SKIPPED
-
-        bool fadeIn = curBeat->getEffects().getEffectAt(Effect::FadeIn);
-
-        if (downStroke) {
-            painter->drawLine(cX+10+i*inbarWidth + inbarWidth/2,cY+stringWidth*(0),
-                              cX+10+i*inbarWidth + inbarWidth/2,cY+stringWidth*(amountStr));
-
-            painter->drawLine(cX+10+i*inbarWidth + inbarWidth/2, cY+stringWidth*(amountStr),
-                              cX+10+i*inbarWidth + inbarWidth/2-2, cY+stringWidth*(amountStr)-3);
-
-            painter->drawLine(cX+10+i*inbarWidth + inbarWidth/2, cY+stringWidth*(amountStr),
-                              cX+10+i*inbarWidth + inbarWidth/2+2, cY+stringWidth*(amountStr)-3);
-        }
-
-        if (upStroke)
-        {
-            painter->drawLine(cX+10+i*inbarWidth + inbarWidth/2,cY+stringWidth*(0),
-                              cX+10+i*inbarWidth + inbarWidth/2,cY+stringWidth*(amountStr));
-
-            painter->drawLine(cX+10+i*inbarWidth + inbarWidth/2,cY+stringWidth*(0),
-                              cX+10+i*inbarWidth + inbarWidth/2-2,cY+3);
-
-            painter->drawLine(cX+10+i*inbarWidth + inbarWidth/2,cY,
-                              cX+10+i*inbarWidth + inbarWidth/2+2,cY+3);
-        }
-
-        if (fadeIn)
-        {
-           // painter->drawRect(cX+10+i*inbarWidth + inbarWidth/2,cY+stringWidth*(amountStr),inbarWidth,stringWidth);
-            painter->drawLine(cX+10+i*inbarWidth + inbarWidth/2,cY+stringWidth*(amountStr)+stringWidth/2,
-                              cX+10+i*inbarWidth + inbarWidth/2+5,cY+stringWidth*(amountStr)+stringWidth/2-3);
-
-            painter->drawLine(cX+10+i*inbarWidth + inbarWidth/2,cY+stringWidth*(amountStr)+stringWidth/2,
-                              cX+10+i*inbarWidth + inbarWidth/2+5,cY+stringWidth*(amountStr)+stringWidth/2+3);
-
-            wasNoBeatEffects=false;
-        }
-
-        if (changes)
-        {
-            painter->drawRect(cX+10+i*inbarWidth + inbarWidth/2,cY+stringWidth*(amountStr),inbarWidth,stringWidth);
-            painter->drawText(cX+10+i*inbarWidth + inbarWidth/2,cY+stringWidth*(amountStr+1),"ch");//could replace with bpm value
-
-            wasNoBeatEffects=false;
-        }
-
         if (textPrec)
         {
             auto f = painter->font();
@@ -607,80 +597,55 @@ void BarView::paint(QPainter *painter)
                 fontSize = 14;
             f.setPixelSize(9);
             painter->setFont(f);
-            painter->drawText(cX+10+i*inbarWidth + inbarWidth/2,cY+stringWidth*(amountStr+1),textBeat.c_str());
+            painter->drawText(cX + 10 + i * inbarWidth + inbarWidth / 2, cY + stringWidth * (amountStr + 1), textBeat.c_str());
             f.setPixelSize(fontSize);
             painter->setFont(f);
 
         }
 
 
-        if (CONF_PARAM("showNotesView")=="1")
-        {
-            //later
-        }
-        else
+        if (CONF_PARAM("showNotesView") != "1")
             drawNote(painter, curBeat->getDuration(),curBeat->getDotted(),curBeat->getDurationDetail(),
-                     cX+10+i*inbarWidth + inbarWidth/2,
-                     cY+stringWidth*(amountStr));
+                     cX + 10 + i * inbarWidth + inbarWidth / 2,
+                     cY + stringWidth * (amountStr));
 
-        //OR DRAW MANY NOTES
-        if (i==_cursor)
-        {
-             //painter->changeColor(APainter::colorGreen);
+        if (i == _cursor)
              changeColor(CONF_PARAM("colors.curBar"), painter);
-        }
     }
 
 
-    if (wasNoBeatEffects) //check for whole: (changes==false) && (fadeIn==false))
+    if (wasNoBeatEffects && markerPrec)
+        painter->drawText(cX + 10 + inbarWidth / 2,
+                          cY + stringWidth * (amountStr + 1), barMarker.c_str());
+
+
+    if (CONF_PARAM("showNotesView") == "1")
     {
-        if (markerPrec)
-        {
-            painter->drawText(cX+10+inbarWidth/2,cY+stringWidth*(amountStr+1),barMarker.c_str());//could replace with bpm value
-        }
-    }
-
-
-
-    if (CONF_PARAM("showNotesView")=="1")
-    {
-
-    //draw 5 lines first
-
-
         int prefLines = 10;
 
         for (int lines = 0; lines < 11; ++lines)
         {
-            if (lines==5) continue;
+            if (lines==5)
+                continue;
 
-            painter->drawLine(cX+10,cY+(stringWidth-3)*(amountStr+prefLines+lines),cX+10+barLen*inbarWidth,cY+(stringWidth-3)*(amountStr+prefLines+lines));
-
-
+            painter->drawLine(cX + 10, cY + (stringWidth - 3) * (amountStr+prefLines + lines),
+                              cX + 10 + barLen * inbarWidth, cY + (stringWidth - 3) * (amountStr + prefLines + lines));
         }
 
-        //S
-        painter->drawLine(cX+10,cY+(stringWidth-3)*(amountStr+prefLines+0),
-                cX+10,cY+(stringWidth-3)*(amountStr+prefLines+4));
-        painter->drawLine(cX+10+barLen*inbarWidth,cY+(stringWidth-3)*(amountStr+prefLines+0),
-                cX+10+barLen*inbarWidth,cY+(stringWidth-3)*(amountStr+prefLines+4));
+        painter->drawLine(cX + 10, cY + (stringWidth - 3) * (amountStr + prefLines + 0),
+                cX + 10, cY + (stringWidth - 3) * (amountStr + prefLines + 4));
 
-        //BASs
-        painter->drawLine(cX+10,cY+(stringWidth-3)*(amountStr+prefLines+6),
-                cX+10,cY+(stringWidth-3)*(amountStr+prefLines+10));
+        painter->drawLine(cX + 10 + barLen * inbarWidth, cY + (stringWidth - 3) * (amountStr + prefLines + 0),
+                cX + 10 + barLen * inbarWidth, cY + (stringWidth - 3) * (amountStr + prefLines + 4));
 
-        painter->drawLine(cX+10+barLen*inbarWidth,cY+(stringWidth-3)*(amountStr+prefLines+6),
-                cX+10+barLen*inbarWidth,cY+(stringWidth-3)*(amountStr+prefLines+10));
+        painter->drawLine(cX + 10, cY + (stringWidth - 3) * (amountStr + prefLines + 6),
+                cX + 10, cY + (stringWidth - 3) * (amountStr + prefLines + 10));
 
-
+        painter->drawLine(cX + 10 + barLen * inbarWidth, cY + (stringWidth - 3) * (amountStr + prefLines + 6),
+                cX + 10 + barLen * inbarWidth, cY + (stringWidth - 3) * (amountStr + prefLines + 10));
     }
 
-
-    //auto clean them
     flushSelectors();
-
-    //h = stringWidth*amountStr;
-    //w = (barLen+2)*inbarWidth;
 }
 
 void BarView::drawEffects(QPainter *painter, int x1, int y1, int w1, int h1, const ABitArray& eff)
