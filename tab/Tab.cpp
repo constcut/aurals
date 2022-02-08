@@ -100,7 +100,7 @@ void Tab::createTimeLine(size_t shiftTheCursor)
                         if (changes->at(indexChange).changeType == 8) {
                             size_t newBPM = changes->at(indexChange).changeValue;
                             BpmChangeKnot newChangeBpm(newBPM, localAccumulate);
-                            newChangeBpm.setIdx(beatI, barsI);
+                            newChangeBpm.setIdx(barsI, beatI);
                             timeChanges.push_back(newChangeBpm);
                             break;
                         }

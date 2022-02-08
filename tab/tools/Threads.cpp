@@ -109,6 +109,9 @@ struct BpmWaitNode
 {
     int waitTime;
     int newBpm;
+
+    size_t bar;
+    size_t beat;
 };
 
 
@@ -126,11 +129,16 @@ void PlayAnimationThr::setupValues(Tab *tab, Track *track, size_t shiftTheCursor
 
        if (timeLine[ind].type == 1) {
            BpmWaitNode newNode;
+
            newNode.newBpm = timeLine[ind].value;
            newNode.waitTime = localWait;
+           newNode.bar = timeLine[ind].bar;
+           newNode.beat = timeLine[ind].beat;
+
            localWait = 0;
            bpmChangeList.push_back(newNode);
            qDebug() << "BPM " << newNode.newBpm << " wait " << newNode.waitTime;
+           qDebug() << "ITS " << newNode.bar << " " << newNode.beat;
        }
     }
 
@@ -177,21 +185,20 @@ void PlayAnimationThr::setupValues(Tab *tab, Track *track, size_t shiftTheCursor
 
             toTheNextWait -= beatAbs;
 
-            if (toTheNextWait <= 0) //More save calculate idx of beat in bar!
+            if (changeIndex < bpmChangeList.size() &&
+                bpmChangeList[changeIndex].bar == barI &&
+                bpmChangeList[changeIndex].beat == beatI) // toTheNextWait <= 1
             {
-                if (changeIndex < bpmChangeList.size())
-                {
-                    const auto newBpm = bpmChangeList[changeIndex].newBpm;
+                const auto newBpm = bpmChangeList[changeIndex].newBpm;
 
-                    qDebug() << "Changing bpm: " << newBpm << " " << toTheNextWait <<
-                                " next wait " << bpmChangeList[changeIndex + 1].waitTime;
+                qDebug() << "Changing bpm: " << newBpm << " " << toTheNextWait <<
+                            " next wait " << bpmChangeList[changeIndex + 1].waitTime;
 
-                    if (newBpm != 0)
-                        _bpm =  newBpm;
+                if (newBpm != 0)
+                    _bpm =  newBpm;
 
-                    ++changeIndex;
-                    toTheNextWait = bpmChangeList[changeIndex].waitTime;
-                }
+                ++changeIndex;
+                toTheNextWait = bpmChangeList[changeIndex].waitTime;
             }
 
             long int noteTime = 2400000 / _bpm;
