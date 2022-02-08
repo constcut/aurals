@@ -245,10 +245,10 @@ void AudioHandler::startMidiPlayer() {
     const double bytesPerSample = _midiFormat.sampleSize() / 8.0;
     const double msInSecond = 1000.0;
     const double channels = 2.0;
-    const double ms = static_cast<double>(_midiBufer.size()) / (channels * bytesPerSample * sampleRate / msInSecond);
+    const double ms = static_cast<double>(_midiBufer.size()) / (channels * bytesPerSample * sampleRate / msInSecond) - 100;
     _midiPlayer->start();
-    _midiStopRequestTimer.start(ms);
     _midiOutput->start(_midiPlayer.get());
+    _midiStopRequestTimer.start(ms);
 }
 
 
@@ -264,8 +264,9 @@ void AudioHandler::openMidiFile(const QString filename) {
     _render.openSoundFont();
     _midiBufer = _render.renderShort(filename);
 
-    _midiBufer.append((_midiFormat.sampleRate() / 2) //Half seccond of silence
-                      * _midiFormat.sampleSize() / 8, 0);
+    auto addition = _midiFormat.sampleRate() / 2 * _midiFormat.sampleSize() / 8; //Doesn't works fine, TODO switch to just player
+
+    _midiBufer.append(addition, 0);
 }
 
 
