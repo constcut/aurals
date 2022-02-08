@@ -191,11 +191,9 @@ void TabView::paint(QPainter *painter) //Ugly function, removed all but bars, an
                auto [markerText, markerColor] = cB->getMarker();
                bool isMarkerHere = markerText.empty() == false;
 
-               qDebug() << "TWBAR " << j << " repr " << reprize;
-
                 //hi light color bar
                if (barIndex == _pTab->getCurrentBar())
-                   painter->fillRect(200+30*j, yPos, 20,20,QColor(CONF_PARAM("colors.curBar").c_str()));
+                   painter->fillRect(200+30*j, yPos, 20,20,QColor("lightgray")); //CONF_PARAM("colors.curBar").c_str()
 
                painter->drawText(200+30*j, yPos+10, sX.c_str());
 
@@ -237,13 +235,13 @@ void TabView::paint(QPainter *painter) //Ugly function, removed all but bars, an
            sX.clear();
            std::uint8_t vol =  tr->getVolume();
            sX = "vol " + std::to_string(vol);
-           painter->drawText(70, +yPos,sX.c_str());
+           painter->drawText(80, 15+yPos,sX.c_str());
 
            sX.clear();
            std::uint8_t pan =  tr->getPan();
-           int intPan = pan - 7;
+           int intPan = pan - 8;
            sX = "pan " + std::to_string(intPan);
-           painter->drawText(110, 10+yPos,sX.c_str());
+           painter->drawText(130, 15+yPos,sX.c_str());
 
            sX.clear();
            std::uint8_t ins =  tr->getInstrument();
