@@ -628,13 +628,16 @@ Item {
         RowLayout {
             x: parent.width - width
 
-            Repeater { //TODO custom layouts to create pannels like people want
+            Repeater { //Мы можем так же добавить параметрические значения, и просто в первой панели их вставлять после,
                 model: 10
 
                 ToolButton {
                     property int digitIdx: index
-                    icon.source: "qrc:/icons/" + index + ".png"
-                    onClicked: tabView.keyPress(digitIdx + 48) //ascii digit
+                    icon.source: "qrc:/icons/" + digitIdx + ".png"
+                    //icon.source: digitIdx < 10 ? "qrc:/icons/" + digitIdx + ".png" : "qrc:/icons/del.png" //Way to store buttons but digits
+                    onClicked: {
+                        return tabView.keyPress(digitIdx + 48) //ascii digit
+                    }
                 }
             } //Repeater
         } //RowLayout - digits
@@ -644,36 +647,23 @@ Item {
             x: parent.width - width
             y: tablatureItem.buttonSize + tablatureItem.buttonSpacing
 
-            Repeater { //TODO custom layouts to create pannels like people want
-                model: 4
+            Repeater { //TODO custom layouts to create pannels like people want (map pictures to Tab.command (js function))
+
+                id: secondPanelLine
+
+                property var images: ["", "prevBar", "^", "nextBar", "del"]
+                property var commands: [-1, Tab.PrevLine, Tab.StringDown, Tab.NextLine, Tab.DeleteNote] //TODO for custom layout -> imageToCommand()
+
+                model: images.length
 
                 ToolButton {
                     property int idx: index
-                    icon.source: "qrc:/icons/" + indexToName(index) + ".png"
+                    icon.source: "qrc:/icons/" + secondPanelLine.images[index] + ".png"
+                    onClicked: tabView.passTrackCommand(secondPanelLine.commands[idx])
 
-                    function indexToName(idx) { //TODO or move to main item
-                        if (idx === 0)
-                            return "prevBar"
-                        if (idx === 1)
-                            return "^"
-                        if (idx === 2)
-                            return "nextBar"
-                        if (idx === 3)
-                            return "del" //TODO list property https://stackoverflow.com/questions/26733011/how-to-declare-list-property-in-qml
-                    }
-
-                    function indexToAction(idx) {
-                        if (idx === 0)
-                            return Tab.PrevLine
-                        if (idx === 1)
-                            return Tab.StringDown
-                        if (idx === 2)
-                            return Tab.NextLine
-                        if (idx === 3)
-                            return Tab.DeleteNote
-                    }
-
-                    onClicked: tabView.passTrackCommand(indexToAction(idx))
+                    //Way to make spaces
+                    palette.button: secondPanelLine.images[index] !== "" ? "lightgray" : "transparent"
+                    palette.mid: secondPanelLine.images[index] !== "" ? "lightgray" : "transparent"
                 }
 
             } //Repeater
@@ -684,36 +674,19 @@ Item {
             y: tablatureItem.buttonSize * 2 + tablatureItem.buttonSpacing * 2
 
             Repeater { //TODO custom layouts to create pannels like people want
-                model: 4
+
+                id: thirdPanelLine
+
+                property var images: ["prev", "V", "next", "undo"]
+                property var commands: [Tab.PrevBeat, Tab.StringUp, Tab.NextBeat, Tab.Undo]
+
+                model: images.length
 
 
                 ToolButton {
                     property int idx: index
-                    icon.source: "qrc:/icons/" + indexToName(index) + ".png"
-
-                    function indexToName(idx) {
-                        if (idx === 0)
-                            return "prev"
-                        if (idx === 1)
-                            return "V"
-                        if (idx === 2)
-                            return "next"
-                        if (idx === 3)
-                            return "undo"
-                    }
-
-                    function indexToAction(idx) {
-                        if (idx === 0)
-                            return Tab.PrevBeat
-                        if (idx === 1)
-                            return Tab.StringUp
-                        if (idx === 2)
-                            return Tab.NextBeat
-                        if (idx === 3)
-                            return Tab.Undo
-                    }
-
-                    onClicked: tabView.passTrackCommand(indexToAction(idx))
+                    icon.source: "qrc:/icons/" + thirdPanelLine.images[index] + ".png"
+                    onClicked: tabView.passTrackCommand(thirdPanelLine.commands[idx])
                 }
             } //Repeater
         } //RowLayout - arrows
