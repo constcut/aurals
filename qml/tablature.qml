@@ -542,6 +542,21 @@ Item {
                     //TODO add scroll area reduce
                 }
             }
+
+            ComboBox {
+                id: tab2Combo
+                model: 38
+                currentIndex: 0
+
+                onCurrentTextChanged: {
+                    var testId = parseInt(tab2Combo.currentText) + 1
+                    var tabName = "tests/2." + testId + ".gp4"
+                    tabView.loadTab(tabName)
+                    trackCombo.model = tabView.tracksCount()
+                    mainLayout.refreshTrack()
+                    tabPannel.open()
+                }
+            }
         }
     }
 
