@@ -247,8 +247,8 @@ void AudioHandler::startMidiPlayer() {
     const double channels = 2.0;
     const double ms = static_cast<double>(_midiBufer.size()) / (channels * bytesPerSample * sampleRate / msInSecond) - 150;
     _midiPlayer->start();
-    _midiOutput->start(_midiPlayer.get());
     _midiStopRequestTimer.start(ms);
+    _midiOutput->start(_midiPlayer.get());
 }
 
 
