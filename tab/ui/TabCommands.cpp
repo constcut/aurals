@@ -137,6 +137,8 @@ void TrackView::onTrackCommand(TrackCommand command) {
     int& selectionBarFirst = _pTrack->selectBarFirst();
     int& selectionBarLast = _pTrack->selectBarLast();
 
+    size_t barsCount = _pTrack->size();
+
     if (command == TrackCommand::SetSignForSelected)
       changeBarSignsQt(_pTrack, selectionBarFirst, selectionBarLast);
     else if (command == TrackCommand::Text)
@@ -149,6 +151,9 @@ void TrackView::onTrackCommand(TrackCommand command) {
         moveNextLine();
     else
         _pTrack->onTrackCommand(command);
+
+    if (barsCount != _pTrack->size())
+        fillBarsPool();
 
     update(); //TODO only on change
 }
