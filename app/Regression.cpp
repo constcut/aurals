@@ -67,7 +67,8 @@ bool aural_sight::checkHasRegression() {
             {
                 std::ofstream midiOut(midiFile, std::ios::binary);
                 bytesWritten = f->writeStream(midiOut);
-                qDebug() << "MidiSize: " << bytesWritten << " to " << testName
+                if (fSize != bytesWritten)
+                    qDebug() << "MidiSize: " << bytesWritten << " to " << testName
                           <<  " expected: " << fSize;
             }
 
@@ -128,7 +129,7 @@ std::vector<MacroCommand> writeAndReadMacro(const std::vector<MacroCommand>& com
 }
 
 
-void macroSimpleTest1() {
+void macroSimpleTest1() { //Update this test + reversable commands for this
     Tab t;
     t.onTabCommand(TabCommand::NewTrack);
     t.onTabCommand(TabCommand::Solo);
@@ -139,7 +140,7 @@ void macroSimpleTest1() {
         t2.playCommand(c);
 
     if (t2.at(0)->getStatus() != 2) {
-        qDebug() << "ERROR: Tab commands failed!";
+        qDebug() << "ERROR: Tab commands failed! 1";
     }
     else
         qDebug() << "1 Simple tab commands fine";
@@ -158,7 +159,7 @@ void macroSimpleTest2() {
     for (auto& c: commands)
         t2.playCommand(c);
     if (t2.at(0)->getName() != "check") {
-        qDebug() <<"ERROR: Tab commands failed!";
+        qDebug() <<"ERROR: Tab commands failed! 2";
         qDebug() <<"Track name was " << t2.at(0)->getName();
     }
     else
@@ -175,7 +176,7 @@ void macroSimpleTest3() {
     for (auto& c: commands)
         t2.playCommand(c);
     if (t2.at(0)->getInstrument() != 38) {
-        qDebug() << "ERROR: Tab commands failed!";
+        qDebug() << "ERROR: Tab commands failed! 3";
         qDebug() << "Track instrument was " << t2.at(0)->getInstrument();
     }
     else
@@ -187,12 +188,12 @@ void macroSimpleTest4() {
     Tab t;
     t.onTabCommand(TabCommand::NewTrack);
     t.setSignsTillEnd(2, 2);
-    auto commands = writeAndReadMacro(t.getMacro());
+    auto commands = writeAndReadMacro(t.getMacro()); //Seams there is error on replay here
     Tab t2;
     for (auto& c: commands)
         t2.playCommand(c);
     if (t2.at(0)->at(0)->getSignNum() != 2 || t2.at(0)->at(0)->getSignDenum() != 2) {
-        qDebug() << "ERROR: Tab commands failed!";
+        qDebug() << "ERROR: Tab commands failed! 4";
         qDebug() << "Num den were " << t2.at(0)->at(0)->getSignNum()
                  << " " <<  t2.at(0)->at(0)->getSignDenum();
     }
@@ -211,7 +212,7 @@ void macroTrackTest1() {
     for (auto& c: commands)
         t2.playCommand(c);
     if (t2.at(0)->at(0)->getSignNum() != 2 || t2.at(0)->at(0)->getSignDenum() != 2) {
-        qDebug() << "ERROR: Track commands failed!";
+        qDebug() << "ERROR: Track commands failed! 1+";
         qDebug() << "Num den were " << t2.at(0)->at(0)->getSignNum()
                  << " " <<  t2.at(0)->at(0)->getSignDenum();
     }
@@ -232,7 +233,7 @@ void macroTrackTest2() {
     std::string str;
     t2.at(0)->at(0)->at(0)->getText(str);
     if (str != "some") {
-        qDebug() << "ERROR: Track commands failed!";
+        qDebug() << "ERROR: Track commands failed! 2+";
         qDebug() << str.c_str() << " vs some";
     }
     else
@@ -249,7 +250,7 @@ void macroTrackTest3() {
         t2.playCommand(c);
 
     if (t2.at(0)->at(0)->at(0)->getDuration() != 4) {
-        qDebug() << "ERROR: Track commands failed!";
+        qDebug() << "ERROR: Track commands failed! 3+";
         qDebug() << t2.at(0)->at(0)->at(0)->getDuration() << " vs X";
     }
     else
