@@ -408,11 +408,6 @@ size_t Track::connectTimeLoop() //in gtp only 1 bar works after reprize (alt)!//
     if (trackLog)
         qDebug() << "TIME LOOP size is "<<(int)_timeLoop.size();
 
-    for (size_t i = 0; i < _timeLoop.size(); ++i) {
-        qDebug() << i << ") " << _timeLoopIndexStore[i];
-    }
-
-
     return _timeLoop.size();
 }
 
@@ -420,7 +415,6 @@ size_t Track::connectTimeLoop() //in gtp only 1 bar works after reprize (alt)!//
 //REFACT - cover under Track operations
 typedef std::map<std::uint8_t, ChainedBars> AltRay;
 typedef std::map<std::uint8_t, std::vector<int> > AltRayInd;
-
 
 void createAltRay(AltRay &altRay, AltRayInd &altRayInd, Bar *a, Bar *b, size_t indA, size_t indB)
 {
