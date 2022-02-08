@@ -256,6 +256,7 @@ size_t Track::connectBars()
 }
 
 
+//TODO rewrite, or even get rid from alt repeats (drop support for such and useless thing)
 size_t Track::connectTimeLoop() //in gtp only 1 bar works after reprize (alt)!//and only 1 goes fine in the en - so pretail is - the only :|
 {
     if (size() == 0)
@@ -288,8 +289,6 @@ size_t Track::connectTimeLoop() //in gtp only 1 bar works after reprize (alt)!//
        if (curBar==0) //minifix attention
            break;
 
-       qDebug() << "Starting loop with " << curIndex;
-
        if (curBar->getRepeat() & 1) {
 
            if (beginRepeat)
@@ -304,14 +303,11 @@ size_t Track::connectTimeLoop() //in gtp only 1 bar works after reprize (alt)!//
            beginRepeat = curBar;
            beginIndex = curIndex;
 
-           qDebug() << "Got into reprize 1 " << curIndex;
 
            if (curBar->getRepeat() & 2)  //one bar reprize TODO refact optimizae that code, its plain like below
            {
                endIndex = curIndex;
                endRepeat = curBar;
-
-               qDebug() << "Got into reprize 2 " << curIndex;
 
                pushReprise(beginRepeat, endRepeat, nullptr,
                            nullptr, nullptr, beginIndex, endIndex);
@@ -326,7 +322,6 @@ size_t Track::connectTimeLoop() //in gtp only 1 bar works after reprize (alt)!//
        if (curBar->getRepeat() & 2)
        {
 
-           qDebug() << "Got into reprize 2 " << curIndex;
 
            endRepeat = curBar;
            endIndex = curIndex;
@@ -384,22 +379,26 @@ size_t Track::connectTimeLoop() //in gtp only 1 bar works after reprize (alt)!//
 
        if (curBar)
        {
-           qDebug() << "Got CURBAR final " << curIndex;
 
-           /*if (curBar->getRepeat() & 3) {
-               pushReprise(curBar, curBar, nullptr, nullptr, nullptr, curIndex, curIndex);
-               beginRepeat = endRepeat = 0;
-           }
-           else*/
            if (curBar->getRepeat() & 1) {
-               beginRepeat=curBar;
-               beginIndex=curIndex;
+               beginRepeat = curBar;
+               beginIndex = curIndex;
            }
 
-           if (curIndex < lastIndex && beginRepeat == 0)
+           if (curIndex < lastIndex)
            {
-               _timeLoop.push_back(curBar);
-               _timeLoopIndexStore.push_back(curIndex);
+               if (beginRepeat == 0) {
+                   _timeLoop.push_back(curBar);
+                   _timeLoopIndexStore.push_back(curIndex);
+               }
+               else if (curBar->getRepeat() == 3) {
+
+                   pushReprise(curBar, curBar, nullptr,
+                               nullptr, nullptr, curIndex, curIndex);
+
+                   endIndex = curIndex;
+                   beginRepeat = endRepeat = 0;
+               }
            }
            curBar = (Bar*)curBar->getNext();
            ++curIndex;
@@ -469,9 +468,6 @@ void Track::pushReprise(Bar *beginRepeat, Bar *endRepeat,
     { //no alt ending in begin-end
         if (tailBegin == nullptr)
         { //no alt at all
-
-            qDebug() << "No pre-tail no alt: " << beginIndex << " " << endIndex
-                     << " rep times " << endRepeat->getRepeatTimes();
 
             for (std::uint8_t i = 0; i < endRepeat->getRepeatTimes(); ++i)
             {
