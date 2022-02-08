@@ -266,12 +266,15 @@ size_t Track::connectTimeLoop() //in gtp only 1 bar works after reprize (alt)!//
 
     size_t lastIndex = size();
     size_t curIndex = 0;
+
     Bar* curBar = at(0).get();
     Bar* lastBeginRepeat = curBar;
     Bar* beginRepeat = 0;
     Bar* endRepeat = 0;
+
     size_t beginIndex = 0;
     size_t endIndex = 0;
+
     Bar* tailEnd = 0;
     Bar* tailBegin = 0;
     size_t tailEndIndex = 0;
@@ -285,24 +288,33 @@ size_t Track::connectTimeLoop() //in gtp only 1 bar works after reprize (alt)!//
        if (curBar==0) //minifix attention
            break;
 
+       qDebug() << "Starting loop with " << curIndex;
+
        if (curBar->getRepeat() & 1) {
+
            if (beginRepeat)
-               while (beginRepeat != curBar) {
+               while (beginRepeat != curBar)
+               {
                    _timeLoop.push_back(beginRepeat);
                    _timeLoopIndexStore.push_back(beginIndex);
                    ++beginIndex;
                    beginRepeat = (Bar*)beginRepeat->getNext();
                }
 
-           beginRepeat=curBar;
-           beginIndex=curIndex;
+           beginRepeat = curBar;
+           beginIndex = curIndex;
 
-           if (curBar->getRepeat() & 2) {
-               //one bar reprize
+           qDebug() << "Got into reprize 1 " << curIndex;
+
+           if (curBar->getRepeat() & 2)  //one bar reprize TODO refact optimizae that code, its plain like below
+           {
                endIndex = curIndex;
                endRepeat = curBar;
-               pushReprise(beginRepeat,endRepeat,
-                           0,0,0, beginIndex, endIndex);
+
+               qDebug() << "Got into reprize 2 " << curIndex;
+
+               pushReprise(beginRepeat, endRepeat, nullptr,
+                           nullptr, nullptr, beginIndex, endIndex);
 
                beginRepeat = endRepeat = 0;
                curBar = (Bar*)curBar->getNext();
@@ -313,6 +325,9 @@ size_t Track::connectTimeLoop() //in gtp only 1 bar works after reprize (alt)!//
 
        if (curBar->getRepeat() & 2)
        {
+
+           qDebug() << "Got into reprize 2 " << curIndex;
+
            endRepeat = curBar;
            endIndex = curIndex;
 
@@ -369,10 +384,18 @@ size_t Track::connectTimeLoop() //in gtp only 1 bar works after reprize (alt)!//
 
        if (curBar)
        {
+           qDebug() << "Got CURBAR final " << curIndex;
+
+           /*if (curBar->getRepeat() & 3) {
+               pushReprise(curBar, curBar, nullptr, nullptr, nullptr, curIndex, curIndex);
+               beginRepeat = endRepeat = 0;
+           }
+           else*/
            if (curBar->getRepeat() & 1) {
                beginRepeat=curBar;
                beginIndex=curIndex;
            }
+
            if (curIndex < lastIndex && beginRepeat == 0)
            {
                _timeLoop.push_back(curBar);
@@ -387,7 +410,7 @@ size_t Track::connectTimeLoop() //in gtp only 1 bar works after reprize (alt)!//
         qDebug() << "TIME LOOP size is "<<(int)_timeLoop.size();
 
     for (size_t i = 0; i < _timeLoop.size(); ++i) {
-        qDebug() << i << ") " << _timeLoop[i];
+        qDebug() << i << ") " << _timeLoopIndexStore[i];
     }
 
 
@@ -439,19 +462,24 @@ void Track::pushReprise(Bar *beginRepeat, Bar *endRepeat,
                         size_t preTailIndex, size_t tailBeginIndex, size_t tailEndIndex)
 {
 
-    AltRay altRay;
+    AltRay altRay; //Maybew drop this hell it works really bad:)
     AltRayInd altRayInd;
 
     if (preTail == nullptr)
     { //no alt ending in begin-end
         if (tailBegin == nullptr)
         { //no alt at all
+
+            qDebug() << "No pre-tail no alt: " << beginIndex << " " << endIndex
+                     << " rep times " << endRepeat->getRepeatTimes();
+
             for (std::uint8_t i = 0; i < endRepeat->getRepeatTimes(); ++i)
             {
                 size_t localIndex = 0;
-                for (Bar *barI=beginRepeat; barI != endRepeat; barI=(Bar*)barI->getNext()) {
+                for (Bar *barI = beginRepeat; barI != endRepeat; barI=(Bar*)barI->getNext())
+                {
                     _timeLoop.push_back(barI);
-                    _timeLoopIndexStore.push_back(beginIndex+localIndex);
+                    _timeLoopIndexStore.push_back(beginIndex + localIndex);
                     ++localIndex;
                 }
                 _timeLoop.push_back(endRepeat);
