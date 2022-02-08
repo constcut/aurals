@@ -120,7 +120,8 @@ void PlayAnimationThr::setupValues(Tab *tab, Track *track, size_t shiftTheCursor
 
     const auto& timeLine = tab->getTimeLine();
     for (size_t ind = 0 ; ind < timeLine.size(); ++ind) {
-       if (timeLine[ind].type == 0)
+
+       if (timeLine[ind].type == 0) //TODO enumerate
            localWait += timeLine[ind].value;
 
        if (timeLine[ind].type == 1) {
@@ -129,7 +130,7 @@ void PlayAnimationThr::setupValues(Tab *tab, Track *track, size_t shiftTheCursor
            newNode.waitTime = localWait;
            localWait = 0;
            bpmChangeList.push_back(newNode);
-            qDebug() << "BPM " << newNode.newBpm << " wait " << newNode.waitTime;
+           qDebug() << "BPM " << newNode.newBpm << " wait " << newNode.waitTime;
        }
     }
 
@@ -176,7 +177,7 @@ void PlayAnimationThr::setupValues(Tab *tab, Track *track, size_t shiftTheCursor
 
             toTheNextWait -= beatAbs;
 
-            if (toTheNextWait <= 1)
+            if (toTheNextWait <= 0) //More save calculate idx of beat in bar!
             {
                 if (changeIndex < bpmChangeList.size())
                 {

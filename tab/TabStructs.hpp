@@ -44,6 +44,14 @@ namespace aural_sight {
         std::uint8_t type;
         int value;
 
+        int bar;
+        int beat;
+
+        void setIdx(int barIdx, int beatIdx) {
+            bar = barIdx;
+            beat = beatIdx;
+        }
+
         TimeLineKnot(std::uint8_t newType, int newValue):type(newType),value(newValue){}
     };
 
@@ -51,7 +59,20 @@ namespace aural_sight {
         int bpm;
         int time;
 
-        BpmChangeKnot(int newBpm, int newTime):bpm(newBpm),time(newTime){}
+        int bar;
+        int beat;
+
+        void setIdx(int barIdx, int beatIdx) {
+            bar = barIdx;
+            beat = beatIdx;
+        }
+
+        BpmChangeKnot(int newBpm, int newTime):
+            bpm(newBpm),
+            time(newTime)
+        {
+        }
+
         bool operator<(const BpmChangeKnot& another) const {  return time < another.time; }
     };
 

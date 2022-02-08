@@ -99,7 +99,8 @@ void Tab::createTimeLine(size_t shiftTheCursor)
                     for (size_t indexChange = 0; indexChange != changes->size(); ++indexChange)
                         if (changes->at(indexChange).changeType == 8) {
                             size_t newBPM = changes->at(indexChange).changeValue;
-                            BpmChangeKnot newChangeBpm(newBPM,localAccumulate);
+                            BpmChangeKnot newChangeBpm(newBPM, localAccumulate);
+                            newChangeBpm.setIdx(beatI, barsI);
                             timeChanges.push_back(newChangeBpm);
                             break;
                         }
@@ -150,12 +151,13 @@ void Tab::createTimeLine(size_t shiftTheCursor)
                     lastChange = timeChanges[i].time;
                     TimeLineKnot timeWait(0, currentChange);
                     TimeLineKnot bpmChange(1, timeChanges[i].bpm);
+                    bpmChange.setIdx(timeChanges[i].bar, timeChanges[i].beat);
                     _timeLine.push_back(timeWait);
                     _timeLine.push_back(bpmChange);
                 }
 
              if (lastChange < barAbs) {
-                 TimeLineKnot timeWait(0, barAbs-lastChange);
+                 TimeLineKnot timeWait(0, barAbs - lastChange);
                  _timeLine.push_back(timeWait);
              }
         }
