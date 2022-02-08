@@ -123,7 +123,7 @@ void PlayAnimationThr::setupValues(Tab *tab, Track *track, size_t shiftTheCursor
        if (timeLine[ind].type == 0)
            localWait += timeLine[ind].value;
 
-       if (timeLine[ind].type == 1){
+       if (timeLine[ind].type == 1) {
            BpmWaitNode newNode;
            newNode.newBpm = timeLine[ind].value;
            newNode.waitTime = localWait;
@@ -146,7 +146,9 @@ void PlayAnimationThr::setupValues(Tab *tab, Track *track, size_t shiftTheCursor
 
     std::vector<int> barMoments;
 
-    //MAIN CYCLE
+    //TODO decreace to the next wait for distance to shiftTheCursor, and if needed increase index
+
+
     for (size_t barI = shiftTheCursor; barI < timeLoopLen; ++barI)
     {
         Bar *bar = track->getTimeLoop().at(barI);
@@ -180,6 +182,9 @@ void PlayAnimationThr::setupValues(Tab *tab, Track *track, size_t shiftTheCursor
                 {
                     const auto newBpm = bpmChangeList[changeIndex].newBpm;
 
+                    qDebug() << "Changing bpm: " << newBpm << " " << toTheNextWait <<
+                                " next wait " << bpmChangeList[changeIndex + 1].waitTime;
+
                     if (newBpm != 0)
                         _bpm =  newBpm;
 
@@ -210,6 +215,8 @@ void PlayAnimationThr::setupValues(Tab *tab, Track *track, size_t shiftTheCursor
 
             noteTime /= 10;
             barMoments.push_back(noteTime);
+
+            qDebug() << barI << " got note time " << noteTime;
 
         }
         _beatTimes.push_back(barMoments);

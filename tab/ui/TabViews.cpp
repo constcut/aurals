@@ -276,7 +276,7 @@ void TabView::prepareAllThreads(int shiftTheCursor)
 {
     for (size_t i = 0; i <_tracksView.size(); ++i) {
         _tracksView[i]->prepareThread(shiftTheCursor);
-        int thrLenSeconds = _tracksView[i]->threadSeconds();
+        //int thrLenSeconds = _tracksView[i]->threadSeconds();
     }
 
     auto& pTrack = _pTab->at(0);

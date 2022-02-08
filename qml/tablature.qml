@@ -372,7 +372,7 @@ Item {
             ComboBox {
                 id: tabCombo
                 model: 70
-                currentIndex: 20
+                currentIndex: 0
 
                 onCurrentTextChanged: {
                     var testId = parseInt(tabCombo.currentText) + 1
