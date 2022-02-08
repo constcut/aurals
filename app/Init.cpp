@@ -259,7 +259,7 @@ void copyResourcesIntoTempDir() {
 
     std::unordered_map<size_t, size_t> groupLength = {
         {1, 12},
-        {2, 39},
+        {2, 40},
         {3, 71},
         {4, 109}
     };

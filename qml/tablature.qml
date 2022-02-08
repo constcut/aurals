@@ -545,7 +545,7 @@ Item {
 
             ComboBox {
                 id: tab2Combo
-                model: 38
+                model: 39
                 currentIndex: 0
 
                 onCurrentTextChanged: {

@@ -363,5 +363,6 @@
         <file>regression/3.69.mid</file>
         <file>regression/3.70.gmy</file>
         <file>regression/3.70.mid</file>
+        <file>own_tests/2.39.gp4</file>
     </qresource>
 </RCC>
