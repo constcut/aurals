@@ -356,7 +356,7 @@ void TrackView::prepareThread(int shiftTheCursor)
     size_t& cursorBeat = _pTrack->cursorBeat();
 
     _animationThread->setInc(&cursor,&cursorBeat);
-    _animationThread->setupValues(_tabParrent->getTab().get(),_pTrack,shiftTheCursor);
+    _animationThread->setupValues(_tabParrent->getTab().get(), _pTrack, shiftTheCursor);
 
     this->connect(
         _animationThread.get(),

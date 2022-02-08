@@ -2,6 +2,8 @@
 
 #include "tab/Tab.hpp"
 
+#include <QDebug>
+
 
 using namespace aural_sight;
 
@@ -127,6 +129,7 @@ void PlayAnimationThr::setupValues(Tab *tab, Track *track, size_t shiftTheCursor
            newNode.waitTime = localWait;
            localWait = 0;
            bpmChangeList.push_back(newNode);
+            qDebug() << "BPM " << newNode.newBpm << " wait " << newNode.waitTime;
        }
     }
 
@@ -140,7 +143,6 @@ void PlayAnimationThr::setupValues(Tab *tab, Track *track, size_t shiftTheCursor
     ++changeIndex;
 
     int toTheNextWait = bpmChangeList[changeIndex].waitTime;
-    //qDebug() << "Waiting for next: "<<toTheNextWait;
 
     std::vector<int> barMoments;
 
@@ -150,21 +152,19 @@ void PlayAnimationThr::setupValues(Tab *tab, Track *track, size_t shiftTheCursor
         Bar *bar = track->getTimeLoop().at(barI);
         barMoments.clear();
 
-        //addBeatTimes(bar);
 
         for (size_t beatI = 0; beatI < bar->size(); ++beatI)
         {
-           auto& beat = bar->at(beatI);
+            auto& beat = bar->at(beatI);
 
-           std::uint8_t dur = beat->getDuration();
-           std::uint8_t dot = beat->getDotted();
-           std::uint8_t det = beat->getDurationDetail();
+            std::uint8_t dur = beat->getDuration();
+            std::uint8_t dot = beat->getDotted();
+            std::uint8_t det = beat->getDurationDetail();
 
 
-           int beatAbs = translaeDuration(dur);
+            int beatAbs = translaeDuration(dur);
 
-            if (dot == 1)
-            {
+            if (dot == 1) {
                 beatAbs *= 3;
                 beatAbs /= 2;
             }
@@ -174,62 +174,49 @@ void PlayAnimationThr::setupValues(Tab *tab, Track *track, size_t shiftTheCursor
 
             toTheNextWait -= beatAbs;
 
-            if (toTheNextWait <= 1) //maybe more check
+            if (toTheNextWait <= 1)
             {
                 if (changeIndex < bpmChangeList.size())
                 {
-                    //qDebug() << "Next wait arhived "<<toTheNextWait<<"; switch to "<<bpmChangeList[changeIndex].newBpm;
-
-
                     const auto newBpm = bpmChangeList[changeIndex].newBpm;
 
                     if (newBpm != 0)
                         _bpm =  newBpm;
 
-
-                    {
-                        ++changeIndex;
-                        toTheNextWait = bpmChangeList[changeIndex].waitTime;
-
-                        //qDebug() << "Waiting for next: "<<toTheNextWait;
-                    }
+                    ++changeIndex;
+                    toTheNextWait = bpmChangeList[changeIndex].waitTime;
                 }
             }
 
-               int noteTime = 2400000/_bpm; //full note
+            long int noteTime = 2400000 / _bpm;
 
-               if (dot == 1)
-               {
-                   noteTime *= 3;
-                   noteTime /= 2;
-               }
+            if (dot == 1) {
+                noteTime *= 3;
+                noteTime /= 2;
+            }
 
-               switch (dur)
-               {
-                   case 1: noteTime /= 2; break;
-                   case 2: noteTime /= 4; break;
-                   case 3: noteTime /= 8; break;
-                   case 4: noteTime /= 16; break;
-                   case 5: noteTime /= 32; break;
-                   case 6: noteTime /= 64; break;
-               }
+            switch (dur)
+            {
+                case 1: noteTime /= 2; break;
+                case 2: noteTime /= 4; break;
+                case 3: noteTime /= 8; break;
+                case 4: noteTime /= 16; break;
+                case 5: noteTime /= 32; break;
+                case 6: noteTime /= 64; break;
+            }
 
-               if (det)
-                noteTime = updateDurationWithDetail(det,noteTime);
+            if (det)
+                noteTime = updateDurationWithDetail(det, noteTime);
 
-               noteTime /= 10;
-
-               barMoments.push_back(noteTime);
+            noteTime /= 10;
+            barMoments.push_back(noteTime);
 
         }
         _beatTimes.push_back(barMoments);
-
         addNumDenum(bar->getSignNum(), bar->getSignDenum(), track->getTimeLoopIndexes()[barI]);
     }
 
     setLimit(track->getTimeLoop().size());
-
-    //qDebug() << "prepare thread done";
 }
 
 void PlayAnimationThr::addNumDenum(std::uint8_t nu, std::uint8_t de, size_t nextIndex)
