@@ -384,7 +384,12 @@ size_t Track::connectTimeLoop() //in gtp only 1 bar works after reprize (alt)!//
     }
 
     if (trackLog)
-    qDebug() << "TIME LOOP size is "<<(int)_timeLoop.size();
+        qDebug() << "TIME LOOP size is "<<(int)_timeLoop.size();
+
+    for (size_t i = 0; i < _timeLoop.size(); ++i) {
+        qDebug() << i << ") " << _timeLoop[i];
+    }
+
 
     return _timeLoop.size();
 }

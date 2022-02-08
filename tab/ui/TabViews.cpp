@@ -171,7 +171,7 @@ void TabView::paint(QPainter *painter) //Ugly function, removed all but bars, an
            auto& tr = _pTab->at(i);
            for (size_t j = 0 ; j < tr->size(); ++j)
            {
-               size_t barIndex = j + _pTab->getDisplayBar();
+               size_t barIndex = j; //+ _pTab->getDisplayBar()
                if (barIndex >= tr->size())
                     break;
 
@@ -191,16 +191,21 @@ void TabView::paint(QPainter *painter) //Ugly function, removed all but bars, an
                auto [markerText, markerColor] = cB->getMarker();
                bool isMarkerHere = markerText.empty() == false;
 
+               qDebug() << "TWBAR " << j << " repr " << reprize;
+
                 //hi light color bar
                if (barIndex == _pTab->getCurrentBar())
-                   painter->fillRect(200+30*j,yPos,20,20,QColor(CONF_PARAM("colors.curBar").c_str()));
+                   painter->fillRect(200+30*j, yPos, 20,20,QColor(CONF_PARAM("colors.curBar").c_str()));
 
-               painter->drawText(200+30*j,yPos+10,sX.c_str());
+               painter->drawText(200+30*j, yPos+10, sX.c_str());
+
                if (i == 0)  {
                    if (reprize) {
                        std::string rep;
+
                        if (reprize == 1)
                            rep = "|:";
+
                        if (reprize == 2)
                        {
                            std::uint8_t repTimes = cB->getRepeatTimes();
@@ -209,14 +214,15 @@ void TabView::paint(QPainter *painter) //Ugly function, removed all but bars, an
 
                            rep += ":|";
                        }
-                       if (reprize == 3)
-                           rep = ":|:";
 
-                       painter->drawText(200+30*j, 80-60,rep.c_str());
+                       if (reprize == 3)
+                           rep = "|: :|";
+
+                       painter->drawText(200+30*j, 20, rep.c_str());
                    }
 
                    if (isMarkerHere){
-                        painter->drawText(200+30*j, 70-60,markerText.c_str());
+                        painter->drawText(200+30*j, 10, markerText.c_str());
                    }
                }
                painter->drawRect(200 + 30 * j, yPos, 20, 20);

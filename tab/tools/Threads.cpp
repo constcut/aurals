@@ -155,7 +155,7 @@ void PlayAnimationThr::setupValues(Tab *tab, Track *track, size_t shiftTheCursor
 
     std::vector<int> barMoments;
 
-    //TODO decreace to the next wait for distance to shiftTheCursor, and if needed increase index
+    //TODO возможна запарка если к этому момент BPM менялся от изначального
 
 
     for (size_t barI = shiftTheCursor; barI < timeLoopLen; ++barI)
@@ -191,8 +191,8 @@ void PlayAnimationThr::setupValues(Tab *tab, Track *track, size_t shiftTheCursor
             {
                 const auto newBpm = bpmChangeList[changeIndex].newBpm;
 
-                qDebug() << "Changing bpm: " << newBpm << " " << toTheNextWait <<
-                            " next wait " << bpmChangeList[changeIndex + 1].waitTime;
+                //qDebug() << "Changing bpm: " << newBpm << " " << toTheNextWait <<
+                            //" next wait " << bpmChangeList[changeIndex + 1].waitTime;
 
                 if (newBpm != 0)
                     _bpm =  newBpm;
@@ -224,7 +224,7 @@ void PlayAnimationThr::setupValues(Tab *tab, Track *track, size_t shiftTheCursor
             noteTime /= 10;
             barMoments.push_back(noteTime);
 
-            qDebug() << barI << " got note time " << noteTime;
+            //qDebug() << barI << " got note time " << noteTime;
 
         }
         _beatTimes.push_back(barMoments);
