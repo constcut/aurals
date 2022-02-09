@@ -1,29 +1,14 @@
-x) Связывание с клавиатурой
-   из конфига
-
-x) Функции меню\табы
-
-    a) Перепроверить работу всех текущих комманд
-    б) Заменить виджеты на диалоги из QML
-
-
 (QML models requests:
     instuments + percussions)
-
 
 z) PDF экспорт
  : https://forum.qt.io/topic/68805/combine-multiple-images-into-a-single-pdf/8
 
 --------------------------------------------------------------------------------
 
-selection for clipboard
-
-----------------------------------------------------------------------------------
-
 В flower есть незначительный обгон анимации в самом конце, но он не выглядит критическим.
 
 Не сработало ch в paper solders
-
 
 + Model size of -111 is less than 0
 
@@ -31,9 +16,9 @@ Repair tapper +
 +++
 idea -> tapper + piano roll
 
-Android save to files on sdcard fails.. Permission?
-W aurals  : [W] QIODevice::write (QFile, "://com.android.providers.downloads.documents/document/raw%3A%2Fstorage%2Femulated%2F0%2FDownload%2Fx%2Fq.wav"): device not open
-I chatty  : uid=10125
+TO use file dialog parse it 'raw%3A %2F storage %2F emulated %2F 0 %2F Download %2F x %2F q.wav'
+(QFile, "://com.android.providers.downloads.documents/document/raw%3A%2Fstorage%2Femulated%2F0%2FDownload%2Fx%2Fq.wav"): device not open
+
 
 +tapper midi silence hot fix
 
