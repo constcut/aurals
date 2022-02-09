@@ -110,9 +110,8 @@ void TrackView::onSelection(int x1, int y1)
             if (fullBar <= beatClick)
                 continue;
 
-            qDebug() << "Bar hits "<<beatClick<<" of "<<fullBar;
+            qDebug() << i << " Bar hits " << beatClick << " of " << fullBar;
 
-            size_t& displayIndex = _pTrack->displayIndex();
             int& selectionBeatFirst = _pTrack->selectBeatFirst();
             int& selectionBeatLast = _pTrack->selectBeatLast();
             int& selectionBarFirst = _pTrack->selectBarFirst();
@@ -120,20 +119,19 @@ void TrackView::onSelection(int x1, int y1)
 
             if (selectionBeatFirst == -1) {
                 selectionBeatFirst = selectionBeatLast =  bV->getClickBeat(x1);
-                selectionBarFirst = selectionBarLast = i+displayIndex;
+                selectionBarFirst = selectionBarLast = i;
             }
             else
             {
-                if (i + displayIndex > selectionBarLast)
+                if (i  > selectionBarLast)
                 {
                     selectionBeatLast =  bV->getClickBeat(x1);
-                    selectionBarLast = i + displayIndex;
+                    selectionBarLast = i;
                 }
-                else
-                if (i + displayIndex < selectionBarFirst)
+                else if (i < selectionBarFirst)
                 {
                     selectionBeatFirst =   bV->getClickBeat(x1);
-                    selectionBarFirst = i + displayIndex;
+                    selectionBarFirst = i;
                 }
                 else
                 {
@@ -149,21 +147,21 @@ void TrackView::onSelection(int x1, int y1)
                     {
                         int addBeat = bV->getClickBeat(x1);
                         //if (addBeat > selectionBeatLast)
-                        if (i + displayIndex == selectionBarLast)
+                        if (i == selectionBarLast)
                         {
                             selectionBeatLast = addBeat;
                         }
                         else //if (addBeat < selectionBeatfirstt)
-                        if (i + displayIndex == selectionBarFirst)
+                        if (i == selectionBarFirst)
                         {
                             selectionBeatFirst = addBeat;
                         }
                         else
                         {
-                            if (i + displayIndex ==selectionBarLast-1)
+                            if (i ==selectionBarLast-1)
                             {
                                 //pre last bar
-                                if (addBeat==_pTrack->at(i+displayIndex)->size()-1)
+                                if (addBeat==_pTrack->at(i)->size()-1)
                                 {
                                     //its last beat
                                     if (selectionBeatLast == 0)
@@ -175,13 +173,13 @@ void TrackView::onSelection(int x1, int y1)
                                 }
                             }
 
-                            if ( i+ displayIndex == selectionBarFirst + 1)
+                            if ( i == selectionBarFirst + 1)
                             {
                                 //pre last bar
                                 if (addBeat==0)
                                 {
                                     //its last beat
-                                    if (selectionBeatFirst == _pTrack->at(i + displayIndex-1)->size() - 1)
+                                    if (selectionBeatFirst == _pTrack->at(i - 1)->size() - 1)
                                     {
                                         //and current beat is irst in last bar
                                         selectionBeatFirst = 0;
@@ -350,7 +348,6 @@ void TrackView::applySelection(BarView& barView, int idx) {
 
     if (idx >= selectionBarFirst && idx <= selectionBarLast)
     {
-        qDebug() << "Selection paint";
         if (selectionBarLast == selectionBarFirst)
             barView.setSelectors(selectionBeatFirst,selectionBeatLast);
         else
