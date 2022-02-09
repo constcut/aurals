@@ -244,7 +244,7 @@ void changeTrackName(Tab* pTab) {
 }
 
 
-void setSignTillEnd(Tab* pTab) { //TODOM
+void setSignTillEnd(Tab* pTab) {
     bool ok=false;
     int newNum = QInputDialog::getInt(0,"Input",
                          "New Num:", QLineEdit::Normal,
@@ -274,7 +274,7 @@ void setMarker(Tab* pTab) {
 
 void goToBar(Tab* pTab) {
     size_t trackLen = pTab->at(0)->size();
-    bool ok=false; //TODO позже разделить Qt запросы и установку параметров
+    bool ok=false;
     int newTimes = QInputDialog::getInt(0,"Input",
                          "Bar to jump:", QLineEdit::Normal, 1, trackLen, 1, &ok);
     if (ok) {
@@ -388,7 +388,7 @@ void saveAs(Tab* pTab) { //Move into Tab (но на этапе уже получ
 }
 
 
-void closeReprise(Tab* pTab) { //TODO argument repeat times
+void closeReprise(Tab* pTab) {
     auto& firstTrackBar = pTab->at(0)->at(pTab->getCurrentBar());
     std::uint8_t repeat = firstTrackBar->getRepeat();
     std::uint8_t repeatCloses = repeat & 2;
@@ -420,7 +420,9 @@ int changeTrackBpm(Tab* pTab) {
 
 
 void TabView::onTabCommand(TabCommand command) {
-    //TODO undo для команд таблатуры так же
+
+    //Undo для команд таблатуры так же Name, AddMarker, BPM, CloseReprise и других без ввода
+
     if (command == TabCommand::SaveAs)
         saveAs(_pTab.get());
     else if (command == TabCommand::SetSignTillEnd)  //TODO хэндлеры для более простого вызова
@@ -435,7 +437,6 @@ void TabView::onTabCommand(TabCommand command) {
        _pTab->createNewTrack(); refreshTabStats(); } //Второе нужно для обновления
     else if (command == TabCommand::GotoBar)
         goToBar(_pTab.get());
-    //if (press == "alt");//TODO
     else if (command == TabCommand::Tune)
         setTune(_pTab->at(_pTab->getCurrentTrack()).get());
     else if (command == TabCommand::CloseReprise)

@@ -420,7 +420,8 @@ void TrackView::paintByLines(QPainter* painter) {
 
                 applySelection(barView, barIdx);
 
-                std::uint8_t barCompleteStatus = _pTrack->at(barIdx)->getCompleteStatus(); //TODO avoid recalculations
+                //TODO avoid recalculations считать единожды, обновлять при изменении
+                std::uint8_t barCompleteStatus = _pTrack->at(barIdx)->getCompleteStatus();
 
                 if (barCompleteStatus == 2 || barCompleteStatus == 1)
                     changeColor(CONF_PARAM("colors.exceed"), painter);
@@ -471,8 +472,8 @@ void TrackView::paint(QPainter *painter)
         bView.flushSelectors();
         applySelection(bView, cursor);
 
-        bView.setCursor(cursorBeat, stringCursor + 1); //If playing - no cursor string TODO
-        bView.paint(painter); //TODO paint only cursor
+        bView.setCursor(cursorBeat, stringCursor + 1);
+        bView.paint(painter);
         changeColor(CONF_PARAM("colors.default"), painter);
     }
 
@@ -495,7 +496,7 @@ int TrackView::getFullPixelHeight() {
         auto& curBar = _pTrack->at(i);
         BarView bView(curBar.get(), stringsN,i);
 
-        if (int nextX = xPos + bView.getW() + 15; nextX > widthBorder) { //TODO all constants as params
+        if (int nextX = xPos + bView.getW() + 15; nextX > widthBorder) { //ВСЕ КОНСТАНТЫ ОТРИСОВКИ, КАК ПАРАМЕТРЫ
             xPos = 0;
             yPos += bView.getH();
         }
@@ -531,7 +532,7 @@ void TrackView::prepareThread(int shiftTheCursor)
         SLOT(update()),
         Qt::QueuedConnection);
 
-    //TODO finished animation? + line switched animation?
+    //TODO сигнал окончания анимации
 }
 
 

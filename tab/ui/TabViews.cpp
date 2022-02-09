@@ -110,12 +110,12 @@ void TabView::createNewTab() {
     _pTab = std::make_unique<Tab>();
     auto newTrack = std::make_unique<Track>();
     auto newBar = std::make_unique<Bar>();
-    auto newBeat = std::make_unique<Beat>(); //TODO make simple function create STD bar, std track
+    auto newBeat = std::make_unique<Beat>(); //TODO сделать функцию генерации пустого бара\трека
     newBeat->setParent(newBar.get());
     newBar->push_back(std::move(newBeat));
     newBar->setParent(newTrack.get());
-    newTrack->push_back(std::move(newBar)); //TODO when pushing to tab
-    newTrack->setParent(_pTab.get());//TODO when pushing to tab
+    newTrack->push_back(std::move(newBar)); //++++ Добавить автоматическое связывание с родителем при добавлении
+    newTrack->setParent(_pTab.get());
     _pTab->push_back(std::move(newTrack));
     _pTab->connectTracks();
     refreshTabStats();

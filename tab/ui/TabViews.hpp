@@ -17,7 +17,7 @@
 namespace aural_sight {
 
 
-    //TODO функции в отдельный хэдер
+    //refact функции в отдельный хэдер
     void changeColor(const std::string& color, QPainter* src);
     void drawEllipse(QColor c, QPainter *painter, int x, int y, int w, int h);
     void drawEllipse(QPainter *painter, int x, int y, int w, int h);
