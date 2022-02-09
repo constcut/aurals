@@ -368,6 +368,13 @@ int mainInit(int argc, char *argv[]) {
     //checkMidiIORegression();
 #endif
 
+    qDebug() << "\n\nPATH\n\n";
+    for (int i = 0; i <= static_cast<int>(QStandardPaths::AppConfigLocation); i++)
+    {
+        const QString tmp = QStandardPaths::writableLocation(static_cast<QStandardPaths::StandardLocation>(i));
+        qDebug() << "Path" << i << tmp;
+    }
+
     int res = 0;
     try {
         res = app.exec();

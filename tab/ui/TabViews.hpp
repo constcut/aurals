@@ -11,6 +11,8 @@
 #include "TrackView.hpp"
 #include "tab/Tab.hpp"
 
+#include "app/AndroidTools.hpp"
+
 
 namespace aural_sight {
 
@@ -35,6 +37,10 @@ namespace aural_sight {
         std::vector<TrackView*> _tracksView;
 
     public:
+
+        Q_INVOKABLE void requestFP() { //TODO move to special class
+            requestFilesPermission();
+        }
 
         TabView() = default;
         virtual ~TabView();

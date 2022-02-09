@@ -16,3 +16,12 @@ void requestAudioPermission() {
     //requestPermissionsSync
     #endif
 }
+
+
+void requestFilesPermission() {
+    #ifdef Q_OS_ANDROID
+    QtAndroid::requestPermissions({"android.permission.WRITE_EXTERNAL_STORAGE"}, permissionCB);
+    QtAndroid::requestPermissions({"android.permission.READ_EXTERNAL_STORAGE"}, permissionCB);
+    //requestPermissionsSync
+    #endif
+}

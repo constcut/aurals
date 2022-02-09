@@ -110,6 +110,11 @@ Item {
             text: "Use scroll area"
             onTriggered: tablatureItem.useScrollArea = !tablatureItem.useScrollArea
         }
+        /*
+        MenuItem {
+            text: "Android files"
+            onTriggered: tabView.requestFP()
+        }*/
     }
 
 

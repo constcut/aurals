@@ -3,4 +3,6 @@
 
 void requestAudioPermission();
 
+void requestFilesPermission();
+
 #endif // ANDROIDTOOLS_H
