@@ -138,8 +138,10 @@ void TrackView::onTrackCommand(TrackCommand command) {
     int& selectionBarLast = _pTrack->selectBarLast();
 
     size_t barsCount = _pTrack->size();
-    size_t curBar = _pTrack->getParent()->getCurrentBar();
+    size_t curBar = _pTrack->cursor();  //_pTrack->getParent()->getCurrentBar(); broken a bit
     size_t currentBarSize = _pTrack->at(curBar)->size();
+
+    qDebug() << "CurB " << curBar << " " << currentBarSize;
 
     if (command == TrackCommand::SetSignForSelected)
       changeBarSignsQt(_pTrack, selectionBarFirst, selectionBarLast);
