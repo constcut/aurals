@@ -696,8 +696,8 @@ Item {
     } //edit panel
 
 
-    function keyboardEventSend(key) {
-        tabView.keyPress(key)
+    function keyboardEventSend(key, mode) { //TODO заглушку во все QML
+        tabView.keyPress(key, mode)
     }
 
 }

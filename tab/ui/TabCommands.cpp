@@ -179,8 +179,16 @@ void TrackView::onTabCommand(TabCommand command) {
 }
 
 
-void TabView::keyPress(int code) {
-    qDebug() << "TABVIEW key event " << code;
+void TabView::keyPress(int code, int mode) {
+
+    if (mode & Qt::ShiftModifier)
+        qDebug() << "Shift pressed";
+    if (mode & Qt::ControlModifier)
+        qDebug() << "Control pressed"; //To make conbination like ctrl+c and then compare with config
+    if (mode & Qt::AltModifier)
+        qDebug() << "Alt pressed";
+
+    qDebug() << "TABVIEW key event " << code << " " << (char)code;
 
     bool updated = false;
 
@@ -202,7 +210,7 @@ void TabView::keyPress(int code) {
     else if (code == CONF_PARAM("TrackView.setPause")[0]) { //TODO latter add here handler
         onTrackCommand(TrackCommand::SetPause);
     }
-    else if (code == CONF_PARAM("TrackView.increaceDuration")[0]) {
+    else if (code == CONF_PARAM("TrackView.increaceDuration")[0]) { //Attention (no value)
         onTrackCommand(TrackCommand::IncDuration);
     }
     else if (code == CONF_PARAM("TrackView.decreaceDuration")[0]) {

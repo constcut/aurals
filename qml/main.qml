@@ -121,7 +121,7 @@ ApplicationWindow {
        anchors.fill: parent
        focus: true
        Keys.onPressed:  {
-           mainLoader.item.keyboardEventSend(event.key)
+           mainLoader.item.keyboardEventSend(event.key, event.modifiers)
        }
     }
 

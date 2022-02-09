@@ -199,10 +199,10 @@ void AConfig::checkConfig()
     addValue("TrackView.playAMusic","spc");
     addValue("TrackView.playMidi","ent");
 
-    addValue("TrackView.setPause","p");
+    addValue("TrackView.setPause","P"); //capital letters for qt default qml codes
     addValue("TrackView.deleteNote","del");
-    addValue("TrackView.increaceDuration","q");
-    addValue("TrackView.decreaceDuration","w");
+    addValue("TrackView.increaceDuration","Q");
+    addValue("TrackView.decreaceDuration","W");
 
     //TODO get rid of useless
     addValue("TrackView.save","s");

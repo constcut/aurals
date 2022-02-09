@@ -60,7 +60,7 @@ namespace aural_sight {
 
         void paint(QPainter *painter);
 
-        Q_INVOKABLE void keyPress(int code);
+        Q_INVOKABLE void keyPress(int code, int mode);
 
         void onTabCommand(TabCommand command);
         void onTrackCommand(TrackCommand command);
