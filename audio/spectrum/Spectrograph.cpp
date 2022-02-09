@@ -274,7 +274,7 @@ void SpectrographPainter::calcChroma()
     std::vector<double> chroma(12, 0.0);
 
     for (int i = 1; i < _bars.size(); ++i) {
-        const double freq = _freqStep * i; //TODO insure
+        const double freq = _freqStep * i;
         const double midiNote = calc_MidiCents(freq) / 100.0;
 
         if (midiNote < 0.0)

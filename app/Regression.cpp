@@ -272,7 +272,7 @@ void aural_sight::runRegressionTests() {
         return;
     }
     else
-        qDebug() << "Has no regression"; //TODO also check more from 3rd group generate on oldest version
+        qDebug() << "Has no regression";
 
     macroSimpleTest1(); //Tab commands plain
     macroSimpleTest2(); //String tab command

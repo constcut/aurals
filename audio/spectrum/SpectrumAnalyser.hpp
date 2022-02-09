@@ -92,7 +92,7 @@ namespace aural_sight {
         void finishSpectrumCalculation(int inputFrequency);
 
 
-        std::unique_ptr<FFTReal> _fft; //TODO replace to change fft size
+        std::unique_ptr<FFTReal> _fft;
         int _numSamples;
         aural_sight::WindowFunction _windowFunction;
         bool _halfCut = false;
@@ -100,7 +100,7 @@ namespace aural_sight {
         int _filterIdx = -1;
         double _filterFreq = 0.0;
 
-        QVector<float> _window; //TODO vector
+        QVector<float> _window;
         QVector<float> _input;
         QVector<float> _output;
         FrequencySpectrum _spectrum;

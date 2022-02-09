@@ -42,8 +42,6 @@ void YinPP::calcBasicACF(const float* buffer) {
         [](std::complex<float> cplx) -> float { return std::real(cplx); });
 
     acfBufer = realOut;
-    //DELAYED: calculate slow ACF -> compare
-
     sumBufV2 = std::vector<float>(_bufferSize/2, 0.f);
 
     for (size_t i = 0; i < _bufferSize/2; ++i)  //TODO second term is wrong!
@@ -104,7 +102,7 @@ double YinPP::process(const float* buffer) {
     double foundPitch = _sampleRate / stdFound;
 
     //TODO оценка гладкости функции - отсечение поиска частот на шумовых звуках
-    //TODO оценка стадии ноты по уровням прижатости компонентов - разметка ноты на ASDR огибающую
+    //+ оценка стадии ноты по уровням прижатости компонентов - разметка ноты на ASDR огибающую
 
     if (mineFound !=.0)
         foundPitch = _sampleRate /  mineFound;

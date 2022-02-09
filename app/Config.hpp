@@ -27,7 +27,7 @@ namespace aural_sight {
         void addLine(std::string anotherLine);
 
         double scaleCoef;
-        double timeCoef; //TODO setters getters
+        double timeCoef;
 
         std::string testsLocation;
         std::string invertedLocation;
