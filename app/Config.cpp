@@ -186,7 +186,7 @@ void AConfig::printValues() const
     }
  }
 
-void AConfig::checkConfig() //TODO clean
+void AConfig::checkConfig()
 {
     addValue("TabView.genAMusic","g");
     addValue("TabView.genMidi","h");
@@ -203,6 +203,8 @@ void AConfig::checkConfig() //TODO clean
     addValue("TrackView.deleteNote","del");
     addValue("TrackView.increaceDuration","q");
     addValue("TrackView.decreaceDuration","w");
+
+    //TODO get rid of useless
     addValue("TrackView.save","s");
     addValue("TrackView.quickOpen","y");
     addValue("Main.open","open");

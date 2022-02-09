@@ -199,14 +199,20 @@ void TabView::keyPress(int code) {
     else if (code == Qt::Key_Backspace || code == Qt::Key_Delete) {
         onTrackCommand(TrackCommand::DeleteNote);
     }
-
+    else if (code == CONF_PARAM("TrackView.setPause")[0]) { //TODO latter add here handler
+        onTrackCommand(TrackCommand::SetPause);
+    }
+    else if (code == CONF_PARAM("TrackView.increaceDuration")[0]) {
+        onTrackCommand(TrackCommand::IncDuration);
+    }
+    else if (code == CONF_PARAM("TrackView.decreaceDuration")[0]) {
+        onTrackCommand(TrackCommand::DecDuration);
+    }
 
     if (isdigit(code)) {
         _tracksView[0]->keyevent(std::to_string(code - 48));
         _tracksView[0]->update();
     }
-    //TODO other keys mapping if they set for any function
-    //2 big handlers for Tab and Track commands
 
     if (updated)
         update();
