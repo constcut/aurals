@@ -629,15 +629,34 @@ Item {
             x: parent.width - width
 
             Repeater { //Мы можем так же добавить параметрические значения, и просто в первой панели их вставлять после,
-                model: 10
+                model: 12
 
                 ToolButton {
                     property int digitIdx: index
-                    icon.source: "qrc:/icons/" + digitIdx + ".png"
-                    //icon.source: digitIdx < 10 ? "qrc:/icons/" + digitIdx + ".png" : "qrc:/icons/del.png" //Way to store buttons but digits
-                    onClicked: {
-                        return tabView.keyPress(digitIdx + 48) //ascii digit
+                    icon.source: iconName(digitIdx)
+
+                    function iconName(idx) {
+
+                        if (idx === 11)
+                            return ""
+
+                        if (idx === 10)
+                            return "qrc:/icons/x.png"
+
+                        if (idx < 10)
+                            return "qrc:/icons/" + idx + ".png"
                     }
+
+                    onClicked: {
+                        if (digitIdx < 10)
+                            tabView.keyPress(digitIdx + 48, 0) //ascii digit
+
+                        if (digitIdx == 10)
+                            tabView.passTrackCommand(Tab.Dead)
+                    }
+
+                    palette.button: digitIdx !== 11 ? "lightgray" : "transparent"
+                    palette.mid: digitIdx !== 11  ? "lightgray" : "transparent"
                 }
             } //Repeater
         } //RowLayout - digits
@@ -651,8 +670,9 @@ Item {
 
                 id: secondPanelLine
 
-                property var images: ["", "prevBar", "^", "nextBar", "del"]
-                property var commands: [-1, Tab.PrevLine, Tab.StringDown, Tab.NextLine, Tab.DeleteNote] //TODO for custom layout -> imageToCommand()
+                property var images: ["vib", "leeg", "", "qp", "qm", "", "del", "", "prevBar", "^", "nextBar", ""]
+                property var commands: [Tab.Vibrato, Tab.Leeg, -1, Tab.IncDuration, Tab.DecDuration,
+                    -1, Tab.DeleteNote, -1, Tab.PrevLine, Tab.StringDown, Tab.NextLine, -1] //TODO for custom layout -> imageToCommand()
 
                 model: images.length
 
@@ -677,16 +697,19 @@ Item {
 
                 id: thirdPanelLine
 
-                property var images: ["prev", "V", "next", "undo"]
-                property var commands: [Tab.PrevBeat, Tab.StringUp, Tab.NextBeat, Tab.Undo]
+                property var images: ["pm", "lr", "", "newBar", "p", "", "undo", "", "prev", "V", "next", ""]
+                property var commands: [Tab.PalmMute, Tab.LetRing, -1, Tab.NewBar, Tab.SetPause,
+                                        -1, Tab.Undo, -1, Tab.PrevBeat, Tab.StringUp, Tab.NextBeat, -1]
 
                 model: images.length
-
 
                 ToolButton {
                     property int idx: index
                     icon.source: "qrc:/icons/" + thirdPanelLine.images[index] + ".png"
                     onClicked: tabView.passTrackCommand(thirdPanelLine.commands[idx])
+
+                    palette.button: thirdPanelLine.images[index] !== "" ? "lightgray" : "transparent"
+                    palette.mid: thirdPanelLine.images[index] !== "" ? "lightgray" : "transparent"
                 }
             } //Repeater
         } //RowLayout - arrows
