@@ -222,7 +222,7 @@ void AConfig::checkConfig()
     addValue("colors.exceed","darkred");
     addValue("colors.curTrack","blue");
 
-    addValue("colors.selection","darkgreen");
+    addValue("colors.selection","lightgray");
 
     addValue("colors.combo.background","gray");
     addValue("colors.combo.pressed","darkgray");
