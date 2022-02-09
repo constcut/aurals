@@ -7,7 +7,7 @@
 
 
 
-namespace aural_sight {
+namespace aurals {
 
     class BarView
     {

@@ -15,10 +15,10 @@
 #include <QDebug>
 
 
-using namespace aural_sight;
+using namespace aurals;
 
 
-int aural_sight::translateDefaulColor(const std::string& confParam){
+int aurals::translateDefaulColor(const std::string& confParam){
     int numColor = -1;
     if (confParam == "black") numColor = 0;
     if (confParam == "red") numColor = 1;
@@ -41,9 +41,9 @@ int aural_sight::translateDefaulColor(const std::string& confParam){
 }
 
 
-void aural_sight::changeColor(const std::string& color, QPainter* src)
+void aurals::changeColor(const std::string& color, QPainter* src)
 {
-    int colorS = aural_sight::translateDefaulColor(color);
+    int colorS = aurals::translateDefaulColor(color);
     switch (colorS)
     {
         case 0: src->setPen(Qt::black); break;
@@ -68,7 +68,7 @@ void aural_sight::changeColor(const std::string& color, QPainter* src)
 }
 
 
-void aural_sight::drawEllipse(QColor c, QPainter *painter, int x, int y, int w, int h) {
+void aurals::drawEllipse(QColor c, QPainter *painter, int x, int y, int w, int h) {
     QBrush startBra = painter->brush();
     painter->setBrush(c);
     painter->drawEllipse(x,y,w,h);
@@ -77,7 +77,7 @@ void aural_sight::drawEllipse(QColor c, QPainter *painter, int x, int y, int w, 
 
 
 
-void aural_sight::drawEllipse(QPainter *painter, int x, int y, int w, int h) {
+void aurals::drawEllipse(QPainter *painter, int x, int y, int w, int h) {
     painter->drawEllipse(x,y,w,h);
 }
 
@@ -168,13 +168,13 @@ void TabView::paint(QPainter *painter) //Ugly function, removed all but bars, an
                break;
 
             if (i == _pTab->getCurrentTrack())
-                aural_sight::changeColor(CONF_PARAM("colors.curTrack"), painter);
+                aurals::changeColor(CONF_PARAM("colors.curTrack"), painter);
 
             painter->drawText(20, yPos,trackVal.c_str());
             painter->drawRect(7, yPos-10, 10, 10);
 
             if (i == _pTab->getCurrentTrack())
-               aural_sight::changeColor(CONF_PARAM("colors.default"), painter);
+               aurals::changeColor(CONF_PARAM("colors.default"), painter);
 
             std::uint8_t trackStat = _pTab->at(i)->getStatus();
 

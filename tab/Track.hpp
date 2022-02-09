@@ -9,7 +9,7 @@
 #include "Bar.hpp"
 
 
-namespace aural_sight {
+namespace aurals {
 
 
     class Tab;

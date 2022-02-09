@@ -3,7 +3,7 @@
 
 #include <cmath>
 
-namespace aural_sight {
+namespace aurals {
 
 
     enum WindowFunction {

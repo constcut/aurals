@@ -6,7 +6,7 @@
 #include <map>
 
 
-namespace aural_sight {
+namespace aurals {
 
 
     enum class Effect {

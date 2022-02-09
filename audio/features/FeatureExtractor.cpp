@@ -8,9 +8,9 @@
 
 #include "Yin.hpp"
 
-using namespace aural_sight;
+using namespace aurals;
 
-double aural_sight::calc_RMS(const float* data, const size_t len) {
+double aurals::calc_RMS(const float* data, const size_t len) {
     double squareAmpSum = 0.0;
     for (size_t i = 0; i < len; ++i)
         squareAmpSum += data[i] * data[i];
@@ -18,7 +18,7 @@ double aural_sight::calc_RMS(const float* data, const size_t len) {
 }
 
 
-double aural_sight::calc_dB(const float* data, const size_t len) {
+double aurals::calc_dB(const float* data, const size_t len) {
     auto rms = calc_RMS(data, len);
     if (rms == 0.0)
         return -120.0;
@@ -27,7 +27,7 @@ double aural_sight::calc_dB(const float* data, const size_t len) {
 }
 
 
-double aural_sight::calc_MidiCentsCustom(const double f0, const double tuneFreq,
+double aurals::calc_MidiCentsCustom(const double f0, const double tuneFreq,
                                       const int midiTune)
 {
     double note = 12.0 * log2(f0 / tuneFreq) + midiTune;
@@ -35,14 +35,14 @@ double aural_sight::calc_MidiCentsCustom(const double f0, const double tuneFreq,
 }
 
 
-double aural_sight::calc_MidiCents(const double f0) {
+double aurals::calc_MidiCents(const double f0) {
     const double A1Freq = 440.0; //Note A of first octave = 440Hz
     const int A1Midi = 69; //Midi note number for A of first octave = 69
     return calc_MidiCentsCustom(f0, A1Freq, A1Midi);
 }
 
 
-double aural_sight::calc_YinF0(const float* data,  const size_t len,
+double aurals::calc_YinF0(const float* data,  const size_t len,
                             const double threshold, const double sampleRate)
 {
     static YinPP yin2; //TO

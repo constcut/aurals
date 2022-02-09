@@ -26,10 +26,10 @@
 QElapsedTimer timer;
 
 
-using namespace aural_sight;
+using namespace aurals;
 
 
-int aural_sight::getTime()
+int aurals::getTime()
 {
     //QTime time;
 
@@ -260,7 +260,7 @@ bool greatCheck()
 
 
 
-bool aural_sight::greatCheckScenarioCase(uint32_t scen, uint32_t from, uint32_t to, uint32_t v)
+bool aurals::greatCheckScenarioCase(uint32_t scen, uint32_t from, uint32_t to, uint32_t v)
 {
     if (scen == 4)
         return false; //yet not in resourses
@@ -315,7 +315,7 @@ bool aural_sight::greatCheckScenarioCase(uint32_t scen, uint32_t from, uint32_t 
     return true;
 }
 
-void aural_sight::connectConfigs(AConfig& config)
+void aurals::connectConfigs(AConfig& config)
 {
     config.connectLog(&tabLog,0,"tab");
     config.connectLog(&midiLog,2,"midi");
@@ -323,6 +323,6 @@ void aural_sight::connectConfigs(AConfig& config)
 }
 
 
-bool aural_sight::testScenario() {
+bool aurals::testScenario() {
     return greatCheck();
 }

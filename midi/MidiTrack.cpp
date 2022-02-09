@@ -9,7 +9,7 @@
 
 extern bool midiLog;
 
-using namespace aural_sight;
+using namespace aurals;
 
 
 

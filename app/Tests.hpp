@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace aural_sight {
+namespace aurals {
 
     class AConfig;
 

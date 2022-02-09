@@ -5,7 +5,7 @@
 #include "Beat.hpp"
 
 
-namespace aural_sight {
+namespace aurals {
 
 
     int translateDenum(std::uint8_t den);

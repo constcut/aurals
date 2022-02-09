@@ -10,7 +10,7 @@
 #include <QVariant>
 
 
-namespace aural_sight {
+namespace aurals {
 
     class Clipboard : public QObject
     {

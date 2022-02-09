@@ -47,7 +47,7 @@
 #include <QDebug>
 
 
-using namespace aural_sight;
+using namespace aurals;
 
 
 struct chunk {

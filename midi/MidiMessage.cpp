@@ -7,7 +7,7 @@ extern bool midiLog;
 
 
 
-using namespace aural_sight;
+using namespace aurals;
 
 
 MidiMessage::MidiMessage() : _typeAndChannel(0), _param1(0), _param2(0){}

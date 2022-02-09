@@ -12,7 +12,7 @@
 
 #include "midi/MidiRender.hpp"
 
-namespace aural_sight {
+namespace aurals {
 
 
     class AudioHandler : public QObject

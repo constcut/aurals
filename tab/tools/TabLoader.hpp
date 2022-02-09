@@ -6,7 +6,7 @@
 #include "tab/Tab.hpp"
 
 
-namespace aural_sight {
+namespace aurals {
 
 
     class GTabLoader

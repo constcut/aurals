@@ -12,7 +12,7 @@
     #include "windows.h" //for lib mm
 #endif
 
-namespace aural_sight {
+namespace aurals {
 
     class MidiEngine : public QThread
     {
@@ -24,7 +24,7 @@ namespace aural_sight {
         #endif
          static bool opened;
 
-       aural_sight::MidiTrack *_toPlay;
+       aurals::MidiTrack *_toPlay;
        bool _playNotes;
        bool _emitSignal;
 
@@ -47,9 +47,9 @@ namespace aural_sight {
 
         virtual void run() override;
 
-        static void sendSignal(const aural_sight::MidiMessage &signal);
+        static void sendSignal(const aurals::MidiMessage &signal);
         static void sendSignalShort(const uint8_t status, const int uint8_t1=-1, const int uint8_t2=-1);
-        static void sendSignalLong(const aural_sight::MidiMessage &signal);
+        static void sendSignalLong(const aurals::MidiMessage &signal);
 
         static void sendSignalShortDelay(const int msdelay, const uint8_t status,
                                          const int uint8_t1=-1, const int uint8_t2=-1);

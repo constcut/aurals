@@ -7,7 +7,7 @@
 #include "app/Config.hpp"
 
 
-using namespace aural_sight;
+using namespace aurals;
 
 
 void TrackView::setFromTab(QObject* pa, int trackIdx) {

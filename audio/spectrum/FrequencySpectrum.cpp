@@ -40,7 +40,7 @@
 
 #include "FrequencySpectrum.hpp"
 
-using namespace aural_sight;
+using namespace aurals;
 
 FrequencySpectrum::FrequencySpectrum(int numPoints)
     :   _elements(numPoints)

@@ -3,12 +3,12 @@
 #include <iostream>
 #include <QDebug>
 
-using namespace aural_sight;
+using namespace aurals;
 
 bool barLog = false;
 
 
-int aural_sight::translateDenum(std::uint8_t den)
+int aurals::translateDenum(std::uint8_t den)
 {
     switch (den)
     {
@@ -24,7 +24,7 @@ int aural_sight::translateDenum(std::uint8_t den)
 }
 
 
-int aural_sight::translaeDuration(std::uint8_t dur)
+int aurals::translaeDuration(std::uint8_t dur)
 {
     switch (dur)
     {
@@ -40,7 +40,7 @@ int aural_sight::translaeDuration(std::uint8_t dur)
 }
 
 
-int aural_sight::updateDurationWithDetail(std::uint8_t detail, int base)
+int aurals::updateDurationWithDetail(std::uint8_t detail, int base)
 {
     int result = base;
 

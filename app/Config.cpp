@@ -6,10 +6,10 @@
 #include <iostream>
 
 
-using namespace aural_sight;
+using namespace aurals;
 
 
-void aural_sight::initGlobals()
+void aurals::initGlobals()
 {
     AConfig& conf = AConfig::getInst();
 
@@ -40,7 +40,7 @@ void aural_sight::initGlobals()
 }
 
 
-void aural_sight::setTestLocation(std::string newTL)
+void aurals::setTestLocation(std::string newTL)
 {
     std::string invertedLocation="";
 

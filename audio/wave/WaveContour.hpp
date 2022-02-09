@@ -3,7 +3,7 @@
 
 #include <QAudioFormat>
 
-namespace aural_sight {
+namespace aurals {
 
     class WaveContour  {
 

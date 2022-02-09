@@ -4,7 +4,7 @@
 #include <vector>
 #include <cinttypes>
 
-namespace aural_sight {
+namespace aurals {
 
 
     struct SingleChange {

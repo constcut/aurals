@@ -14,7 +14,7 @@
 #include "tab/tools/MidiExport.hpp"
 
 
-using namespace aural_sight;
+using namespace aurals;
 
 
 AudioHandler::AudioHandler() {

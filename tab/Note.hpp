@@ -7,7 +7,7 @@
 #include "Effects.hpp"
 
 
-namespace aural_sight {
+namespace aurals {
 
 
     class Beat;

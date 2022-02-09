@@ -4,7 +4,7 @@
 
 #include "AudioHandler.hpp"
 
-using namespace aural_sight;
+using namespace aurals;
 
 AudioReceiver::AudioReceiver(const QAudioFormat& format, QObject *parent, QByteArray& commonBufer)
     :   QIODevice(parent)

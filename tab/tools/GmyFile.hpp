@@ -3,7 +3,7 @@
 
 #include "../Tab.hpp"
 
-namespace aural_sight {
+namespace aurals {
 
     class GmyFile
     {

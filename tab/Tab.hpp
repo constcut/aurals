@@ -11,7 +11,7 @@
 #include "Track.hpp"
 
 
-namespace aural_sight {
+namespace aurals {
 
     int updateDurationWithDetail(std::uint8_t detail, int base);
 

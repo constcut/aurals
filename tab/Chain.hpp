@@ -5,7 +5,7 @@
 #include <memory>
 
 
-namespace aural_sight {
+namespace aurals {
 
 
     template <typename Child, typename Parent> class ChainContainer

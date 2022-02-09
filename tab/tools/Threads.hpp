@@ -7,7 +7,7 @@
 #include <QThread>
 
 
-namespace aural_sight {
+namespace aurals {
 
 
     class Tab;

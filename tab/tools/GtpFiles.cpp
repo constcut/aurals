@@ -4,7 +4,7 @@
 #include <fstream>
 
 
-using namespace aural_sight;
+using namespace aurals;
 
 
 bool gtpLog = false;

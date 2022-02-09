@@ -4,7 +4,7 @@
 #include "audio/features/WindowFunction.hpp"
 
 
-using namespace aural_sight;
+using namespace aurals;
 
 
 bool ACGraphQML::loadByteArray(QByteArray analyseData) {

@@ -3,7 +3,7 @@
 #include "midi/MidiFile.hpp"
 #include "tab/Tab.hpp"
 
-namespace aural_sight {
+namespace aurals {
 
     std::unique_ptr<MidiFile> exportMidi(Tab* tab, size_t shiftTheCursor=0);
     void exportTrack(Track* track, MidiTrack* midiTrack, size_t channel, size_t shiftCursorBar);

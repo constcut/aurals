@@ -8,7 +8,7 @@
 
 #include "app/log.hpp"
 
-namespace aural_sight {
+namespace aurals {
 
     class LogHandler : public QObject
     {

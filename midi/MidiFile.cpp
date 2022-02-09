@@ -4,7 +4,7 @@
 
 #include "MidiUtils.hpp"
 
-using namespace aural_sight;
+using namespace aurals;
 
 bool midiLog = false;
 

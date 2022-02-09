@@ -6,7 +6,7 @@
 #include "libs/sf/tml.h"
 
 
-using namespace aural_sight;
+using namespace aurals;
 
 
 MidiRender::MidiRender()

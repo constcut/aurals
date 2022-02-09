@@ -8,7 +8,7 @@
 #include <complex>
 
 
-using namespace aural_sight;
+using namespace aurals;
 
 
 void YinPP::calcBasicACF(const float* buffer) {

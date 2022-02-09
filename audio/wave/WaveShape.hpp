@@ -51,7 +51,7 @@
 
 #include "WaveContour.hpp"
 
-namespace aural_sight {
+namespace aurals {
 
 
     class WaveshapePainter  {

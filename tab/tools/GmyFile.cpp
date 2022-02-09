@@ -5,7 +5,7 @@
 #include <QDebug>
 
 
-using namespace aural_sight;
+using namespace aurals;
 
 
 bool logFlag = false;

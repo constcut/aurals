@@ -7,7 +7,7 @@
 #include "tab/tools/GtpFiles.hpp"
 
 
-using namespace aural_sight;
+using namespace aurals;
 
 
 bool GTabLoader::open(std::string fileName)

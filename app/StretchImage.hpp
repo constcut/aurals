@@ -5,7 +5,7 @@
 #include <QPainter>
 #include <QVariant>
 
-namespace aural_sight {
+namespace aurals {
 
     class StretchImageQML: public QQuickPaintedItem
     {

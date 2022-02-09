@@ -5,7 +5,7 @@
 #include <list>
 #include <string>
 
-namespace aural_sight {
+namespace aurals {
 
     struct MidiChannelInfo
     {

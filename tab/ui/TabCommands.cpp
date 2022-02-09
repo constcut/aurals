@@ -21,7 +21,7 @@
 
 
 
-using namespace aural_sight;
+using namespace aurals;
 
 
 void changeBarSignsQt(Track* pTrack) {

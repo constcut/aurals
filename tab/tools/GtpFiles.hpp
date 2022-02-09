@@ -4,7 +4,7 @@
 #include "../Tab.hpp"
 
 
-namespace aural_sight {
+namespace aurals {
 
 
     void readBend(std::ifstream *file, BendPoints *bend);

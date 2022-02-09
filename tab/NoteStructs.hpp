@@ -5,7 +5,7 @@
 #include <cstdint>
 
 
-namespace aural_sight {
+namespace aurals {
 
 
     struct BendPointGPOld

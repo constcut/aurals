@@ -11,7 +11,7 @@
 #define min_DEF(a,b) a>b ? b:a;
 #define max_DEF(a,b) a>b ? a:b;
 
-using namespace aural_sight;
+using namespace aurals;
 
 
 #ifdef WIN32
@@ -200,7 +200,7 @@ void MidiEngine::playTrack(MidiTrack &track)
         init();
 
     for (size_t i = 0; i < track.size(); ++i) {
-        aural_sight::MidiMessage& sig = track[i];
+        aurals::MidiMessage& sig = track[i];
 
         unsigned absValue = 10;
         //ul waitTime = absValue
@@ -222,7 +222,7 @@ void MidiEngine::run()
 
     for (size_t i = 0; i < _toPlay->size(); ++i)
     {
-       aural_sight::MidiMessage& sig = _toPlay->operator [](i);
+       aurals::MidiMessage& sig = _toPlay->operator [](i);
 
         double toWaitSeconds = sig.getSecondsLength();
         quint32 toWaitMs = toWaitSeconds*1000.0;

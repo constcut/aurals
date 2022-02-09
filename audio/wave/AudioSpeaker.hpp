@@ -5,7 +5,7 @@
 #include <QAudioFormat>
 
 
-namespace aural_sight {
+namespace aurals {
 
     class AudioSpeaker : public QIODevice
     {

@@ -3,7 +3,7 @@
 
 #include <QDirIterator>
 
-using namespace aural_sight;
+using namespace aurals;
 
 auto addToMap = [](auto& container, auto value) {
     if (container.count(value))

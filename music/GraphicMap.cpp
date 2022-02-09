@@ -2,7 +2,7 @@
 
 #include <QPainter>
 
-using namespace aural_sight;
+using namespace aurals;
 
 
 int GraphicMap::getAssociation(const int x, const int y) const{

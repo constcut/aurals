@@ -6,7 +6,7 @@
 
 #include <QObject>
 
-namespace aural_sight {
+namespace aurals {
 
     using moment = std::chrono::time_point<std::chrono::high_resolution_clock>;
 

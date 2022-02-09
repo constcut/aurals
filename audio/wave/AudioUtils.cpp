@@ -41,14 +41,14 @@
 #include <QAudioFormat>
 #include "AudioUtils.hpp"
 
-using namespace aural_sight;
+using namespace aurals;
 
-qint64 aural_sight::audioDuration(const QAudioFormat &format, const qint64 bytes) {
+qint64 aurals::audioDuration(const QAudioFormat &format, const qint64 bytes) {
     return (bytes * 1000000) /
         (format.sampleRate() * format.channelCount() * (format.sampleSize() / 8));
 }
 
-qint64 aural_sight::audioLength(const QAudioFormat &format, const qint64 microSeconds) {
+qint64 aurals::audioLength(const QAudioFormat &format, const qint64 microSeconds) {
    qint64 result = (format.sampleRate() * format.channelCount() * (format.sampleSize() / 8))
        * microSeconds / 1000000;
    result -= result % (format.channelCount() * format.sampleSize());
@@ -56,7 +56,7 @@ qint64 aural_sight::audioLength(const QAudioFormat &format, const qint64 microSe
 }
 
 
-QString aural_sight::formatToString(const QAudioFormat &format) {
+QString aurals::formatToString(const QAudioFormat &format) {
     QString result;
 
     if (QAudioFormat() != format) {
@@ -103,13 +103,13 @@ QString aural_sight::formatToString(const QAudioFormat &format) {
 }
 
 
-bool aural_sight::isPCM(const QAudioFormat &format) {
+bool aurals::isPCM(const QAudioFormat &format) {
     return (format.codec() == "audio/pcm");
 }
 
 
-bool aural_sight::isPCMS16LE(const QAudioFormat &format) {
-    return aural_sight::isPCM(format) &&
+bool aurals::isPCMS16LE(const QAudioFormat &format) {
+    return aurals::isPCM(format) &&
            format.sampleType() == QAudioFormat::SignedInt &&
            format.sampleSize() == 16 &&
            format.byteOrder() == QAudioFormat::LittleEndian;
@@ -118,10 +118,10 @@ bool aural_sight::isPCMS16LE(const QAudioFormat &format) {
 const qint16  PCMS16MaxValue     =  32767;
 const quint16 PCMS16MaxAmplitude =  32768; // because minimum is -32768
 
-qreal aural_sight::pcmToReal(const qint16 pcm) {
+qreal aurals::pcmToReal(const qint16 pcm) {
     return qreal(pcm) / PCMS16MaxAmplitude;
 }
 
-qint16 aural_sight::realToPcm(const qreal real) {
+qint16 aurals::realToPcm(const qreal real) {
     return real * PCMS16MaxValue;
 }

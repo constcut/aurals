@@ -6,7 +6,7 @@
 bool trackLog = false;
 
 
-using namespace aural_sight;
+using namespace aurals;
 
 
 

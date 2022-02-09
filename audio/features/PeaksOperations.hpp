@@ -10,7 +10,7 @@
 #include <cmath>
 #include <unordered_map>
 
-namespace aural_sight {
+namespace aurals {
 
 
     template <class T>

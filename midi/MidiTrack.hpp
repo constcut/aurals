@@ -7,7 +7,7 @@
 #include <fstream>
 
 
-namespace aural_sight {
+namespace aurals {
 
 
     class MidiTrack : public std::vector<MidiMessage> {

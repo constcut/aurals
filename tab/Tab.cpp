@@ -9,7 +9,7 @@
 
 bool tabLog = false;
 
-using namespace aural_sight;
+using namespace aurals;
 
 
 void Tab::connectTracks(){

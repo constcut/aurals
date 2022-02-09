@@ -8,7 +8,7 @@
 #include "MidiTrack.hpp"
 
 
-namespace aural_sight {
+namespace aurals {
 
     class MidiFile : public std::vector<MidiTrack> {
 

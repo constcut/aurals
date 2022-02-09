@@ -7,7 +7,7 @@ extern bool midiLog;
 
 
 
-using namespace aural_sight;
+using namespace aurals;
 
 NBytesInt::NBytesInt(uint32_t source) {
     if (source == 0) {

@@ -51,7 +51,7 @@
 #include "libs/filters/Iir.h"
 
 
-using namespace aural_sight;
+using namespace aurals;
 
 
 SpectrumAnalyserThread::SpectrumAnalyserThread(QObject *parent)
@@ -69,8 +69,8 @@ SpectrumAnalyserThread::SpectrumAnalyserThread(QObject *parent)
 
 
 void SpectrumAnalyserThread::setWindowFunction(int idx) {
-    if (_windowFunction != static_cast<aural_sight::WindowFunction>(idx)) {
-        _windowFunction = static_cast<aural_sight::WindowFunction>(idx);
+    if (_windowFunction != static_cast<aurals::WindowFunction>(idx)) {
+        _windowFunction = static_cast<aurals::WindowFunction>(idx);
         calculateWindow();
     }
 }
@@ -219,8 +219,8 @@ SpectrumAnalyser::SpectrumAnalyser(QObject *parent)
     ,   _thread(new SpectrumAnalyserThread(this))
     ,   _state(Idle)
 {
-    CHECKED_CONNECT(_thread, SIGNAL(calculationComplete(aural_sight::FrequencySpectrum)),
-                    this, SLOT(calculationComplete(aural_sight::FrequencySpectrum)));
+    CHECKED_CONNECT(_thread, SIGNAL(calculationComplete(aurals::FrequencySpectrum)),
+                    this, SLOT(calculationComplete(aurals::FrequencySpectrum)));
 }
 
 
@@ -286,7 +286,7 @@ void SpectrumAnalyser::cancelCalculation() {
 }
 
 
-void SpectrumAnalyser::calculationComplete(const aural_sight::FrequencySpectrum &spectrum)
+void SpectrumAnalyser::calculationComplete(const aurals::FrequencySpectrum &spectrum)
 {
     Q_ASSERT(Idle != _state);
     if (Busy == _state)

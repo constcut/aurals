@@ -12,7 +12,7 @@
 #include "audio/features/WindowFunction.hpp"
 
 
-namespace aural_sight {
+namespace aurals {
 
 
 

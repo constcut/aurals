@@ -4,7 +4,7 @@
 #include <cstdint>
 #include "Bar.hpp"
 
-namespace aural_sight {
+namespace aurals {
 
     class GuitarTuning {
         std::uint8_t stringsAmount;

@@ -14,7 +14,7 @@
 #include "app/AndroidTools.hpp"
 
 
-namespace aural_sight {
+namespace aurals {
 
 
     //refact функции в отдельный хэдер

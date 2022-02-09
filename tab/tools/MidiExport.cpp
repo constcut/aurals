@@ -6,10 +6,10 @@ bool midiExportLog = false;
 #include <QDebug>
 
 
-using namespace aural_sight;
+using namespace aurals;
 
 
-std::unique_ptr<MidiFile> aural_sight::exportMidi(Tab* tab, size_t shiftTheCursor) {
+std::unique_ptr<MidiFile> aurals::exportMidi(Tab* tab, size_t shiftTheCursor) {
     auto output = std::make_unique<MidiFile>();
     //time line track
     {
@@ -158,7 +158,7 @@ std::unique_ptr<MidiFile> aural_sight::exportMidi(Tab* tab, size_t shiftTheCurso
 
 
 
-void aural_sight::exportTrack(Track* track, MidiTrack* midiTrack, size_t channel, size_t shiftCursorBar) {
+void aurals::exportTrack(Track* track, MidiTrack* midiTrack, size_t channel, size_t shiftCursorBar) {
 
     size_t instrument = track->getInstrument();
     std::uint8_t midiPan = midiTrack->calcMidiPanoramFromTab(track->getPan());
@@ -217,7 +217,7 @@ void aural_sight::exportTrack(Track* track, MidiTrack* midiTrack, size_t channel
 }
 
 
-void aural_sight::exportBeat(Beat* beat, MidiTrack* midiTrack, size_t channel, short specialRhy) {
+void aurals::exportBeat(Beat* beat, MidiTrack* midiTrack, size_t channel, short specialRhy) {
 
     uint8_t dur = beat->getDuration();
     uint8_t det = beat->getDurationDetail();
@@ -332,7 +332,7 @@ void aural_sight::exportBeat(Beat* beat, MidiTrack* midiTrack, size_t channel, s
 
 
 
-bool aural_sight::exportSingalsFromNoteOn(Note* note, MidiTrack* midiTrack, std::uint8_t channel) {
+bool aurals::exportSingalsFromNoteOn(Note* note, MidiTrack* midiTrack, std::uint8_t channel) {
     std::uint8_t noteState = note->getState();
 
     if ((noteState==Note::leegNote) || (noteState==Note::leegedLeeg))
@@ -388,7 +388,7 @@ bool aural_sight::exportSingalsFromNoteOn(Note* note, MidiTrack* midiTrack, std:
 
 
 
-bool aural_sight::exportSingalsFromNoteOff(Note* note, MidiTrack* midiTrack, std::uint8_t channel) {
+bool aurals::exportSingalsFromNoteOff(Note* note, MidiTrack* midiTrack, std::uint8_t channel) {
 
     if (note->getEffects().getEffectAt(Effect::LetRing))
         return false;
@@ -421,7 +421,7 @@ bool aural_sight::exportSingalsFromNoteOff(Note* note, MidiTrack* midiTrack, std
 }
 
 
-void aural_sight::exportPostEffect(Beat* beat, MidiTrack* midiTrack, std::uint8_t channel) {
+void aurals::exportPostEffect(Beat* beat, MidiTrack* midiTrack, std::uint8_t channel) {
 
     for (size_t i =0; i < beat->size(); ++i)
     {
@@ -519,7 +519,7 @@ void aural_sight::exportPostEffect(Beat* beat, MidiTrack* midiTrack, std::uint8_
 
 
 
-void aural_sight::pushBendToTrack(BendPoints* bend, MidiTrack* midiTrack, std::uint8_t channel) {
+void aurals::pushBendToTrack(BendPoints* bend, MidiTrack* midiTrack, std::uint8_t channel) {
     short rOffset = midiTrack->getAccum();
     midiTrack->flushAccum();
 

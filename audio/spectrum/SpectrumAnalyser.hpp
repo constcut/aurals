@@ -59,7 +59,7 @@ class FFTRealWrapper;
 class SpectrumAnalyserThreadPrivate;
 
 
-namespace aural_sight {
+namespace aurals {
 
     class SpectrumAnalyserThread : public QObject {
         Q_OBJECT
@@ -84,7 +84,7 @@ namespace aural_sight {
        void calculateSpectrumFloat(const QByteArray &buffer);
 
     signals:
-        void calculationComplete(const aural_sight::FrequencySpectrum &spectrum);
+        void calculationComplete(const aurals::FrequencySpectrum &spectrum);
 
     private:
         void calculateWindow();
@@ -94,7 +94,7 @@ namespace aural_sight {
 
         std::unique_ptr<FFTReal> _fft;
         int _numSamples;
-        aural_sight::WindowFunction _windowFunction;
+        aurals::WindowFunction _windowFunction;
         bool _halfCut = false;
 
         int _filterIdx = -1;
@@ -139,10 +139,10 @@ namespace aural_sight {
         void setFilter(int idx, double freq) { _thread->setFilter(idx, freq); }
 
     signals:
-        void spectrumChanged(const aural_sight::FrequencySpectrum &spectrum);
+        void spectrumChanged(const aurals::FrequencySpectrum &spectrum);
 
     private slots:
-        void calculationComplete(const aural_sight::FrequencySpectrum &spectrum);
+        void calculationComplete(const aurals::FrequencySpectrum &spectrum);
 
     private:
         void calculateWindow();

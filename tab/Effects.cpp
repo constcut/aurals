@@ -2,7 +2,7 @@
 //.....................Effects.........................................
 
 
-using namespace aural_sight;
+using namespace aurals;
 
 ABitArray::ABitArray():bits(0) {}
 

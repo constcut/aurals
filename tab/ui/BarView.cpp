@@ -3,7 +3,7 @@
 
 #include "app/Config.hpp"
 
-using namespace aural_sight;
+using namespace aurals;
 
 
 ///////////Bars------------------------------

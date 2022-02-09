@@ -17,7 +17,7 @@
 
 
 
-namespace aural_sight {
+namespace aurals {
 
 
     enum CommandPack { //Типы комманд

@@ -16,7 +16,7 @@
 
 
 
-using namespace aural_sight;
+using namespace aurals;
 
 
 WaveContour::WaveContour(QString filename) {
@@ -78,10 +78,10 @@ void WaveContour::calculateRms() {
     calcRms(8.0, _8RmsLine);
 
     std::vector<double> stdRms(_rmsLine.begin(), _rmsLine.end());
-    _rmsHigh = aural_sight::peakIndexes<double>(stdRms, _peakSensetivity);
+    _rmsHigh = aurals::peakIndexes<double>(stdRms, _peakSensetivity);
     for (auto& s: stdRms)
         s *= -1;
-    _rmsLow = aural_sight::peakIndexes<double>(stdRms, _peakSensetivity);
+    _rmsLow = aurals::peakIndexes<double>(stdRms, _peakSensetivity);
 }
 
 

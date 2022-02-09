@@ -11,7 +11,7 @@
 #include "tab/tools/Threads.hpp"
 
 
-namespace aural_sight {
+namespace aurals {
 
     class TabView;
     using ViewPull = std::vector<BarView>;

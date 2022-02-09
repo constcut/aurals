@@ -1,6 +1,6 @@
 #include "LogHandler.hpp"
 
-using namespace aural_sight;
+using namespace aurals;
 
 LogHandler& LogHandler::getInstance() {
     static LogHandler handler;

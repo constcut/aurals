@@ -9,7 +9,7 @@
 
 
 
-namespace aural_sight {
+namespace aurals {
 
 
     void setTestLocation(std::string newTL);

@@ -5,7 +5,7 @@
 #include <utility>
 
 
-namespace aural_sight {
+namespace aurals {
 
     double calc_RMS(const float* data, const size_t len);
     double calc_dB(const float* data, const size_t len);

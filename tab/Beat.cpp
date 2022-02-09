@@ -2,7 +2,7 @@
 #include <iostream>
 
 
-using namespace aural_sight;
+using namespace aurals;
 
 
 void BendPoints::insertNewPoint(BendPoint bendPoint)

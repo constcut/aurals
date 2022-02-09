@@ -43,7 +43,7 @@
 
 
 using namespace std;
-using namespace aural_sight;
+using namespace aurals;
 
 
 void checkMidiRegression() {
@@ -52,7 +52,7 @@ void checkMidiRegression() {
                                  "test4.mid", "test5.mid", "test6.mid"};
 
     for (auto& filename: filesToCheck) {
-        aural_sight::MidiFile m;
+        aurals::MidiFile m;
         m.readFromFile(filename.toStdString());
 
         auto resavedFilename = "re_" + filename;
@@ -296,7 +296,7 @@ void copyResourcesIntoTempDir() {
 int mainInit(int argc, char *argv[]) {
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    qmlRegisterType<aural_sight::ConsoleLogQML>("aurals",1,0,"ConsoleLogView");
+    qmlRegisterType<aurals::ConsoleLogQML>("aurals",1,0,"ConsoleLogView");
     //qmlRegisterType<PianoQML>("aurals",1,0,"Piano");
 
     QApplication app(argc, argv);
@@ -323,18 +323,18 @@ int mainInit(int argc, char *argv[]) {
 
     AConfig::getInst().checkConfig();
 
-    qmlRegisterType<aural_sight::WaveshapeQML>("aurals", 1, 0, "Waveshape");
-    qmlRegisterType<aural_sight::SpectrographQML>("aurals", 1, 0,"Spectrograph");
-    qmlRegisterType<aural_sight::Tapper>("aurals", 1, 0,"Tapper");
-    qmlRegisterType<aural_sight::ACGraphQML>("aurals", 1, 0,"ACgraph");
-    qmlRegisterType<aural_sight::StretchImageQML>("aurals", 1, 0,"StretchImage");
-    qmlRegisterType<aural_sight::CepstrumgraphQML>("aurals", 1, 0,"Cepstrumgraph");
+    qmlRegisterType<aurals::WaveshapeQML>("aurals", 1, 0, "Waveshape");
+    qmlRegisterType<aurals::SpectrographQML>("aurals", 1, 0,"Spectrograph");
+    qmlRegisterType<aurals::Tapper>("aurals", 1, 0,"Tapper");
+    qmlRegisterType<aurals::ACGraphQML>("aurals", 1, 0,"ACgraph");
+    qmlRegisterType<aurals::StretchImageQML>("aurals", 1, 0,"StretchImage");
+    qmlRegisterType<aurals::CepstrumgraphQML>("aurals", 1, 0,"Cepstrumgraph");
 
-    qmlRegisterType<aural_sight::TabView>("aurals", 1, 0, "TabView");
-    qmlRegisterType<aural_sight::TrackView>("aurals", 1, 0, "TrackView");
-    //qmlRegisterType<aural_sight::BarView>("aurals", 1, 0, "BarView");
+    qmlRegisterType<aurals::TabView>("aurals", 1, 0, "TabView");
+    qmlRegisterType<aurals::TrackView>("aurals", 1, 0, "TrackView");
+    //qmlRegisterType<aurals::BarView>("aurals", 1, 0, "BarView");
 
-    qmlRegisterUncreatableMetaObject(aural_sight::staticMetaObject,
+    qmlRegisterUncreatableMetaObject(aurals::staticMetaObject,
         "aurals", 1, 0, "Tab", "Error: object creation for enum not supported");
 
     QDir dir;
@@ -351,7 +351,7 @@ int mainInit(int argc, char *argv[]) {
 
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("Windows-1251")); //Настройки //KOI8-R //ISO 8859-5 //UTF-8 //Windows-1251
     QQmlApplicationEngine engine;
-    aural_sight::AudioHandler audio;
+    aurals::AudioHandler audio;
     engine.rootContext()->setContextProperty("audio", &audio);
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
     if (engine.rootObjects().isEmpty())

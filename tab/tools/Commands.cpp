@@ -5,7 +5,7 @@
 
 #include <QDebug>
 
-using namespace aural_sight;
+using namespace aurals;
 
 
 
@@ -156,14 +156,14 @@ std::ifstream& operator>>(std::ifstream& is, MacroCommand& macro) {
 }
 
 
-void aural_sight::saveMacroComannds(const std::vector<MacroCommand>& commands, std::ofstream& os) {
+void aurals::saveMacroComannds(const std::vector<MacroCommand>& commands, std::ofstream& os) {
 
     for (const auto& command: commands)
         std::visit([&os](const auto& command){ os << command; }, command);
 }
 
 
-std::vector<MacroCommand> aural_sight::loadMacroCommands(std::ifstream& is) {
+std::vector<MacroCommand> aurals::loadMacroCommands(std::ifstream& is) {
     std::vector<MacroCommand> commands;
     while (is.eof() == false) {
         MacroCommand macro;

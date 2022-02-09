@@ -5,7 +5,7 @@
 #include "libs/cqt/dsp/FFT.h"
 
 
-using namespace aural_sight;
+using namespace aurals;
 
 
 bool CepstrumgraphQML::loadByteArray(QByteArray analyseData) {

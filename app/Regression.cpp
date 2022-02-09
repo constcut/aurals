@@ -15,10 +15,10 @@
 #include "app/Config.hpp"
 
 
-using namespace aural_sight;
+using namespace aurals;
 
 
-bool aural_sight::checkHasRegression() {
+bool aurals::checkHasRegression() {
 
     std::unordered_map<size_t, size_t> groupLength = {
         {1, 12},
@@ -260,7 +260,7 @@ void macroTrackTest3() {
 #include <QtGlobal>
 
 
-void aural_sight::runRegressionTests() {
+void aurals::runRegressionTests() {
     //greatCheckScenarioCase(1, 1, 12, 4);
     //greatCheckScenarioCase(2, 1, 38, 4);
     if (checkHasRegression()) {
@@ -286,7 +286,7 @@ void aural_sight::runRegressionTests() {
 
 
 
-bool aural_sight::checkMidiIORegression() {
+bool aurals::checkMidiIORegression() {
 
     bool fine = true;
 

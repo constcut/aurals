@@ -2,7 +2,7 @@
 #include "app/LogHandler.hpp"
 
 
-using namespace aural_sight;
+using namespace aurals;
 
 int main(int argc, char *argv[])
 {

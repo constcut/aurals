@@ -4,7 +4,7 @@
 #include <QIODevice>
 #include <QAudioFormat>
 
-namespace aural_sight {
+namespace aurals {
 
     class AudioReceiver : public QIODevice
     {

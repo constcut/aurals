@@ -15,7 +15,7 @@
 
 
 
-namespace aural_sight {
+namespace aurals {
 
 
     class BaseStatistics {

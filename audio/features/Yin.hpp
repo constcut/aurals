@@ -6,7 +6,7 @@
 // YIN monophonic pitch detection algorithm (http://audition.ens.fr/adc/pdf/2002_JASA_YIN.pdf).
 
 
-namespace aural_sight {
+namespace aurals {
 
     //Delayed template with check is float + is_same
     class YinPP {

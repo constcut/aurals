@@ -3,7 +3,7 @@
 
 
 
-namespace aural_sight {
+namespace aurals {
 
 
     bool checkHasRegression();

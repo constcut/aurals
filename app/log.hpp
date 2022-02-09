@@ -5,7 +5,7 @@
 #include <QDebug>
 #include <QString>
 
-namespace aural_sight {
+namespace aurals {
     inline bool enableMidiLog = false;
     //DELAYED: разные варианты логирования + возможность включить их в настройках
 }

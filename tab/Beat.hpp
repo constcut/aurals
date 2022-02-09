@@ -10,7 +10,7 @@
 #include "Note.hpp"
 
 
-namespace aural_sight {
+namespace aurals {
 
 
     class Bar;

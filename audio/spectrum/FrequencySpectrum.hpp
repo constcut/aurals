@@ -44,7 +44,7 @@
 
 #include <QtCore/QVector>
 
-namespace aural_sight {
+namespace aurals {
 
 
     class FrequencySpectrum {

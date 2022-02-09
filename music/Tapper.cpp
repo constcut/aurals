@@ -4,7 +4,7 @@
 
 #include "midi/MidiFile.hpp"
 
-using namespace aural_sight;
+using namespace aurals;
 using namespace std;
 
 

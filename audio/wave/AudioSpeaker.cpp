@@ -5,7 +5,7 @@
 
 #include "AudioHandler.hpp"
 
-using namespace aural_sight;
+using namespace aurals;
 
 AudioSpeaker::AudioSpeaker(const QAudioFormat &format, QObject *parent, QByteArray& commonBufer)
     :   QIODevice(parent)
