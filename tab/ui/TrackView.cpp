@@ -366,6 +366,13 @@ void TrackView::applySelection(BarView& barView, int idx) {
 
 }
 
+void TrackView::dropSelection() {
+    _pTrack->selectBarFirst() = -1;
+    _pTrack->selectBeatFirst() = -1;
+    _pTrack->selectBeatLast() = -1;
+    _pTrack->selectBarLast() = -1;
+}
+
 
 void TrackView::paintByLines(QPainter* painter) {
 

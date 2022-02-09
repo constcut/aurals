@@ -50,6 +50,7 @@ namespace aural_sight {
 
         Q_INVOKABLE void onclick(int x1, int y1);
         Q_INVOKABLE void onSelection(int x1, int y1);
+        Q_INVOKABLE void dropSelection();
 
         void setDisplayBar(int barPosition);
 
