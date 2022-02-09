@@ -160,7 +160,7 @@ void BarView::drawNote(QPainter *painter, std::uint8_t noteDur, std::uint8_t dot
     int xPoint = x1;
     int yPoint = y1;
 
-    int mainRadius = 5; //ВСЕ КОНСТАНТЫ ВЫНЕСТИ В КОНФИГУРАЦИЮ, ПОЗВОЛИТЬ НАСТРАИВАТЬ
+    int mainRadius = 5; //ВСЕ КОНСТАНТЫ ВЫНЕСТИ В КОНФИГУРАЦИЮ, ПОЗВОЛИТЬ НАСТРАИВАТЬ refactoring
     int radiusShift = 0;
     int note32 = 4;
     int note16 = 6;
