@@ -188,43 +188,34 @@ void AConfig::printValues() const
 
 void AConfig::checkConfig()
 {
-    addValue("TabView.genAMusic","g");
-    addValue("TabView.genMidi","h");
     addValue("TrackView.nextBeat",">>>");
     addValue("TrackView.prevBeat","<<<");
     addValue("TrackView.nextBar","x");
     addValue("TrackView.prevBar","z");
     addValue("TrackView.stringUp","^^^");
     addValue("TrackView.stringDown","vvv");
-    addValue("TrackView.playAMusic","spc");
-    addValue("TrackView.playMidi","ent");
+    //Add TabView.play -> space
 
     addValue("TrackView.setPause","P"); //capital letters for qt default qml codes
     addValue("TrackView.deleteNote","del");
     addValue("TrackView.increaceDuration","Q");
     addValue("TrackView.decreaceDuration","W");
 
-    //TODO get rid of useless
-    addValue("TrackView.save","s");
-    addValue("TrackView.quickOpen","y");
     addValue("Main.open","open");
-
 
     addValue("colors.background","white");
     addValue("colors.panBG","gray");
 
     addValue("colors.default","black");
-
     addValue("colors.curBar","black");
     addValue("colors.curBeat","red");
     addValue("colors.curString","lightgray");
 
     addValue("colors.exceed","darkred");
     addValue("colors.curTrack","blue");
-
     addValue("colors.selection","lightgray");
 
-    addValue("colors.combo.background","gray");
+    addValue("colors.combo.background","gray"); //Reserved for future use
     addValue("colors.combo.pressed","darkgray");
     addValue("colors.combo.focus","white");
     addValue("colors.combo.hover","darkblue");
@@ -232,7 +223,6 @@ void AConfig::checkConfig()
     addValue("colors.button.pressed","darkgray");
     addValue("colors.button.focus","white");
     addValue("colors.button.hover","darkblue");
-
     addValue("colors.button.bgspecial","darkgray");
 
     addValue("effects.vibrato","vib");
@@ -249,55 +239,28 @@ void AConfig::checkConfig()
     addValue("TrackView.alwaysShowBarSign","0");
 
     addValue("gestures","classic");
-
     addValue("TrackView.largeNotes","1");
-
     addValue("fullscreen","1");
 
-    //bottom
-    addValue("toolBar","0");   //top bottom right left 0
-    addValue("mainMenu","0");    //0 or else
-    addValue("pannels","oneline");//tabbed docked classic(cutten yet) oneline
-
-    addValue("invertImages","0");
-
-    addValue("statusBar","1");
     addValue("metronome","0");
 
-    //addValue("crashOnPlayHotFix","1"); //to remember the leak
-    //if not found sepparae buttons
-
-    addValue("logs.tab","0");
-    addValue("logs.midi","0");
-    addValue("logs.abstractmusic","0");
-    addValue("logs.ownformat","0");
-    addValue("logs.othersformats","0");
+    addValue("logs.tab","0"); //Configure
 
     addValue("images","1");
 
-    addValue ("crashAutoSend","0");
+    addValue ("crashAutoSend","0"); //implement
     addValue ("addRootCrashes","1");
-    addValue ("sdcardLogDebug","0");//debug
+    addValue ("sdcardLogDebug","0");
 
     addValue("iconsSet","1");
     addValue("turnPinchZoomOn","0");
 
-    addValue("tapAndHoldCopy","0");
-
-    addValue("skipTabView","1");
-
-    addValue("showStatusViewHint","0");
-
     addValue("upsideDownNotes","1");
     addValue("showNotesView","0");
 
-    addValue("mergeMidiTracks","0");
-
-    addValue("zend","ofconfig");
-
+    addValue("midi.config","on"); //Maybe use default engine if one would like it
     addValue("onloadBaseCheck","1");
-
-    addValue("midi.config","on");
+    addValue("zend","ofconfig");
 }
 
 

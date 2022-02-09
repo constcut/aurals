@@ -5,6 +5,6 @@ void requestAudioPermission();
 
 void requestFilesPermission();
 
-bool chechAndRequestFilesPermission(); //TODO make class that does all the job on start
+bool chechAndRequestFilesPermission();
 
 #endif // ANDROIDTOOLS_H
