@@ -678,7 +678,7 @@ Item {
 
                 ToolButton {
                     property int idx: index
-                    icon.source: "qrc:/icons/" + secondPanelLine.images[index] + ".png"
+                    icon.source: secondPanelLine.images[index] !== "" ? "qrc:/icons/" + secondPanelLine.images[index] + ".png" : ""
                     onClicked: tabView.passTrackCommand(secondPanelLine.commands[idx])
 
                     //Way to make spaces
@@ -705,7 +705,7 @@ Item {
 
                 ToolButton {
                     property int idx: index
-                    icon.source: "qrc:/icons/" + thirdPanelLine.images[index] + ".png"
+                    icon.source:  thirdPanelLine.images[index] !== "" ? "qrc:/icons/" + thirdPanelLine.images[index] + ".png" : ""
                     onClicked: tabView.passTrackCommand(thirdPanelLine.commands[idx])
 
                     palette.button: thirdPanelLine.images[index] !== "" ? "lightgray" : "transparent"
