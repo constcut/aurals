@@ -16,7 +16,7 @@ namespace aural_sight {
     private:
 
         static const int stringWidth = 12;
-        static const int inbarWidth = 20; //TODO to config
+        static const int inbarWidth = 20; //ВСЕ КОНСТАНТЫ ВЫНЕСТИ В КОНФИГУРАЦИЮ, ПОЗВОЛИТЬ НАСТРАИВАТЬ refactoring
 
         Bar* _pBar;
         int _nStrings;
@@ -90,8 +90,8 @@ namespace aural_sight {
         void paint(QPainter *painter); //from beat to beat
 
         void setShifts(int x1, int y1) {
-            _x = x1 + 20;
-            _y = y1 + 20; //TODO move this logic outside? + calculate vs magic const
+            _x = x1 + 20; //Возможно избавиться от этой странноватой логики здесь, устанавливать в TrackView x y
+            _y = y1 + 20; //ВСЕ КОНСТАНТЫ ВЫНЕСТИ В КОНФИГУРАЦИЮ, ПОЗВОЛИТЬ НАСТРАИВАТЬ refactoring
         }
 
     };

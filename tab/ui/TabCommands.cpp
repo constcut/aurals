@@ -24,9 +24,8 @@
 using namespace aural_sight;
 
 
+void changeBarSignsQt(Track* pTrack) {
 
-void changeBarSignsQt(Track* pTrack, [[maybe_unused]] int&  selectionBarFirst, [[maybe_unused]] int& selectionBarLast) {
-   //TODO возможно избавиться от аргументов
     bool ok=false;
     int newNum = QInputDialog::getInt(0,"Input",
                          "New Num:", QLineEdit::Normal,
@@ -51,7 +50,7 @@ void handleKeyInput(int digit, int& digitPress, Track* pTrack, size_t cursor, si
             int pre = digitPress;
             digitPress *= 10;
             digitPress += digit;
-            if (digitPress > pTrack->getMidiInfo(3)) { //Destoy all GPCOMP TODO
+            if (digitPress > pTrack->getMidiInfo(3)) { //TODO переписать - устанавливать число ладов вручную
                 digitPress = digit;
                 if (digit == pre)
                     return; //no changes
@@ -83,6 +82,7 @@ void handleKeyInput(int digit, int& digitPress, Track* pTrack, size_t cursor, si
         //MidiEngine::sendSignalShort(0x90|chan,midiNote,120);
         ///MidiEngine::sendSignalShortDelay(250,0x80|chan,midiNote,120);
         //MidiEngine::sendSignalShortDelay(750,0x90|chan,midiNote+2,120);
+        //ОЗВУЧИВАТЬ В РЕАЛЬНОМ ВРЕМЕНИ - генерировать короткий SF, midi file из 1 ноты
     }
 }
 
@@ -126,7 +126,7 @@ void setBarSign(Track* pTrack) {
 void TabView::onTrackCommand([[maybe_unused]] TrackCommand command) {
 
     if (_tracksView.empty())
-        return; //TODO возможно всю обработку можно сделать в TabView, а потом вовсе вывести
+        return; //возможно всю обработку можно сделать в TabView, а потом вовсе вывести
      //На текущий момент поддерживаем только 1 отображение
     _tracksView[0]->onTrackCommand(command);
 }
@@ -134,15 +134,13 @@ void TabView::onTrackCommand([[maybe_unused]] TrackCommand command) {
 
 void TrackView::onTrackCommand(TrackCommand command) {
 
-    int& selectionBarFirst = _pTrack->selectBarFirst();
-    int& selectionBarLast = _pTrack->selectBarLast();
 
     size_t barsCount = _pTrack->size();
     size_t curBar = _pTrack->cursor();  //_pTrack->getParent()->getCurrentBar(); broken a bit
     size_t currentBarSize = _pTrack->at(curBar)->size();
 
     if (command == TrackCommand::SetSignForSelected)
-      changeBarSignsQt(_pTrack, selectionBarFirst, selectionBarLast);
+      changeBarSignsQt(_pTrack);
     else if (command == TrackCommand::Text)
         setTextOnBeat(_pTrack);
     else if (command == TrackCommand::SetBarSign)
@@ -158,14 +156,14 @@ void TrackView::onTrackCommand(TrackCommand command) {
         fillBarsPool();
 
     if (currentBarSize != _pTrack->at(curBar)->size())
-        fillBarsPool(); //TODO update more clever - move only few if needed
+        fillBarsPool();
 
     update(); //TODO only on change
 }
 
 
 
-void TrackView::keyevent(std::string press) //TODO масштабные макротесты, чтобы покрывать все сценарии
+void TrackView::keyevent(std::string press) //Сделать макротесты, чтобы покрывать все сценарии
 {
     size_t& cursor = _pTrack->cursor();
     size_t& cursorBeat = _pTrack->cursorBeat();
@@ -213,10 +211,10 @@ void TabView::keyPress(int code, int mode) {
     else if (code == Qt::Key_Backspace || code == Qt::Key_Delete) {
         onTrackCommand(TrackCommand::DeleteNote);
     }
-    else if (code == CONF_PARAM("TrackView.setPause")[0]) { //TODO latter add here handler
+    else if (code == CONF_PARAM("TrackView.setPause")[0]) { //Добавить хэндлекры + обработку сочитаний
         onTrackCommand(TrackCommand::SetPause);
     }
-    else if (code == CONF_PARAM("TrackView.increaceDuration")[0]) { //Attention (no value)
+    else if (code == CONF_PARAM("TrackView.increaceDuration")[0]) { //Делать проверку что конфиг установлен?
         onTrackCommand(TrackCommand::IncDuration);
     }
     else if (code == CONF_PARAM("TrackView.decreaceDuration")[0]) {
