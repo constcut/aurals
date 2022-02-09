@@ -1,6 +1,7 @@
 #include "AudioSpeaker.hpp"
 
 #include <cstring>
+#include <QDebug>
 
 #include "AudioHandler.hpp"
 
@@ -31,10 +32,22 @@ qint64 AudioSpeaker::readData(char *data, const qint64 len)
     qint64 total = 0;
     if (!_buffer.isEmpty()) {
         while (len - total > 0) {
+
+            qDebug() << "POS " << _position;
+
+            if (_position >= _buffer.size()) {
+                memset(data, 0, len);
+                return len;
+            }
+
             const qint64 chunk = qMin((_buffer.size() - _position), len - total);
             std::memcpy(data + total, _buffer.constData() + _position, chunk);
-            _position = (_position + chunk) % _buffer.size();
+            _position = (_position + chunk); // % _buffer.size()
             total += chunk;
+
+            if (_position >= _buffer.size())
+                return total;
+
         }
     }
     return total;
