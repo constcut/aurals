@@ -337,15 +337,41 @@ void TrackView::movePrevLine() {
 }
 
 
+void TrackView::applySelection(BarView& barView, int idx) {
+
+    const int selectionBarFirst = _pTrack->selectBarFirst();
+
+    if (selectionBarFirst == -1)
+        return;
+
+    const int selectionBeatFirst = _pTrack->selectBeatFirst();
+    const int selectionBeatLast = _pTrack->selectBeatLast();
+    const int selectionBarLast = _pTrack->selectBarLast();
+
+    if (idx >= selectionBarFirst && idx <= selectionBarLast)
+    {
+        qDebug() << "Selection paint";
+        if (selectionBarLast == selectionBarFirst)
+            barView.setSelectors(selectionBeatFirst,selectionBeatLast);
+        else
+        {
+            if (selectionBarFirst == idx)
+                barView.setSelectors(selectionBeatFirst, -1);
+            else if (selectionBarLast == idx)
+                 barView.setSelectors(0, selectionBeatLast);
+            else
+                barView.setSelectors(0, -1);
+        }
+    }
+
+}
+
+
 void TrackView::paintByLines(QPainter* painter) {
 
     if (_linesIdxs.empty())
         return;
 
-    int& selectionBeatFirst = _pTrack->selectBeatFirst();
-    int& selectionBeatLast = _pTrack->selectBeatLast();
-    int& selectionBarFirst = _pTrack->selectBarFirst();
-    int& selectionBarLast = _pTrack->selectBarLast();
 
     size_t& displayIndex = _pTrack->displayIndex();
     size_t& lastSeen = _pTrack->lastSeen();
@@ -388,25 +414,7 @@ void TrackView::paintByLines(QPainter* painter) {
                 barView.flushCursor();
                 barView.flushSelectors();
 
-                //=====================selection
-
-                if (barIdx >= selectionBarFirst && barIdx <= selectionBarLast)
-                {
-                    qDebug() << "Selection paint";
-                    if (selectionBarLast == selectionBarFirst)
-                        barView.setSelectors(selectionBeatFirst,selectionBeatLast);
-                    else
-                    {
-                        if (selectionBarFirst == barIdx)
-                            barView.setSelectors(selectionBeatFirst, -1);
-                        else if (selectionBarLast == barIdx)
-                             barView.setSelectors(0, selectionBeatLast);
-                        else
-                            barView.setSelectors(0, -1);
-                    }
-                }
-
-                //===============selection
+                applySelection(barView, barIdx);
 
                 std::uint8_t barCompleteStatus = _pTrack->at(barIdx)->getCompleteStatus(); //TODO avoid recalculations
 
@@ -455,6 +463,9 @@ void TrackView::paint(QPainter *painter)
 
         if (_tabParrent->getPlaying())
             stringCursor = -1;
+
+        bView.flushSelectors();
+        applySelection(bView, cursor);
 
         bView.setCursor(cursorBeat, stringCursor + 1); //If playing - no cursor string TODO
         bView.paint(painter); //TODO paint only cursor

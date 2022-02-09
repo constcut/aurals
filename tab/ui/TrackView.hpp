@@ -75,6 +75,8 @@ namespace aural_sight {
 
         size_t getLineOfBar(size_t idx);
 
+        void applySelection(BarView& barView, int idx);
+
     public:
 
         Q_INVOKABLE int getInstrumet();
