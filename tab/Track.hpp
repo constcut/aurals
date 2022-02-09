@@ -36,15 +36,15 @@ namespace aural_sight {
     private:
 
         std::string _name;
-        size_t _instrument; //TODO enum
-        size_t _color; //TODO другой тип? (и для маркера)
+        size_t _instrument; //Enum
+        size_t _color; //Здесь другой тип
         std::uint8_t _pan;
         std::uint8_t _volume;
         bool _drums;
 
-        size_t _midiInfo[4]; //Port,Channel,ChannelE,Capo TODO structure
+        size_t _midiInfo[4]; //Port,Channel,ChannelE,Capo структуру? или пропускать?
         size_t _beatsAmount;
-        std::uint8_t _status; //0 - none 1 - mute 2 - soloe
+        std::uint8_t _status; //0 - none 1 - mute 2 - solo - enum
 
         GuitarTuning _tuning;
 
@@ -83,7 +83,7 @@ namespace aural_sight {
 
 
         void setMidiInfo(size_t index, size_t value) { _midiInfo[index] = value; }
-        size_t getMidiInfo(size_t index) { return _midiInfo[index]; } //TODO get rid
+        size_t getMidiInfo(size_t index) { return _midiInfo[index]; } //Возможно просто избавиться
 
         void setDrums(bool newDrums) {
             _drums = newDrums;
@@ -98,13 +98,13 @@ namespace aural_sight {
         const GuitarTuning& getTuning() const { return _tuning; }
         GuitarTuning& getTuningRef() { return _tuning; }
 
-    private: //TODO всё перенести в TrackCommandHandler
+    private: //всё перенести в TrackCommandHandler или TrackView и сделать friend
         size_t _cursor;
         size_t _cursorBeat;
         size_t _stringCursor;
         size_t _displayIndex;
         size_t _lastSeen;
-        int _selectCursor; //TODO to size_t
+        int _selectCursor; //Решить проблемы int может быть достаточно просто bool флага?
         int _selectionBarFirst;
         int _selectionBarLast;
         int _selectionBeatFirst;
@@ -194,7 +194,6 @@ namespace aural_sight {
 
 
         void playCommand(MacroCommand& command) {
-            //TODO Возможно тут же обрабатывать и единичную комманду?
             if (std::holds_alternative<TwoIntCommand<TrackCommand>>(command)) {
                 auto paramCommand = std::get<TwoIntCommand<TrackCommand>>(command);
                 if (twoIntHandlers.count(paramCommand.type))
@@ -214,7 +213,6 @@ namespace aural_sight {
             {TrackCommand::SelectionExpandLeft, &Track::moveSelectionLeft},
             {TrackCommand::SelectionExpandRight, &Track::moveSelectionRight},
             {TrackCommand::InsertBar, &Track::insertBar},
-            //{TrackCommand::InsertNewPause, &Track::insertNewPause}, //TODO
             {TrackCommand::NextBar, &Track::moveToNextBar},
             {TrackCommand::PrevBar, &Track::moveToPrevBar},
             {TrackCommand::NextPage, &Track::moveToNextPage},

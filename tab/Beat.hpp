@@ -66,7 +66,7 @@ namespace aural_sight {
         BendPoints* getTremoloPtr() { return &_tremolo; }
         ChangesList* getChangesPtr() { return &_changes; }
 
-        //боюс-боюс TODO
+        //Реализовать более аккуратное хранение и отображение\редактирование
         void setChordDiagram(char* area) { memcpy(&_chordDiagram, area, sizeof(_chordDiagram)); }
         bool getChordDiagram(char* to) const { memcpy(to, &_chordDiagram, sizeof(_chordDiagram)); return true; }
 

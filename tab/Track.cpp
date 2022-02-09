@@ -23,7 +23,7 @@ Track::Track() :  _pan(0), _drums(false), _status(0), _timeLoop(),
 
 
 Track& Track::operator=([[maybe_unused]]Track another) {
-    //clone(another); //TODO
+    //clone(another); //refactoring remove (Может быть нужно только для копирования?)
     return *this;
 }
 
@@ -256,8 +256,8 @@ size_t Track::connectBars()
 }
 
 
-//TODO rewrite, or even get rid from alt repeats (drop support for such and useless thing)
-size_t Track::connectTimeLoop() //in gtp only 1 bar works after reprize (alt)!//and only 1 goes fine in the en - so pretail is - the only :|
+//Возможно стоит упростить логику, или даже избавиться от альтернативных концовок
+size_t Track::connectTimeLoop()
 {
     if (size() == 0)
        return 0;

@@ -8,7 +8,7 @@ using namespace aural_sight;
 bool barLog = false;
 
 
-int aural_sight::translateDenum(std::uint8_t den) //TODO static?
+int aural_sight::translateDenum(std::uint8_t den)
 {
     switch (den)
     {

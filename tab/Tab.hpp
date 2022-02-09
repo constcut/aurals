@@ -51,7 +51,7 @@ namespace aural_sight {
         std::vector<TimeLineKnot> _timeLine;
 
         MidiChannelInfo _midiChannels[64];
-        VariableStrings _variableInforation; //TODO load for best stats
+        VariableStrings _variableInforation; //Возможно загружать и давать хранить
 
     public:
 
@@ -63,7 +63,7 @@ namespace aural_sight {
         bool playing() const { return _isPlaying; }
         void setPlaying(bool v) { _isPlaying = v; }
 
-    private: //TODO всё перенести в TabCommandHandler который будет friend
+    private: //TODO всё перенести в TabCommandHandler или TabView и сделать friend
 
         size_t _currentTrack;
         size_t _currentBar;

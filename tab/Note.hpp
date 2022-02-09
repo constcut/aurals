@@ -52,7 +52,7 @@ namespace aural_sight {
         std::uint8_t _stringNumber;
 
         Note* _prevNote;
-        Note* _nextNote; //TODO возможно шаблон от которого наследоваться prev/next/parent?
+        Note* _nextNote; //Возможно шаблон от которого наследоваться prev/next/parent? до chain
 
         ABitArray _effPack;
 

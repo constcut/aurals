@@ -38,7 +38,7 @@ void Tab::postLoading() {
 
 
 Tab &Tab::operator=([[maybe_unused]]Tab another) {
-    //lone(another); //TODO
+    //Скорее всего просто убить на рефакторинге / refactoring
     return *this;
 }
 
@@ -58,14 +58,14 @@ std::uint8_t Tab::getBPMStatusOnBar(size_t barN) const {
             if (bar->at(0)->getChangesPtr()->size())
                 ;//bar->getV(0)->changes.getV(0)->changeType;
     }
-    return 0; //TODO
+    return 0;
 }
 
 
 int Tab::getBpmOnBar([[maybe_unused]] size_t barN) const {
     [[maybe_unused]] int bpmTrace = _bpmTemp;
     for (size_t i = 0; i < _timeLine.size(); ++i){
-        //TODO
+        //TODO + выше, использовать в рассчёте анимации не с первого такта
     }
     return 0;
 }
