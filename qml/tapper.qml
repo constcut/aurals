@@ -176,4 +176,8 @@ Item {
         x: leftTap.width + 10
     }
 
+    function keyboardEventSend(key, mode) {
+        //Заглушка, но можно реализовать логику здесь
+    }
+
 }

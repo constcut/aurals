@@ -34,13 +34,13 @@ Item {
 
     FileDialog {
         id: saveFileDialog
-        title: "Save pcm file" //TODO to midi + to wav
+        title: "Save pcm file"
         folder: shortcuts.home
         selectExisting: false
         selectMultiple: false
         onAccepted: {
             var pcmName = saveFileDialog.fileUrls[0].substring(7)
-            tabView.exportMidi("temp.mid", 0) //TODO shift
+            tabView.exportMidi("temp.mid", 0)
             audio.openMidiFile("temp.mid")
 
             if (Qt.platform.os !== "android")
@@ -57,13 +57,13 @@ Item {
 
     FileDialog {
         id: saveMidiDialog
-        title: "Save midi file" //TODO to midi + to wav
+        title: "Save midi file" //Сделать позже единый диалог сохранения и вызов внешних функций в зависимости от его строкового названия property string type: value
         folder: shortcuts.home
         selectExisting: false
         selectMultiple: false
         onAccepted: {
             var midiName = saveMidiDialog.fileUrls[0].substring(7)
-            tabView.exportMidi(midiName, 0) //TODO shift
+            tabView.exportMidi(midiName, 0)
         }
         onRejected: {
             saveFileDialog.close()
@@ -149,7 +149,7 @@ Item {
             ComboBox {
                 id: instrumentCombo
                 Layout.minimumWidth: implicitIndicatorWidth
-                model : [ //TODO ui C++ item to get QList of QStings
+                model : [
                     "Acoustic Grand Piano",
                     "Bright Acoustic Piano",
                     "Electric Grand Piano",
@@ -327,7 +327,7 @@ Item {
             id: tabView
             y: trackLayout.height
             width: parent.width
-            height: parent.height + 100 //TODO calculate value + add flick for vertical
+            height: parent.height + 100
         }
         // Возможно разбить на 2 компонента, 1 заголовок треков, другой серия тактов, и второй поместить в Scroll Area
     }
@@ -355,7 +355,7 @@ Item {
 
             instrumentCombo.currentIndex = trackView.getInstrumet()
             volumeSlider.value = trackView.getVolume()
-            panoramSlider.value = trackView.getPanoram() - 8 //todo review tab view
+            panoramSlider.value = trackView.getPanoram() - 8
             trackStatusCombo.currentIndex = trackView.getStatus() //TODO enum
         }
 
@@ -670,13 +670,13 @@ Item {
             x: parent.width - width
             y: tablatureItem.buttonSize + tablatureItem.buttonSpacing
 
-            Repeater { //TODO custom layouts to create pannels like people want (map pictures to Tab.command (js function))
+            Repeater { //(map pictures to Tab.command (js function))
 
                 id: secondPanelLine
 
                 property var images: ["vib", "leeg", "", "qp", "qm", "", "del", "", "prevBar", "^", "nextBar", ""]
                 property var commands: [Tab.Vibrato, Tab.Leeg, -1, Tab.IncDuration, Tab.DecDuration,
-                    -1, Tab.DeleteNote, -1, Tab.PrevLine, Tab.StringDown, Tab.NextLine, -1] //TODO for custom layout -> imageToCommand()
+                    -1, Tab.DeleteNote, -1, Tab.PrevLine, Tab.StringDown, Tab.NextLine, -1] //replace by imageToCommand()
 
                 model: images.length
 
@@ -697,7 +697,7 @@ Item {
             x: parent.width - width
             y: tablatureItem.buttonSize * 2 + tablatureItem.buttonSpacing * 2
 
-            Repeater { //TODO custom layouts to create pannels like people want
+            Repeater {
 
                 id: thirdPanelLine
 
@@ -723,7 +723,7 @@ Item {
     } //edit panel
 
 
-    function keyboardEventSend(key, mode) { //TODO заглушку во все QML
+    function keyboardEventSend(key, mode) {
         tabView.keyPress(key, mode)
     }
 

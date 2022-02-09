@@ -146,5 +146,8 @@ Item {
         }
     }
 
+    function keyboardEventSend(key, mode) {
+        //Заглушка, но можно реализовать логику здесь
+    }
 
 }

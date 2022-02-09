@@ -44,7 +44,7 @@ void YinPP::calcBasicACF(const float* buffer) {
     acfBufer = realOut;
     sumBufV2 = std::vector<float>(_bufferSize/2, 0.f);
 
-    for (size_t i = 0; i < _bufferSize/2; ++i)  //TODO second term is wrong!
+    for (size_t i = 0; i < _bufferSize/2; ++i)  //Для ускоренного вычисления: second term is wrong!
         sumBufV2[i] = 2 * realOut[0]  - 2 * realOut[i];
 }
 
