@@ -19,6 +19,7 @@
 
 #include "app/log.hpp"
 #include "app/LogHandler.hpp"
+#include "app/AndroidTools.hpp"
 
 #include "audio/wave/AudioHandler.hpp"
 #include "audio/wave/WaveShape.hpp"
@@ -374,6 +375,8 @@ int mainInit(int argc, char *argv[]) {
         const QString tmp = QStandardPaths::writableLocation(static_cast<QStandardPaths::StandardLocation>(i));
         qDebug() << "Path" << i << tmp;
     }
+    chechAndRequestFilesPermission();
+
 
     int res = 0;
     try {

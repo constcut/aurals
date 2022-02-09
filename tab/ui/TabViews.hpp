@@ -38,10 +38,6 @@ namespace aural_sight {
 
     public:
 
-        Q_INVOKABLE void requestFP() { //TODO move to special class
-            requestFilesPermission();
-        }
-
         TabView() = default;
         virtual ~TabView();
 

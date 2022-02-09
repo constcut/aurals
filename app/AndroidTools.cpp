@@ -25,3 +25,12 @@ void requestFilesPermission() {
     //requestPermissionsSync
     #endif
 }
+
+
+bool chechAndRequestFilesPermission() {
+    #ifdef Q_OS_ANDROID
+    QtAndroid::checkPermission("android.permission.WRITE_EXTERNAL_STORAGE");
+    QtAndroid::checkPermission("android.permission.READ_EXTERNAL_STORAGE");
+    #endif
+    return true;
+}
