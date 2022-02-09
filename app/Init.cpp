@@ -158,35 +158,31 @@ void posix_death_signal(int signum)
     exit(3);
 }
 
-QString getUserID() {
-    return "TODO";
-}
-
 
 int sayType(QByteArray &file)
 {
     if (file[0]=='G')
     {
-        if (file[1]=='A') return 1; //incomplete check
+        if (file[1]=='A')
+            return 1; //incomplete check
     }
     else if (file[0]=='p')
     {
-
-        if (file[1]=='t')
-            if (file[2]=='a')
-               if (file[3]=='b') return 2;
+        if (file[1]=='t' && file[2]=='a' && file[3]=='b')
+            return 2;
     }
     else if (file[1]=='F')
     {
-        if (file[2]=='I')
-            if (file[3]=='C')
-            {
-                char v = file[21];
-                //char subV = file[23];
-                if (v==51) return 3;
-                if (v==52) return 4;
-                if (v==53) return 5;
-            }
+        if (file[2]=='I' && file[3]=='C')
+        {
+            char v = file[21];
+            if (v==51)
+                return 3;
+            if (v==52)
+                return 4;
+            if (v==53)
+                return 5;
+        }
     }
 
     return -1;
@@ -363,7 +359,6 @@ int mainInit(int argc, char *argv[]) {
 
 
 #ifdef QT_DEBUG
-    //TODO turn on on any midi\tab loaders change
     //runRegressionTests();
     //checkMidiIORegression();
 #endif
