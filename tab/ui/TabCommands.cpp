@@ -138,6 +138,8 @@ void TrackView::onTrackCommand(TrackCommand command) {
     int& selectionBarLast = _pTrack->selectBarLast();
 
     size_t barsCount = _pTrack->size();
+    size_t curBar = _pTrack->getParent()->getCurrentBar();
+    size_t currentBarSize = _pTrack->at(curBar)->size();
 
     if (command == TrackCommand::SetSignForSelected)
       changeBarSignsQt(_pTrack, selectionBarFirst, selectionBarLast);
@@ -154,6 +156,9 @@ void TrackView::onTrackCommand(TrackCommand command) {
 
     if (barsCount != _pTrack->size())
         fillBarsPool();
+
+    if (currentBarSize != _pTrack->at(curBar)->size())
+        fillBarsPool(); //TODO update more clever - move only few if needed
 
     update(); //TODO only on change
 }
