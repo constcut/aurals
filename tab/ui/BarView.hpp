@@ -65,6 +65,8 @@ namespace aural_sight {
 
         BarView(Bar *b, int nstr, int barNum = -1);
 
+        Bar* getBar() { return _pBar; }
+
         void setSameSign(bool value) { _sameSign = value; }
 
         void setSelectors(int beg, int end){_selectorBegin = beg; _selectorEnd = end;}

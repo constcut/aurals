@@ -592,6 +592,11 @@ Item {
                         trackView.onclick(mouseX, mouseY)
                         trackView.focus = true
                     }
+                    onPressAndHold: {
+                        trackView.onSelection(mouseX, mouseY)
+                        trackView.focus = true
+                        console.log("tapnhold")
+                    }
 
                 }
             }

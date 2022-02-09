@@ -86,6 +86,132 @@ void TrackView::onclick(int x1, int y1)
 }
 
 
+
+
+void TrackView::onSelection(int x1, int y1)
+{
+    if (_tabParrent == nullptr)
+        return;
+
+    bool wasPressed = false;
+    for (size_t i = 0; i < _barsPool.size(); ++i)
+    {
+
+        if (_barsPool.at(i).hit(x1,y1))
+        {
+            BarView *bar = &(_barsPool.at(i));
+            BarView *bV = bar;
+
+            if (bV == 0) continue;
+
+            int beatClick = bV->getClickBeat(x1);
+            int fullBar = bV->getBar()->size();
+
+            if (fullBar <= beatClick)
+                continue;
+
+            qDebug() << "Bar hits "<<beatClick<<" of "<<fullBar;
+
+            size_t& displayIndex = _pTrack->displayIndex();
+            int& selectionBeatFirst = _pTrack->selectBeatFirst();
+            int& selectionBeatLast = _pTrack->selectBeatLast();
+            int& selectionBarFirst = _pTrack->selectBarFirst();
+            int& selectionBarLast = _pTrack->selectBarLast();
+
+            if (selectionBeatFirst == -1) {
+                selectionBeatFirst = selectionBeatLast =  bV->getClickBeat(x1);
+                selectionBarFirst = selectionBarLast = i+displayIndex;
+            }
+            else
+            {
+                if (i + displayIndex > selectionBarLast)
+                {
+                    selectionBeatLast =  bV->getClickBeat(x1);
+                    selectionBarLast = i + displayIndex;
+                }
+                else
+                if (i + displayIndex < selectionBarFirst)
+                {
+                    selectionBeatFirst =   bV->getClickBeat(x1);
+                    selectionBarFirst = i + displayIndex;
+                }
+                else
+                {
+                    if (selectionBarFirst == selectionBarLast)
+                    {
+                        int addBeat = bV->getClickBeat(x1);
+                        if (addBeat > selectionBeatLast)
+                            selectionBeatLast = addBeat;
+                        if (addBeat < selectionBarFirst)
+                            selectionBeatFirst = addBeat;
+                    }
+                    else
+                    {
+                        int addBeat = bV->getClickBeat(x1);
+                        //if (addBeat > selectionBeatLast)
+                        if (i + displayIndex == selectionBarLast)
+                        {
+                            selectionBeatLast = addBeat;
+                        }
+                        else //if (addBeat < selectionBeatfirstt)
+                        if (i + displayIndex == selectionBarFirst)
+                        {
+                            selectionBeatFirst = addBeat;
+                        }
+                        else
+                        {
+                            if (i + displayIndex ==selectionBarLast-1)
+                            {
+                                //pre last bar
+                                if (addBeat==_pTrack->at(i+displayIndex)->size()-1)
+                                {
+                                    //its last beat
+                                    if (selectionBeatLast == 0)
+                                    {
+                                        //and current beat is irst in last bar
+                                        selectionBeatLast = addBeat;
+                                        --selectionBarLast;
+                                    }
+                                }
+                            }
+
+                            if ( i+ displayIndex == selectionBarFirst + 1)
+                            {
+                                //pre last bar
+                                if (addBeat==0)
+                                {
+                                    //its last beat
+                                    if (selectionBeatFirst == _pTrack->at(i + displayIndex-1)->size() - 1)
+                                    {
+                                        //and current beat is irst in last bar
+                                        selectionBeatFirst = 0;
+                                        ++selectionBarFirst;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            wasPressed = true;
+        }
+    }
+
+    if (wasPressed == false) {
+        int& selectionBeatFirst = _pTrack->selectBeatFirst();
+        int& selectionBeatLast = _pTrack->selectBeatLast();
+        int& selectionBarFirst = _pTrack->selectBarFirst();
+        int& selectionBarLast = _pTrack->selectBarLast();
+        selectionBeatFirst = selectionBeatLast =  -1;
+        selectionBarFirst = selectionBarLast = -1;
+
+    }
+    update();
+}
+
+
+
 void TrackView::setDisplayBar(int barPosition)
 {
     size_t& cursor = _pTrack->cursor();
@@ -216,6 +342,11 @@ void TrackView::paintByLines(QPainter* painter) {
     if (_linesIdxs.empty())
         return;
 
+    int& selectionBeatFirst = _pTrack->selectBeatFirst();
+    int& selectionBeatLast = _pTrack->selectBeatLast();
+    int& selectionBarFirst = _pTrack->selectBarFirst();
+    int& selectionBarLast = _pTrack->selectBarLast();
+
     size_t& displayIndex = _pTrack->displayIndex();
     size_t& lastSeen = _pTrack->lastSeen();
     const size_t cursor = _pTrack->cursor();
@@ -255,6 +386,27 @@ void TrackView::paintByLines(QPainter* painter) {
             {
                 auto& barView = _barsPool[barIdx];
                 barView.flushCursor();
+                barView.flushSelectors();
+
+                //=====================selection
+
+                if (barIdx >= selectionBarFirst && barIdx <= selectionBarLast)
+                {
+                    qDebug() << "Selection paint";
+                    if (selectionBarLast == selectionBarFirst)
+                        barView.setSelectors(selectionBeatFirst,selectionBeatLast);
+                    else
+                    {
+                        if (selectionBarFirst == barIdx)
+                            barView.setSelectors(selectionBeatFirst, -1);
+                        else if (selectionBarLast == barIdx)
+                             barView.setSelectors(0, selectionBeatLast);
+                        else
+                            barView.setSelectors(0, -1);
+                    }
+                }
+
+                //===============selection
 
                 std::uint8_t barCompleteStatus = _pTrack->at(barIdx)->getCompleteStatus(); //TODO avoid recalculations
 
