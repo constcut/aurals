@@ -171,7 +171,7 @@ bool GmyFile::saveToFile(std::ofstream& file, Tab *tab)
             if (j < track->size())
                 bar = track->at(j).get();
             else
-                bar = &staticBar; //Отладить этот участок, раньше тут была утечка и сырое выделение TODO
+                bar = &staticBar; //Отладить этот участок, раньше тут была утечка и сырое выделение - но в теории дефолный бар должен работать, но может нехватать в нем 1 бита
 
             if (i == 0) //first track
             {

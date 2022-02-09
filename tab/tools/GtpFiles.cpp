@@ -10,7 +10,7 @@ using namespace aural_sight;
 bool gtpLog = false;
 
 ////////////////////////////////////////////////////////////////////////////
-char miniBufer[20480]; //TODO get rid
+char miniBufer[20480]; //TODO get rid обязательно избавиться, это жуткая лажа TODO
 
 
 

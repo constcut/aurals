@@ -18,11 +18,9 @@ using namespace aural_sight;
 void Tab::setSignsTillEnd(size_t num, size_t denom) {
     _macroCommands.push_back(TwoIntCommand<TabCommand>{TabCommand::SetSignTillEnd, num, denom});
 
-    //TODO polyrithm concepts
-
     for (size_t trackId = 0; trackId < this->size(); ++trackId)
         for (size_t i = _currentBar; i < this->at(trackId)->size(); ++i){
-            this->at(trackId)->at(i)->setSignDenum(denom); //TODO проработать размеры, ументь их делать общими для табы, и делать полиритмию
+            this->at(trackId)->at(i)->setSignDenum(denom);
             this->at(trackId)->at(i)->setSignNum(num);
 
             qDebug() << "Changing bar " << i << " on " << num << " " << denom;
@@ -199,5 +197,3 @@ void Tab::onTabCommand(TabCommand command) {
     if (_handlers.count(command))
         (this->*_handlers.at(command))();
 }
-
-//TODO возможно дополнить установку инструмента, панорамы и громкости, чтобы не нужно было обращаться к текущему треку, а использовать "вшитые курсоры"

@@ -195,8 +195,6 @@ void Track::reverseCommand(ReversableCommand command)
         { //as len = 1 but default
             this->remove(barN);
             this->cursor() = this->displayIndex();
-            //tabParrent->setCurrentBar(this->cursor());
-            //TODO must update UI ???
         }
         else
         {
@@ -204,8 +202,6 @@ void Track::reverseCommand(ReversableCommand command)
                 this->remove(barN);
 
             this->cursor() = this->displayIndex();
-            //tabParrent->setCurrentBar(this->cursor());
-            //TODO must update UI ???
         }
         if (_cursor)
             --_cursor;
@@ -232,9 +228,9 @@ void Track::reverseCommand(ReversableCommand command)
         this->at(barN)->setSignNum(value2);
     }
 
-    if (type == ReversableType::InsertBeat) //TODO тут точно ошибка
+    if (type == ReversableType::InsertBeat) //В теории точно ошибка (проверить код материнского проекта)
     {
-        int len = beatN;
+        int len = beatN; //По идее это восстановление удаленного такта
         if (!len)
         {
             //Это какая-то другая комманда, вероятно удаление такта
@@ -292,7 +288,7 @@ void Track::moveSelectionLeft() {
 void Track::moveSelectionRight() {
     if (_selectionBarLast >= 0)
     {
-        if (_selectionBeatLast < (at(_selectionBarLast)->size()-1)) //TODO лучше способ хранить зоны выделенности (флаг вкюченности и size_t)
+        if (_selectionBeatLast < (at(_selectionBarLast)->size()-1))
             ++_selectionBeatLast;
         else
             if (_selectionBarLast < (size()-1))
@@ -305,12 +301,12 @@ void Track::moveSelectionRight() {
 
 
 void Track::insertBar() {
-    //TODO найти старый код, чтобы удостовериться что всё будет работать правильно
+    //Наверное это часть буфера обмена, его стоит унифицировать, сделать просто copy\cut\paste остальное определять по самому буферу
 }
 
 
-void Track::insertNewPause() {
-    //parent->addMacro(TrackCommand::InsertNewPause); //TODO
+void Track::insertNewPause() { //Вообще не самая полезная комманда - можно просто вставить новый бит или расшириться - удалить на рефакторинге (refactoring)
+    //parent->addMacro(TrackCommand::InsertNewPause);
     auto beat = std::make_unique<Beat>();
     beat->setPause(true);
     beat->setDuration(4);
@@ -323,6 +319,8 @@ void Track::insertNewPause() {
     ReversableCommand command(ReversableType::InsertNewPause);
     command.setPosition(0, _cursor, _cursorBeat);
     commandSequence.push_back(std::move(command));
+
+    qDebug() << "That insertNewPause called";
 }
 
 
@@ -360,13 +358,12 @@ void Track::moveToPrevBar() {
 
 void Track::moveToPrevPage() {
     if (_displayIndex > 7) {
-        _displayIndex -= 7; //not real paging
+        _displayIndex -= 7; //not real paging (возможно не нужно, на почве линий, сделать просто навигацию из TabView)
         _cursor = _displayIndex;
         _cursorBeat = 0;
         _digitPress = -1;
-        //TODO установить в родителя через PA (вначале проверив куда идёт вызов функции ниже)
         Tab* pTab = parent;
-        pTab->getCurrentBar() = _cursor; //QT dependency отвязать TODO
+        pTab->getCurrentBar() = _cursor;
     }
 }
 
@@ -377,7 +374,6 @@ void Track::moveToNextPage() {
         _cursor = _displayIndex;
         _cursorBeat = 0;
         _digitPress = -1;
-        //tabView->setCurrentBar(cursor); //TODO как выше
     }
 }
 

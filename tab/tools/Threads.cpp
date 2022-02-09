@@ -155,7 +155,7 @@ void PlayAnimationThr::setupValues(Tab *tab, Track *track, size_t shiftTheCursor
 
     std::vector<int> barMoments;
 
-    //TODO возможна запарка если к этому момент BPM менялся от изначального
+    //TODO возможна запарка если к этому момент BPM менялся от изначального (зависит от поиска BPM в такте)
 
 
     for (size_t barI = shiftTheCursor; barI < timeLoopLen; ++barI)
