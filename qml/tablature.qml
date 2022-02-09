@@ -42,7 +42,11 @@ Item {
             var pcmName = saveFileDialog.fileUrls[0].substring(7)
             tabView.exportMidi("temp.mid", 0) //TODO shift
             audio.openMidiFile("temp.mid")
-            audio.saveMidiToWav(pcmName)
+
+            if (Qt.platform.os !== "android")
+                audio.saveMidiToWav(pcmName)
+            else
+                audio.saveMidiToWav("/storage/emulated/0/Documents/pcm.wav")
         }
         onRejected: {
             saveFileDialog.close()
