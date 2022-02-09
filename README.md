@@ -103,9 +103,13 @@ https://code.soundsoftware.ac.uk/projects/constant-q-cpp
 
 https://github.com/berndporr/iir1
 
-* Wavelib - wavelet library (currently turned of, but library is in the repo)
+* Wavelib - wavelet library (currently turned off, but library is in the repo)
 
 https://github.com/rafat/wavelib
 
 
 All libraries have permissive license, that help use same license for this project.
+
+## Icons
+
+All icons used in current version are taken from icons8 site!
