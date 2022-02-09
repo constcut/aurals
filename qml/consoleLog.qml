@@ -28,7 +28,7 @@ Item {
         refTimer.running = true
     }
 
-    function keyboardEventSend(key) {
+    function keyboardEventSend(key, mode) {
         console.log("Pressed key: ", key)
     }
 
