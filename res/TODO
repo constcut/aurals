@@ -32,6 +32,8 @@ Repair tapper +
 idea -> tapper + piano roll
 
 Android save to files on sdcard fails.. Permission?
+W aurals  : [W] QIODevice::write (QFile, "://com.android.providers.downloads.documents/document/raw%3A%2Fstorage%2Femulated%2F0%2FDownload%2Fx%2Fq.wav"): device not open
+I chatty  : uid=10125
 
 +tapper midi silence hot fix
 
