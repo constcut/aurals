@@ -117,6 +117,7 @@ void TabView::createNewTab() {
     newTrack->push_back(std::move(newBar)); //TODO when pushing to tab
     newTrack->setParent(_pTab.get());//TODO when pushing to tab
     _pTab->push_back(std::move(newTrack));
+    _pTab->connectTracks();
     refreshTabStats();
     update();
 }

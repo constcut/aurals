@@ -40,8 +40,8 @@ namespace aural_sight {
 
 
      private:
-        int _bpmTemp;
-        bool _isPlaying;
+        int _bpmTemp = 120;
+        bool _isPlaying = false;
 
         std::string _origin;
         std::uint8_t _signKey;
