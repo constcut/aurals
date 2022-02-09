@@ -110,8 +110,6 @@ void TrackView::onSelection(int x1, int y1)
             if (fullBar <= beatClick)
                 continue;
 
-            qDebug() << i << " Bar hits " << beatClick << " of " << fullBar;
-
             int& selectionBeatFirst = _pTrack->selectBeatFirst();
             int& selectionBeatLast = _pTrack->selectBeatLast();
             int& selectionBarFirst = _pTrack->selectBarFirst();
@@ -138,9 +136,11 @@ void TrackView::onSelection(int x1, int y1)
                     if (selectionBarFirst == selectionBarLast)
                     {
                         int addBeat = bV->getClickBeat(x1);
+
                         if (addBeat > selectionBeatLast)
                             selectionBeatLast = addBeat;
-                        if (addBeat < selectionBarFirst)
+
+                        if (addBeat < selectionBeatFirst)
                             selectionBeatFirst = addBeat;
                     }
                     else
@@ -158,10 +158,10 @@ void TrackView::onSelection(int x1, int y1)
                         }
                         else
                         {
-                            if (i ==selectionBarLast-1)
+                            if (i == selectionBarLast - 1)
                             {
                                 //pre last bar
-                                if (addBeat==_pTrack->at(i)->size()-1)
+                                if (addBeat == _pTrack->at(i)->size()-1)
                                 {
                                     //its last beat
                                     if (selectionBeatLast == 0)
