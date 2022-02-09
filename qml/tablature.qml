@@ -77,6 +77,14 @@ Item {
                 mainLayout.refreshTrack()
             }
         }
+        MenuItem {
+            text: "New track"
+            onTriggered: {
+                tabView.passTabCommand(Tab.NewTrack)
+                trackCombo.model = tabView.tracksCount()
+                tabPannel.open()
+            }
+        }
 
         MenuItem {
             text: "TabView"
@@ -520,16 +528,11 @@ Item {
                     if (shown) {
                         hideAnimation.start()
                         shown = false
-                        //trackViewScroll.height += editPannel.height
-                        //flick.height += editPannel.height
                     }
                     else {
                         showAnimation.start()
                         shown = true
-                        //trackViewScroll.height -= editPannel.height
-                        //flick.height += editPannel.height
                     }
-                    //TODO add scroll area reduce
                 }
             }
 
