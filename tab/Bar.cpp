@@ -272,7 +272,7 @@ void Bar::printToStream(std::ostream &stream) const
 
 
 void Bar::flush() {
-    _signatureNum = _signatureDenum = 0;
+    _signatureNum = _signatureDenum = 4; //standart bar
     _repeat = _repeatTimes = _altRepeat = 0;
     _markerColor = 0;
     _completeStatus = 0;

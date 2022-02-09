@@ -106,8 +106,21 @@ void TabView::loadTab(QString filename) {
 }
 
 
+void TabView::createNewTab() {
+    _pTab = std::make_unique<Tab>();
+    auto newTrack = std::make_unique<Track>();
+    auto newBar = std::make_unique<Bar>();
+    auto newBeat = std::make_unique<Beat>(); //TODO make simple function create STD bar, std track
+    newBar->push_back(std::move(newBeat));
+    newTrack->push_back(std::move(newBar));
+    _pTab->push_back(std::move(newTrack));
+    refreshTabStats();
+    update();
+}
+
+
 void TabView::exportMidi(QString filename, int shift) {
-    auto m = ::exportMidi(_pTab.get(), shift); //TODO position
+    auto m = ::exportMidi(_pTab.get(), shift);
     m->writeToFile(filename.toStdString());
 }
 

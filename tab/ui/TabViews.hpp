@@ -55,6 +55,8 @@ namespace aural_sight {
         std::unique_ptr<Tab>& getTab() { return _pTab; }
         Q_INVOKABLE int tracksCount() { return _pTab->size(); }
 
+
+        Q_INVOKABLE void createNewTab();
         Q_INVOKABLE void loadTab(QString filename);
         Q_INVOKABLE void exportMidi(QString filename, int shift);
 

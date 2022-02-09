@@ -71,23 +71,13 @@ Item {
     Menu {
         id: tabMenu
         MenuItem {
-            text: "Play"
+            text: "New"
             onTriggered:  {
-                var currentPosition = tabView.getTimeLineBar()
-                tabView.prepareAllThreads(currentPosition)
-                tabView.exportMidi("temp.mid", currentPosition)
-                audio.openMidiFile("temp.mid")
-                audio.startMidiPlayer()
-                tabView.launchAllThreads()
+                tabView.createNewTab()
+                mainLayout.refreshTrack()
             }
         }
-        MenuItem {
-            text: "Stop"
-            onTriggered:  {
-                tabView.stopAllThreads()
-                audio.stopMidiPlayer()
-            }
-        }
+
         MenuItem {
             text: "TabView"
             onTriggered: tabPannel.open()

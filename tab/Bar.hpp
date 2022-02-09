@@ -29,8 +29,8 @@ namespace aural_sight {
 
     private:
 
-        std::uint8_t _signatureNum;
-        std::uint8_t _signatureDenum;
+        std::uint8_t _signatureNum = 4;
+        std::uint8_t _signatureDenum = 4;
 
         std::uint8_t _repeat;
         std::uint8_t _repeatTimes;
