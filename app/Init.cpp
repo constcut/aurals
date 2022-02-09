@@ -296,8 +296,8 @@ void copyResourcesIntoTempDir() {
 int mainInit(int argc, char *argv[]) {
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    qmlRegisterType<aural_sight::ConsoleLogQML>("mther.app",1,0,"ConsoleLogView");
-    //qmlRegisterType<PianoQML>("mther.app",1,0,"Piano");
+    qmlRegisterType<aural_sight::ConsoleLogQML>("aurals",1,0,"ConsoleLogView");
+    //qmlRegisterType<PianoQML>("aurals",1,0,"Piano");
 
     QApplication app(argc, argv);
 
@@ -323,19 +323,19 @@ int mainInit(int argc, char *argv[]) {
 
     AConfig::getInst().checkConfig();
 
-    qmlRegisterType<aural_sight::WaveshapeQML>("mther.app", 1, 0, "Waveshape");
-    qmlRegisterType<aural_sight::SpectrographQML>("mther.app", 1, 0,"Spectrograph");
-    qmlRegisterType<aural_sight::Tapper>("mther.app", 1, 0,"Tapper");
-    qmlRegisterType<aural_sight::ACGraphQML>("mther.app", 1, 0,"ACgraph");
-    qmlRegisterType<aural_sight::StretchImageQML>("mther.app", 1, 0,"StretchImage");
-    qmlRegisterType<aural_sight::CepstrumgraphQML>("mther.app", 1, 0,"Cepstrumgraph");
+    qmlRegisterType<aural_sight::WaveshapeQML>("aurals", 1, 0, "Waveshape");
+    qmlRegisterType<aural_sight::SpectrographQML>("aurals", 1, 0,"Spectrograph");
+    qmlRegisterType<aural_sight::Tapper>("aurals", 1, 0,"Tapper");
+    qmlRegisterType<aural_sight::ACGraphQML>("aurals", 1, 0,"ACgraph");
+    qmlRegisterType<aural_sight::StretchImageQML>("aurals", 1, 0,"StretchImage");
+    qmlRegisterType<aural_sight::CepstrumgraphQML>("aurals", 1, 0,"Cepstrumgraph");
 
-    qmlRegisterType<aural_sight::TabView>("mther.app", 1, 0, "TabView");
-    qmlRegisterType<aural_sight::TrackView>("mther.app", 1, 0, "TrackView");
-    //qmlRegisterType<aural_sight::BarView>("mther.app", 1, 0, "BarView");
+    qmlRegisterType<aural_sight::TabView>("aurals", 1, 0, "TabView");
+    qmlRegisterType<aural_sight::TrackView>("aurals", 1, 0, "TrackView");
+    //qmlRegisterType<aural_sight::BarView>("aurals", 1, 0, "BarView");
 
     qmlRegisterUncreatableMetaObject(aural_sight::staticMetaObject,
-        "mther.app", 1, 0, "Tab", "Error: object creation for enum not supported");
+        "aurals", 1, 0, "Tab", "Error: object creation for enum not supported");
 
     QDir dir;
     if (dir.exists("records") == false) {

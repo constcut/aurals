@@ -3,7 +3,7 @@ import QtQml 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Dialogs 1.1
-import mther.app 1.0
+import aurals 1.0
 
 
 Item {
@@ -441,6 +441,8 @@ Item {
                     tabView.passTabCommand(tabCommandCombo.currentIndex)
                 }
             }*/
+
+            //Воскресить часть комманд под 1 комбо, если переходим границу - то другая задача
 
             ComboBox {
                 id: trackCommandCombo

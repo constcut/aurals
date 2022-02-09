@@ -1,5 +1,5 @@
 import QtQuick 2.15
-import mther.app 1.0
+import aurals 1.0
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Dialogs 1.1
