@@ -141,8 +141,6 @@ void TrackView::onTrackCommand(TrackCommand command) {
     size_t curBar = _pTrack->cursor();  //_pTrack->getParent()->getCurrentBar(); broken a bit
     size_t currentBarSize = _pTrack->at(curBar)->size();
 
-    qDebug() << "CurB " << curBar << " " << currentBarSize;
-
     if (command == TrackCommand::SetSignForSelected)
       changeBarSignsQt(_pTrack, selectionBarFirst, selectionBarLast);
     else if (command == TrackCommand::Text)
@@ -188,6 +186,7 @@ void TrackView::onTabCommand(TabCommand command) {
 
 void TabView::keyPress(int code, int mode) {
 
+    /*
     if (mode & Qt::ShiftModifier)
         qDebug() << "Shift pressed";
     if (mode & Qt::ControlModifier)
@@ -195,7 +194,7 @@ void TabView::keyPress(int code, int mode) {
     if (mode & Qt::AltModifier)
         qDebug() << "Alt pressed";
 
-    qDebug() << "TABVIEW key event " << code << " " << (char)code;
+    qDebug() << "TABVIEW key event " << code << " " << (char)code;*/
 
     bool updated = false;
 
