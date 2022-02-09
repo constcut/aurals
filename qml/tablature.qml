@@ -554,6 +554,8 @@ Item {
                     mainLayout.refreshTrack()
                     tabPannel.open()
                 }
+
+                visible: Qt.platform.os != "android"
             }
         }
     }
