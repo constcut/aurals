@@ -417,92 +417,72 @@ void Track::moveToPrevBeat() {
 void Track::moveToNextBeat() {
     ++_cursorBeat;
     if (_cursorBeat >= at(_cursor)->size()) {
-        if (1) //pan->isOpenned())
+        static int lastDur = 4; //TODO?
+        if (_cursorBeat) {
+            auto& bar = at(_cursor);
+            auto& beat = bar->at(bar->size()-1);
+            lastDur = beat->getDuration();
+        }
+        if (at(_cursor)->getCompleteStatus()==1)
         {
-            static int lastDur = 4; //TODO?
-            if (_cursorBeat) {
-                auto& bar = at(_cursor);
-                auto& beat = bar->at(bar->size()-1);
-                lastDur = beat->getDuration();
-                //THERE IS A GOOOD CHANCE TO RECOUNT AGAIN
-                /// lastDur from prev position
-            }
-            if (at(_cursor)->getCompleteStatus()==1)
+            auto& bar = at(_cursor);
+            auto beat = std::make_unique<Beat>();
+            beat->setPause(true);
+            beat->setDuration(lastDur);
+            beat->setDotted(0);
+            beat->setDurationDetail(0);
+            bar->push_back(std::move(beat));
+
+            ReversableCommand command(ReversableType::InsertNewPause);
+            command.setPosition(0,_cursor,_cursorBeat);
+            commandSequence.push_back(std::move(command));
+        }
+        else
+        {
+            if ((_cursor+1) == size())
             {
-                auto& bar = at(_cursor);
+                auto newBar = std::make_unique<Bar>();
+                newBar->flush();
+                newBar->setSignDenum(4);
+                newBar->setSignNum(4);
+                newBar->setRepeat(0);
+
                 auto beat = std::make_unique<Beat>();
                 beat->setPause(true);
                 beat->setDuration(lastDur);
                 beat->setDotted(0);
                 beat->setDurationDetail(0);
-                bar->push_back(std::move(beat));
+                newBar->push_back(std::move(beat));
+                push_back(std::move(newBar));
 
-                ReversableCommand command(ReversableType::InsertNewPause);
-                command.setPosition(0,_cursor,_cursorBeat);
+                ReversableCommand command(ReversableType::InsertNewBar);
+                command.setPosition(0, _cursor+1,0);
                 commandSequence.push_back(std::move(command));
 
-                ///ADD COMMAND              - TASK!!!!!!!!!!!!
-            }
-            else //in edit mode - else add new bar
-            //scrol if out of bar
-            {
-                if ((_cursor+1) == size())
-                {
-                    auto newBar = std::make_unique<Bar>();
-                    newBar->flush();
-                    newBar->setSignDenum(4);
-                    newBar->setSignNum(4);
-                    newBar->setRepeat(0);
-
-                    auto beat = std::make_unique<Beat>();
-                    beat->setPause(true);
-                    beat->setDuration(lastDur);
-                    beat->setDotted(0);
-                    beat->setDurationDetail(0);
-                    newBar->push_back(std::move(beat));
-                    push_back(std::move(newBar));
-
-                    ReversableCommand command(ReversableType::InsertNewBar);
-                    command.setPosition(0, _cursor+1,0);
-                    commandSequence.push_back(std::move(command));
-
-                    ++_lastSeen;
-                    _cursorBeat = 0;
-                    ++_cursor;
-
-                    connectAll();
-                }
-                else
-                {
-                    if ((_cursor+1) != size()) {
-                        ++_cursor;
-                       if (_cursor > (_lastSeen-1))
-                            _displayIndex = _cursor;
-                        _cursorBeat = 0;
-                     }
-                        else
-                        --_cursorBeat;
-                }
-            }
-        }
-        else //TODO view mode maybe remove?
-        {
-            if ((_cursor+1) != size())
-              {
-                ++_cursor;
-                if (_cursor > (_lastSeen-1))
-                    _displayIndex = _cursor;
+                ++_lastSeen;
                 _cursorBeat = 0;
-              }
-              else
-                --_cursorBeat;
+                ++_cursor;
+
+                connectAll();
+            }
+            else
+            {
+                if ((_cursor+1) != size()) {
+                    ++_cursor;
+                   if (_cursor > (_lastSeen-1))
+                        _displayIndex = _cursor;
+                    _cursorBeat = 0;
+                 }
+                    else
+                    --_cursorBeat;
+            }
         }
     }
 
     if (at(_cursor)->at(_cursorBeat)->getPause() == false)
         _stringCursor = at(_cursor)->at(_cursorBeat)->at(0)->getStringNumber()-1;
-        //need acces
-    _digitPress=-1; // flush input after movement
+
+    _digitPress=-1;
 }
 
 
