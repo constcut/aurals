@@ -111,8 +111,11 @@ void TabView::createNewTab() {
     auto newTrack = std::make_unique<Track>();
     auto newBar = std::make_unique<Bar>();
     auto newBeat = std::make_unique<Beat>(); //TODO make simple function create STD bar, std track
+    newBeat->setParent(newBar.get());
     newBar->push_back(std::move(newBeat));
-    newTrack->push_back(std::move(newBar));
+    newBar->setParent(newTrack.get());
+    newTrack->push_back(std::move(newBar)); //TODO when pushing to tab
+    newTrack->setParent(_pTab.get());//TODO when pushing to tab
     _pTab->push_back(std::move(newTrack));
     refreshTabStats();
     update();

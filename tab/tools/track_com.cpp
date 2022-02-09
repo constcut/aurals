@@ -473,6 +473,8 @@ void Track::moveToNextBeat() {
                     ++_lastSeen;
                     _cursorBeat = 0;
                     ++_cursor;
+
+                    connectAll();
                 }
                 else
                 {
