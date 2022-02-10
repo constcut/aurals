@@ -137,8 +137,6 @@ void PlayAnimationThr::setupValues(Tab *tab, Track *track, size_t shiftTheCursor
 
            localWait = 0;
            bpmChangeList.push_back(newNode);
-           qDebug() << "BPM " << newNode.newBpm << " wait " << newNode.waitTime;
-           qDebug() << "ITS " << newNode.bar << " " << newNode.beat;
        }
     }
 
