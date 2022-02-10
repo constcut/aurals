@@ -445,6 +445,10 @@ void TabView::onTabCommand(TabCommand command) {
         _pTab->onTabCommand(command);
 
     //Check if needed - marker, sign, reprise, maybe something else TODO
-    if (_tracksView.empty() == false)
+    if (_tracksView.empty() == false &&
+            (command == TabCommand::OpenReprise || command == TabCommand::CloseReprise))
+    {
+        _tracksView[0]->requestFullUpdate();
         _tracksView[0]->update();
+    }
 }

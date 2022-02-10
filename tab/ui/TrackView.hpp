@@ -56,6 +56,9 @@ namespace aurals {
 
         void paint(QPainter *painter);
         Q_INVOKABLE int getFullPixelHeight();
+        void requestFullUpdate() { //TODO request partly update (on single bar)
+            fillBarsPool();
+        }
 
         Q_INVOKABLE void prepareThread(int shiftTheCursor);
         Q_INVOKABLE void launchThread();
