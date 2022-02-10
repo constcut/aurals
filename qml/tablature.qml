@@ -72,6 +72,7 @@ Item {
                 var correctPath = decodeURIComponent(saveFileDialog.fileUrls[0])
                 console.log("Midi save path", correctPath)
                 tabView.exportMidi(correctPath, 0)
+                //https://www.weiy.city/2021/12/file-io-between-qfile-and-std-fstream/ Need to wrap ofstream
             }
 
         }
