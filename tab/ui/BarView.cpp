@@ -271,6 +271,7 @@ void BarView::paint(QPainter *painter)
     int cY = _y;
 
     Track *track = bar1->getParent();
+    Tab* tab = track->getParent();
     bool isSelected = false;
 
     if (_selectorBegin!=-1)
@@ -384,11 +385,22 @@ void BarView::paint(QPainter *painter)
     bool wasNoBeatEffects = true;
     for (size_t i = 0; i < barLen; ++i) {
 
-        if (i == _cursor)
-             changeColor(CONF_PARAM("colors.curBeat"), painter);
 
         auto& curBeat = bar1->at(i);
         auto tuning = track->getTuning();
+
+
+        if (i == _cursor) {
+             changeColor(CONF_PARAM("colors.curBeat"), painter);
+
+             if (tab->playing())
+                painter->drawLine(cX + 19 + i * inbarWidth + inbarWidth / 4, cY,
+                                  cX + 19 + i * inbarWidth + inbarWidth / 4,
+                                  cY + stringWidth * tuning.getStringsAmount());
+
+        }
+
+
 
         for (size_t j = 0; j < curBeat->size(); ++j)
         {
