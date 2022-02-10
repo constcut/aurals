@@ -83,7 +83,7 @@ void copySoundfontsAndTests() {
 
     QList<QString> filesToCopy {"epiano.sf2", "guitar.sf2", "fullset.sf2", "nylon_guitar.sf2",
                                 "piano.sf2", "drums.sf2", "eguitar.sf2", "test1.mid",
-                                "test2.mid", "test3.mid", "test4.mid", "test5.mid", "test6.mid"};
+                                "test2.mid", "test3.mid", "test4.mid", "test5.mid", "test6.mid", "hotfix.mid"};
 
     for (auto& file: filesToCopy)
         if (QFile::exists(file) == false)

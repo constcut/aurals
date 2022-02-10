@@ -45,9 +45,6 @@ bool MidiRender::openSoundFont()
     QByteArray fileNameBytes = _soundfontFile.toLocal8Bit();
     tsf*  sf  = tsf_load_filename(fileNameBytes.constData());
 
-    qDebug() << "Opening SF " << _soundfontFile << " SR "
-             << _sampleRate << " vol " << _volume;
-
     if (sf == nullptr)
         return false;
 
