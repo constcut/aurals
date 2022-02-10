@@ -443,4 +443,8 @@ void TabView::onTabCommand(TabCommand command) {
         closeReprise(_pTab.get());
     else
         _pTab->onTabCommand(command);
+
+    //Check if needed - marker, sign, reprise, maybe something else TODO
+    if (_tracksView.empty() == false)
+        _tracksView[0]->update();
 }

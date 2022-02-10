@@ -446,6 +446,7 @@ Item {
 
             ComboBox {
                 id: trackCommandCombo
+                currentIndex: 52
                 model: [
                     "GotoStart",
                     "SetSignForSelected",
@@ -498,7 +499,31 @@ Item {
                     "Paste",
                     "Undo",
                     "PrevLine",
-                    "NextLine"
+                    "NextLine",
+
+
+                    "SetSignTillEnd",
+                    "SaveAs",
+                    "Mute",
+                    "Solo",
+                    "MoveLeft",
+                    "MoveRight",
+                    "MoveUp",
+                    "MoveDown",
+                    "Drums",
+                    "Instument",
+                    "Panoram",
+                    "Volume",
+                    "Name",
+                    "BPM",
+                    "NewTrack",
+                    "DeleteTrack",
+                    "PauseMidi",
+                    "AddMarker",
+                    "OpenReprise",
+                    "CloseReprise",
+                    "GotoBar",
+                    "Tune"
                 ]
                 //currentIndex: 20
             }
@@ -506,7 +531,13 @@ Item {
                 text: "!"
                 width: 30
                 onClicked: {
-                    tabView.passTrackCommand(trackCommandCombo.currentIndex)
+
+                    if (trackCommandCombo.currentIndex < 52)
+                        tabView.passTrackCommand(trackCommandCombo.currentIndex)
+                    else {
+                        var commandIdx = trackCommandCombo.currentIndex - 52
+                        tabView.passTabCommand((commandIdx))
+                    }
                 }
             }
 
