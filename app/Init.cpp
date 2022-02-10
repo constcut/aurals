@@ -240,7 +240,7 @@ void setPosixSignals() {
 
 
 
-void copyResourcesIntoTempDir() {
+void copyResourcesIntoTempDir(bool forceRewrite=false) {
 
     QString testDir = "tests";
     setTestLocation(testDir.toStdString() + "/");
@@ -280,9 +280,9 @@ void copyResourcesIntoTempDir() {
                 QString copy1 = regressionDir + testName.c_str() + ".mid";
                 QString copy2 = regressionDir + testName.c_str() + ".gmy";
 
-                if (QFile::exists(copy1) == false)
+                if (QFile::exists(copy1) == false || forceRewrite)
                     QFile::copy(resourse1, copy1);
-                if (QFile::exists(copy2) == false)
+                if (QFile::exists(copy2) == false || forceRewrite)
                     QFile::copy(resourse2, copy2);
             }
         }
@@ -346,8 +346,10 @@ int mainInit(int argc, char *argv[]) {
         if (dir.mkdir("tests") == false)
             qDebug() << "Failed to create tests directory";
     }
-    copyResourcesIntoTempDir();
 
+    copyResourcesIntoTempDir(true); //true if we need update regression tests
+    //runRegressionTests();
+    //checkMidiIORegression();
 
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("Windows-1251")); //Настройки //KOI8-R //ISO 8859-5 //UTF-8 //Windows-1251
     QQmlApplicationEngine engine;
@@ -357,11 +359,6 @@ int mainInit(int argc, char *argv[]) {
     if (engine.rootObjects().isEmpty())
         return -1;
 
-
-#ifdef QT_DEBUG
-    //runRegressionTests();
-    //checkMidiIORegression();
-#endif
 
     int res = 0;
     try {
