@@ -376,6 +376,8 @@ Item {
                 model: 70
                 currentIndex: 0
 
+                implicitWidth: 80
+
                 onCurrentTextChanged: {
                     var testId = parseInt(tabCombo.currentText) + 1
                     var tabName = "tests/3." + testId + ".gp4"
@@ -404,45 +406,6 @@ Item {
                     audio.stopMidiPlayer()
                 }
             }
-
-            /*
-            ComboBox {
-                id: tabCommandCombo
-                model : ["SetSignTillEnd",
-                    "SaveAs",
-                    "Mute",
-                    "Solo",
-                    "MoveLeft",
-                    "MoveRight",
-                    "MoveUp",
-                    "MoveDown",
-                    "Drums",
-                    "Instument",
-                    "Panoram",
-                    "Volume",
-                    "Name",
-                    "BPM",
-                    "OpenTrack",
-                    "NewTrack",
-                    "DeleteTrack",
-                    "PlayMidi",
-                    "GenerateMidi",
-                    "PauseMidi",
-                    "AddMarker",
-                    "OpenReprise",
-                    "CloseReprise",
-                    "GotoBar",
-                    "Tune"]
-            }
-            ToolButton {
-                text: "!"
-                width: 30
-                onClicked: {
-                    tabView.passTabCommand(tabCommandCombo.currentIndex)
-                }
-            }*/
-
-            //Воскресить часть комманд под 1 комбо, если переходим границу - то другая задача
 
             ComboBox {
                 id: trackCommandCombo
@@ -578,6 +541,8 @@ Item {
                 model: 39
                 currentIndex: 0
 
+                implicitWidth: 80
+
                 onCurrentTextChanged: {
                     var testId = parseInt(tab2Combo.currentText) + 1
                     var tabName = "tests/2." + testId + ".gp4"
@@ -592,11 +557,11 @@ Item {
 
             ToolButton {
                 text: "<"
-                onClicked: tabView.passTrackCommand(Tab.NextPage)
+                onClicked: tabView.passTrackCommand(Tab.PrevPage)
             }
             ToolButton {
-                text: "<"
-                onClicked: tabView.passTrackCommand(Tab.PrevPage)
+                text: ">"
+                onClicked: tabView.passTrackCommand(Tab.NextPage)
             }
         }
     }
