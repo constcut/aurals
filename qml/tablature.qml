@@ -589,6 +589,15 @@ Item {
 
                 visible: Qt.platform.os != "android"
             }
+
+            ToolButton {
+                text: "<"
+                onClicked: tabView.passTrackCommand(Tab.NextPage)
+            }
+            ToolButton {
+                text: "<"
+                onClicked: tabView.passTrackCommand(Tab.PrevPage)
+            }
         }
     }
 
