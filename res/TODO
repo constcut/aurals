@@ -34,13 +34,13 @@ flower) вероятно изменение темпа идёт не за 1 ша
 48) Небольшое смещение в конце, я предполагаю что проблема в том что анимация может немного страдать от используемой модели sleep не лучшее решение
 Было бы хорошо на контрольных точках осуществлять ресинхронизацию со звуком и восстанавливать визуальный курсор по времени воспроизведения
 
-
 + Model size of -111 is less than 0 (tap?)
 
 TO use file dialog parse it 'raw%3A %2F storage %2F emulated %2F 0 %2F Download %2F x %2F q.wav'
 (QFile, "://com.android.providers.downloads.documents/document/raw%3A%2Fstorage%2Femulated%2F0%2FDownload%2Fx%2Fq.wav"): device not open
 
 End of QByteArray - AudioOutput
+
 
 ------------------------------------------------------------------------------------------
 Поиск ритмических границ:
