@@ -70,6 +70,7 @@ Item {
                 tabView.exportMidi(midiName, 0)
             else {
                 var correctPath = decodeURIComponent(saveFileDialog.fileUrls[0])
+                console.log("Midi save path", correctPath)
                 tabView.exportMidi(correctPath, 0)
             }
 
