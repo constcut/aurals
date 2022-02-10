@@ -28,8 +28,10 @@ ApplicationWindow {
 
 
     onClosing: {
-        if (Qt.platform.os == "android")
+        if (Qt.platform.os == "android") {
             close.accepted = false
+            mainMenu.open()
+        }
         else
             close.accepted = true
     }
