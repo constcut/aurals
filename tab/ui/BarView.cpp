@@ -423,8 +423,12 @@ void BarView::paint(QPainter *painter)
 
                 if (noteState != 3) //not x note
                 {
-                    if (noteState == 2)
-                        noteVal = "," + std::to_string( curNote->getFret() );
+                    if (noteState == 2) {
+                        if (curNote->getFret() != 63)
+                            noteVal = "," + std::to_string( curNote->getFret() );
+                        else
+                            noteVal = ",<";
+                    }
                     else
                         noteVal = std::to_string( curNote->getFret() );
                 }
