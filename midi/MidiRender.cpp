@@ -22,7 +22,7 @@ bool MidiRender::openMidiFile(const QString midiFilename)
     QByteArray fileNameBytes = midiFilename.toLocal8Bit();
     tml_message* midiMessages = tml_load_filename(fileNameBytes.constData());
 
-    if (midiMessages==0)
+    if (midiMessages == nullptr)
         return false;
 
     if (_midiFile != nullptr)
@@ -44,6 +44,9 @@ bool MidiRender::openSoundFont()
 {
     QByteArray fileNameBytes = _soundfontFile.toLocal8Bit();
     tsf*  sf  = tsf_load_filename(fileNameBytes.constData());
+
+    qDebug() << "Opening SF " << _soundfontFile << " SR "
+             << _sampleRate << " vol " << _volume;
 
     if (sf == nullptr)
         return false;

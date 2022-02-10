@@ -137,6 +137,8 @@ Item {
         ToolButton {
             text: "Play"
             onClicked: {
+                if (Qt.platform.os != "android")
+                    audio.openMidiFile("hotfix.mid")
                 tapper.saveTapsAsMidi("tapper.mid") //tapper.mid
                 audio.openMidiFile("tapper.mid")
                 audio.startMidiPlayer()
@@ -144,7 +146,9 @@ Item {
         }
         ToolButton{
             text: "Stop"
-            onClicked: audio.stopMidiPlayer()
+            onClicked: {
+                audio.stopMidiPlayer()
+            }
         }
         Slider {
             from: 0.25

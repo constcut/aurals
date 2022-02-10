@@ -77,7 +77,7 @@ Item {
             }
             ToolButton {
                 text: "Load test file"
-                onClicked: audio.loadMidiFile(testFilesCombo.currentText)
+                onClicked: audio.openMidiFile(testFilesCombo.currentText)
             }
             ToolButton {
                 text: "Play loaded file"

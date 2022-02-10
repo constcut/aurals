@@ -14,5 +14,6 @@
         <file>sf/fullset.sf2</file>
         <file>sf/epiano.sf2</file>
         <file>sf/drums.sf2</file>
+        <file>sf/hotfix.mid</file>
     </qresource>
 </RCC>

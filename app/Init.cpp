@@ -49,7 +49,7 @@ using namespace aurals;
 void checkMidiRegression() {
 
     QList<QString> filesToCheck {"test1.mid", "test2.mid", "test3.mid",
-                                 "test4.mid", "test5.mid", "test6.mid"};
+                                 "test4.mid", "test5.mid", "test6.mid", "hotfix.mid"};
 
     for (auto& filename: filesToCheck) {
         aurals::MidiFile m;
