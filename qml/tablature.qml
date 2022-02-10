@@ -45,8 +45,10 @@ Item {
 
             if (Qt.platform.os !== "android")
                 audio.saveMidiToWav(pcmName)
-            else
-                audio.saveMidiToWav("/storage/emulated/0/Documents/pcm.wav")
+            else {
+                var correctPath = decodeURIComponent(saveFileDialog.fileUrls[0])
+                audio.saveMidiToWav(correctPath)
+            }
         }
         onRejected: {
             saveFileDialog.close()
@@ -63,7 +65,14 @@ Item {
         selectMultiple: false
         onAccepted: {
             var midiName = saveMidiDialog.fileUrls[0].substring(7)
-            tabView.exportMidi(midiName, 0)
+
+            if (Qt.platform.os !== "android")
+                tabView.exportMidi(midiName, 0)
+            else {
+                var correctPath = decodeURIComponent(saveFileDialog.fileUrls[0])
+                tabView.exportMidi(correctPath, 0)
+            }
+
         }
         onRejected: {
             saveFileDialog.close()
