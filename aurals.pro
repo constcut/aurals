@@ -8,6 +8,8 @@ linux:Debug:CONFIG += sanitizer sanitize_address sanitize_memory sanitize_undefi
 QMAKE_CXXFLAGS_RELEASE += -O3
 
 
+win32:LIBS += -lWinMM
+
 #CONFIG += no_keywords #was used only for python interpreter
 DEFINES += QT_DEPRECATED_WARNINGS
 QMAKE_CXXFLAGS += -std=c++17

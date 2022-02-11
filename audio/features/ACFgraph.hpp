@@ -20,7 +20,7 @@ namespace aurals {
     {
             Q_OBJECT
     public:
-        ACGraphQML([[maybe_unused]] QQuickItem* parent = nullptr)
+        ACGraphQML(QQuickItem* parent = nullptr)
         : _input(4096, 0.f),
           _windowBufer(4096, 0.f)
         { _yin.init(_sampleRate, _windowSize); }

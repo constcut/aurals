@@ -19,7 +19,7 @@ namespace aurals {
     {
             Q_OBJECT
     public:
-        CepstrumgraphQML([[maybe_unused]] QQuickItem* parent = nullptr)
+        CepstrumgraphQML(QQuickItem* parent = nullptr)
         : _input(4096, 0.f),
           _windowBufer(4096, 0.f),
           _cepstrum(4096, 0.f),

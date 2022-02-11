@@ -12,7 +12,7 @@ namespace aurals {
             Q_OBJECT
     public:
 
-        StretchImageQML([[maybe_unused]] QQuickItem* parent = nullptr){}
+        StretchImageQML(QQuickItem* parent = nullptr){}
 
         void paint(QPainter* painter) {
 
