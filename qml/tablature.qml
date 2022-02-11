@@ -406,7 +406,10 @@ Item {
                     tabView.prepareAllThreads(currentPosition)
                     tabView.exportMidi("temp.mid", currentPosition)
                     audio.openMidiFile("temp.mid")
-                    audio.startMidiPlayer()
+                    if (aconfig.param("midi.config") === "on")
+                        audio.startMidiPlayer()
+                    else
+                        console.log("Alt config playing midi")
                     tabView.launchAllThreads()
                 }
             }

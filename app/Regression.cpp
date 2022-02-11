@@ -44,7 +44,7 @@ bool aurals::checkHasRegression() {
 
         for (size_t fileIndx = from; fileIndx <= to; ++fileIndx) {
             std::string testName = std::to_string(groupIdx) + "." + std::to_string(fileIndx);
-            std::string testLocation = AConfig::getInst().testsLocation;
+            std::string testLocation = Config::getInst().testsLocation;
             std::string midiFile = testLocation + std::string("regression_check/") + testName + std::string(".mid");
             std::string midiFileCheck = testLocation + std::string("regression/") + testName + std::string(".mid");
             std::string gp4File = testLocation + testName + std::string(".gp4");
@@ -113,7 +113,7 @@ bool aurals::checkHasRegression() {
 
 
 std::vector<MacroCommand> writeAndReadMacro(const std::vector<MacroCommand>& commands) {
-    auto tempMacroPath = AConfig::getInst().testsLocation + "macro";
+    auto tempMacroPath = Config::getInst().testsLocation + "macro";
     {
         std::ofstream os(tempMacroPath, std::ios::binary);
         saveMacroComannds(commands, os);
@@ -304,7 +304,7 @@ bool aurals::checkMidiIORegression() {
             break;
 
         for (size_t fileIndx = from; fileIndx <= to; ++fileIndx) {
-            std::string testLocation = AConfig::getInst().testsLocation;
+            std::string testLocation = Config::getInst().testsLocation;
             std::string testName = std::to_string(groupIdx) + "." + std::to_string(fileIndx);
             std::string midiFile = testLocation + std::string("regression_check/") + testName + std::string(".mid");
             std::string midiFileCheck = testLocation + std::string("regression/") + testName + std::string(".mid");

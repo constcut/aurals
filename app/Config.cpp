@@ -11,7 +11,7 @@ using namespace aurals;
 
 void aurals::initGlobals()
 {
-    AConfig& conf = AConfig::getInst();
+    Config& conf = Config::getInst();
 
     conf.invertedLocation = "";
     conf.testsLocation = "";
@@ -45,7 +45,7 @@ void aurals::setTestLocation(std::string newTL)
     std::string invertedLocation="";
 
     std::cout << "setCurrent location to "<<newTL.c_str()<<std::endl;
-    AConfig& conf = AConfig::getInst();
+    Config& conf = Config::getInst();
 
     conf.testsLocation = newTL;
 
@@ -62,7 +62,7 @@ void aurals::setTestLocation(std::string newTL)
 }
 
 
-void AConfig::connectLog(bool *ptrValue, int index,std::string logName)
+void Config::connectLog(bool *ptrValue, int index,std::string logName)
 {
     if (index==-1)
         index = topIndex+1;
@@ -78,7 +78,7 @@ void AConfig::connectLog(bool *ptrValue, int index,std::string logName)
 
 //log Name 1/0
 //v Name 1290391
-void AConfig::load(std::ifstream &file)
+void Config::load(std::ifstream &file)
 {
     std::string lastLine = "firstOne";
 
@@ -134,7 +134,7 @@ std::string repairString(std::string str)
     return response;
 }
 
-void AConfig::addLine(std::string anotherLine)
+void Config::addLine(std::string anotherLine)
 {
             //std::cout <<anotherLine.c_str()<<std::endl;
             size_t eqSign = anotherLine.find("=");
@@ -151,7 +151,7 @@ void AConfig::addLine(std::string anotherLine)
 
 //should connect some values to be used
 //first
-void AConfig::save(std::ofstream &file) const
+void Config::save(std::ofstream &file) const
 {
      //file.opened();
      for (auto it = values.begin();
@@ -163,7 +163,7 @@ void AConfig::save(std::ofstream &file) const
      file.close();
 }
 
-void AConfig::printValues() const
+void Config::printValues() const
 {
     qDebug()<<"Configuration parameters";
     for (auto it = values.begin();
@@ -174,7 +174,7 @@ void AConfig::printValues() const
     qDebug()<<"Config printed";
 }
 
- void AConfig::addValue(std::string name, std::string val)
+ void Config::addValue(std::string name, std::string val)
  {
     if (values.count(name) == 0)
     {
@@ -186,7 +186,7 @@ void AConfig::printValues() const
     }
  }
 
-void AConfig::checkConfig()
+void Config::checkConfig()
 {
     addValue("TrackView.nextBeat",">>>");
     addValue("TrackView.prevBeat","<<<");

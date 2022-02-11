@@ -5,9 +5,9 @@
 #include <unordered_map>
 #include <vector>
 
-#define CONF_PARAM(z) AConfig::getInst().values[ z ] //TODO maybe replace with QSettings
+#define CONF_PARAM(z) Config::getInst().values[ z ] //TODO maybe replace with QSettings
 
-
+#include <QObject>
 
 namespace aurals {
 
@@ -16,8 +16,11 @@ namespace aurals {
     void initGlobals();
 
 
-    class AConfig
+
+
+    class Config : public QObject
     {
+
     public:
         bool *logs[10];
         std::string logsNames[10];
@@ -28,6 +31,12 @@ namespace aurals {
 
         double scaleCoef;
         double timeCoef;
+
+        Q_INVOKABLE QString getValue(std::string v) {
+            if (values.count(v))
+                return values[v].c_str();
+            return "";
+        }
 
         std::string testsLocation;
         std::string invertedLocation;
@@ -44,6 +53,8 @@ namespace aurals {
         std::string platform;
 
     public:
+       //Config() = default;
+        virtual ~Config() = default;
 
         void connectLog(bool *ptrValue, int index=-1,std::string logName="unknown");
 
@@ -65,21 +76,40 @@ namespace aurals {
 
 
     public:
-            static AConfig& getInst() {
-                static AConfig instance;
+            static Config& getInst() {
+                static Config instance;
                 return instance;
             }
 
-    private:
-            AConfig(): topIndex(-1),scaleCoef(1.0),timeCoef(1) {}
-            AConfig(const AConfig& root) = delete;
-            AConfig& operator=(const AConfig&) = delete;
+    public:
+            Config(): topIndex(-1),scaleCoef(1.0),timeCoef(1) {}
+            Config(const Config& root) = delete;
+            Config& operator=(const Config&) = delete;
+
+    };
+
+
+    class ConfigQML : public QObject {
+
+        Q_OBJECT
+
+    public:
+        ConfigQML() = default;
+        ~ConfigQML() = default;
+
+        std::string parameter(std::string name) {
+            return Config::getInst().getValue(name).toStdString();
+        }
+
+        Q_INVOKABLE QString param(QString name) {
+            return Config::getInst().getValue(name.toStdString());
+        }
 
     };
 
 
 
-    class Skin
+    class Skin //TODO colors palette + save congif
     {
     protected:
         //just cfg lines
@@ -89,7 +119,7 @@ namespace aurals {
         //
         virtual void init()=0;
 
-        void setIntoConfig(AConfig& conf)
+        void setIntoConfig(Config& conf)
         {
             for (size_t i=0; i < configLines.size(); ++i)
                 conf.addLine(configLines[i]);

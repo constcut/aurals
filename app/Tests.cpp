@@ -226,7 +226,7 @@ bool greatCheck()
         {
             std::string newLine = std::to_string(scen) + "." + std::to_string(i);
 
-            std::string testLocation = AConfig::getInst().testsLocation;
+            std::string testLocation = Config::getInst().testsLocation;
 
             //std::string gp5File = testLocation + std::string("g5/") +std::string(newLine.c_str()) + std::string(".gp5");
             std::string gp4File = testLocation  +std::string(newLine.c_str()) + std::string(".gp4");
@@ -271,7 +271,7 @@ bool aurals::greatCheckScenarioCase(uint32_t scen, uint32_t from, uint32_t to, u
         {
             std::string newLine = std::to_string(scen) + "." + std::to_string(i);
 
-            std::string testLocation = AConfig::getInst().testsLocation;
+            std::string testLocation = Config::getInst().testsLocation;
             //std::string gp5File = testLocation + std::string("g5/") +std::string(newLine.c_str()) + std::string(".gp5");
             std::string gp4File = testLocation +std::string(newLine.c_str()) + std::string(".gp4");
             //std::string gp3File = testLocation + std::string("g3/") +std::string(newLine.c_str()) + std::string(".gp3");
@@ -315,7 +315,7 @@ bool aurals::greatCheckScenarioCase(uint32_t scen, uint32_t from, uint32_t to, u
     return true;
 }
 
-void aurals::connectConfigs(AConfig& config)
+void aurals::connectConfigs(Config& config)
 {
     config.connectLog(&tabLog,0,"tab");
     config.connectLog(&midiLog,2,"midi");

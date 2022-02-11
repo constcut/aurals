@@ -97,7 +97,7 @@ void posix_death_signal(int signum)
     signal(signum, SIG_DFL);
 
 
-    std::string logName = AConfig::getInst().testsLocation + std::string("log.txt");
+    std::string logName = Config::getInst().testsLocation + std::string("log.txt");
 
 
     QFile logF;
@@ -120,7 +120,7 @@ void posix_death_signal(int signum)
 
     std::cout << std::endl << time.c_str() << std::endl;
 
-    QString baseLocation = AConfig::getInst().testsLocation.c_str();
+    QString baseLocation = Config::getInst().testsLocation.c_str();
     QString crashName = baseLocation + QString("crashs.glog");
     crashLog.setFileName(crashName);
 
@@ -218,8 +218,8 @@ void setTestsPath(QGuiApplication& a) {
 }
 
 void loadConfig() {
-    std::string currentPath = AConfig::getInst().testsLocation;
-    AConfig& configuration = AConfig::getInst();
+    std::string currentPath = Config::getInst().testsLocation;
+    Config& configuration = Config::getInst();
     configuration.checkConfig();
     std::string confFileName = currentPath + "g.config";
     if (QFile::exists(confFileName.c_str())) {
@@ -321,7 +321,7 @@ int mainInit(int argc, char *argv[]) {
     else
         qWarning() << "Failed to load font";
 
-    AConfig::getInst().checkConfig();
+    Config::getInst().checkConfig();
 
     qmlRegisterType<aurals::WaveshapeQML>("aurals", 1, 0, "Waveshape");
     qmlRegisterType<aurals::SpectrographQML>("aurals", 1, 0,"Spectrograph");
@@ -354,7 +354,9 @@ int mainInit(int argc, char *argv[]) {
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("Windows-1251")); //Настройки //KOI8-R //ISO 8859-5 //UTF-8 //Windows-1251
     QQmlApplicationEngine engine;
     aurals::AudioHandler audio;
+    aurals::ConfigQML config;
     engine.rootContext()->setContextProperty("audio", &audio);
+    engine.rootContext()->setContextProperty("aconfig", &config);
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
     if (engine.rootObjects().isEmpty())
         return -1;
