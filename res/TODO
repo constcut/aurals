@@ -1,6 +1,6 @@
 
 
-
+==========================================================================================================
 
 
     1) MidiEng sounds
@@ -37,6 +37,31 @@
     11) Tracks view, additional mode, can create projects of 2 types, tab or atracks
 
 
+
+------------------------------------
+
+Crazy optionals:
+
+
+    1) ath component with chats
+
+    2) statistics for each track, or whole thing, or directory
+
+    3) polyR mode, different bars (+TrackView)
+
+    4) Macross recording
+
+    5) All undo records in file
+
+    6) JSON file format
+
+    7) simple copy track harmonization + interval : a) cents b) music interval in scale
+
+    8) realtime PCM generation from midi : { player time, recorder time }
+
+    9) midi input
+
+=======================================================================
 
 
 
