@@ -94,7 +94,8 @@ namespace aurals {
         Q_OBJECT
 
     public:
-        ConfigQML() = default;
+        ConfigQML(){}
+        ConfigQML(QObject* parent) {}
         ~ConfigQML() = default;
 
         std::string parameter(std::string name) {

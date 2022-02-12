@@ -1,3 +1,89 @@
+
+
+
+
+
+    1) MidiEng sounds
+        1) Full play
+        2) On input
+
+    2) better playing cursor
+
+    3) repaint TrackV on tab playing сменилось на false
+
+    4) pattern line component
+
+        1) 4/4 with different length for cell
+        2) any num\denum
+        3) different sizes (-3- -5- . ..)
+        4) export to tab
+
+    5) Drum tab better loook -> image on every 38\40 midi note value for drums
+
+    6) piano roll
+
+        1) Load midi file
+        2) Edit midi file & save
+        3) export form tab linked piano roll version: fret + string on each midi piano roll note
+
+    7) Mapping to pattern drumming
+
+    8) Recoding on tab, selection of bars
+
+    9) realtime midi, and cental play\recod time to sync, +(animation time)
+
+    10) static libs
+
+    11) Tracks view, additional mode, can create projects of 2 types, tab or atracks
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+===============================================================================================================================================
 (QML models requests:
     instuments + percussions)
 
