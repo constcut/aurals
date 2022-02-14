@@ -13,6 +13,8 @@
 #include "tab/tools/TabLoader.hpp"
 #include "tab/tools/MidiExport.hpp"
 
+#include "midi/MidiEngine.hpp"
+
 
 using namespace aurals;
 
@@ -266,7 +268,21 @@ void AudioHandler::openMidiFile(const QString filename) {
 }
 
 
-Q_INVOKABLE void AudioHandler::openTabFile(const QString filename) {
+
+void AudioHandler::openMidiFileEngine(const QString filename) {
+    MidiEngine::getInst().closeFile();
+    MidiEngine::getInst().openFile(filename);
+}
+
+void AudioHandler::startMidiFileEngine() {
+    MidiEngine::getInst().startFile();
+}
+
+void AudioHandler::stopMidiFileEngine() {
+    MidiEngine::getInst().stopFile();
+}
+
+void AudioHandler::openTabFile(const QString filename) {
     GTabLoader loader;
     loader.open(filename.toStdString());
     auto midi = exportMidi(loader.getTab().get(), 0);

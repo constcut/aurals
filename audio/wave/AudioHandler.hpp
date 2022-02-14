@@ -67,6 +67,10 @@ namespace aurals {
         Q_INVOKABLE void openTabFile(const QString filename);
         Q_INVOKABLE void saveMidiToWav(const QString filename) const;
 
+        Q_INVOKABLE void openMidiFileEngine(const QString filename);
+        Q_INVOKABLE void startMidiFileEngine();
+        Q_INVOKABLE void stopMidiFileEngine();
+
         Q_INVOKABLE void changeMidiRenderVolume(const double db) { _render.setVolumeDb(db); }
         Q_INVOKABLE void changeMidiSoundfont(const QString filename) { _render.setSoundFont(filename); }
         Q_INVOKABLE void changeMidiSampleRate(const double sr) { _render.setSampleRate(sr);}

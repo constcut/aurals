@@ -28,12 +28,14 @@ namespace aurals {
        bool _playNotes;
        bool _emitSignal;
 
+
+    public:
+
        static MidiEngine& getInst() {
            static MidiEngine eng;
            return eng;
        }
 
-    public:
 
         static void init();
         static void freeInitials();

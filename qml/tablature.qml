@@ -405,11 +405,16 @@ Item {
                     var currentPosition = tabView.getTimeLineBar()
                     tabView.prepareAllThreads(currentPosition)
                     tabView.exportMidi("temp.mid", currentPosition)
-                    audio.openMidiFile("temp.mid")
-                    if (aconfig.param("midi.config") === "on")
+
+                    if (aconfig.param("midi.config") === "on") {
+                        audio.openMidiFile("temp.mid")
                         audio.startMidiPlayer()
-                    else
+                    }
+                    else {
                         console.log("Alt config playing midi")
+                        audio.openMidiFileEngine("temp.mid")
+                        audio.startMidiFileEngine()
+                    }
                     tabView.launchAllThreads()
                 }
             }
@@ -418,6 +423,7 @@ Item {
                 onClicked:  {
                     tabView.stopAllThreads()
                     audio.stopMidiPlayer()
+                    audio.stopMidiFileEngine()
                 }
             }
 

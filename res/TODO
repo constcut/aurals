@@ -3,7 +3,7 @@
 ==========================================================================================================
 
 
-    1) MidiEng sounds
+ *   1) MidiEng sounds
         1) Full play
         2) On input
 
@@ -29,6 +29,7 @@
     7) Mapping to pattern drumming
 
     8) Recoding on tab, selection of bars
+        or click track with drums
 
     9) realtime midi, and cental play\recod time to sync, +(animation time)
 
