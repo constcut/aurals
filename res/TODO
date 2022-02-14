@@ -4,10 +4,7 @@
 
 
  *   1) MidiEng sounds
-        1) Full play
         2) On input
-
-    2) better playing cursor
 
     3) repaint TrackV on tab playing сменилось на false
 
