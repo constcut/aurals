@@ -394,9 +394,19 @@ void BarView::paint(QPainter *painter)
              changeColor(CONF_PARAM("colors.curBeat"), painter);
 
              if (tab->playing())
+             {
+                /*painter->drawLine(cX + 19 + i * inbarWidth + inbarWidth / 4, cY,
+                                  cX + 19 + i * inbarWidth + inbarWidth / 4,
+                                  cY + stringWidth * tuning.getStringsAmount());*/
+
                 painter->drawLine(cX + 19 + i * inbarWidth + inbarWidth / 4, cY,
                                   cX + 19 + i * inbarWidth + inbarWidth / 4,
+                                  cY + stringWidth);
+
+                painter->drawLine(cX + 19 + i * inbarWidth + inbarWidth / 4, cY + stringWidth * (tuning.getStringsAmount() - 1),
+                                  cX + 19 + i * inbarWidth + inbarWidth / 4,
                                   cY + stringWidth * tuning.getStringsAmount());
+             }
 
         }
 
