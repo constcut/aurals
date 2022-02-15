@@ -34,6 +34,29 @@
 
     11) Tracks view, additional mode, can create projects of 2 types, tab or atracks
 
+-------------------------------------------------------
+Unfinished:
+
+1) Changes 2) Bends 3) Chords
+
+4) TrackView change while playing
+
+5) config (only notes)
+
+6) Озвучка при вводе
+
+7) QFile для QML dialog \ save
+
+8) tunings
+
+9) 1-5 JSON pannels
+
+10) Bar view with all constatns
+
+11) Realtime midi generation
+    a) normal
+    b) using own file format
+
 
 
 ------------------------------------
