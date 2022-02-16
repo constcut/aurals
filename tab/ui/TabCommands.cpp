@@ -6,6 +6,8 @@
 #include "tab/tools/TabLoader.hpp"
 #include "tab/tools/GmyFile.hpp"
 #include "tab/tools/MidiExport.hpp"
+
+#include "midi/MidiEngine.hpp"
 #include "midi/MidiRender.hpp"
 
 #include "app/Config.hpp"
@@ -79,8 +81,9 @@ void handleKeyInput(int digit, int& digitPress, Track* pTrack, size_t cursor, si
         }
         //STARTMIDI
         [[maybe_unused]] std::uint8_t midiNote = inputedNote->getMidiNote(tune);
-        //MidiEngine::sendSignalShort(0x90|chan,midiNote,120);
-        ///MidiEngine::sendSignalShortDelay(250,0x80|chan,midiNote,120);
+
+        MidiEngine::sendSignalShort(0x90|chan, midiNote, 120);
+        MidiEngine::sendSignalShortDelay(250, 0x80|chan, midiNote, 120);
         //MidiEngine::sendSignalShortDelay(750,0x90|chan,midiNote+2,120);
         //ОЗВУЧИВАТЬ В РЕАЛЬНОМ ВРЕМЕНИ - генерировать короткий SF, midi file из 1 ноты
     }

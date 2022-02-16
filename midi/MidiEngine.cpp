@@ -299,12 +299,10 @@ void MidiEngine::sendSignalLong([[maybe_unused]] const MidiMessage &signal)
 
 #ifdef WIN32
 
-
-LPTIMECALLBACK Midi_Callback_Win(UINT uId, UINT uMsg, DWORD_PTR dwUser, DWORD_PTR dw1, DWORD_PTR dw2)
+//UINT uTimerID,UINT uMsg,DWORD_PTR dwUser,DWORD_PTR dw1,DWORD_PTR dw2
+void Midi_Callback_Win(UINT uId, UINT uMsg, DWORD_PTR dwUser, DWORD_PTR dw1, DWORD_PTR dw2)
 {
-    qDebug() << "Midi cb begin "<<dwUser;
     MidiEngine::sendSignalShortWin(dwUser);
-    qDebug() << "Midi cb end "<<dwUser;
 }
 
 
@@ -335,14 +333,16 @@ void MidiEngine::sendSignalShortDelay([[maybe_unused]] const int msdelay, [[mayb
     qDebug()<<"Pushing signal "<<signal<<"for ms delay "<<msdelay;
     qDebug()<<"Sinal parts "<<byte1<<" "<<byte2<<"; "<<status;
 
-    /*
-    if (timeSetEvent(msdelay, wTimerRes, Midi_Callback_Win,signal,TIME_ONESHOT) ==  0)
+
+
+    //UINT uDelay,UINT uResolution,LPTIMECALLBACK fptc,DWORD_PTR dwUser,UINT fuEvent
+    if (timeSetEvent(msdelay, wTimerRes, Midi_Callback_Win, signal, TIME_ONESHOT) ==  0)
     {
         qDebug() <<"failed to start mmtimer";
     }
     else
         qDebug() << "Timer was set for midi event";
-        */ //FAILED on last windows build
+        //*/ //FAILED on last windows build
 
     //yet have some issue
 #endif
