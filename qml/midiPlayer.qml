@@ -94,6 +94,13 @@ Item {
         }
     }
 
+    PianoRoll {
+        id: pianoRoll
+        y: mainLayout.y + mainLayout.height
+        width: parent.width
+        height: parent.height - y
+    }
+
     function keyboardEventSend(key, mode) {
         //Заглушка, но можно реализовать логику здесь
     }

@@ -25,6 +25,8 @@
 #include "audio/spectrum/Spectrograph.hpp"
 #include "audio/spectrum/Cepstrumgraph.hpp"
 
+#include "music/pianoroll.h"
+
 #include "audio/features/ACFgraph.hpp"
 #include "app/StretchImage.hpp"
 
@@ -333,6 +335,7 @@ int mainInit(int argc, char *argv[]) {
     qmlRegisterType<aurals::TabView>("aurals", 1, 0, "TabView");
     qmlRegisterType<aurals::TrackView>("aurals", 1, 0, "TrackView");
     //qmlRegisterType<aurals::BarView>("aurals", 1, 0, "BarView");
+    qmlRegisterType<PianoRoll>("aurals", 1, 0, "PianoRoll");
 
     qmlRegisterUncreatableMetaObject(aurals::staticMetaObject,
         "aurals", 1, 0, "Tab", "Error: object creation for enum not supported");

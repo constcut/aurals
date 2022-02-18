@@ -85,6 +85,7 @@ SOURCES += \
     midi/NBytesInt.cpp \
     music/GraphicMap.cpp \
     music/Tapper.cpp \
+    music/PianoRoll.cpp \
     tab/Bar.cpp \
     tab/Beat.cpp \
     tab/Effects.cpp \
@@ -208,6 +209,7 @@ HEADERS += \
     libs/sf/tsf.h \
     music/GraphicMap.hpp \
     music/Tapper.h \
+    music/PianoRoll.h \
     tab/Bar.hpp \
     tab/Beat.hpp \
     tab/BeatStructs.hpp \
