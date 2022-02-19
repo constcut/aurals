@@ -73,13 +73,18 @@ Item {
             }
             ToolButton {
                 text: "Stop"
-                onClicked:  audio.stopMidiPlayer()
+                onClicked:   {
+                    audio.stopMidiPlayer()
+
+                }
             }
             ToolButton {
                 text: "Load test file"
                 onClicked: {
+                    pianoRoll.reset()
                     pianoRoll.loadMidi(testFilesCombo.currentText)
-                    audio.openMidiFile(testFilesCombo.currentText)
+
+                    //audio.openMidiFile(testFilesCombo.currentText)
                 }
             }
             ToolButton {
@@ -102,6 +107,10 @@ Item {
         y: mainLayout.y + mainLayout.height
         width: parent.width
         height: parent.height - y
+    }
+
+    Component.onCompleted: {
+       // pianoRoll.loadMidi(testFilesCombo.currentText)
     }
 
     function keyboardEventSend(key, mode) {

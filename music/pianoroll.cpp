@@ -19,16 +19,36 @@ int PianoRoll::getContentHeight() {
     return 128;
 }
 
+void PianoRoll::reset() {
+    _mid = MidiFile();
+    update();
+}
+
 void PianoRoll::paint(QPainter* painter) {
 
+    if (_mid.empty())
+        return;
+
+    int minMidi = 128;
+    int maxMidi = 0;
+    for (const auto& message: _mid.at(1)) {
+        if (message.getEventType() == MidiEvent::NoteOn) {
+            const auto midiNote = message.getParameter1();
+            if (maxMidi < midiNote)
+                maxMidi = midiNote;
+            if (minMidi > midiNote)
+                minMidi = midiNote;
+        }
+    }
+
     const int noteHeight = 5;
-    for (size_t i = 0; i < 128; ++i) {
+    painter->setPen(QColor("lightgray"));
+    for (size_t i = minMidi; i < maxMidi; ++i) {
         painter->drawLine(0, i * noteHeight,
                           width(), i * noteHeight);
     }
 
-    if (_mid.empty())
-        return;
+
     //notes
     qDebug() << "Total tracks " << _mid.size();
     qDebug() << "Messages on track 0 " << _mid.at(1).size();
@@ -36,19 +56,19 @@ void PianoRoll::paint(QPainter* painter) {
 
         //qDebug() << "__ " << message.absoluteTime();
 
-        const auto pos =  message.absoluteTime() / 250.0;
+        const auto pos =  message.absoluteTime() / 50.0;
 
 
         if (message.getEventType() == MidiEvent::NoteOn) {
             const auto midiNote = message.getParameter1();
             painter->setPen(QColor("red"));
-            painter->drawRect(pos, noteHeight * midiNote, 10, noteHeight);
+            painter->drawRect(pos, noteHeight * midiNote, 2, noteHeight);
         }
         if (message.getEventType() == MidiEvent::NoteOff) {
             const auto midiNote = message.getParameter1();
             //todo colors
             painter->setPen(QColor("blue"));
-            painter->drawRect(pos, noteHeight * midiNote, 10, noteHeight);
+            painter->drawRect(pos, noteHeight * midiNote, 2, noteHeight);
         }
     }
 

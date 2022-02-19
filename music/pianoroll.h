@@ -18,6 +18,8 @@ public:
     Q_INVOKABLE int getContentWidth();
     Q_INVOKABLE int getContentHeight();
 
+    Q_INVOKABLE void reset();
+
     void paint(QPainter* painter);
 
 
