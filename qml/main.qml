@@ -23,7 +23,7 @@ ApplicationWindow {
             thatWindow.height = 600
         }
 
-        onClicked: mainLoader.setSource("tablature.qml") // tablature audioHandler
+        mainLoader.setSource("midiPlayer.qml") // tablature audioHandler midiPlayer
     }
 
 

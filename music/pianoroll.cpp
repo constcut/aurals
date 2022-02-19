@@ -34,7 +34,7 @@ void PianoRoll::paint(QPainter* painter) {
     qDebug() << "Messages on track 0 " << _mid.at(1).size();
     for (const auto& message: _mid.at(1)) {
 
-        qDebug() << "__ " << message.absoluteTime();
+        //qDebug() << "__ " << message.absoluteTime();
 
         const auto pos =  message.absoluteTime() / 250.0;
 
