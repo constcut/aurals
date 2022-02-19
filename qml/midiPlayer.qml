@@ -77,7 +77,10 @@ Item {
             }
             ToolButton {
                 text: "Load test file"
-                onClicked: audio.openMidiFile(testFilesCombo.currentText)
+                onClicked: {
+                    pianoRoll.loadMidi(testFilesCombo.currentText)
+                    audio.openMidiFile(testFilesCombo.currentText)
+                }
             }
             ToolButton {
                 text: "Play loaded file"

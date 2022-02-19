@@ -26,7 +26,7 @@ signals:
 
 private:
 
-    //MidiFile
+    aurals::MidiFile _mid;
 
 
 
