@@ -99,7 +99,7 @@ void PianoRoll::paint(QPainter* painter) {
                 painter->fillRect(ray[midiNote], midiNoteToPosition(midiNote), noteWidth, noteHeight,
                                   QBrush(QColor("green")));
 
-                painter->setPen(QColor("yellow"));
+                painter->setPen(QColor("lightgreen"));
                 painter->drawRect(ray[midiNote], midiNoteToPosition(midiNote), noteWidth, noteHeight);
             }
 
@@ -114,7 +114,7 @@ void PianoRoll::paint(QPainter* painter) {
                 painter->fillRect(ray[midiNote], midiNoteToPosition(midiNote), noteWidth, noteHeight,
                                   QBrush(QColor("green")));
 
-                painter->setPen(QColor("yellow"));
+                painter->setPen(QColor("lightgreen"));
                 painter->drawRect(ray[midiNote], midiNoteToPosition(midiNote), noteWidth, noteHeight);
 
                 ray[midiNote] = -1.0;
