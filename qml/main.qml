@@ -12,6 +12,9 @@ ApplicationWindow {
     visible: true
     title: "aurals"
 
+    x: 30
+    y: 50
+
     Component.onCompleted: {
         if (Qt.platform.os === "android") {
             exitMenuItem.visible = false
