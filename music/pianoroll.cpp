@@ -51,10 +51,21 @@ void PianoRoll::paint(QPainter* painter) {
     }
 
     const int noteHeight = 5;
+
+    auto midiNoteToPosition = [&](int midiNote) {
+      if (_fillHeight == false)
+          return midiNote * noteHeight;
+      else {
+
+      }
+      return 0;
+    };
+
+
     painter->setPen(QColor("lightgray"));
-    for (size_t i = minMidi; i < maxMidi; ++i) {
-        painter->drawLine(0, i * noteHeight,
-                          width(), i * noteHeight);
+    for (int i = minMidi; i < maxMidi; ++i) {
+        painter->drawLine(0, midiNoteToPosition(i),
+                          width(), midiNoteToPosition(i));
     }
 
 
@@ -73,13 +84,12 @@ void PianoRoll::paint(QPainter* painter) {
         if (message.getEventType() == MidiEvent::NoteOn) {
             const auto midiNote = message.getParameter1();
             painter->setPen(QColor("red"));
-            painter->drawRect(pos, noteHeight * midiNote, 2, noteHeight);
+            painter->drawRect(pos, midiNoteToPosition(midiNote), 2, noteHeight);
         }
         if (message.getEventType() == MidiEvent::NoteOff) {
             const auto midiNote = message.getParameter1();
-            //todo colors
             painter->setPen(QColor("blue"));
-            painter->drawRect(pos, noteHeight * midiNote, 2, noteHeight);
+            painter->drawRect(pos, midiNoteToPosition(midiNote), 2, noteHeight);
         }
     }
 

@@ -83,12 +83,13 @@ Item {
                 text: "Load test file"
                 onClicked: {
                     pianoRoll.reset()
+                    pianoRoll.setHeightStretch(stretchHeight.checked)
                     pianoRoll.loadMidi(testFilesCombo.currentText)
                     pianoRollTrack.model = pianoRoll.getTrackCount()
 
                     var maxWidth = pianoRoll.getContentWidth()
-                    console.log("Content max width: ", maxWidth)
-                    //audio.openMidiFile(testFilesCombo.currentText)
+                    flick.contentWidth = maxWidth
+                    pianoRoll.width = maxWidth
                 }
             }
             ToolButton {
@@ -113,15 +114,36 @@ Item {
                     pianoRoll.setCurrentTrack(curTrack)
                 }
             }
+            CheckBox {
+                id: stretchHeight
+                checked: false
+                text: "Stretch height"
+            }
         }
     }
 
-    PianoRoll {
-        id: pianoRoll
+
+    ScrollView {
         y: mainLayout.y + mainLayout.height
         width: parent.width
         height: parent.height - y
+
+        Flickable {
+            id: flick
+            width: parent.width
+            height: parent.height-20
+            contentWidth: 3000
+            contentHeight:  parent.height
+
+            PianoRoll {
+                id: pianoRoll
+                y: 0
+                width: parent.width
+                height: parent.height - y
+            }
+        }
     }
+
 
     Component.onCompleted: {
        // pianoRoll.loadMidi(testFilesCombo.currentText)

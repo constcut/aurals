@@ -32,6 +32,10 @@ public:
         update();
     }
 
+    Q_INVOKABLE void setHeightStretch(bool value) {
+        _fillHeight = value;
+    }
+
 signals:
 
 
@@ -41,7 +45,7 @@ private:
 
     size_t _currentTrack = 1;
 
-    //bool _fillHeight = false; //Height fill option (если размер не меньше)
+    bool _fillHeight = false; //Height fill option (если размер не меньше)
 
     //double _xZoomCoef = 1.0;
     //double _yZoomCoef = 1.0;
