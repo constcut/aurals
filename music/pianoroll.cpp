@@ -4,12 +4,14 @@
 
 using namespace aurals;
 
+
 void PianoRoll::loadMidi(QString filename) {
     _mid.readFromFile(filename.toStdString());
     update();
 }
 
- int PianoRoll::getContentWidth() {
+
+int PianoRoll::getContentWidth() {
     int maxPixels = 0;
 
     //Или делать это локально по 1 треку? т.к. длина будет варироваться
@@ -24,14 +26,17 @@ void PianoRoll::loadMidi(QString filename) {
     return maxPixels;
 }
 
+
 int PianoRoll::getContentHeight() {
     return 128;
 }
+
 
 void PianoRoll::reset() {
     _mid = MidiFile();
     update();
 }
+
 
 void PianoRoll::paint(QPainter* painter) {
 
@@ -77,17 +82,12 @@ void PianoRoll::paint(QPainter* painter) {
     }
 
 
-    //notes
-    qDebug() << "Total tracks " << _mid.size();
-    qDebug() << "Messages on track " << _currentTrack << " "
-             << _mid.at(_currentTrack).size();
 
-    for (const auto& message: _mid.at(_currentTrack)) {
-
-        //qDebug() << "__ " << message.absoluteTime();
-
+    for (const auto& message: _mid.at(_currentTrack))
+    {
         const auto pos = ( message.absoluteTime() / 50.0 ) * _xZoomCoef;
 
+        //TODO open ray with positions double values for opened once notes
 
         if (message.getEventType() == MidiEvent::NoteOn) {
             const auto midiNote = message.getParameter1();
