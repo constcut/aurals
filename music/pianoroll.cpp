@@ -50,15 +50,23 @@ void PianoRoll::paint(QPainter* painter) {
         }
     }
 
-    const int noteHeight = 5;
+    const int noteHeight = [&](){
+      if (_fillHeight == false)
+          return 5;
+      else {
+          const int dist = maxMidi - minMidi;
+          return static_cast<int>(height() / dist);
+      }
+    }();
 
     auto midiNoteToPosition = [&](int midiNote) {
-      if (_fillHeight == false)
-          return midiNote * noteHeight;
-      else {
-
-      }
-      return 0;
+        if (_fillHeight == false)
+            return midiNote * noteHeight;
+        else {
+           const int localNote = midiNote - minMidi;
+           return localNote * noteHeight;
+        }
+        return 0;
     };
 
 
