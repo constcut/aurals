@@ -3,6 +3,13 @@
     1) piano roll
 
         1) Draw midi notes
+            a) Объекты с координатами
+            b) Hit \ select
+            c) Press\release selected
+            d) move on notes scale
+            e) move on time scale
+            f) check on simple midi (from 3.1 tab, add it to res)
+
         2) Move midi notes x + y : editing of MidiFile
         x) export form tab linked piano roll version: fret + string on each midi piano roll note
 
