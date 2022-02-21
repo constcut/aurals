@@ -154,7 +154,16 @@ Item {
 
 
     Component.onCompleted: {
-       // pianoRoll.loadMidi(testFilesCombo.currentText)
+        pianoRoll.reset()
+        pianoRoll.setHeightStretch(stretchHeight.checked)
+        pianoRoll.loadMidi(testFilesCombo.currentText)
+        pianoRollTrack.model = pianoRoll.getTrackCount()
+
+        var maxWidth = pianoRoll.getContentWidth()
+        flick.contentWidth = maxWidth
+        pianoRoll.width = maxWidth
+
+        pianoRollTrack.currentIndex = 1
     }
 
     function keyboardEventSend(key, mode) {
