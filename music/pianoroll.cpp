@@ -81,6 +81,7 @@ void PianoRoll::paint(QPainter* painter) {
                           width(), midiNoteToPosition(i));
     }
 
+    std::vector<double> ray(128, -1.0);
 
 
     for (const auto& message: _mid.at(_currentTrack))
@@ -91,17 +92,27 @@ void PianoRoll::paint(QPainter* painter) {
 
         if (message.getEventType() == MidiEvent::NoteOn) {
             const auto midiNote = message.getParameter1();
-            painter->setPen(QColor("red"));
-            painter->drawRect(pos, midiNoteToPosition(midiNote), 2, noteHeight);
 
-            //1. If no record on ray - then add it
-            //2. If record - then paint object + create it with x,y, w,h - to catch clicking
+            if (ray[midiNote] != -1.0) {
+                painter->setPen(QColor("red"));
+                const int noteWidth = pos - ray[midiNote];
+                painter->drawRect(ray[midiNote], midiNoteToPosition(midiNote), noteWidth, noteHeight);
+            }
+
+            ray[midiNote] = pos;
 
         }
         if (message.getEventType() == MidiEvent::NoteOff) {
             const auto midiNote = message.getParameter1();
-            painter->setPen(QColor("blue"));
-            painter->drawRect(pos, midiNoteToPosition(midiNote), 2, noteHeight);
+            //painter->setPen(QColor("blue"));
+            //painter->drawRect(pos, midiNoteToPosition(midiNote), 2, noteHeight);
+
+            if (ray[midiNote] != -1.0) {
+                painter->setPen(QColor("red"));
+                const int noteWidth = pos - ray[midiNote];
+                painter->drawRect(ray[midiNote], midiNoteToPosition(midiNote), noteWidth, noteHeight);
+                ray[midiNote] = -1.0;
+            }
 
             //1. If no record - just ignore
             //2. If record - paint + create object + clean the ray
