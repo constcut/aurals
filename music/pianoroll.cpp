@@ -66,10 +66,10 @@ void PianoRoll::paint(QPainter* painter) {
 
     auto midiNoteToPosition = [&](int midiNote) {
         if (_fillHeight == false)
-            return midiNote * noteHeight;
+            return (128 - midiNote) * noteHeight;
         else {
            const int localNote = midiNote - minMidi;
-           return localNote * noteHeight;
+           return (maxMidi - localNote) * noteHeight;
         }
         return 0;
     };
@@ -94,7 +94,7 @@ void PianoRoll::paint(QPainter* painter) {
 
             if (ray[midiNote] != -1.0) {
 
-                const int noteWidth = pos - ray[midiNote];
+                const int noteWidth = pos - ray[midiNote]; //TODO cover under lambda
 
                 painter->fillRect(ray[midiNote], midiNoteToPosition(midiNote), noteWidth, noteHeight,
                                   QBrush(QColor("green")));
