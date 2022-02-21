@@ -93,11 +93,18 @@ void PianoRoll::paint(QPainter* painter) {
             const auto midiNote = message.getParameter1();
             painter->setPen(QColor("red"));
             painter->drawRect(pos, midiNoteToPosition(midiNote), 2, noteHeight);
+
+            //1. If no record on ray - then add it
+            //2. If record - then paint object + create it with x,y, w,h - to catch clicking
+
         }
         if (message.getEventType() == MidiEvent::NoteOff) {
             const auto midiNote = message.getParameter1();
             painter->setPen(QColor("blue"));
             painter->drawRect(pos, midiNoteToPosition(midiNote), 2, noteHeight);
+
+            //1. If no record - just ignore
+            //2. If record - paint + create object + clean the ray
         }
     }
 
