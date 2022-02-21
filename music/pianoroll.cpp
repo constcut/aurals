@@ -68,8 +68,8 @@ void PianoRoll::paint(QPainter* painter) {
         if (_fillHeight == false)
             return (128 - midiNote) * noteHeight;
         else {
-           const int localNote = midiNote - minMidi;
-           return (maxMidi - localNote) * noteHeight;
+           const int localNote = maxMidi - midiNote; //midiNote - minMidi;
+           return localNote * noteHeight;
         }
         return 0;
     };
