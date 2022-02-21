@@ -10,9 +10,18 @@ void PianoRoll::loadMidi(QString filename) {
 }
 
  int PianoRoll::getContentWidth() {
-    auto track = _mid.size();
-    //calculate time moments
-    return 100;
+    int maxPixels = 0;
+
+    //Или делать это локально по 1 треку? т.к. длина будет варироваться
+    for (const auto& mTrack: _mid)
+        if (mTrack.empty() == false)
+        {
+           double maxX = mTrack.at(mTrack.size() - 1).absoluteTime()  / 50.0;
+           if (maxPixels < maxX)
+               maxPixels = maxX;
+        }
+
+    return maxPixels;
 }
 
 int PianoRoll::getContentHeight() {

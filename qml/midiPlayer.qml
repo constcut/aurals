@@ -85,6 +85,9 @@ Item {
                     pianoRoll.reset()
                     pianoRoll.loadMidi(testFilesCombo.currentText)
                     pianoRollTrack.model = pianoRoll.getTrackCount()
+
+                    var maxWidth = pianoRoll.getContentWidth()
+                    console.log("Content max width: ", maxWidth)
                     //audio.openMidiFile(testFilesCombo.currentText)
                 }
             }
