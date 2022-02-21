@@ -75,7 +75,7 @@ void PianoRoll::paint(QPainter* painter) {
     };
 
     painter->setPen(QColor("lightgray"));
-    for (int i = minMidi; i < maxMidi; ++i) {
+    for (int i = minMidi - 1; i < maxMidi + 1; ++i) {
         painter->drawLine(0, midiNoteToPosition(i),
                           width(), midiNoteToPosition(i));
     }
