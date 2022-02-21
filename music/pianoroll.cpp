@@ -83,19 +83,23 @@ void PianoRoll::paint(QPainter* painter) {
 
     std::vector<double> ray(128, -1.0);
 
+    //TODO _notes {x,y,w,h} .hit(x,y) на подобии как BarView в TrackView
 
     for (const auto& message: _mid.at(_currentTrack))
     {
         const auto pos = ( message.absoluteTime() / 50.0 ) * _xZoomCoef;
 
-        //TODO open ray with positions double values for opened once notes
-
         if (message.getEventType() == MidiEvent::NoteOn) {
             const auto midiNote = message.getParameter1();
 
             if (ray[midiNote] != -1.0) {
-                painter->setPen(QColor("red"));
+
                 const int noteWidth = pos - ray[midiNote];
+
+                painter->fillRect(ray[midiNote], midiNoteToPosition(midiNote), noteWidth, noteHeight,
+                                  QBrush(QColor("green")));
+
+                painter->setPen(QColor("yellow"));
                 painter->drawRect(ray[midiNote], midiNoteToPosition(midiNote), noteWidth, noteHeight);
             }
 
@@ -104,18 +108,17 @@ void PianoRoll::paint(QPainter* painter) {
         }
         if (message.getEventType() == MidiEvent::NoteOff) {
             const auto midiNote = message.getParameter1();
-            //painter->setPen(QColor("blue"));
-            //painter->drawRect(pos, midiNoteToPosition(midiNote), 2, noteHeight);
 
             if (ray[midiNote] != -1.0) {
-                painter->setPen(QColor("red"));
                 const int noteWidth = pos - ray[midiNote];
+                painter->fillRect(ray[midiNote], midiNoteToPosition(midiNote), noteWidth, noteHeight,
+                                  QBrush(QColor("green")));
+
+                painter->setPen(QColor("yellow"));
                 painter->drawRect(ray[midiNote], midiNoteToPosition(midiNote), noteWidth, noteHeight);
+
                 ray[midiNote] = -1.0;
             }
-
-            //1. If no record - just ignore
-            //2. If record - paint + create object + clean the ray
         }
     }
 
