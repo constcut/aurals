@@ -31,7 +31,7 @@ void PianoRoll::paint(QPainter* painter) {
 
     int minMidi = 128;
     int maxMidi = 0;
-    for (const auto& message: _mid.at(1)) {
+    for (const auto& message: _mid.at(_currentTrack)) {
         if (message.getEventType() == MidiEvent::NoteOn) {
             const auto midiNote = message.getParameter1();
             if (maxMidi < midiNote)
@@ -51,8 +51,10 @@ void PianoRoll::paint(QPainter* painter) {
 
     //notes
     qDebug() << "Total tracks " << _mid.size();
-    qDebug() << "Messages on track 0 " << _mid.at(1).size();
-    for (const auto& message: _mid.at(1)) {
+    qDebug() << "Messages on track " << _currentTrack << " "
+             << _mid.at(_currentTrack).size();
+
+    for (const auto& message: _mid.at(_currentTrack)) {
 
         //qDebug() << "__ " << message.absoluteTime();
 

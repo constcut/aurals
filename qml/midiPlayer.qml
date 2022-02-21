@@ -69,6 +69,7 @@ Item {
                 onClicked:  {
                     audio.openMidiFile(testFilesCombo.currentText)
                     audio.startMidiPlayer()
+
                 }
             }
             ToolButton {
@@ -83,7 +84,7 @@ Item {
                 onClicked: {
                     pianoRoll.reset()
                     pianoRoll.loadMidi(testFilesCombo.currentText)
-
+                    pianoRollTrack.model = pianoRoll.getTrackCount()
                     //audio.openMidiFile(testFilesCombo.currentText)
                 }
             }
@@ -98,6 +99,16 @@ Item {
             ToolButton {
                 text: "Export pcm"
                 onClicked: saveFileDialog.visible = true
+            }
+
+            ComboBox {
+                id: pianoRollTrack
+
+                onCurrentTextChanged: {
+                    var curTrack = parseInt(currentText)
+                    console.log("setting current track: ", curTrack)
+                    pianoRoll.setCurrentTrack(curTrack)
+                }
             }
         }
     }
