@@ -86,7 +86,7 @@ void PianoRoll::paint(QPainter* painter) {
 
         //qDebug() << "__ " << message.absoluteTime();
 
-        const auto pos =  message.absoluteTime() / 50.0;
+        const auto pos = ( message.absoluteTime() / 50.0 ) * _xZoomCoef;
 
 
         if (message.getEventType() == MidiEvent::NoteOn) {

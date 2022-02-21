@@ -119,6 +119,14 @@ Item {
                 checked: false
                 text: "Stretch height"
             }
+            ToolButton {
+                text: "+"
+                onClicked: pianoRoll.zoomIn();
+            }
+            ToolButton {
+                text: "-"
+                onClicked: pianoRoll.zoomOut();
+            }
         }
     }
 

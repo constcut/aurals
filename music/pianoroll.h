@@ -36,6 +36,15 @@ public:
         _fillHeight = value;
     }
 
+    Q_INVOKABLE void zoomIn() {
+        _xZoomCoef *= 2;
+        update();
+    }
+    Q_INVOKABLE void zoomOut() {
+        _xZoomCoef /= 2;
+        update();
+    }
+
 signals:
 
 
@@ -47,7 +56,7 @@ private:
 
     bool _fillHeight = false; //Height fill option (если размер не меньше)
 
-    //double _xZoomCoef = 1.0;
+    double _xZoomCoef = 1.0;
     //double _yZoomCoef = 1.0;
 
 
