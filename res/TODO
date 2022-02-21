@@ -1,62 +1,54 @@
-
-
 ==========================================================================================================
 
+    1) piano roll
 
- *   1) MidiEng sounds
-        2) On input
+        1) Draw midi notes
+        2) Move midi notes x + y : editing of MidiFile
+        x) export form tab linked piano roll version: fret + string on each midi piano roll note
 
-    3) repaint TrackV on tab playing сменилось на false
+    2) Recoding on tab - выбираем несколько баров и записываем под них
+        *изучить внимательно с android звуковой картой
 
-    4) pattern line component
+    3) pattern line component
 
         1) 4/4 with different length for cell
         2) any num\denum
         3) different sizes (-3- -5- . ..)
         4) export to tab
+        5) Mapping to pattern drumming (of existing drums)
+        6) Tap under methronome
 
-    5) Drum tab better loook -> image on every 38\40 midi note value for drums
+    4) static libs : first only libs folder, so we can just link it against build lib files
 
-    6) piano roll
+    5) realtime midi, and cental play\recod time to sync, +(animation time)
 
-        1) Load midi file
-        2) Edit midi file & save
-        3) export form tab linked piano roll version: fret + string on each midi piano roll note
+    6) Tracks view, additional mode, can create projects of 2 types, tab or atracks
 
-    7) Mapping to pattern drumming
 
-    8) Recoding on tab, selection of bars
-        or click track with drums
+    x) MidiEng sounds on editing for android (windows is fine)
 
-    9) realtime midi, and cental play\recod time to sync, +(animation time)
+    x) repaint TrackV on tab playing сменилось на false (чтобы избежать момента когда застыл финальный курсор проигрывания)
 
-    10) static libs
-
-    11) Tracks view, additional mode, can create projects of 2 types, tab or atracks
+    X) Drum tab better loook -> image on every 38\40 midi note value for drums
 
 -------------------------------------------------------
 Unfinished:
 
-1) Changes 2) Bends 3) Chords
+*** 1) Изменения 2) Бэнды
 
-4) TrackView change while playing
+*** 3) TrackView change while playing
 
-5) config (only notes)
+*** 4) config (+ make possible only notes)
 
-6) Озвучка при вводе
+*** 5) QFile для QML dialog \ save (возможность внешнего сохранения)
 
-7) QFile для QML dialog \ save
+*** 6) tunings как диалог, (изменения)
 
-8) tunings
+*** 7) Configuration Bar view with all constatns (нумерация, nom\denum, репризы, пробелы - всё опции учесть) - отображать сразу 2-3 бара
 
-9) 1-5 JSON pannels
+**** 8) 1-5 JSON pannels
 
-10) Bar view with all constatns
-
-11) Realtime midi generation
-    a) normal
-    b) using own file format
-
+**** 9) Chords
 
 
 ------------------------------------
@@ -82,43 +74,7 @@ Crazy optionals:
 
     9) midi input
 
-=======================================================================
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+======================================================================
 
 
 
@@ -136,16 +92,9 @@ Crazy optionals:
 z) PDF экспорт
  : https://forum.qt.io/topic/68805/combine-multiple-images-into-a-single-pdf/8
 
-1) Конфигурация
-    а) возможность игры простым миди, как было в гитарми
-
-2) Линия вокруг курсора игры (чтобы проще его замечать)
-
-
 File dialog:
 https://stackoverflow.com/questions/62554336/qml-filedialog-path-in-android?rq=1
 
-Переключение TabView при проигрывании
 
 --------------------------------------------------------------------------------
 
