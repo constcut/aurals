@@ -45,6 +45,7 @@ void PianoRoll::paint(QPainter* painter) {
 
     int minMidi = 128;
     int maxMidi = 0;
+
     for (const auto& message: _mid.at(_currentTrack)) {
         if (message.getEventType() == MidiEvent::NoteOn) {
             const auto midiNote = message.getParameter1();
@@ -71,9 +72,7 @@ void PianoRoll::paint(QPainter* painter) {
            const int localNote = maxMidi - midiNote; //midiNote - minMidi;
            return localNote * noteHeight;
         }
-        return 0;
     };
-
 
     painter->setPen(QColor("lightgray"));
     for (int i = minMidi; i < maxMidi; ++i) {
@@ -81,42 +80,33 @@ void PianoRoll::paint(QPainter* painter) {
                           width(), midiNoteToPosition(i));
     }
 
-    std::vector<double> ray(128, -1.0);
+    std::vector<double> ray(128, -1.0); //TODO _notes {x,y,w,h} .hit(x,y) на подобии как BarView в TrackView
 
-    //TODO _notes {x,y,w,h} .hit(x,y) на подобии как BarView в TrackView
+    auto paintNote = [&](auto pos, auto midiNote) {
+        const int noteWidth = pos - ray[midiNote]; //TODO cover under lambda
+        painter->fillRect(ray[midiNote], midiNoteToPosition(midiNote), noteWidth, noteHeight,
+                          QBrush(QColor("green")));
+        painter->setPen(QColor("lightgreen"));
+        painter->drawRect(ray[midiNote], midiNoteToPosition(midiNote), noteWidth, noteHeight);
+    };
+
 
     for (const auto& message: _mid.at(_currentTrack))
     {
         const auto pos = ( message.absoluteTime() / 50.0 ) * _xZoomCoef;
+        const auto midiNote = message.getParameter1();
 
-        if (message.getEventType() == MidiEvent::NoteOn) {
-            const auto midiNote = message.getParameter1();
-
-            if (ray[midiNote] != -1.0) {
-
-                const int noteWidth = pos - ray[midiNote]; //TODO cover under lambda
-
-                painter->fillRect(ray[midiNote], midiNoteToPosition(midiNote), noteWidth, noteHeight,
-                                  QBrush(QColor("green")));
-
-                painter->setPen(QColor("lightgreen"));
-                painter->drawRect(ray[midiNote], midiNoteToPosition(midiNote), noteWidth, noteHeight);
-            }
+        if (message.getEventType() == MidiEvent::NoteOn)
+        {
+            if (ray[midiNote] != -1.0)
+                paintNote(pos, midiNote);
 
             ray[midiNote] = pos;
-
         }
-        if (message.getEventType() == MidiEvent::NoteOff) {
-            const auto midiNote = message.getParameter1();
-
+        if (message.getEventType() == MidiEvent::NoteOff)
+        {
             if (ray[midiNote] != -1.0) {
-                const int noteWidth = pos - ray[midiNote];
-                painter->fillRect(ray[midiNote], midiNoteToPosition(midiNote), noteWidth, noteHeight,
-                                  QBrush(QColor("green")));
-
-                painter->setPen(QColor("lightgreen"));
-                painter->drawRect(ray[midiNote], midiNoteToPosition(midiNote), noteWidth, noteHeight);
-
+                paintNote(pos, midiNote);
                 ray[midiNote] = -1.0;
             }
         }
