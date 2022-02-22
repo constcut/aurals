@@ -153,14 +153,20 @@ Item {
                     width: parent.width
                     height: parent.height
 
-                    /*
+                    property int pressX: 0
+                    property int pressY: 0
+
                     preventStealing: true
                     onPressed: {
-                        mouseX, mouseY
+                        pressX = mouseX
+                        pressY = mouseY
                     }
                     onReleased: {
-                        diffX, diffY
-                    }*/ //Kills flick
+                        var diffY = mouseY - pressY
+                        console.log("Diff y ", diffY)
+                        if (Math.abs(diffY) > 5)
+                            pianoRoll.onMoveVertical(mouseY)
+                    }
 
                     onDoubleClicked: {
                         pianoRoll.ondblclick(mouseX, mouseY)

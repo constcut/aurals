@@ -60,6 +60,8 @@ namespace aurals {
 
         Q_INVOKABLE void ondblclick(int x, int y);
 
+        Q_INVOKABLE void onMoveVertical(int newY);
+
     signals:
 
 
