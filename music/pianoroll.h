@@ -6,61 +6,69 @@
 #include "midi/MidiFile.hpp"
 
 
-class PianoRoll : public QQuickPaintedItem
-{
-    Q_OBJECT
-public:
-    PianoRoll() = default;
+namespace aurals {
 
-    //Track id?
+    class PianoRoll : public QQuickPaintedItem
+    {
+        Q_OBJECT
+    public:
+        PianoRoll() = default;
 
-    Q_INVOKABLE void loadMidi(QString filename);
-    Q_INVOKABLE int getContentWidth();
-    Q_INVOKABLE int getContentHeight();
+        //Track id?
 
-    Q_INVOKABLE void reset();
+        Q_INVOKABLE void loadMidi(QString filename);
+        Q_INVOKABLE int getContentWidth();
+        Q_INVOKABLE int getContentHeight();
 
-    void paint(QPainter* painter);
+        Q_INVOKABLE void reset();
 
-
-    Q_INVOKABLE int getTrackCount() {
-        return _mid.size();
-    }
-
-    Q_INVOKABLE void setCurrentTrack(int newIdx) {
-        _currentTrack = newIdx;
-        update();
-    }
-
-    Q_INVOKABLE void setHeightStretch(bool value) {
-        _fillHeight = value;
-    }
-
-    Q_INVOKABLE void zoomIn() {
-        _xZoomCoef *= 2;
-        update();
-    }
-    Q_INVOKABLE void zoomOut() {
-        _xZoomCoef /= 2;
-        update();
-    }
-
-signals:
+        void paint(QPainter* painter);
 
 
-private:
+        Q_INVOKABLE int getTrackCount() {
+            return _mid.size();
+        }
 
-    aurals::MidiFile _mid;
+        Q_INVOKABLE void setCurrentTrack(int newIdx) {
+            _currentTrack = newIdx;
+            update();
+        }
 
-    size_t _currentTrack = 1;
+        Q_INVOKABLE void setHeightStretch(bool value) {
+            _fillHeight = value;
+        }
 
-    bool _fillHeight = false; //Height fill option (если размер не меньше)
+        Q_INVOKABLE void zoomIn() {
+            _xZoomCoef *= 2;
+            update();
+        }
+        Q_INVOKABLE void zoomOut() {
+            _xZoomCoef /= 2;
+            update();
+        }
 
-    double _xZoomCoef = 1.0;
-    //double _yZoomCoef = 1.0;
+    signals:
+
+
+    private:
+
+        aurals::MidiFile _mid;
+
+        size_t _currentTrack = 1;
+
+        bool _fillHeight = false; //Height fill option (если размер не меньше)
+
+        double _xZoomCoef = 1.0;
+        //double _yZoomCoef = 1.0;
 
 
 
-};
+    };
+
+
+
+}
+
+
 
 #endif // PIANOROLL_H
