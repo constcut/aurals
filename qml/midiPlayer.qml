@@ -143,11 +143,32 @@ Item {
             contentWidth: 3000
             contentHeight:  parent.height
 
+            MouseArea {
+                x:0
+                y:20
+                width: parent.width
+                height: parent.height
+
+                /*
+                preventStealing: true
+                onPressed: {
+                    mouseX, mouseY
+                }
+                onReleased: {
+                    diffX, diffY
+                }*/ //Kills flick
+
+                onDoubleClicked: {
+                    pianoRoll.ondblclick(mouseX, mouseY)
+                }
+
+            }
+
             PianoRoll {
                 id: pianoRoll
                 y: 0
                 width: parent.width
-                height: parent.height - y
+                height: parent.height
             }
         }
     }

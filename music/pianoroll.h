@@ -58,6 +58,8 @@ namespace aurals {
             update();
         }
 
+        Q_INVOKABLE void ondblclick(int x, int y);
+
     signals:
 
 
@@ -73,6 +75,7 @@ namespace aurals {
         //double _yZoomCoef = 1.0;
 
         std::vector<RollNote> _notes;
+        int _noteCursor = -1;
 
     };
 

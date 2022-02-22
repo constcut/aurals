@@ -38,6 +38,34 @@ void PianoRoll::reset() {
 }
 
 
+Q_INVOKABLE void PianoRoll::ondblclick(int x, int y) {
+
+
+    qDebug() << "FIRST: " << _notes[0].x << " " << _notes[0].y <<
+                _notes[0].w << " " << _notes[0].h;
+
+    qDebug() << "On dbl click " << x << " " << y;
+
+
+    for (size_t i = 0; i < _notes.size(); ++i) {
+        if (x >= _notes[i].x && y >= _notes[i].y) {
+
+            int xDiff = x - _notes[i].x;
+            int yDiff = y - _notes[i].y;
+
+            if (xDiff <= _notes[i].w &&
+                yDiff <= _notes[i].h)
+            {
+                _noteCursor = i;
+                update();
+                break;
+            }
+        }
+    }
+
+}
+
+
 void PianoRoll::paint(QPainter* painter) {
 
     if (_mid.empty())
@@ -113,10 +141,18 @@ void PianoRoll::paint(QPainter* painter) {
         }
     }
 
+    int i = 0;
     for (const auto& note: _notes) {
-        painter->fillRect(note.x, note.y, note.w, note.h, QBrush(QColor("green")));
+
+        QString fillColor = "green";
+        if (i == _noteCursor)
+            fillColor = "blue";
+
+        painter->fillRect(note.x, note.y, note.w, note.h, fillColor);
+
         painter->setPen(QColor("lightgreen"));
         painter->drawRect(note.x, note.y, note.w, note.h);
+        ++i;
     }
 
 }
