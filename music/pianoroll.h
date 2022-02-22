@@ -8,13 +8,24 @@
 
 namespace aurals {
 
+
+    struct RollNote {
+        int x;
+        int y;
+        int w;
+        int h;
+
+        int midiNote;
+
+        //fret, string, other data unordered_map<string, int>
+    };
+
+
     class PianoRoll : public QQuickPaintedItem
     {
         Q_OBJECT
     public:
         PianoRoll() = default;
-
-        //Track id?
 
         Q_INVOKABLE void loadMidi(QString filename);
         Q_INVOKABLE int getContentWidth();
@@ -56,12 +67,12 @@ namespace aurals {
 
         size_t _currentTrack = 1;
 
-        bool _fillHeight = false; //Height fill option (если размер не меньше)
+        bool _fillHeight = false;
 
         double _xZoomCoef = 1.0;
         //double _yZoomCoef = 1.0;
 
-
+        std::vector<RollNote> _notes;
 
     };
 

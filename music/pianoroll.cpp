@@ -43,6 +43,8 @@ void PianoRoll::paint(QPainter* painter) {
     if (_mid.empty())
         return;
 
+    _notes.clear();
+
     int minMidi = 128;
     int maxMidi = 0;
 
@@ -84,12 +86,9 @@ void PianoRoll::paint(QPainter* painter) {
 
     std::vector<double> ray(128, -1.0); //TODO _notes {x,y,w,h} .hit(x,y) на подобии как BarView в TrackView
 
-    auto paintNote = [&](auto pos, auto midiNote) {
+    auto addNote = [&](auto pos, auto midiNote) {
         const int noteWidth = pos - ray[midiNote]; //TODO cover under lambda
-        painter->fillRect(ray[midiNote], midiNoteToPosition(midiNote), noteWidth, noteHeight,
-                          QBrush(QColor("green")));
-        painter->setPen(QColor("lightgreen"));
-        painter->drawRect(ray[midiNote], midiNoteToPosition(midiNote), noteWidth, noteHeight);
+        _notes.push_back({static_cast<int>(ray[midiNote]), midiNoteToPosition(midiNote), noteWidth, noteHeight, midiNote});
     };
 
 
@@ -101,17 +100,23 @@ void PianoRoll::paint(QPainter* painter) {
         if (message.getEventType() == MidiEvent::NoteOn)
         {
             if (ray[midiNote] != -1.0)
-                paintNote(pos, midiNote);
+                addNote(pos, midiNote);
 
             ray[midiNote] = pos;
         }
         if (message.getEventType() == MidiEvent::NoteOff)
         {
             if (ray[midiNote] != -1.0) {
-                paintNote(pos, midiNote);
+                addNote(pos, midiNote);
                 ray[midiNote] = -1.0;
             }
         }
+    }
+
+    for (const auto& note: _notes) {
+        painter->fillRect(note.x, note.y, note.w, note.h, QBrush(QColor("green")));
+        painter->setPen(QColor("lightgreen"));
+        painter->drawRect(note.x, note.y, note.w, note.h);
     }
 
 }
