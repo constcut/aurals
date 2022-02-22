@@ -2,15 +2,13 @@
 
     1) piano roll
 
-        1) Draw midi notes
-            a) Объекты с координатами
-            b) Hit \ select
-            c) Press\release selected
-            d) move on notes scale
-            e) move on time scale
-            f) check on simple midi (from 3.1 tab, add it to res)
+        1) Редактирование - закреплять ноту за ритмической ячейкой и нотной сеткой, не давать перенос просто посередение
+            После окончания переноса нужна сортировка, сортировка осуществляется первично по оси x, вторично по y (не важно в какую сторону)
 
-        2) Move midi notes x + y : editing of MidiFile
+        2) Реконструкция - из полученных слайсов сгенерировать миди файл
+            а) Проверить слушабельность
+            б) Изучить бинарные различия при процессе загрузка-сохранение
+
         x) export form tab linked piano roll version: fret + string on each midi piano roll note
 
     2) Recoding on tab - выбираем несколько баров и записываем под них
