@@ -42,6 +42,7 @@ namespace aurals {
 
         Q_INVOKABLE void setCurrentTrack(int newIdx) {
             _currentTrack = newIdx;
+            _notes.clear();
             update();
         }
 
@@ -51,10 +52,12 @@ namespace aurals {
 
         Q_INVOKABLE void zoomIn() {
             _xZoomCoef *= 2;
+            _notes.clear();
             update();
         }
         Q_INVOKABLE void zoomOut() {
             _xZoomCoef /= 2;
+            _notes.clear();
             update();
         }
 
