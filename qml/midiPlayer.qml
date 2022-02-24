@@ -155,17 +155,26 @@ Item {
 
                     property int pressX: 0
                     property int pressY: 0
+                    property bool pressed: false
 
                     preventStealing: true
                     onPressed: {
                         pressX = mouseX
                         pressY = mouseY
+                        pressed = true
                     }
+                    onMouseYChanged: {
+                        if (pressed) {
+                            var diffY = mouseY - pressY
+                            console.log("Diff y ", diffY)
+                            if (Math.abs(diffY) > 5)
+                                pianoRoll.onMoveVertical(mouseY)
+                        }
+                    }
+
                     onReleased: {
-                        var diffY = mouseY - pressY
-                        console.log("Diff y ", diffY)
-                        if (Math.abs(diffY) > 5)
-                            pianoRoll.onMoveVertical(mouseY)
+                        pressed = false
+
                     }
 
                     onDoubleClicked: {
