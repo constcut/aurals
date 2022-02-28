@@ -73,8 +73,11 @@ void PianoRoll::onMoveVertical(int newY) {
 }
 
 
+
 Q_INVOKABLE void PianoRoll::ondblclick(int x, int y)
 {
+    bool found = false;
+
     for (size_t i = 0; i < _notes.size(); ++i)
         if (x >= _notes[i].x && y >= _notes[i].y)
         {
@@ -86,10 +89,22 @@ Q_INVOKABLE void PianoRoll::ondblclick(int x, int y)
             {
                 _noteCursor = i;
                 update();
+                found = true;
                 break;
             }
         }
+
+    if (found == false) {
+        y /= noteHeight();
+        y *= noteHeight();
+        uint8_t mid = positionToMidiNote(y);
+        _notes.push_back({x, y, static_cast<int>(5 * _xZoomCoef),
+                          noteHeight(), mid});
+        update();
+    }
 }
+
+
 
 void PianoRoll::findMinMaxMidi() {
 
