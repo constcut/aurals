@@ -51,13 +51,11 @@ namespace aurals {
         Q_INVOKABLE void zoomIn() {
             _xZoomCoef *= 2;
             _notes.clear();
-            qDebug() << "Cleaning from zoomIn";
             update();
         }
         Q_INVOKABLE void zoomOut() {
             _xZoomCoef /= 2;
             _notes.clear();
-            qDebug() << "Cleaning from zoomOut";
             update();
         }
 
@@ -74,7 +72,6 @@ namespace aurals {
 
 
     private:
-
 
         void findMinMaxMidi();
         int noteHeight();

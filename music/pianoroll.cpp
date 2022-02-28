@@ -17,8 +17,6 @@ void PianoRoll::loadMidi(QString filename)
                 uint32_t nanoCount = (buf[0] << 16) + (buf[1] << 8) + buf[2];
 
                 _bpm = 60000000 / nanoCount;
-                qDebug() << "Nano count found " << nanoCount
-                         << " BPM " << _bpm;
             }
     }
 
@@ -31,14 +29,13 @@ void PianoRoll::loadMidi(QString filename)
 void PianoRoll::setCurrentTrack(int newIdx)
 {
     if (_notes.empty() == false) {
-        qDebug() << "SAVING " << _currentTrack << " with " << _notes.size();
         auto track = makeCurrentTrack();
-        qDebug() << "Generated " << track.size() << " vs " << _mid[_currentTrack].size();
         _mid[_currentTrack] = track;
     }
 
     _currentTrack = newIdx;
     _notes.clear();
+    _noteCursor = -1;
 
     for (const auto& event: _mid[_currentTrack])
         if (event.getEventType() == MidiEvent::PatchChange) {
@@ -76,7 +73,6 @@ void PianoRoll::reset() {
     _noteCursor = -1;
     _notes.clear();
     _bpm = 120;
-    qDebug() << "Cleaning from reset";
     _xZoomCoef = 1.0;
     update();
 }
@@ -235,8 +231,6 @@ void PianoRoll::fillNotes()
         const auto pos = ( message.absoluteTime() / 50.0 ) * _xZoomCoef;
         const auto midiNote = message.getParameter1();
 
-        qDebug() << "Filling msg: " << message.absoluteTime();
-
         if (message.getEventType() == MidiEvent::NoteOn)
         {
             if (ray[midiNote] != -1.0)
@@ -253,7 +247,6 @@ void PianoRoll::fillNotes()
         }
     }
 
-    qDebug() << "Filled " << _notes.size() << " total notes";
 }
 
 
@@ -269,7 +262,6 @@ void PianoRoll::paint(QPainter* painter) {
         painter->drawLine(0, midiNoteToPosition(i),
                           width(), midiNoteToPosition(i));
 
-    qDebug() << "Painting notes " << _notes.size();
 
     int i = 0;
     for (const auto& note: _notes) {
@@ -284,8 +276,6 @@ void PianoRoll::paint(QPainter* painter) {
         painter->drawRect(note.x, note.y, note.w, note.h);
         ++i;
 
-        qDebug() << "PN: " << note.x << " " << note.y
-                 << " " << note.w << " " << note.h;
     }
 
 }
@@ -360,8 +350,6 @@ MidiTrack PianoRoll::makeCurrentTrack() {
 
     }
 
-    qDebug() << "Total time: " << totalTime;
-
     newTrack.pushEvent47();
     return newTrack;
 }
@@ -379,8 +367,6 @@ void PianoRoll::saveAs(QString filename) {
 
     m[_currentTrack] = makeCurrentTrack();
     m.writeToFile(filename.toStdString());
-
-    qDebug() << "Save as " << m.size() << m[1].size();
 
     if (wereEmpty)
         _notes.clear();

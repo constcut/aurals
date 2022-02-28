@@ -130,11 +130,12 @@ Item {
             ToolButton {
                 text: ">"
                 onClicked:  {
-                    //TODO fails if no loads before, why?
-                    //No instrument set?
                     pianoRoll.saveAs("pianoroll.mid")
                     audio.openMidiFile("pianoroll.mid")
                     audio.startMidiPlayer()
+
+                    //Compare with previous load
+                    "tests/regression/3.1.mid"
                 }
             }
         }
