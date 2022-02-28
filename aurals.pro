@@ -84,6 +84,7 @@ SOURCES += \
     midi/MidiTrack.cpp \
     midi/NBytesInt.cpp \
     music/GraphicMap.cpp \
+    music/PatternLine.cpp \
     music/PianoRoll.cpp \
     music/Tapper.cpp \
     tab/Bar.cpp \
@@ -208,6 +209,7 @@ HEADERS += \
     libs/sf/tml.h \
     libs/sf/tsf.h \
     music/GraphicMap.hpp \
+    music/PatternLine.hpp \
     music/PianoRoll.hpp \
     music/Tapper.hpp \
     tab/Bar.hpp \
