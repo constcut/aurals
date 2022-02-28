@@ -113,6 +113,35 @@ Q_INVOKABLE void PianoRoll::ondblclick(int x, int y)
 }
 
 
+void PianoRoll::onPressAndHold(int x, int y)
+{
+    if (_noteCursor < 0)
+        return;
+
+    bool needRemove = false;
+
+    for (size_t i = 0; i < _notes.size(); ++i)
+        if (x >= _notes[i].x && y >= _notes[i].y)
+        {
+            int xDiff = x - _notes[i].x;
+            int yDiff = y - _notes[i].y;
+
+            if (xDiff <= _notes[i].w &&
+                yDiff <= _notes[i].h)
+            {
+                if (static_cast<int>(i) == _noteCursor)
+                needRemove = true;
+                break;
+            }
+        }
+
+    if (needRemove) {
+        _notes.erase(_notes.begin() + _noteCursor);
+        _noteCursor = -1;
+        update();
+    }
+}
+
 
 void PianoRoll::findMinMaxMidi() {
 
@@ -179,8 +208,6 @@ void PianoRoll::fillNotes()
 
     for (const auto& message: _mid.at(_currentTrack))
     {
-
-        qDebug() << message.absoluteTime() << " abs " << message.timeStamp().getValue();
 
         const auto pos = ( message.absoluteTime() / 50.0 ) * _xZoomCoef;
         const auto midiNote = message.getParameter1();

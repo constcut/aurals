@@ -191,6 +191,10 @@ Item {
                         pianoRoll.ondblclick(mouseX, mouseY)
                     }
 
+                    onPressAndHold: {
+                        pianoRoll.onPressAndHold(mouseX, mouseY)
+                    }
+
                 }
             }
         }
