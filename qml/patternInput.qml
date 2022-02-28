@@ -71,6 +71,7 @@ Item {
                     y: index * 60 //Заменить на значение высоты
                     spacing: 10
                     ComboBox {
+                        implicitWidth: 70
                         model: [4, 6, 8, 3, 2, 1, 5, 9, 10, 7, 16, 32] //Basic
                         onCurrentTextChanged: {
                             pattern.setNumerator(parseInt(currentText))
@@ -82,6 +83,7 @@ Item {
                         }
                     }
                     ComboBox {
+                        implicitWidth: 70
                         model: [4, 8, 16, 2, 1, 32]
                         onCurrentTextChanged: {
                             pattern.setDenomenator(parseInt(currentText))
@@ -95,6 +97,7 @@ Item {
                         text: ":"
                     }
                     ComboBox {
+                        implicitWidth: 70
                         model: [4, 8, 16, 32, 2, 1]
                         onCurrentTextChanged: {
                             pattern.setBrickSize(parseInt(currentText))
