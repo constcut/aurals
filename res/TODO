@@ -2,31 +2,42 @@
 
     a) Pattern receiver - получатель сигналов\агрегатор отдельных Pattern line
 
+        1) BPM
+
+        2) Total cycles repeats ( 2\3...etc cycles - first all lines same num\den)
+
+        3) Total bars signes for full cycle calculation (3\4 + 4\4 = 12)
+
+
     b) Pattern line - примитив множества ритмических паттернов
 
-        I) Independent bar size
+        0) MidiDrum note combo
 
-            1) Calculate  total bars polyrythm cycle in PR ^^^
+        1) Play\metronome like - animation of current focus
 
-        ||) Independendt bpm
+        |) Independendt bpm
 
             1) Calculate when they converge
 
-        iii) Click track+
-
-            Тип pattern line который позволяет задавать череду тактов, при необходимости меняя размер
-
-            4\4:20 6\:8 и подобным образом ввод, может меняться 1 размер, могут оба и число тактов после этого
-
-        IV) Возможность разных размеров внутри паттерна, т.е. не только размеров такта, но и внутри такта, т.е. изменение длины квадратика
+        III) Возможность разных размеров внутри паттерна, т.е. не только размеров такта, но и внутри такта, т.е. изменение длины квадратика
 
 
-    с) from drums gp3-5
+    c) Circle with Clock-like animation
 
-    d) metronome(s)
+    d) from drums gp3-5
 
-    e) animation + tap for tapping rhythm element using metronome and animation of mo
-       запись теппингом, анимация движения по ячейкам паттерна, и когда на ней задерживается курсор, можно его проставить кнопкой для теппинга
+    e) metronome(s)
+
+    f) запись теппингом, при анимации движения по ячейкам паттерна (кнопкой)
+
+    g) Click track+
+
+        Тип pattern line который позволяет задавать череду тактов, при необходимости меняя размер
+
+        4\4:20 6\:8 и подобным образом ввод, может меняться 1 размер, могут оба и число тактов после этого
+
+    h) to piano roll
+
 
 
 2) Record on repeat
