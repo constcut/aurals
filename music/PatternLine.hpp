@@ -38,11 +38,7 @@ namespace aurals {
             update();
         }
 
-        void updateBricks() {
-            _bricks.clear();
-            for (size_t i = 0; i < _num; ++i)
-                _bricks.push_back({});
-        }
+        void updateBricks();
 
 
     private:
