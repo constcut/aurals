@@ -2,6 +2,8 @@
 
 #include <QPainter>
 
+using namespace aurals;
+
 void PatternLine::paint(QPainter* painter) {
 
     size_t elements = 4;

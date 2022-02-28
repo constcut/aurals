@@ -336,8 +336,8 @@ int mainInit(int argc, char *argv[]) {
     qmlRegisterType<aurals::TabView>("aurals", 1, 0, "TabView");
     qmlRegisterType<aurals::TrackView>("aurals", 1, 0, "TrackView");
     //qmlRegisterType<aurals::BarView>("aurals", 1, 0, "BarView");
-    qmlRegisterType<PianoRoll>("aurals", 1, 0, "PianoRoll");
-    qmlRegisterType<PatternLine>("aurals", 1, 0, "PatternLine");
+    qmlRegisterType<aurals::PianoRoll>("aurals", 1, 0, "PianoRoll");
+    qmlRegisterType<aurals::PatternLine>("aurals", 1, 0, "PatternLine");
 
     qmlRegisterUncreatableMetaObject(aurals::staticMetaObject,
         "aurals", 1, 0, "Tab", "Error: object creation for enum not supported");

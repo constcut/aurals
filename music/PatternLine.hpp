@@ -4,25 +4,31 @@
 #include <QQuickPaintedItem>
 
 
-class PatternLine  : public QQuickPaintedItem
-{
-    Q_OBJECT
+namespace aurals {
 
-public:
-    PatternLine() = default;
 
-    //setters\getters
+    class PatternLine  : public QQuickPaintedItem
+    {
+        Q_OBJECT
 
-    //paint event
+    public:
+        PatternLine() = default;
 
-    void paint(QPainter* painter);
+        //setters\getters
 
-private:
+        //paint event
 
-    //fields sizes
+        void paint(QPainter* painter);
 
-    //vector of elements struct
+    private:
 
-};
+        //fields sizes
+
+        //vector of elements struct
+
+    };
+
+}
+
 
 #endif // PATTERNLINE_HPP
