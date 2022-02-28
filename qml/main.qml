@@ -26,7 +26,7 @@ ApplicationWindow {
             thatWindow.height = 600
         }
 
-        mainLoader.setSource("midiPlayer.qml") // tablature audioHandler midiPlayer
+        mainLoader.setSource("patternInput.qml") // tablature audioHandler midiPlayer
     }
 
 
@@ -82,6 +82,10 @@ ApplicationWindow {
         MenuItem {
             text: "Tap"
             onTriggered: mainLoader.setSource("tapper.qml")
+        }
+        MenuItem {
+            text: "Pattern"
+            onTriggered: mainLoader.setSource("patternInput.qml")
         }
         MenuItem {
             id: exitMenuItem

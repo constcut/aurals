@@ -237,6 +237,7 @@ HEADERS += \
 DISTFILES += \
     ConsoleLog.qml \
     OpenTab.qml \
+    qml/patternInput.qml \
     res/TODO \
     Tablature.qml \
     PianoMap.qml \

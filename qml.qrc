@@ -14,5 +14,6 @@
         <file>qml/FiltersQML.qml</file>
         <file>qml/CepstrumQML.qml</file>
         <file>qml/tablature.qml</file>
+        <file>qml/patternInput.qml</file>
     </qresource>
 </RCC>
