@@ -173,7 +173,7 @@ void PianoRoll::saveAs(QString filename) {
     MidiFile m = _mid;
 
     MidiTrack newTrack;
-    newTrack.pushChangeBPM(240, 0);
+    newTrack.pushChangeBPM(120, 0); //TODO extract on loading
 
     //Calculate OnOff notes moments
 
@@ -192,8 +192,8 @@ void PianoRoll::saveAs(QString filename) {
         //x = start
         //w + x = end
 
-        unsigned long start = note.x * 50; //TODO zoom coef
-        unsigned long finish = note.w * 50 + start;
+        unsigned long start = note.x * 50 / _xZoomCoef; //TODO zoom coef
+        unsigned long finish = note.w * 50 / _xZoomCoef + start;
 
         if (midiMap.count(start) == 0)
             midiMap[start] = {};
