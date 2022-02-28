@@ -64,6 +64,9 @@ void PianoRoll::onMoveVertical(int newY) {
     if (_noteCursor < 0)
         return;
 
+    newY /= noteHeight();
+    newY *= noteHeight();
+
     _notes[_noteCursor].y = newY;
     update();
 }
