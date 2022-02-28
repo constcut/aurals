@@ -70,86 +70,94 @@ Q_INVOKABLE void PianoRoll::ondblclick(int x, int y)
         }
 }
 
-
-void PianoRoll::paint(QPainter* painter) {
+void PianoRoll::findMinMaxMidi() {
 
     if (_mid.empty())
         return;
 
-    int minMidi = 128; //Вынести на рефакторинге + всё что ниже
-    int maxMidi = 0;
+    _minMidi = 128; //Вынести на рефакторинге + всё что ниже
+    _maxMidi = 0;
 
     for (const auto& message: _mid.at(_currentTrack)) {
         if (message.getEventType() == MidiEvent::NoteOn) {
             const auto midiNote = message.getParameter1();
-            if (maxMidi < midiNote)
-                maxMidi = midiNote;
-            if (minMidi > midiNote)
-                minMidi = midiNote;
+            if (_maxMidi < midiNote)
+                _maxMidi = midiNote;
+            if (_minMidi > midiNote)
+                _minMidi = midiNote;
         }
     }
 
+}
 
-    const int noteHeight = [&](){
-      if (_fillHeight == false)
-          return 5;
-      else {
-          const int dist = maxMidi - minMidi;
-          return static_cast<int>(height() / dist);
-      }
-    }();
 
-    auto midiNoteToPosition = [&](int midiNote) {
-        if (_fillHeight == false)
-            return (128 - midiNote) * noteHeight;
-        else {
-           const int localNote = maxMidi - midiNote;
-           return localNote * noteHeight;
-        }
+int PianoRoll::noteHeight()
+{
+    if (_fillHeight == false)
+        return 5;
+
+    const int dist = _maxMidi - _minMidi;
+    return static_cast<int>(height() / dist);
+}
+
+
+int PianoRoll::midiNoteToPosition(int midiNote) {
+    if (_fillHeight == false)
+        return (128 - midiNote) * noteHeight();
+
+   const int localNote = _maxMidi - midiNote;
+   return localNote * noteHeight();
+}
+
+
+void PianoRoll::fillNotes() {
+    qDebug() << "Generating piano notes";
+
+
+    std::vector<double> ray(128, -1.0);
+
+    auto addNote = [&](auto pos, auto midiNote) {
+        const int noteWidth = pos - ray[midiNote];
+        _notes.push_back({static_cast<int>(ray[midiNote]),
+               midiNoteToPosition(midiNote), noteWidth, noteHeight(), midiNote});
     };
 
 
-    if (_notes.empty()) {
+    for (const auto& message: _mid.at(_currentTrack))
+    {
+        const auto pos = ( message.absoluteTime() / 50.0 ) * _xZoomCoef;
+        const auto midiNote = message.getParameter1();
 
-        qDebug() << "Generating piano notes";
-
-        std::vector<double> ray(128, -1.0);
-
-        auto addNote = [&](auto pos, auto midiNote) {
-            const int noteWidth = pos - ray[midiNote];
-            _notes.push_back({static_cast<int>(ray[midiNote]), midiNoteToPosition(midiNote), noteWidth, noteHeight, midiNote});
-        };
-
-
-        for (const auto& message: _mid.at(_currentTrack))
+        if (message.getEventType() == MidiEvent::NoteOn)
         {
-            const auto pos = ( message.absoluteTime() / 50.0 ) * _xZoomCoef;
-            const auto midiNote = message.getParameter1();
+            if (ray[midiNote] != -1.0)
+                addNote(pos, midiNote);
 
-            if (message.getEventType() == MidiEvent::NoteOn)
-            {
-                if (ray[midiNote] != -1.0)
-                    addNote(pos, midiNote);
-
-                ray[midiNote] = pos;
-            }
-            if (message.getEventType() == MidiEvent::NoteOff)
-            {
-                if (ray[midiNote] != -1.0) {
-                    addNote(pos, midiNote);
-                    ray[midiNote] = -1.0;
-                }
+            ray[midiNote] = pos;
+        }
+        if (message.getEventType() == MidiEvent::NoteOff)
+        {
+            if (ray[midiNote] != -1.0) {
+                addNote(pos, midiNote);
+                ray[midiNote] = -1.0;
             }
         }
-
-        saveAs("afterGen.mid");
     }
+}
 
+
+void PianoRoll::paint(QPainter* painter) {
+
+    if (_notes.empty()) {
+        fillNotes();
+        findMinMaxMidi();
+    }
     //Позже внимательней изучить случаи перерисовки, всё что выше можно перенести из отрисовки в загрузку
 
     painter->setPen(QColor("lightgray"));
-    for (int i = minMidi - 1; i < maxMidi + 1; ++i)
-        painter->drawLine(0, midiNoteToPosition(i), width(), midiNoteToPosition(i));
+    for (int i = _minMidi - 1; i < _maxMidi + 1; ++i)
+        painter->drawLine(0, midiNoteToPosition(i),
+                          width(), midiNoteToPosition(i));
 
 
     int i = 0;

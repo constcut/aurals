@@ -77,6 +77,17 @@ namespace aurals {
 
     private:
 
+
+        void findMinMaxMidi();
+        int noteHeight();
+        int midiNoteToPosition(int midiNote);
+
+        void fillNotes();
+
+        int _minMidi;
+        int _maxMidi;
+
+
         aurals::MidiFile _mid;
 
         size_t _currentTrack = 1;
