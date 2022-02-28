@@ -281,11 +281,8 @@ void PianoRoll::paint(QPainter* painter) {
 }
 
 
-MidiTrack PianoRoll::makeCurrentTrack() {
-    MidiTrack newTrack;
-    //newTrack.pushChangeBPM(_bpm, 0);
-    newTrack.pushChangeInstrument(_currentInstrument, 0);
-
+MidiTrack PianoRoll::makeCurrentTrack()
+{
 
     struct MiniMidi {
         uint8_t typeAndChannel;
@@ -296,6 +293,13 @@ MidiTrack PianoRoll::makeCurrentTrack() {
 
     std::map<unsigned long, std::vector<MiniMidi>> midiMap;
 
+    uint8_t trackId = _currentTrack;
+    if (trackId)
+        --trackId; //Tab symmetry generation
+
+    MidiTrack newTrack;
+    //newTrack.pushChangeBPM(_bpm, 0);
+    newTrack.pushChangeInstrument(_currentInstrument, trackId);
 
     for (const auto& note: _notes)
     {
@@ -314,8 +318,8 @@ MidiTrack PianoRoll::makeCurrentTrack() {
         if (midiMap.count(finish) == 0)
             midiMap[finish] = {};
 
-        midiMap[start].push_back({0x90, note.midiNote});
-        midiMap[finish].push_back({0x80, note.midiNote});
+        midiMap[start].push_back({static_cast<uint8_t>(0x90), note.midiNote});
+        midiMap[finish].push_back({static_cast<uint8_t>(0x80), note.midiNote});
 
         //y = midi note (yet can use inner field later update)
     }
@@ -336,13 +340,13 @@ MidiTrack PianoRoll::makeCurrentTrack() {
             }
 
             if (event.typeAndChannel == 0x90) {
-                newTrack.pushNoteOn(event.param, 127, 0);
+                newTrack.pushNoteOn(event.param, 127, trackId);
                 totalTime += newTrack.back().getSecondsLength(_bpm);
                 newTrack.back().setAbsoluteTime(totalTime * 1000);
             }
 
             if (event.typeAndChannel == 0x80) {
-                newTrack.pushNoteOff(event.param, 127, 0);
+                newTrack.pushNoteOff(event.param, 127, trackId);
                 totalTime += newTrack.back().getSecondsLength(_bpm);
                 newTrack.back().setAbsoluteTime(totalTime * 1000);
             }
