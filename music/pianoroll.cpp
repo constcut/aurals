@@ -149,8 +149,8 @@ void PianoRoll::fillNotes() {
 void PianoRoll::paint(QPainter* painter) {
 
     if (_notes.empty()) {
-        fillNotes();
         findMinMaxMidi();
+        fillNotes();
     }
     //Позже внимательней изучить случаи перерисовки, всё что выше можно перенести из отрисовки в загрузку
 
@@ -193,6 +193,13 @@ void PianoRoll::saveAs(QString filename) {
     };
 
     std::map<unsigned long, std::vector<MiniMidi>> midiMap;
+
+    bool wereEmpty = false;
+    if (_notes.empty()) { //Yet only for fast debug
+        findMinMaxMidi();
+        fillNotes();
+        wereEmpty = true;
+    }
 
     qDebug() << "Notes " << _notes.size();
 
@@ -242,4 +249,7 @@ void PianoRoll::saveAs(QString filename) {
 
     m[_currentTrack] = newTrack;
     m.writeToFile(filename.toStdString());
+
+    if (wereEmpty)
+        _notes.clear();
 }
