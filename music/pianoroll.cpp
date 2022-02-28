@@ -176,7 +176,7 @@ int PianoRoll::noteHeight()
 
 int PianoRoll::midiNoteToPosition(int midiNote) {
     if (_fillHeight == false)
-        return (128 - midiNote) * noteHeight();
+        return (127 - midiNote) * noteHeight();
 
    const int localNote = _maxMidi - midiNote;
    return localNote * noteHeight();
@@ -188,7 +188,7 @@ int PianoRoll::positionToMidiNote(int pos) {
     const int temp = pos / noteHeight();
 
     if (_fillHeight == false)
-       return 128 - temp;
+       return 127 - temp;
 
     return _maxMidi - temp;
 }
@@ -237,13 +237,11 @@ void PianoRoll::paint(QPainter* painter) {
         findMinMaxMidi();
         fillNotes();
     }
-    //Позже внимательней изучить случаи перерисовки, всё что выше можно перенести из отрисовки в загрузку
 
     painter->setPen(QColor("lightgray"));
     for (int i = _minMidi - 1; i < _maxMidi + 1; ++i)
         painter->drawLine(0, midiNoteToPosition(i),
                           width(), midiNoteToPosition(i));
-
 
     int i = 0;
     for (const auto& note: _notes) {
