@@ -203,6 +203,8 @@ Item {
         pianoRoll.width = maxWidth
 
         pianoRollTrack.currentIndex = 1
+
+        pianoRoll.saveAs("pianoCheck.mid")
     }
 
     function keyboardEventSend(key, mode) {

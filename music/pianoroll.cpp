@@ -75,7 +75,7 @@ void PianoRoll::paint(QPainter* painter) {
     if (_mid.empty())
         return;
 
-    int minMidi = 128; //Вынести на рефакторинге
+    int minMidi = 128; //Вынести на рефакторинге + всё что ниже
     int maxMidi = 0;
 
     for (const auto& message: _mid.at(_currentTrack)) {
@@ -180,6 +180,8 @@ void PianoRoll::saveAs(QString filename) {
 
     std::map<unsigned long, std::vector<MiniMidi>> midiMap;
 
+    qDebug() << "Notes " << _notes.size();
+
     for (const auto& note: _notes) {
         //x = start
         //w + x = end
@@ -197,6 +199,8 @@ void PianoRoll::saveAs(QString filename) {
         midiMap[finish].push_back({0x80, note.midiNote});
 
         //y = midi note (yet can use inner field later update)
+
+        qDebug() << "Adding note with " << start << " " << finish;
     }
 
     unsigned long prevTime = 0;
@@ -213,11 +217,13 @@ void PianoRoll::saveAs(QString filename) {
 
             if (event.typeAndChannel == 0x90)
                 newTrack.pushNoteOn(event.param, 127, 0);
+
             if (event.typeAndChannel == 0x80)
                 newTrack.pushNoteOff(event.param, 127, 0);
         }
 
     }
 
+    m[_currentTrack] = newTrack;
     m.writeToFile(filename.toStdString());
 }
