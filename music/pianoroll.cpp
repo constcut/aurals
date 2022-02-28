@@ -162,3 +162,62 @@ void PianoRoll::paint(QPainter* painter) {
     }
 
 }
+
+
+void PianoRoll::saveAs(QString filename) {
+    MidiFile m = _mid;
+
+    MidiTrack newTrack;
+
+    //Calculate OnOff notes moments
+
+    struct MiniMidi {
+        uint8_t typeAndChannel;
+        //uint8_t channel;
+        //Skipped velocity yet
+        uint8_t param; //midi note
+    };
+
+    std::map<unsigned long, std::vector<MiniMidi>> midiMap;
+
+    for (const auto& note: _notes) {
+        //x = start
+        //w + x = end
+
+        unsigned long start = note.x * 50;
+        unsigned long finish = note.w * 50 + start;
+
+        if (midiMap.count(start) == 0)
+            midiMap[start] = {};
+
+        if (midiMap.count(finish) == 0)
+            midiMap[finish] = {};
+
+        midiMap[start].push_back({0x90, note.midiNote});
+        midiMap[finish].push_back({0x80, note.midiNote});
+
+        //y = midi note (yet can use inner field later update)
+    }
+
+    unsigned long prevTime = 0;
+    for (const auto& events: midiMap) {
+
+        unsigned long currentTime = events.first; //Rewrite structures binding
+
+        for (auto& event: events.second) {
+
+            if (prevTime != currentTime) {
+                newTrack.accumulate(currentTime - prevTime);
+                prevTime = currentTime;
+            }
+
+            if (event.typeAndChannel == 0x90)
+                newTrack.pushNoteOn(event.param, 127, 0);
+            if (event.typeAndChannel == 0x80)
+                newTrack.pushNoteOff(event.param, 127, 0);
+        }
+
+    }
+
+    m.writeToFile(filename.toStdString());
+}

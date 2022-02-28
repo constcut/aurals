@@ -15,7 +15,7 @@ namespace aurals {
         int w;
         int h;
 
-        int midiNote;
+        uint8_t midiNote;
 
         //fret, string, other data unordered_map<string, int>
     };
@@ -64,6 +64,8 @@ namespace aurals {
         Q_INVOKABLE void ondblclick(int x, int y);
 
         Q_INVOKABLE void onMoveVertical(int newY);
+
+        Q_INVOKABLE void saveAs(QString filename);
 
     signals:
 
