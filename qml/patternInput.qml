@@ -51,7 +51,7 @@ Item {
 
 
     ScrollView {
-        y: mainLayout.y + mainLayout.height
+        y: mainLayout.y + mainLayout.height + 20
         width: parent.width
         height: parent.height - y
 
@@ -63,6 +63,27 @@ Item {
             contentHeight:  parent.height
 
             //Component with repeaters + MouseArea
+
+            Repeater {
+                model: 5
+
+                RowLayout {
+                    y: index * 60 //Заменить на значение высоты
+                    spacing: 10
+                    ComboBox {
+                        model: [4, 6, 8, 3, 2, 1] //Basic
+                    }
+                    ComboBox {
+                        model: [4, 8, 16, 2, 1, 32]
+                    }
+                    Text {
+                        text: ":"
+                    }
+                    ComboBox {
+                        model: [4, 8, 16]
+                    }
+                }
+            }
         }
     }
 
