@@ -36,6 +36,7 @@ void PianoRoll::reset() {
     _mid = MidiFile();
     _noteCursor = -1;
     _notes.clear();
+    _xZoomCoef = 1.0;
     update();
 }
 
