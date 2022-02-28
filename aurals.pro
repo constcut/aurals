@@ -84,7 +84,7 @@ SOURCES += \
     midi/MidiTrack.cpp \
     midi/NBytesInt.cpp \
     music/GraphicMap.cpp \
-    music/PianoRoll_.cpp \
+    music/PianoRoll.cpp \
     music/Tapper.cpp \
     tab/Bar.cpp \
     tab/Beat.cpp \
