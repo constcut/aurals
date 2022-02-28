@@ -82,6 +82,11 @@ Item {
                     ComboBox {
                         model: [4, 8, 16]
                     }
+
+                    PatternLine {
+                        width: 300
+                        height: 50
+                    }
                 }
             }
         }

@@ -3,8 +3,6 @@
 
 #include <QQuickPaintedItem>
 
-#include <QDebug>
-
 #include "midi/MidiFile.hpp"
 
 

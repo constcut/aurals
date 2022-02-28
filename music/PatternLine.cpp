@@ -1,6 +1,13 @@
 #include "PatternLine.hpp"
 
-PatternLine::PatternLine()
-{
+#include <QPainter>
 
+void PatternLine::paint(QPainter* painter) {
+
+    size_t elements = 4;
+
+    for (size_t i = 0; i < elements; ++i)
+    {
+        painter->drawRect(i * 30, 0, 25, 25);
+    }
 }
