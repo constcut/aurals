@@ -72,18 +72,28 @@ Item {
                     spacing: 10
                     ComboBox {
                         model: [4, 6, 8, 3, 2, 1] //Basic
+                        onCurrentTextChanged: {
+                            pattern.setNumerator(parseInt(currentText))
+                        }
                     }
                     ComboBox {
                         model: [4, 8, 16, 2, 1, 32]
+                        onCurrentTextChanged: {
+                            pattern.setDenomenator(parseInt(currentText))
+                        }
                     }
                     Text {
                         text: ":"
                     }
                     ComboBox {
                         model: [4, 8, 16]
+                        onCurrentTextChanged: {
+                            pattern.setBrickSize(parseInt(currentText))
+                        }
                     }
 
                     PatternLine {
+                        id: pattern
                         width: 300
                         height: 50
                     }

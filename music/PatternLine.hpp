@@ -20,10 +20,6 @@ namespace aurals {
     public:
         PatternLine() = default;
 
-        //setters\getters
-
-        //paint event
-
         void paint(QPainter* painter);
 
         Q_INVOKABLE void setNumerator(int num) {
@@ -34,6 +30,12 @@ namespace aurals {
 
         Q_INVOKABLE void setDenomenator(int denom) {
             _denom = denom;
+            updateBricks();
+            update();
+        }
+
+        Q_INVOKABLE void setBrickSize(int size) {
+            _brickSize = size;
             updateBricks();
             update();
         }

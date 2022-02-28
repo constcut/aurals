@@ -23,8 +23,6 @@ void PatternLine::updateBricks() {
 
     double total = (static_cast<double>(_num) / _denom) / (1.0 / _brickSize);
 
-    qDebug() << "Total bricks to make " << total;
-
     _bricks.clear();
     for (size_t i = 0; i < total; ++i)
         _bricks.push_back({});
