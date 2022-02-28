@@ -25,12 +25,12 @@
 #include "audio/spectrum/Spectrograph.hpp"
 #include "audio/spectrum/Cepstrumgraph.hpp"
 
-#include "music/pianoroll.h"
+#include "music/PianoRoll.hpp"
 
 #include "audio/features/ACFgraph.hpp"
 #include "app/StretchImage.hpp"
 
-#include "music/Tapper.h"
+#include "music/Tapper.hpp"
 //#include "music/graphicmap.h"
 #include "midi/MidiFile.hpp"
 

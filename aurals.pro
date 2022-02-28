@@ -208,8 +208,8 @@ HEADERS += \
     libs/sf/tml.h \
     libs/sf/tsf.h \
     music/GraphicMap.hpp \
-    music/Tapper.h \
-    music/PianoRoll.h \
+    music/PianoRoll.hpp \
+    music/Tapper.hpp \
     tab/Bar.hpp \
     tab/Beat.hpp \
     tab/BeatStructs.hpp \

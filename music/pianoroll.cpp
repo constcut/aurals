@@ -1,4 +1,4 @@
-#include "PianoRoll.h"
+#include "PianoRoll.hpp"
 #include <QPainter>
 #include <QDebug>
 
