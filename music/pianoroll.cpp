@@ -67,6 +67,7 @@ void PianoRoll::onMoveVertical(int newY) {
     newY /= noteHeight();
     newY *= noteHeight();
 
+    _notes[_noteCursor].midiNote = positionToMidiNote(newY);
     _notes[_noteCursor].y = newY;
     update();
 }
@@ -130,6 +131,17 @@ int PianoRoll::midiNoteToPosition(int midiNote) {
 }
 
 
+int PianoRoll::positionToMidiNote(int pos) {
+
+    const int temp = pos / noteHeight();
+
+    if (_fillHeight == false)
+       return 128 - temp;
+
+    return _maxMidi - temp;
+}
+
+
 void PianoRoll::fillNotes() {
     qDebug() << "Generating piano notes";
 
@@ -150,6 +162,7 @@ void PianoRoll::fillNotes() {
 
         const auto pos = ( message.absoluteTime() / 50.0 ) * _xZoomCoef;
         const auto midiNote = message.getParameter1();
+
 
         if (message.getEventType() == MidiEvent::NoteOn)
         {
@@ -225,10 +238,8 @@ void PianoRoll::saveAs(QString filename) {
 
     qDebug() << "Notes " << _notes.size();
 
-    for (const auto& note: _notes) {
-        //x = start
-        //w + x = end
-
+    for (const auto& note: _notes)
+    {
         unsigned long start = note.x * 50 / _xZoomCoef;
         unsigned long finish = note.w * 50 / _xZoomCoef + start;
 
@@ -254,8 +265,8 @@ void PianoRoll::saveAs(QString filename) {
     }
 
     unsigned long prevTime = 0;
-    for (const auto& events: midiMap) {
-
+    for (const auto& events: midiMap)
+    {
         unsigned long currentTime = events.first; //Rewrite structures binding
 
         for (auto& event: events.second) {

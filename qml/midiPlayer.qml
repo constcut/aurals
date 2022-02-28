@@ -117,7 +117,7 @@ Item {
             CheckBox {
                 id: stretchHeight
                 checked: false
-                text: "Stretch height"
+                text: "Stretch"
             }
             ToolButton {
                 text: "+"
@@ -126,6 +126,10 @@ Item {
             ToolButton {
                 text: "-"
                 onClicked: pianoRoll.zoomOut();
+            }
+            ToolButton {
+                text: "S"
+                onClicked: pianoRoll.saveAs("pianoCheck2.mid")
             }
         }
     }

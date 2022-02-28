@@ -81,6 +81,7 @@ namespace aurals {
         void findMinMaxMidi();
         int noteHeight();
         int midiNoteToPosition(int midiNote);
+        int positionToMidiNote(int pos);
 
         void fillNotes();
 
