@@ -348,13 +348,13 @@ MidiTrack PianoRoll::makeCurrentTrack() {
             if (event.typeAndChannel == 0x90) {
                 newTrack.pushNoteOn(event.param, 127, 0);
                 totalTime += newTrack.back().getSecondsLength(_bpm);
-                newTrack.back().setAbsoluteTime(totalTime);
+                newTrack.back().setAbsoluteTime(totalTime * 1000);
             }
 
             if (event.typeAndChannel == 0x80) {
                 newTrack.pushNoteOff(event.param, 127, 0);
                 totalTime += newTrack.back().getSecondsLength(_bpm);
-                newTrack.back().setAbsoluteTime(totalTime);
+                newTrack.back().setAbsoluteTime(totalTime * 1000);
             }
         }
 
