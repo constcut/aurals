@@ -7,9 +7,24 @@
 namespace aurals {
 
     struct PatternBrick {
-        //velocity
-        //other params
+        //velocity + other effects?
+
+        int x;
+        int y;
+        int w;
+        int h;
+
         bool on = false;
+
+        bool hit(int xHit, int yHit) { //Delayed abstraction for BarView\PianoRoll\PatternBrick
+            if ((xHit >= x) && (yHit >= y)) {
+              int xDiff = xHit - x;
+              int yDiff = yHit - y;
+              if (xDiff <= w && yDiff <= h)
+                  return true;
+            }
+            return false;
+        }
     };
 
 
@@ -41,6 +56,8 @@ namespace aurals {
         }
 
         void updateBricks();
+
+        Q_INVOKABLE void onClick(int x, int y);
 
 
     private:

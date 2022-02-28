@@ -74,12 +74,14 @@ Item {
                         model: [4, 6, 8, 3, 2, 1] //Basic
                         onCurrentTextChanged: {
                             pattern.setNumerator(parseInt(currentText))
+                            //TODO calculate new size for pattern width
                         }
                     }
                     ComboBox {
                         model: [4, 8, 16, 2, 1, 32]
                         onCurrentTextChanged: {
                             pattern.setDenomenator(parseInt(currentText))
+                            //TODO calculate new size for pattern width
                         }
                     }
                     Text {
@@ -89,6 +91,7 @@ Item {
                         model: [4, 8, 16]
                         onCurrentTextChanged: {
                             pattern.setBrickSize(parseInt(currentText))
+                            //TODO calculate new size for pattern width
                         }
                     }
 
@@ -96,6 +99,13 @@ Item {
                         id: pattern
                         width: 300
                         height: 50
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onDoubleClicked: {
+                                pattern.onClick(mouseX, mouseY)
+                            }
+                        }
                     }
                 }
             }
