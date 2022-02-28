@@ -28,11 +28,13 @@ namespace aurals {
 
         Q_INVOKABLE void setNumerator(int num) {
             _num = num;
+            updateBricks();
             update();
         }
 
         Q_INVOKABLE void setDenomenator(int denom) {
             _denom = denom;
+            updateBricks();
             update();
         }
 
@@ -45,10 +47,10 @@ namespace aurals {
 
     private:
 
-        uint8_t _num;
-        uint8_t _denom;
+        uint8_t _num = 4;
+        uint8_t _denom = 4;
 
-        uint8_t _brickSize;
+        uint8_t _brickSize = 4;
 
         uint8_t _midiNote; //basicly drums
 
