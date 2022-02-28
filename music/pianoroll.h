@@ -83,6 +83,8 @@ namespace aurals {
 
         void fillNotes();
 
+        MidiTrack makeCurrentTrack();
+
         int _minMidi;
         int _maxMidi;
 

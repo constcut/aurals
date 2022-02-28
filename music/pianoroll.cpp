@@ -5,7 +5,8 @@
 using namespace aurals;
 
 
-void PianoRoll::loadMidi(QString filename) {
+void PianoRoll::loadMidi(QString filename)
+{
     _mid.readFromFile(filename.toStdString());
 
     if (_mid.empty() == false)
@@ -27,17 +28,20 @@ void PianoRoll::loadMidi(QString filename) {
 
 
 
-void PianoRoll::setCurrentTrack(int newIdx) {
+void PianoRoll::setCurrentTrack(int newIdx)
+{
+    if (_notes.empty() == false) {
+        qDebug() << "SAVING " << _currentTrack << " with " << _notes.size();
+        auto track = makeCurrentTrack();
+        qDebug() << "Generated " << track.size() << " vs " << _mid[_currentTrack].size();
+        _mid[_currentTrack] = track;
+    }
 
-    //TODO store instruments for each track for back generation
     _currentTrack = newIdx;
     _notes.clear();
-    qDebug() << "Cleaning from setCurrentTrack";
 
     for (const auto& event: _mid[_currentTrack])
-        if (event.getEventType() == MidiEvent::PatchChange)
-        {
-            qDebug() << "New instr " << event.getParameter1();
+        if (event.getEventType() == MidiEvent::PatchChange) {
             _currentInstrument = event.getParameter1();
             break;
         }
@@ -231,6 +235,7 @@ void PianoRoll::fillNotes()
         const auto pos = ( message.absoluteTime() / 50.0 ) * _xZoomCoef;
         const auto midiNote = message.getParameter1();
 
+        qDebug() << "Filling msg: " << message.absoluteTime();
 
         if (message.getEventType() == MidiEvent::NoteOn)
         {
@@ -247,6 +252,8 @@ void PianoRoll::fillNotes()
             }
         }
     }
+
+    qDebug() << "Filled " << _notes.size() << " total notes";
 }
 
 
@@ -262,6 +269,8 @@ void PianoRoll::paint(QPainter* painter) {
         painter->drawLine(0, midiNoteToPosition(i),
                           width(), midiNoteToPosition(i));
 
+    qDebug() << "Painting notes " << _notes.size();
+
     int i = 0;
     for (const auto& note: _notes) {
 
@@ -274,14 +283,15 @@ void PianoRoll::paint(QPainter* painter) {
         painter->setPen(QColor("lightgreen"));
         painter->drawRect(note.x, note.y, note.w, note.h);
         ++i;
+
+        qDebug() << "PN: " << note.x << " " << note.y
+                 << " " << note.w << " " << note.h;
     }
 
 }
 
 
-void PianoRoll::saveAs(QString filename) {
-    MidiFile m = _mid;
-
+MidiTrack PianoRoll::makeCurrentTrack() {
     MidiTrack newTrack;
     //newTrack.pushChangeBPM(_bpm, 0);
     newTrack.pushChangeInstrument(_currentInstrument, 0);
@@ -296,13 +306,6 @@ void PianoRoll::saveAs(QString filename) {
 
     std::map<unsigned long, std::vector<MiniMidi>> midiMap;
 
-    bool wereEmpty = false;
-    if (_notes.empty()) { //Yet only for fast debug
-        findMinMaxMidi();
-        fillNotes();
-        wereEmpty = true;
-    }
-
 
     for (const auto& note: _notes)
     {
@@ -314,7 +317,6 @@ void PianoRoll::saveAs(QString filename) {
 
         finish *= 480;
         finish /= 500;
-
 
         if (midiMap.count(start) == 0)
             midiMap[start] = {};
@@ -328,6 +330,8 @@ void PianoRoll::saveAs(QString filename) {
         //y = midi note (yet can use inner field later update)
     }
 
+    double totalTime = 0.0;
+
     unsigned long prevTime = 0;
     for (const auto& events: midiMap)
     {
@@ -338,21 +342,45 @@ void PianoRoll::saveAs(QString filename) {
             if (prevTime != currentTime) {
                 newTrack.accumulate(currentTime - prevTime);
                 prevTime = currentTime;
+                //Можно считать TotalTime тут
             }
 
-            if (event.typeAndChannel == 0x90)
+            if (event.typeAndChannel == 0x90) {
                 newTrack.pushNoteOn(event.param, 127, 0);
+                totalTime += newTrack.back().getSecondsLength(_bpm);
+                newTrack.back().setAbsoluteTime(totalTime);
+            }
 
-            if (event.typeAndChannel == 0x80)
+            if (event.typeAndChannel == 0x80) {
                 newTrack.pushNoteOff(event.param, 127, 0);
+                totalTime += newTrack.back().getSecondsLength(_bpm);
+                newTrack.back().setAbsoluteTime(totalTime);
+            }
         }
 
     }
 
-    newTrack.pushEvent47();
+    qDebug() << "Total time: " << totalTime;
 
-    m[_currentTrack] = newTrack;
+    newTrack.pushEvent47();
+    return newTrack;
+}
+
+
+void PianoRoll::saveAs(QString filename) {
+    MidiFile m = _mid;
+
+    bool wereEmpty = false;
+    if (_notes.empty()) { //Yet only for fast debug
+        findMinMaxMidi();
+        fillNotes();
+        wereEmpty = true;
+    }
+
+    m[_currentTrack] = makeCurrentTrack();
     m.writeToFile(filename.toStdString());
+
+    qDebug() << "Save as " << m.size() << m[1].size();
 
     if (wereEmpty)
         _notes.clear();

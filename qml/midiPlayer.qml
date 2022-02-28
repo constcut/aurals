@@ -215,7 +215,7 @@ Item {
         pianoRoll.zoomIn()
         pianoRoll.zoomIn()
 
-        pianoRoll.loadMidi("tests/regression/1.1.mid") //testFilesCombo.currentText
+        pianoRoll.loadMidi("tests/regression/3.1.mid") //1.1
         pianoRollTrack.model = pianoRoll.getTrackCount()
 
         var maxWidth = pianoRoll.getContentWidth() * 8 //TODO zoom
