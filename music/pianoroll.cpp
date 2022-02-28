@@ -22,7 +22,6 @@ void PianoRoll::loadMidi(QString filename) {
     }
 
 
-
     update();
 }
 

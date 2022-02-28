@@ -61,7 +61,7 @@ namespace aurals {
             update();
         }
 
-        Q_INVOKABLE void ondblclick(int x, int y);
+        Q_INVOKABLE void onDoubleClick(int x, int y);
 
         Q_INVOKABLE void onPressAndHold(int x, int y);
 

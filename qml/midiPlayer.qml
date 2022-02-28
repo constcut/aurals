@@ -188,7 +188,7 @@ Item {
                     }
 
                     onDoubleClicked: {
-                        pianoRoll.ondblclick(mouseX, mouseY)
+                        pianoRoll.onDoubleClick(mouseX, mouseY)
                     }
 
                     onPressAndHold: {
