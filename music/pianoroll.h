@@ -42,12 +42,7 @@ namespace aurals {
             return _mid.size();
         }
 
-        Q_INVOKABLE void setCurrentTrack(int newIdx) {
-            _currentTrack = newIdx;
-            _notes.clear();
-            qDebug() << "Cleaning from setCurrentTrack";
-            update();
-        }
+        Q_INVOKABLE void setCurrentTrack(int newIdx);
 
         Q_INVOKABLE void setHeightStretch(bool value) {
             _fillHeight = value;

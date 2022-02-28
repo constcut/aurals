@@ -21,8 +21,19 @@ void PianoRoll::loadMidi(QString filename) {
             }
     }
 
-    //TODO store instruments for each track for back generation
 
+
+    update();
+}
+
+
+
+void PianoRoll::setCurrentTrack(int newIdx) {
+
+    //TODO store instruments for each track for back generation
+    _currentTrack = newIdx;
+    _notes.clear();
+    qDebug() << "Cleaning from setCurrentTrack";
     update();
 }
 
@@ -82,7 +93,7 @@ void PianoRoll::onMoveHorizontal(int newX) {
 }
 
 
-Q_INVOKABLE void PianoRoll::ondblclick(int x, int y)
+Q_INVOKABLE void PianoRoll::onDoubleClick(int x, int y)
 {
     bool found = false;
 
