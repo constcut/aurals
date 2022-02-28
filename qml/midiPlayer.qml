@@ -189,11 +189,16 @@ Item {
 
     Component.onCompleted: {
         pianoRoll.reset()
-        pianoRoll.setHeightStretch(stretchHeight.checked)
-        pianoRoll.loadMidi(testFilesCombo.currentText)
+        pianoRoll.setHeightStretch(true) //stretchHeight.checked
+
+        pianoRoll.zoomIn()
+        pianoRoll.zoomIn()
+        pianoRoll.zoomIn()
+
+        pianoRoll.loadMidi("tests/regression/3.1.mid") //testFilesCombo.currentText
         pianoRollTrack.model = pianoRoll.getTrackCount()
 
-        var maxWidth = pianoRoll.getContentWidth()
+        var maxWidth = pianoRoll.getContentWidth() * 8 //TODO zoom
         flick.contentWidth = maxWidth
         pianoRoll.width = maxWidth
 
