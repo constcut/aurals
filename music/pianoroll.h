@@ -69,6 +69,7 @@ namespace aurals {
         Q_INVOKABLE void ondblclick(int x, int y);
 
         Q_INVOKABLE void onMoveVertical(int newY);
+        Q_INVOKABLE void onMoveHorizontal(int newX);
 
         Q_INVOKABLE void saveAs(QString filename);
 

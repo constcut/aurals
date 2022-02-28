@@ -73,6 +73,14 @@ void PianoRoll::onMoveVertical(int newY) {
 }
 
 
+void PianoRoll::onMoveHorizontal(int newX) {
+    if (_noteCursor < 0)
+        return;
+
+    _notes[_noteCursor].x = newX; //TODO сетка
+    update();
+}
+
 
 Q_INVOKABLE void PianoRoll::ondblclick(int x, int y)
 {

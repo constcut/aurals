@@ -174,6 +174,13 @@ Item {
                                 pianoRoll.onMoveVertical(mouseY)
                         }
                     }
+                    onMouseXChanged: {
+                        if (pressed) {
+                            var diffX = mouseX - pressX
+                            if (Math.abs(diffX) > 2) //TODO not the best option, as we can't make small moves, need to compare diffX and diffY
+                                pianoRoll.onMoveHorizontal(mouseX)
+                        }
+                    }
 
                     onReleased: {
                         pressed = false
