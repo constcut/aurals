@@ -170,7 +170,6 @@ Item {
                     onMouseYChanged: {
                         if (pressed) {
                             var diffY = mouseY - pressY
-                            console.log("Diff y ", diffY)
                             if (Math.abs(diffY) > 5)
                                 pianoRoll.onMoveVertical(mouseY)
                         }

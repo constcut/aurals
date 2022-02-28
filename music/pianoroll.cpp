@@ -142,9 +142,8 @@ int PianoRoll::positionToMidiNote(int pos) {
 }
 
 
-void PianoRoll::fillNotes() {
-    qDebug() << "Generating piano notes";
-
+void PianoRoll::fillNotes()
+{
 
     std::vector<double> ray(128, -1.0);
 
@@ -236,7 +235,6 @@ void PianoRoll::saveAs(QString filename) {
         wereEmpty = true;
     }
 
-    qDebug() << "Notes " << _notes.size();
 
     for (const auto& note: _notes)
     {
@@ -260,8 +258,6 @@ void PianoRoll::saveAs(QString filename) {
         midiMap[finish].push_back({0x80, note.midiNote});
 
         //y = midi note (yet can use inner field later update)
-
-        qDebug() << "Adding note with " << start << " " << finish;
     }
 
     unsigned long prevTime = 0;
