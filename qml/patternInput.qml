@@ -71,33 +71,43 @@ Item {
                     y: index * 60 //Заменить на значение высоты
                     spacing: 10
                     ComboBox {
-                        model: [4, 6, 8, 3, 2, 1] //Basic
+                        model: [4, 6, 8, 3, 2, 1, 5, 9, 10, 7, 16, 32] //Basic
                         onCurrentTextChanged: {
                             pattern.setNumerator(parseInt(currentText))
-                            //TODO calculate new size for pattern width
+                            var fullWidth = pattern.fullWidth()
+                            pattern.width = fullWidth + 10
+                            if (flick.contentWidth < fullWidth)
+                                flick.contentWidth = fullWidth
+                            //Умное обновление при уменьшение, хранить весь массив длин линий, и выбирать максимальный
                         }
                     }
                     ComboBox {
                         model: [4, 8, 16, 2, 1, 32]
                         onCurrentTextChanged: {
                             pattern.setDenomenator(parseInt(currentText))
-                            //TODO calculate new size for pattern width
+                            var fullWidth = pattern.fullWidth()
+                            pattern.width = fullWidth + 10
+                            if (flick.contentWidth < fullWidth)
+                                flick.contentWidth = fullWidth
                         }
                     }
                     Text {
                         text: ":"
                     }
                     ComboBox {
-                        model: [4, 8, 16]
+                        model: [4, 8, 16, 32, 2, 1]
                         onCurrentTextChanged: {
                             pattern.setBrickSize(parseInt(currentText))
-                            //TODO calculate new size for pattern width
+                            var fullWidth = pattern.fullWidth()
+                            pattern.width = fullWidth + 10
+                            if (flick.contentWidth < fullWidth)
+                                flick.contentWidth = fullWidth
                         }
                     }
 
                     PatternLine {
                         id: pattern
-                        width: 300
+                        width: 3000
                         height: 50
 
                         MouseArea {

@@ -59,6 +59,13 @@ namespace aurals {
 
         Q_INVOKABLE void onClick(int x, int y);
 
+        Q_INVOKABLE int fullWidth() {
+            if (_bricks.empty() == false) {
+                return _bricks.back().x + _bricks.back().w;
+            }
+            return 0;
+        }
+
 
     private:
 
