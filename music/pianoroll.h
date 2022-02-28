@@ -92,6 +92,7 @@ namespace aurals {
         aurals::MidiFile _mid;
 
         size_t _currentTrack = 1;
+        int _currentInstrument = 0;
 
         bool _fillHeight = false;
 

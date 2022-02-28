@@ -33,6 +33,15 @@ void PianoRoll::setCurrentTrack(int newIdx) {
     _currentTrack = newIdx;
     _notes.clear();
     qDebug() << "Cleaning from setCurrentTrack";
+
+    for (const auto& event: _mid[_currentTrack])
+        if (event.getEventType() == MidiEvent::PatchChange)
+        {
+            qDebug() << "New instr " << event.getParameter1();
+            _currentInstrument = event.getParameter1();
+            break;
+        }
+
     update();
 }
 
@@ -275,6 +284,7 @@ void PianoRoll::saveAs(QString filename) {
 
     MidiTrack newTrack;
     //newTrack.pushChangeBPM(_bpm, 0);
+    newTrack.pushChangeInstrument(_currentInstrument, 0);
 
 
     struct MiniMidi {
