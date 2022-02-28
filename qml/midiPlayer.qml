@@ -128,8 +128,14 @@ Item {
                 onClicked: pianoRoll.zoomOut();
             }
             ToolButton {
-                text: "S"
-                onClicked: pianoRoll.saveAs("pianoCheck2.mid")
+                text: ">"
+                onClicked:  {
+                    //TODO fails if no loads before, why?
+                    //No instrument set?
+                    pianoRoll.saveAs("pianoroll.mid")
+                    audio.openMidiFile("pianoroll.mid")
+                    audio.startMidiPlayer()
+                }
             }
         }
     }
