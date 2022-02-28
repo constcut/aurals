@@ -36,6 +36,7 @@ void PianoRoll::reset() {
     _mid = MidiFile();
     _noteCursor = -1;
     _notes.clear();
+    qDebug() << "Cleaning from reset";
     _xZoomCoef = 1.0;
     update();
 }
@@ -110,6 +111,8 @@ void PianoRoll::paint(QPainter* painter) {
 
     if (_notes.empty()) {
 
+        qDebug() << "Generating piano notes";
+
         std::vector<double> ray(128, -1.0);
 
         auto addNote = [&](auto pos, auto midiNote) {
@@ -138,6 +141,8 @@ void PianoRoll::paint(QPainter* painter) {
                 }
             }
         }
+
+        saveAs("afterGen.mid");
     }
 
     //Позже внимательней изучить случаи перерисовки, всё что выше можно перенести из отрисовки в загрузку
@@ -186,7 +191,7 @@ void PianoRoll::saveAs(QString filename) {
         //x = start
         //w + x = end
 
-        unsigned long start = note.x * 50;
+        unsigned long start = note.x * 50; //TODO zoom coef
         unsigned long finish = note.w * 50 + start;
 
         if (midiMap.count(start) == 0)

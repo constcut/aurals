@@ -3,6 +3,8 @@
 
 #include <QQuickPaintedItem>
 
+#include <QDebug>
+
 #include "midi/MidiFile.hpp"
 
 
@@ -43,6 +45,7 @@ namespace aurals {
         Q_INVOKABLE void setCurrentTrack(int newIdx) {
             _currentTrack = newIdx;
             _notes.clear();
+            qDebug() << "Cleaning from setCurrentTrack";
             update();
         }
 
@@ -53,11 +56,13 @@ namespace aurals {
         Q_INVOKABLE void zoomIn() {
             _xZoomCoef *= 2;
             _notes.clear();
+            qDebug() << "Cleaning from zoomIn";
             update();
         }
         Q_INVOKABLE void zoomOut() {
             _xZoomCoef /= 2;
             _notes.clear();
+            qDebug() << "Cleaning from zoomOut";
             update();
         }
 
