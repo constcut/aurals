@@ -97,6 +97,8 @@ namespace aurals {
         NBytesInt& metaLen() { return _metaLen; }
         std::vector<uint8_t>& metaBufer() { return _metaBufer; }
 
+        const NBytesInt& timeStamp() const { return _timeStamp; }
+
     protected:
         uint8_t _typeAndChannel;
         uint8_t _param1, _param2;

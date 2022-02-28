@@ -21,6 +21,8 @@ void PianoRoll::loadMidi(QString filename) {
             }
     }
 
+    //TODO store instruments for each track for back generation
+
     update();
 }
 
@@ -50,6 +52,7 @@ void PianoRoll::reset() {
     _mid = MidiFile();
     _noteCursor = -1;
     _notes.clear();
+    _bpm = 120;
     qDebug() << "Cleaning from reset";
     _xZoomCoef = 1.0;
     update();
@@ -139,6 +142,9 @@ void PianoRoll::fillNotes() {
 
     for (const auto& message: _mid.at(_currentTrack))
     {
+
+        qDebug() << message.absoluteTime() << " abs " << message.timeStamp().getValue();
+
         const auto pos = ( message.absoluteTime() / 50.0 ) * _xZoomCoef;
         const auto midiNote = message.getParameter1();
 
@@ -195,9 +201,8 @@ void PianoRoll::saveAs(QString filename) {
     MidiFile m = _mid;
 
     MidiTrack newTrack;
-    newTrack.pushChangeBPM(120, 0); //TODO extract on loading
+    //newTrack.pushChangeBPM(_bpm, 0);
 
-    //Calculate OnOff notes moments
 
     struct MiniMidi {
         uint8_t typeAndChannel;
@@ -221,8 +226,15 @@ void PianoRoll::saveAs(QString filename) {
         //x = start
         //w + x = end
 
-        unsigned long start = note.x * 50 / _xZoomCoef; //TODO zoom coef
+        unsigned long start = note.x * 50 / _xZoomCoef;
         unsigned long finish = note.w * 50 / _xZoomCoef + start;
+
+        start *= 480;
+        start /= 500; //Realtime to local
+
+        finish *= 480;
+        finish /= 500;
+
 
         if (midiMap.count(start) == 0)
             midiMap[start] = {};
