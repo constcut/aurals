@@ -87,6 +87,8 @@ namespace aurals {
         int _minMidi;
         int _maxMidi;
 
+        int _bpm = 120;
+
 
         aurals::MidiFile _mid;
 

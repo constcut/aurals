@@ -7,6 +7,20 @@ using namespace aurals;
 
 void PianoRoll::loadMidi(QString filename) {
     _mid.readFromFile(filename.toStdString());
+
+    if (_mid.empty() == false)
+    {
+        for (auto& event: _mid[0]) //Если не найдено - искать в других
+            if (event.isMetaEvent() && event.getParameter1() == MidiMetaTypes::ChangeTempo) {
+                auto& buf = event.metaBufer();
+                uint32_t nanoCount = (buf[0] << 16) + (buf[1] << 8) + buf[2];
+
+                _bpm = 60000000 / nanoCount;
+                qDebug() << "Nano count found " << nanoCount
+                         << " BPM " << _bpm;
+            }
+    }
+
     update();
 }
 
