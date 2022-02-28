@@ -21,7 +21,7 @@ void PatternLine::paint(QPainter* painter) {
 void PatternLine::updateBricks() {
    //Обновлять умней, чтобы та часть что не меняется - сохраняла паттерн
 
-    double total = (_num / _denom) / _brickSize;
+    double total = (static_cast<double>(_num) / _denom) / (1.0 / _brickSize);
 
     qDebug() << "Total bricks to make " << total;
 
