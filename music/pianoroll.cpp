@@ -173,6 +173,7 @@ void PianoRoll::saveAs(QString filename) {
     MidiFile m = _mid;
 
     MidiTrack newTrack;
+    newTrack.pushChangeBPM(240, 0);
 
     //Calculate OnOff notes moments
 
@@ -228,6 +229,8 @@ void PianoRoll::saveAs(QString filename) {
         }
 
     }
+
+    newTrack.pushEvent47();
 
     m[_currentTrack] = newTrack;
     m.writeToFile(filename.toStdString());
