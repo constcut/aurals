@@ -66,7 +66,7 @@ Item {
         TapHandler {
             acceptedButtons: Qt.AllButtons
             onTapped: {
-                var midiNote = 60
+                var midiNote = 40
                 if (firstMidiNoteField.text != "")
                     midiNote = parseInt(firstMidiNoteField.text)
                 tapper.tapped(midiNote)
@@ -105,7 +105,7 @@ Item {
         TapHandler {
             acceptedButtons: Qt.AllButtons
             onTapped: {
-                var midiNote = 72
+                var midiNote = 36
                 if (secondMidiNoteField.text != "")
                     midiNote = parseInt(secondMidiNoteField.text)
                 tapper.tapped(midiNote)

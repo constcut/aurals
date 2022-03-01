@@ -79,7 +79,7 @@ void Tapper::saveTapsAsMidi(const QString filename) const {
 
     MidiTrack track;
     track.pushChangeBPM(240, 0); //somehow 240 is almost! realtime
-    track.pushChangeInstrument(0, 0);
+    track.pushChangeInstrument(0, 9);
     const double coef = 1.0 / _speedCoef;
 
     moment prevMoment;
@@ -96,17 +96,17 @@ void Tapper::saveTapsAsMidi(const QString filename) const {
         double accurateValue = 2.0 * fromPrevTap * (480.0 / 500.0) * coef;
         if (i != 0) {
             track.accumulate(accurateValue);
-            track.pushNoteOff(prevNote, 100, 0);
+            track.pushNoteOff(prevNote, 100, 9);
         }
 
-        track.pushNoteOn(currentNote, 100, 0);
+        track.pushNoteOn(currentNote, 100, 9);
         prevMoment = currentMoment;
         prevNote = currentNote;
     }
     track.accumulate(480 * coef);
-    track.pushNoteOff(prevNote, 100, 0);
+    track.pushNoteOff(prevNote, 100, 9);
     track.accumulate(2000 * coef);
-    track.pushNoteOff(60, 100, 0); //Pause in the end:_)
+    track.pushNoteOff(60, 100, 9); //Pause in the end:_)
     track.pushEvent47();
 
     MidiFile midi;
