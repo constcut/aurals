@@ -30,11 +30,26 @@ void PatternReceiver::generateMidi(QString filename) {
     track.pushChangeBPM(120, 0); //TODO
     track.pushChangeInstrument(0, 9);
 
+    struct MiniMidi { //TODO общий для PianoRoll
+        bool on;
+        uint8_t note;
+    };
+
+    std::map<unsigned long, std::vector<MiniMidi>> midiMap;
+
+
     //FIRST TRY ONLY SINGLE LINE
     {
         //TODO build map like in piano roll
         //For each line sepparated
         auto currentLine = _lines[0];
+
+        //1. Добавить обработку единственной линии, получение размеров и череды кирпичиков
+
+        //2. Добавить обработку всех линий - рассчёт разных размеров
+
+        //3. Добавить предварительный рассчёт полиритмии
+            //:Для каждой дорожки прокрутить столько циклов, сколько требуется
 
     }
     track.pushEvent47();
@@ -42,5 +57,4 @@ void PatternReceiver::generateMidi(QString filename) {
     MidiFile midi;
     midi.push_back(track);
     midi.writeToFile(filename.toStdString());
-
 }
