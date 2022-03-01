@@ -21,6 +21,8 @@ namespace aurals {
 
         Q_INVOKABLE void connectLine(QObject* line); //Later add remove also
 
+        Q_INVOKABLE void generateMidi(QString filename);
+
 
     private:
 
