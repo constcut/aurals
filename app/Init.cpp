@@ -20,6 +20,8 @@
 #include "app/log.hpp"
 #include "app/LogHandler.hpp"
 
+
+//TODO find nicer way to register components - maybe move all registration in sepparated header
 #include "audio/wave/AudioHandler.hpp"
 #include "audio/wave/WaveShape.hpp"
 #include "audio/spectrum/Spectrograph.hpp"
@@ -27,6 +29,7 @@
 
 #include "music/PianoRoll.hpp"
 #include "music/PatternLine.hpp"
+#include "music/PatternReceiver.h"
 
 #include "audio/features/ACFgraph.hpp"
 #include "app/StretchImage.hpp"
@@ -338,6 +341,7 @@ int mainInit(int argc, char *argv[]) {
     //qmlRegisterType<aurals::BarView>("aurals", 1, 0, "BarView");
     qmlRegisterType<aurals::PianoRoll>("aurals", 1, 0, "PianoRoll");
     qmlRegisterType<aurals::PatternLine>("aurals", 1, 0, "PatternLine");
+    qmlRegisterType<aurals::PatternReceiver>("aurals", 1, 0, "PatternReceiver");
 
     qmlRegisterUncreatableMetaObject(aurals::staticMetaObject,
         "aurals", 1, 0, "Tab", "Error: object creation for enum not supported");
