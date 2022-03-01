@@ -79,6 +79,7 @@ void Tapper::saveTapsAsMidi(const QString filename) const {
 
     MidiTrack track;
     track.pushChangeBPM(240, 0); //somehow 240 is almost! realtime
+    track.pushChangeInstrument(0, 0);
     const double coef = 1.0 / _speedCoef;
 
     moment prevMoment;
