@@ -10,6 +10,18 @@ Item {
 
     id: patternInputItem
 
+    Dialog {
+        id: dialog
+
+        width: 150
+        height: 150
+
+        PatternReceiver {
+            width: 110
+            height: 110
+            id: receiver
+        }
+    }
 
 
     ColumnLayout {
@@ -44,6 +56,12 @@ Item {
                 onClicked:   {
                     audio.stopMidiPlayer()
 
+                }
+            }
+            ToolButton {
+                text: "Circle"
+                onClicked: {
+                    dialog.open()
                 }
             }
         }
