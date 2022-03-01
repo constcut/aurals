@@ -3,6 +3,8 @@
 
 #include <QQuickPaintedItem>
 
+#include <vector>
+
 
 namespace aurals {
 
