@@ -137,6 +137,11 @@ Item {
                                 pattern.onClick(mouseX, mouseY)
                             }
                         }
+
+                        Component.onCompleted: {
+                            receiver.connectLine(pattern)
+                        }
+                        //TODO on destroyed or something
                     }
                 }
             }
