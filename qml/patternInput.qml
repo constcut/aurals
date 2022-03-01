@@ -64,6 +64,14 @@ Item {
                     dialog.open()
                 }
             }
+            ToolButton {
+                text: ">"
+                onClicked: {
+                    receiver.generateMidi("pattern.mid")
+                    audio.openMidiFile("pattern.mid")
+                    audio.startMidiPlayer()
+                }
+            }
         }
     }
 
