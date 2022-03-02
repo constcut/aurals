@@ -48,10 +48,10 @@ void PatternReceiver::generateMidi(QString filename) {
         {
             if (bricks[i].on == true)
             {
-                unsigned long timeSize = 240 * 4 / brickSize;
+                unsigned long timeSize = 480 * 4 / brickSize;
 
-                unsigned long start = timeSize * (i + 2); //TODO this is bad, some issue playing
-                unsigned long finish = timeSize * (i + 3); //Maybe issue in very short file
+                unsigned long start = timeSize * (i); //TODO this is bad, some issue playing
+                unsigned long finish = timeSize * (i + 1); //Maybe issue in very short file
 
                 if (midiMap.count(start) == 0)
                     midiMap[start] = {};
@@ -70,9 +70,8 @@ void PatternReceiver::generateMidi(QString filename) {
     }
 
 
-
     unsigned long prevTime = 0;
-    for (const auto& events: midiMap)
+    for (const auto& events: midiMap) //Общий код с piano roll - refactoring
     {
         unsigned long currentTime = events.first; //Rewrite structures binding
 

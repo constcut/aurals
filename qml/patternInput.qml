@@ -126,6 +126,7 @@ Item {
                     ComboBox {
                         implicitWidth: 70
                         model: [4, 8, 16, 32, 2, 1]
+                        currentIndex: 2
                         onCurrentTextChanged: {
                             pattern.setBrickSize(parseInt(currentText))
                             var fullWidth = pattern.fullWidth()
