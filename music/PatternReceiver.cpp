@@ -27,7 +27,7 @@ void PatternReceiver::connectLine(QObject* line) {
 void PatternReceiver::generateMidi(QString filename) {
     MidiTrack track;
 
-    track.pushChangeBPM(120, 0); //TODO
+    track.pushChangeBPM(_bpm, 0);
     track.pushChangeInstrument(0, 9);
 
     struct MiniMidi { //TODO общий для PianoRoll
@@ -50,8 +50,8 @@ void PatternReceiver::generateMidi(QString filename) {
             {
                 unsigned long timeSize = 480 * 4 / brickSize;
 
-                unsigned long start = timeSize * (i); //TODO this is bad, some issue playing
-                unsigned long finish = timeSize * (i + 1); //Maybe issue in very short file
+                unsigned long start = timeSize * i;
+                unsigned long finish = timeSize * (i + 1);
 
                 if (midiMap.count(start) == 0)
                     midiMap[start] = {};

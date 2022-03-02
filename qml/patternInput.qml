@@ -64,6 +64,13 @@ Item {
                     dialog.open()
                 }
             }
+            ComboBox {
+                model: [60, 120, 180, 240]
+                onCurrentTextChanged: {
+                    receiver.setBPM(parseInt(currentText))
+                }
+            }
+
             ToolButton {
                 text: ">"
                 onClicked: {

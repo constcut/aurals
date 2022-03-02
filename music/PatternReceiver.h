@@ -23,10 +23,16 @@ namespace aurals {
 
         Q_INVOKABLE void generateMidi(QString filename);
 
+        Q_INVOKABLE void setBPM(int bpm) {
+            _bpm = bpm;
+        }
+
 
     private:
 
         std::vector<PatternLine*> _lines;
+
+        int _bpm;
 
     };
 
