@@ -40,15 +40,12 @@ void PatternReceiver::generateMidi(QString filename)
 
     for (auto& currentLine: _lines)
     {
-        double full = currentLine->getNum(); // static_cast<double>(currentLine->getNum()) / currentLine->getDenom();
+        int full = 16 * currentLine->getNum() / currentLine->getDenom();
         qDebug() << "FULL " << full;
         if (full > maxSize)
             maxSize = full;
 
-        //Нужно будет привести размеры к целым числам, 7\16 = 7. 7\4 = 28
-
-        lesserCommon = std::lcm(lesserCommon, currentLine->getNum());
-
+        lesserCommon = std::lcm(lesserCommon, full);
         fullSizes.push_back(full);
     }
 
