@@ -71,6 +71,30 @@ void PatternReceiver::generateMidi(QString filename) {
             //:Для каждой дорожки прокрутить столько циклов, сколько требуется
 
     }
+
+
+
+    unsigned long prevTime = 0;
+    for (const auto& events: midiMap)
+    {
+        unsigned long currentTime = events.first; //Rewrite structures binding
+
+        for (auto& event: events.second) {
+
+            if (prevTime != currentTime) {
+                track.accumulate(currentTime - prevTime);
+                prevTime = currentTime;
+                //Можно считать TotalTime тут
+            }
+
+            if (event.on)
+                track.pushNoteOn(36, 127, 9);
+            else
+                track.pushNoteOff(36, 127, 9);
+        }
+
+    }
+
     track.pushEvent47();
 
     MidiFile midi;
