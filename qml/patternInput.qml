@@ -39,25 +39,6 @@ Item {
         }
         RowLayout {
             spacing: 10
-            ComboBox {
-                id: testFilesCombo
-                model: ["test1.mid", "test2.mid", "test3.mid", "test4.mid", "test5.mid", "test6.mid"]
-            }
-            ToolButton {
-                text: "Load and play"
-                onClicked:  {
-                    audio.openMidiFile(testFilesCombo.currentText)
-                    audio.startMidiPlayer()
-
-                }
-            }
-            ToolButton {
-                text: "Stop"
-                onClicked:   {
-                    audio.stopMidiPlayer()
-
-                }
-            }
             ToolButton {
                 text: "Circle"
                 onClicked: {
@@ -84,6 +65,13 @@ Item {
                     audio.openMidiFile("pattern.mid")
                     audio.saveMidiToWav("pattern.wav")
                     audio.startMidiPlayer()
+                }
+            }
+            ToolButton {
+                text: "Stop"
+                onClicked:   {
+                    audio.stopMidiPlayer()
+
                 }
             }
         }
