@@ -1,11 +1,6 @@
 1)  Pattern
 
-    a) Pattern receiver - получатель сигналов\агрегатор отдельных Pattern line
-
-        1) Total bars signes for full cycle calculation (3\4 + 4\4 = 12)
-
-
-    b) Pattern line - примитив множества ритмических паттернов
+    a) Pattern line - примитив множества ритмических паттернов
 
         1) Play\metronome like - animation of current focus
 
@@ -16,21 +11,23 @@
         III) Возможность разных размеров внутри паттерна, т.е. не только размеров такта, но и внутри такта, т.е. изменение длины квадратика
 
 
-    c) Circle with Clock-like animation
+    b) Circle with Clock-like animation
 
-    d) from drums gp3-5
+    c) from drums gp3-5
 
-    e) metronome(s)
+    d) metronome(s)
 
-    f) запись теппингом, при анимации движения по ячейкам паттерна (кнопкой)
+    e) запись теппингом, при анимации движения по ячейкам паттерна (кнопкой)
 
-    g) Click track+
+    f) Click track+
 
         Тип pattern line который позволяет задавать череду тактов, при необходимости меняя размер
 
         4\4:20 6\:8 и подобным образом ввод, может меняться 1 размер, могут оба и число тактов после этого
 
-    h) to piano roll
+    g) to piano roll
+
+    h) Странные размер = 4\7
 
 
 
