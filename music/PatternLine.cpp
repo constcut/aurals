@@ -25,13 +25,11 @@ void PatternLine::updateBricks()
     double total = (static_cast<double>(_num) / _denom) / (1.0 / _brickSize);
     _bricks.clear();
 
-    qDebug() << "New bricks size: " << total;
-
     const int brickHeight = 25;
     const int brickWidth = 64 * 4 * (1.0 / _brickSize);
     const int brickPadding = 8  * 4 * (1.0 / _brickSize);
 
-    for (size_t i = 0; i < total; ++i) //TODO correct distance in different sizes
+    for (size_t i = 0; i < total; ++i)
         _bricks.push_back({static_cast<int>(i) * (brickWidth + brickPadding),
                            0, brickWidth, brickHeight});
 }
