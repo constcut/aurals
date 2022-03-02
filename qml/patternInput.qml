@@ -100,7 +100,7 @@ Item {
                     spacing: 10
                     ComboBox {
                         implicitWidth: 70
-                        model: [4, 6, 8, 3, 2, 1, 5, 9, 10, 7, 16, 32] //Basic
+                        model: [4, 6, 8, 3, 2, 1, 5, 9, 10, 7, 16, 32, 17, 15] //Basic
                         onCurrentTextChanged: {
                             pattern.setNumerator(parseInt(currentText))
                             var fullWidth = pattern.fullWidth()
