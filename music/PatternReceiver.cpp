@@ -19,7 +19,6 @@ void PatternReceiver::connectLine(QObject* line) {
     auto patternLine = dynamic_cast<PatternLine*>(line);
     if (patternLine != nullptr) {
         _lines.push_back(patternLine);
-        qDebug() << "Connecting pattern line " << patternLine;
     }
 }
 
@@ -30,6 +29,21 @@ void PatternReceiver::generateMidi(QString filename) {
     track.pushChangeBPM(_bpm, 0);
     track.pushChangeInstrument(0, 9);
 
+    std::vector<double> fullSizes;
+    double maxSize = 0.0;
+
+    for (auto& currentLine: _lines)
+    {
+        double full = static_cast<double>(currentLine->getNum()) / currentLine->getDenom();
+        if (full > maxSize)
+            maxSize = full;
+        fullSizes.push_back(full);
+    }
+
+    std::vector<int> repeatTimesLine;
+    for (auto singleSize: fullSizes)
+        repeatTimesLine.push_back(maxSize / singleSize);
+
     struct MiniMidi { //TODO общий для PianoRoll
         bool on;
         uint8_t note;
@@ -37,16 +51,21 @@ void PatternReceiver::generateMidi(QString filename) {
 
     std::map<unsigned long, std::vector<MiniMidi>> midiMap;
 
+    //for (int t = 0; t < _repeatTimes; ++t) //For a while blocked till we converge sizes
+    size_t lineIdx = 0;
+    for (auto& currentLine: _lines)
+    {
+        const auto& bricks = currentLine->getBricks();
+        const int brickSize = currentLine->getBrickSize();
+        const uint8_t midiNote = currentLine->getMidiNote();
 
-    for (int t = 0; t < _repeatTimes; ++t)
-        for (auto& currentLine: _lines)
+        const double barSize = static_cast<double>(currentLine->getNum()) / currentLine->getDenom();
+
+        const int polyRepeats = repeatTimesLine[lineIdx];
+        qDebug() << lineIdx << " poly repeats " << polyRepeats;
+
+        for (int t = 0; t < polyRepeats; ++t) //Возможно здесь удастся сделать умножение на _repeatTimes
         {
-            const auto& bricks = currentLine->getBricks();
-            const int brickSize = currentLine->getBrickSize();
-            const uint8_t midiNote = currentLine->getMidiNote();
-
-            const double barSize = static_cast<double>(currentLine->getNum()) / currentLine->getDenom();
-
             const unsigned long timesShift = t * 480 * 4 * barSize;
 
             for (size_t i = 0; i < bricks.size(); ++i)
@@ -69,6 +88,8 @@ void PatternReceiver::generateMidi(QString filename) {
                 }
             }
         }
+        ++lineIdx;
+    }
 
 
     unsigned long prevTime = 0;
