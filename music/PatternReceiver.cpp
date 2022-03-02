@@ -134,3 +134,10 @@ void PatternReceiver::storeState() {
     for (auto line: _lines)
         _states.push_back(line->getState());
 }
+
+void PatternReceiver::loadState()
+{
+    for (size_t i = 0; i < _states.size(); ++i)
+        if (i < _lines.size())
+            _lines[i]->setState(_states[i]);
+}

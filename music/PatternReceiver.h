@@ -37,9 +37,7 @@ namespace aurals {
         }
 
         Q_INVOKABLE void storeState();
-        Q_INVOKABLE void loadState() {
-
-        }
+        Q_INVOKABLE void loadState();
 
         //+ state to file, state from file
 

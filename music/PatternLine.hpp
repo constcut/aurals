@@ -87,6 +87,7 @@ namespace aurals {
         uint8_t getMidiNote() { return _state.midiNote; }
 
         const PatternLineState& getState() const { return _state; }
+        void setState(PatternLineState& state) { _state = state; }
 
 
     private:
