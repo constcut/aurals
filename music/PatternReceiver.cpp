@@ -40,17 +40,13 @@ void PatternReceiver::generateMidi(QString filename)
 
     for (auto& currentLine: _lines)
     {
-        //TODO множитель 32\16 нужно изменять иногда
         int full = 32 * currentLine->getNum() / currentLine->getDenom();
-        qDebug() << "FULL " << full;
         if (full > maxSize)
             maxSize = full;
 
         lesserCommon = std::lcm(lesserCommon, full);
         fullSizes.push_back(full);
     }
-
-    qDebug() << "MAX " << maxSize << " lesser common " << lesserCommon;
 
     std::vector<int> repeatTimesLine;
     for (auto singleSize: fullSizes) {
@@ -71,9 +67,7 @@ void PatternReceiver::generateMidi(QString filename)
         const int brickSize = currentLine->getBrickSize();
         const uint8_t midiNote = currentLine->getMidiNote();
         const double barSize = static_cast<double>(currentLine->getNum()) / currentLine->getDenom();
-
         const int polyRepeats = repeatTimesLine[lineIdx];
-        qDebug() << lineIdx << " poly repeats " << polyRepeats;
 
         for (int t = 0; t < polyRepeats * _repeatTimes; ++t) //Возможно здесь удастся сделать умножение на _repeatTimes
         {
