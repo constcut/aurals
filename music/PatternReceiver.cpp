@@ -44,6 +44,25 @@ void PatternReceiver::generateMidi(QString filename) {
         //For each line sepparated
         auto currentLine = _lines[0];
 
+        const auto& bricks = currentLine->getBricks();
+
+        for (size_t i = 0; i < bricks.size(); ++i)
+        {
+
+            if (bricks[i].on == true) {
+                unsigned long start = 240 * i;
+                unsigned long finish = 240 * (i + 1);
+
+                if (midiMap.count(start) == 0)
+                    midiMap[start] = {};
+                if (midiMap.count(finish) == 0)
+                    midiMap[finish] = {};
+
+                midiMap[start].push_back({true, 36});
+                midiMap[finish].push_back({false, 36});
+            }
+        }
+
         //1. Добавить обработку единственной линии, получение размеров и череды кирпичиков
 
         //2. Добавить обработку всех линий - рассчёт разных размеров

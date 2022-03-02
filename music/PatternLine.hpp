@@ -68,6 +68,11 @@ namespace aurals {
             return 0;
         }
 
+        const std::vector<PatternBrick>& getBricks() { return _bricks; }
+        uint8_t getNum() { return _num; }
+        uint8_t getDenom() { return _denom; }
+        uint8_t getBrickSize() { return _brickSize; }
+
 
     private:
 
