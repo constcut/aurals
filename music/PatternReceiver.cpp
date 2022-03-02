@@ -23,7 +23,8 @@ void PatternReceiver::connectLine(QObject* line) {
 }
 
 
-void PatternReceiver::generateMidi(QString filename) {
+void PatternReceiver::generateMidi(QString filename)
+{
     MidiTrack track;
 
     track.pushChangeBPM(_bpm, 0);
@@ -50,21 +51,19 @@ void PatternReceiver::generateMidi(QString filename) {
     };
 
     std::map<unsigned long, std::vector<MiniMidi>> midiMap;
-
-    //for (int t = 0; t < _repeatTimes; ++t) //For a while blocked till we converge sizes
     size_t lineIdx = 0;
+
     for (auto& currentLine: _lines)
     {
         const auto& bricks = currentLine->getBricks();
         const int brickSize = currentLine->getBrickSize();
         const uint8_t midiNote = currentLine->getMidiNote();
-
         const double barSize = static_cast<double>(currentLine->getNum()) / currentLine->getDenom();
 
         const int polyRepeats = repeatTimesLine[lineIdx];
         qDebug() << lineIdx << " poly repeats " << polyRepeats;
 
-        for (int t = 0; t < polyRepeats; ++t) //Возможно здесь удастся сделать умножение на _repeatTimes
+        for (int t = 0; t < polyRepeats * _repeatTimes; ++t) //Возможно здесь удастся сделать умножение на _repeatTimes
         {
             const unsigned long timesShift = t * 480 * 4 * barSize;
 
