@@ -75,6 +75,15 @@ Item {
 
                 }
             }
+            ToolButton {
+                text: "+"
+                onClicked: {
+                    //TODO save
+                    receiver.reset()
+                    patternRepeater.model = patternRepeater.model + 1
+                    //load
+                }
+            }
         }
     }
 
@@ -94,6 +103,7 @@ Item {
             //Component with repeaters + MouseArea
 
             Repeater {
+                id: patternRepeater
                 model: 5
 
                 RowLayout {

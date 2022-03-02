@@ -19,6 +19,10 @@ namespace aurals {
 
         void paint(QPainter* painter);
 
+        Q_INVOKABLE void reset() {
+            _lines.clear();
+        }
+
         Q_INVOKABLE void connectLine(QObject* line); //Later add remove also
 
         Q_INVOKABLE void generateMidi(QString filename);
