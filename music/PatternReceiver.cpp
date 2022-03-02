@@ -38,15 +38,9 @@ void PatternReceiver::generateMidi(QString filename) {
     std::map<unsigned long, std::vector<MiniMidi>> midiMap;
 
 
-    //FIRST TRY ONLY SINGLE LINE
+    for (auto& currentLine: _lines)
     {
-        //TODO build map like in piano roll
-        //For each line sepparated
-        auto currentLine = _lines[0];
-
         const auto& bricks = currentLine->getBricks();
-
-        qDebug() << "Bricks size " << bricks.size();
 
         for (size_t i = 0; i < bricks.size(); ++i)
         {
@@ -63,7 +57,6 @@ void PatternReceiver::generateMidi(QString filename) {
                 midiMap[start].push_back({true, 36});
                 midiMap[finish].push_back({false, 36});
 
-                qDebug() << "Adding event " << start << " " << finish;
             }
         }
 
