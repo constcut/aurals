@@ -10,6 +10,7 @@
 
 namespace aurals {
 
+
     class PatternReceiver : public QQuickPaintedItem
     {
         Q_OBJECT
@@ -35,6 +36,12 @@ namespace aurals {
             _repeatTimes = times;
         }
 
+        Q_INVOKABLE void storeState();
+        Q_INVOKABLE void loadState() {
+
+        }
+
+        //+ state to file, state from file
 
     private:
 
@@ -42,6 +49,8 @@ namespace aurals {
 
         int _bpm = 120;
         int _repeatTimes = 2;
+
+        std::vector<PatternLineState> _states;
 
     };
 

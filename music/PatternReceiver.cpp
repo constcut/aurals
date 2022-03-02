@@ -38,9 +38,9 @@ void PatternReceiver::generateMidi(QString filename)
 
     int lesserCommon = 1;
 
-    for (auto& currentLine: _lines)
+    for (auto& line: _lines)
     {
-        int full = 32 * currentLine->getNum() / currentLine->getDenom();
+        int full = 32 * line->getNum() / line->getDenom();
         if (full > maxSize)
             maxSize = full;
 
@@ -61,12 +61,12 @@ void PatternReceiver::generateMidi(QString filename)
     std::map<unsigned long, std::vector<MiniMidi>> midiMap;
     size_t lineIdx = 0;
 
-    for (auto& currentLine: _lines)
+    for (auto& line: _lines)
     {
-        const auto& bricks = currentLine->getBricks();
-        const int brickSize = currentLine->getBrickSize();
-        const uint8_t midiNote = currentLine->getMidiNote();
-        const double barSize = static_cast<double>(currentLine->getNum()) / currentLine->getDenom();
+        const auto& bricks = line->getBricks();
+        const int brickSize = line->getBrickSize();
+        const uint8_t midiNote = line->getMidiNote();
+        const double barSize = static_cast<double>(line->getNum()) / line->getDenom();
         const int polyRepeats = repeatTimesLine[lineIdx];
 
         for (int t = 0; t < polyRepeats * _repeatTimes; ++t) //Возможно здесь удастся сделать умножение на _repeatTimes
@@ -125,4 +125,12 @@ void PatternReceiver::generateMidi(QString filename)
     MidiFile midi;
     midi.push_back(track);
     midi.writeToFile(filename.toStdString());
+}
+
+
+void PatternReceiver::storeState() {
+    _states.clear();
+
+    for (auto line: _lines)
+        _states.push_back(line->getState());
 }
