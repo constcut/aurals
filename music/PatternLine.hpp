@@ -57,6 +57,10 @@ namespace aurals {
             update();
         }
 
+        Q_INVOKABLE void setMidiNote(int note) {
+            _midiNote = note;
+        }
+
         void updateBricks();
 
         Q_INVOKABLE void onClick(int x, int y);
@@ -72,6 +76,7 @@ namespace aurals {
         uint8_t getNum() { return _num; }
         uint8_t getDenom() { return _denom; }
         uint8_t getBrickSize() { return _brickSize; }
+        uint8_t getMidiNote() { return _midiNote; }
 
 
     private:

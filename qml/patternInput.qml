@@ -134,6 +134,15 @@ Item {
                                 flick.contentWidth = fullWidth
                         }
                     }
+                    ComboBox {
+                        implicitWidth: 70
+                        property var notes: [36, 40, 57, 48, 46, 35, 35, 35]
+                        model: 61
+                        currentIndex: notes[index]
+                        onCurrentTextChanged: {
+                            pattern.setMidiNote(parseInt(currentText))
+                        }
+                    }
 
                     PatternLine {
                         id: pattern

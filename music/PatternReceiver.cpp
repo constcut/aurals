@@ -41,28 +41,28 @@ void PatternReceiver::generateMidi(QString filename) {
     for (auto& currentLine: _lines)
     {
         const auto& bricks = currentLine->getBricks();
+        const int brickSize = currentLine->getBrickSize();
+        const uint8_t midiNote = currentLine->getMidiNote();
 
         for (size_t i = 0; i < bricks.size(); ++i)
         {
+            if (bricks[i].on == true)
+            {
+                unsigned long timeSize = 240 * 4 / brickSize;
 
-            if (bricks[i].on == true) {
-                unsigned long start = 240 * (i + 2); //TODO this is bad, some issue playing
-                unsigned long finish = 240 * (i + 3); //Maybe issue in very short file
+                unsigned long start = timeSize * (i + 2); //TODO this is bad, some issue playing
+                unsigned long finish = timeSize * (i + 3); //Maybe issue in very short file
 
                 if (midiMap.count(start) == 0)
                     midiMap[start] = {};
                 if (midiMap.count(finish) == 0)
                     midiMap[finish] = {};
 
-                midiMap[start].push_back({true, 36});
-                midiMap[finish].push_back({false, 36});
+                midiMap[start].push_back({true, midiNote});
+                midiMap[finish].push_back({false, midiNote});
 
             }
         }
-
-        //1. Добавить обработку единственной линии, получение размеров и череды кирпичиков
-
-        //2. Добавить обработку всех линий - рассчёт разных размеров
 
         //3. Добавить предварительный рассчёт полиритмии
             //:Для каждой дорожки прокрутить столько циклов, сколько требуется
@@ -85,9 +85,9 @@ void PatternReceiver::generateMidi(QString filename) {
             }
 
             if (event.on)
-                track.pushNoteOn(36, 127, 9);
+                track.pushNoteOn(event.note, 127, 9);
             else
-                track.pushNoteOff(36, 127, 9);
+                track.pushNoteOff(event.note, 127, 9);
         }
 
     }
