@@ -92,6 +92,9 @@ Item {
                     if (patternRepeater.model)
                         patternRepeater.model = patternRepeater.model - 1
                     receiver.loadState() // + update combos
+
+                    //for model - выделить функцию обновления в отдельную, тк вызывать надо и при удалении, и при добавлении
+                    patternRepeater.itemAt(0).updateCombos()
                 }
             }
         }
@@ -119,7 +122,20 @@ Item {
                 RowLayout {
                     y: index * 60 //Заменить на значение высоты
                     spacing: 10
+
+                    id: patternRow
+
+                    //Save index + function update combos
+
+                    function updateCombos() {
+                        //numCombo.currentIndex = 5
+                        //etc
+                    }
+
                     ComboBox {
+
+                        id: numCombo
+
                         implicitWidth: 70
                         model: [4, 6, 8, 3, 2, 1, 5, 9, 10, 7, 16, 32, 17, 15] //Basic
                         onCurrentTextChanged: {
