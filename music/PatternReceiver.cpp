@@ -46,6 +46,8 @@ void PatternReceiver::generateMidi(QString filename) {
 
         const auto& bricks = currentLine->getBricks();
 
+        qDebug() << "Bricks size " << bricks.size();
+
         for (size_t i = 0; i < bricks.size(); ++i)
         {
 
@@ -60,6 +62,8 @@ void PatternReceiver::generateMidi(QString filename) {
 
                 midiMap[start].push_back({true, 36});
                 midiMap[finish].push_back({false, 36});
+
+                qDebug() << "Adding event " << start << " " << finish;
             }
         }
 
@@ -95,6 +99,8 @@ void PatternReceiver::generateMidi(QString filename) {
 
     }
 
+    track.accumulate(240); //Hot fix for midi generation swallowed note
+    track.pushNoteOff(36, 127, 9);
     track.pushEvent47();
 
     MidiFile midi;
