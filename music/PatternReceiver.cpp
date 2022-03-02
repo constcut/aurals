@@ -40,7 +40,8 @@ void PatternReceiver::generateMidi(QString filename)
 
     for (auto& currentLine: _lines)
     {
-        int full = 16 * currentLine->getNum() / currentLine->getDenom();
+        //TODO множитель 32\16 нужно изменять иногда
+        int full = 32 * currentLine->getNum() / currentLine->getDenom();
         qDebug() << "FULL " << full;
         if (full > maxSize)
             maxSize = full;
