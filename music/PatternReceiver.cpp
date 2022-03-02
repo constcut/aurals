@@ -3,6 +3,8 @@
 #include <QPainter>
 #include <QDebug>
 
+#include <cmath>
+
 #include "midi/MidiFile.hpp"
 
 using namespace aurals;
@@ -36,14 +38,24 @@ void PatternReceiver::generateMidi(QString filename)
     for (auto& currentLine: _lines)
     {
         double full = static_cast<double>(currentLine->getNum()) / currentLine->getDenom();
+        qDebug() << "FULL " << full;
         if (full > maxSize)
             maxSize = full;
         fullSizes.push_back(full);
     }
 
+    if (std::abs(maxSize - std::round(maxSize)) > 0.00001) {
+        double part = std::abs(maxSize - std::round(maxSize));
+        double inv = 1.0 / part;
+        qDebug() << "X: " << part << " " << inv;
+        maxSize *= inv;
+    }
+
     std::vector<int> repeatTimesLine;
-    for (auto singleSize: fullSizes)
+    for (auto singleSize: fullSizes) {
+        qDebug() << "SS " << maxSize << " " << singleSize;
         repeatTimesLine.push_back(maxSize / singleSize);
+    }
 
     struct MiniMidi { //TODO общий для PianoRoll
         bool on;
