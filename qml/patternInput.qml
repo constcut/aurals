@@ -78,20 +78,20 @@ Item {
             ToolButton {
                 text: "+"
                 onClicked: {
-                    //TODO save
+                    receiver.storeState()
                     receiver.reset()
                     patternRepeater.model = patternRepeater.model + 1
-                    //load
+                    receiver.loadState() // + update combos
                 }
             }
             ToolButton {
                 text: "-"
                 onClicked: {
-                    //Save
+                    receiver.storeState()
                     receiver.reset()
                     if (patternRepeater.model)
                         patternRepeater.model = patternRepeater.model - 1
-                    //Load
+                    receiver.loadState() // + update combos
                 }
             }
         }
