@@ -4,6 +4,7 @@
 #include <QDebug>
 
 #include <cmath>
+#include <numeric>
 
 #include "midi/MidiFile.hpp"
 
@@ -35,26 +36,27 @@ void PatternReceiver::generateMidi(QString filename)
     std::vector<double> fullSizes;
     double maxSize = 0.0;
 
+    int lesserCommon = 1;
+
     for (auto& currentLine: _lines)
     {
-        double full = static_cast<double>(currentLine->getNum()) / currentLine->getDenom();
+        double full = currentLine->getNum(); // static_cast<double>(currentLine->getNum()) / currentLine->getDenom();
         qDebug() << "FULL " << full;
         if (full > maxSize)
             maxSize = full;
+
+        //Нужно будет привести размеры к целым числам, 7\16 = 7. 7\4 = 28
+
+        lesserCommon = std::lcm(lesserCommon, currentLine->getNum());
+
         fullSizes.push_back(full);
     }
 
-    if (std::abs(maxSize - std::round(maxSize)) > 0.00001) {
-        double part = std::abs(maxSize - std::round(maxSize));
-        double inv = 1.0 / part;
-        qDebug() << "X: " << part << " " << inv;
-        maxSize *= inv;
-    }
+    qDebug() << "MAX " << maxSize << " lesser common " << lesserCommon;
 
     std::vector<int> repeatTimesLine;
     for (auto singleSize: fullSizes) {
-        qDebug() << "SS " << maxSize << " " << singleSize;
-        repeatTimesLine.push_back(maxSize / singleSize);
+        repeatTimesLine.push_back(lesserCommon / singleSize);
     }
 
     struct MiniMidi { //TODO общий для PianoRoll
