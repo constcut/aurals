@@ -47,6 +47,7 @@ Item {
             }
             ComboBox {
                 model: [60, 120, 180, 240]
+                currentIndex: 120
                 onCurrentTextChanged: {
                     receiver.setBPM(parseInt(currentText))
                 }
