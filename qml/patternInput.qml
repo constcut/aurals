@@ -69,6 +69,7 @@ Item {
                 onClicked: {
                     receiver.generateMidi("pattern.mid")
                     audio.openMidiFile("pattern.mid")
+                    audio.saveMidiToWav("pattern.wav")
                     audio.startMidiPlayer()
                 }
             }

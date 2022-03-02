@@ -52,8 +52,8 @@ void PatternReceiver::generateMidi(QString filename) {
         {
 
             if (bricks[i].on == true) {
-                unsigned long start = 240 * i;
-                unsigned long finish = 240 * (i + 1);
+                unsigned long start = 240 * (i + 2); //TODO this is bad, some issue playing
+                unsigned long finish = 240 * (i + 3); //Maybe issue in very short file
 
                 if (midiMap.count(start) == 0)
                     midiMap[start] = {};
