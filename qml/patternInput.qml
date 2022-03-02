@@ -84,6 +84,16 @@ Item {
                     //load
                 }
             }
+            ToolButton {
+                text: "-"
+                onClicked: {
+                    //Save
+                    receiver.reset()
+                    if (patternRepeater.model)
+                        patternRepeater.model = patternRepeater.model - 1
+                    //Load
+                }
+            }
         }
     }
 
