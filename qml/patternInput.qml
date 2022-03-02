@@ -70,6 +70,12 @@ Item {
                     receiver.setBPM(parseInt(currentText))
                 }
             }
+            ComboBox {
+                model: [2, 3, 4, 1]
+                onCurrentTextChanged: {
+                    receiver.setRepeatTimes(parseInt(currentText))
+                }
+            }
 
             ToolButton {
                 text: ">"

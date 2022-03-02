@@ -2,19 +2,10 @@
 
     a) Pattern receiver - получатель сигналов\агрегатор отдельных Pattern line
 
-        : Подключение и отключение схоже с TabView\TrackView ~
-        : Формирование звука с единичной линии
-
-        1) BPM
-
-        2) Total cycles repeats ( 2\3...etc cycles - first all lines same num\den)
-
-        3) Total bars signes for full cycle calculation (3\4 + 4\4 = 12)
+        1) Total bars signes for full cycle calculation (3\4 + 4\4 = 12)
 
 
     b) Pattern line - примитив множества ритмических паттернов
-
-        0) MidiDrum note combo
 
         1) Play\metronome like - animation of current focus
 

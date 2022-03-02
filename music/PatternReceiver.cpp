@@ -38,36 +38,37 @@ void PatternReceiver::generateMidi(QString filename) {
     std::map<unsigned long, std::vector<MiniMidi>> midiMap;
 
 
-    for (auto& currentLine: _lines)
-    {
-        const auto& bricks = currentLine->getBricks();
-        const int brickSize = currentLine->getBrickSize();
-        const uint8_t midiNote = currentLine->getMidiNote();
-
-        for (size_t i = 0; i < bricks.size(); ++i)
+    for (int t = 0; t < _repeatTimes; ++t)
+        for (auto& currentLine: _lines)
         {
-            if (bricks[i].on == true)
+            const auto& bricks = currentLine->getBricks();
+            const int brickSize = currentLine->getBrickSize();
+            const uint8_t midiNote = currentLine->getMidiNote();
+
+            const double barSize = static_cast<double>(currentLine->getNum()) / currentLine->getDenom();
+
+            const unsigned long timesShift = t * 480 * 4 * barSize;
+
+            for (size_t i = 0; i < bricks.size(); ++i)
             {
-                unsigned long timeSize = 480 * 4 / brickSize;
+                if (bricks[i].on == true)
+                {
+                    unsigned long timeSize = 480 * 4 / brickSize;
 
-                unsigned long start = timeSize * i;
-                unsigned long finish = timeSize * (i + 1);
+                    unsigned long start = timesShift + timeSize * i;
+                    unsigned long finish = timesShift + timeSize * (i + 1);
 
-                if (midiMap.count(start) == 0)
-                    midiMap[start] = {};
-                if (midiMap.count(finish) == 0)
-                    midiMap[finish] = {};
+                    if (midiMap.count(start) == 0)
+                        midiMap[start] = {};
+                    if (midiMap.count(finish) == 0)
+                        midiMap[finish] = {};
 
-                midiMap[start].push_back({true, midiNote});
-                midiMap[finish].push_back({false, midiNote});
+                    midiMap[start].push_back({true, midiNote});
+                    midiMap[finish].push_back({false, midiNote});
 
+                }
             }
         }
-
-        //3. Добавить предварительный рассчёт полиритмии
-            //:Для каждой дорожки прокрутить столько циклов, сколько требуется
-
-    }
 
 
     unsigned long prevTime = 0;

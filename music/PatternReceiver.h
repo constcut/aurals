@@ -27,12 +27,17 @@ namespace aurals {
             _bpm = bpm;
         }
 
+        Q_INVOKABLE void setRepeatTimes(int times) {
+            _repeatTimes = times;
+        }
+
 
     private:
 
         std::vector<PatternLine*> _lines;
 
-        int _bpm;
+        int _bpm = 120;
+        int _repeatTimes = 2;
 
     };
 
