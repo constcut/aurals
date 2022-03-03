@@ -64,7 +64,7 @@ Item {
                 onClicked: {
                     receiver.generateMidi("pattern.mid")
                     audio.openMidiFile("pattern.mid")
-                    //audio.saveMidiToWav("pattern.wav")
+                    audio.saveMidiToWav("pattern.wav")
                     audio.startMidiPlayer() //TODO some issue in player eats few notes sometimes
                 }
             }
@@ -249,7 +249,7 @@ Item {
 
                         MouseArea {
                             anchors.fill: parent
-                            onDoubleClicked: {
+                            onClicked: {
                                 pattern.onClick(mouseX, mouseY)
                             }
                         }
