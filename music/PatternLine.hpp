@@ -2,6 +2,7 @@
 #define PATTERNLINE_HPP
 
 #include <QQuickPaintedItem>
+#include <QJsonObject>
 
 #include <vector>
 
@@ -27,6 +28,8 @@ namespace aurals {
             }
             return false;
         }
+
+        QJsonObject serialize();
     };
 
 
@@ -36,6 +39,9 @@ namespace aurals {
         uint8_t brickSize = 4;
         uint8_t midiNote = 35;
         std::vector<PatternBrick> bricks;
+
+        QJsonObject serialize();
+
     };
 
     class PatternLine  : public QQuickPaintedItem

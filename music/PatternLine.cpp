@@ -2,6 +2,7 @@
 
 #include <QPainter>
 #include <QDebug>
+#include <QJsonArray>
 
 using namespace aurals;
 
@@ -43,4 +44,35 @@ void PatternLine::onClick(int x, int y)
             break;
         }
     update();
+}
+
+
+QJsonObject PatternBrick::serialize()
+{
+   QJsonObject j;
+   j["x"] = x;
+   j["y"] = y;
+   j["w"] = w;
+   j["h"] = h;
+   j["on"] = on;
+
+   return j;
+}
+
+
+QJsonObject PatternLineState::serialize()
+{
+    QJsonObject j;
+    j["num"] = num;
+    j["denom"] = denom;
+    j["brickSize"] = brickSize;
+    j["midiNote"] = midiNote;
+
+    QJsonArray arr;
+    for (auto& b: bricks)
+        arr.push_back(b.serialize());
+
+    j["bricks"] = arr;
+
+    return j;
 }
