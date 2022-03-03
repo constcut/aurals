@@ -106,6 +106,17 @@ Item {
                     receiver.saveToFile("pattern.json")
                 }
             }
+            ToolButton {
+                text: "L"
+                onClicked: {
+                    receiver.loadFromFile("pattern.json")
+                    patternRepeater.model = receiver.getStoreSize()
+                    receiver.loadState()
+
+                    for (var i = 0; i < patternRepeater.model; ++i)
+                        patternRepeater.itemAt(i).updateCombos()
+                }
+            }
         }
     }
 

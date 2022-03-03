@@ -42,7 +42,8 @@ namespace aurals {
         Q_INVOKABLE void saveToFile(QString filename);
         Q_INVOKABLE void loadFromFile(QString filename);
 
-        //+ state to file, state from file
+        Q_INVOKABLE int getStoreSize() { return _states.size(); }
+
 
     private:
 
