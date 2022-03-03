@@ -37,6 +37,7 @@ namespace aurals {
         Q_INVOKABLE void loadWindowPCM(const QByteArray window);
 
         Q_INVOKABLE void mixRecordAndMidi();
+        Q_INVOKABLE void startMidiAndRecording();
 
         Q_INVOKABLE int getSampleRate() const {
             return _commonFormat.sampleRate();
