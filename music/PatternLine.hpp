@@ -48,18 +48,24 @@ namespace aurals {
         void paint(QPainter* painter);
 
         Q_INVOKABLE void setNumerator(int num) {
+            if (num == _state.num)
+                return;
             _state.num = num;
             updateBricks();
             update();
         }
 
         Q_INVOKABLE void setDenomenator(int denom) {
+            if (denom == _state.denom)
+                return;
             _state.denom = denom;
             updateBricks();
             update();
         }
 
         Q_INVOKABLE void setBrickSize(int size) {
+            if (size == _state.brickSize)
+                return;
             _state.brickSize = size;
             updateBricks();
             update();
@@ -81,10 +87,10 @@ namespace aurals {
         }
 
         const std::vector<PatternBrick>& getBricks() { return _state.bricks; }
-        uint8_t getNum() { return _state.num; }
-        uint8_t getDenom() { return _state.denom; }
-        uint8_t getBrickSize() { return _state.brickSize; }
-        uint8_t getMidiNote() { return _state.midiNote; }
+        Q_INVOKABLE int getNum() { return _state.num; }
+        Q_INVOKABLE int getDenom() { return _state.denom; }
+        Q_INVOKABLE int getBrickSize() { return _state.brickSize; }
+        Q_INVOKABLE int getMidiNote() { return _state.midiNote; }
 
         const PatternLineState& getState() const { return _state; }
         void setState(PatternLineState& state) { _state = state; }

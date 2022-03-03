@@ -81,7 +81,10 @@ Item {
                     receiver.storeState()
                     receiver.reset()
                     patternRepeater.model = patternRepeater.model + 1
-                    receiver.loadState() // + update combos
+                    receiver.loadState()
+
+                    for (var i = 0; i < patternRepeater.model; ++i)
+                        patternRepeater.itemAt(i).updateCombos()
                 }
             }
             ToolButton {
@@ -91,10 +94,10 @@ Item {
                     receiver.reset()
                     if (patternRepeater.model)
                         patternRepeater.model = patternRepeater.model - 1
-                    receiver.loadState() // + update combos
+                    receiver.loadState()
 
-                    //for model - выделить функцию обновления в отдельную, тк вызывать надо и при удалении, и при добавлении
-                    patternRepeater.itemAt(0).updateCombos()
+                    for (var i = 0; i < patternRepeater.model; ++i)
+                        patternRepeater.itemAt(i).updateCombos()
                 }
             }
         }
@@ -125,11 +128,18 @@ Item {
 
                     id: patternRow
 
-                    //Save index + function update combos
-
                     function updateCombos() {
-                        //numCombo.currentIndex = 5
-                        //etc
+                        var num = pattern.getNum()
+                        numCombo.currentIndex = num - 1
+
+                        var denom = pattern.getDenom()
+                        denomCombo.currentIndex = Math.log2(denom)
+
+                        var brickSize = pattern.getBrickSize()
+                        brickSizeCombo.currentIndex = Math.log2(brickSize)
+
+                        var midiNote = pattern.getMidiNote()
+                        midiNoteCombo.currentIndex = midiNote
                     }
 
                     ComboBox {
@@ -137,23 +147,30 @@ Item {
                         id: numCombo
 
                         implicitWidth: 70
-                        model: [4, 6, 8, 3, 2, 1, 5, 9, 10, 7, 16, 32, 17, 15] //Basic
+                        model: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17] //Basic
+                        currentIndex: 3
+
                         onCurrentTextChanged: {
                             pattern.setNumerator(parseInt(currentText))
                             var fullWidth = pattern.fullWidth()
-                            pattern.width = fullWidth + 10
+                            //pattern.width = fullWidth + 10
                             if (flick.contentWidth < fullWidth)
                                 flick.contentWidth = fullWidth
                             //Умное обновление при уменьшение, хранить весь массив длин линий, и выбирать максимальный
                         }
                     }
                     ComboBox {
+
+                        id: denomCombo
+
                         implicitWidth: 70
-                        model: [4, 8, 16, 2, 1, 32]
+                        model: [1, 2, 4, 8, 16, 32]
+                        currentIndex: 2
+
                         onCurrentTextChanged: {
                             pattern.setDenomenator(parseInt(currentText))
                             var fullWidth = pattern.fullWidth()
-                            pattern.width = fullWidth + 10
+                            //pattern.width = fullWidth + 10
                             if (flick.contentWidth < fullWidth)
                                 flick.contentWidth = fullWidth
                         }
@@ -162,18 +179,25 @@ Item {
                         text: ":"
                     }
                     ComboBox {
+
+                        id: brickSizeCombo
+
                         implicitWidth: 70
-                        model: [4, 8, 16, 32, 2, 1]
-                        //currentIndex: 2
+                        model: [1, 2, 4, 8, 16, 32]
+                        currentIndex: 2
+
                         onCurrentTextChanged: {
                             pattern.setBrickSize(parseInt(currentText))
                             var fullWidth = pattern.fullWidth()
-                            pattern.width = fullWidth + 10
+                            //pattern.width = fullWidth + 10 //SOMETHING broken
                             if (flick.contentWidth < fullWidth)
                                 flick.contentWidth = fullWidth
                         }
                     }
                     ComboBox {
+
+                        id: midiNoteCombo
+
                         implicitWidth: 70
                         property var notes: [36, 40, 57, 48, 46, 35, 35, 35]
                         model: 61
