@@ -153,7 +153,7 @@ Item {
                         onCurrentTextChanged: {
                             pattern.setNumerator(parseInt(currentText))
                             var fullWidth = pattern.fullWidth()
-                            //pattern.width = fullWidth + 10
+                            pattern.width = fullWidth + 10
                             if (flick.contentWidth < fullWidth)
                                 flick.contentWidth = fullWidth
                             //Умное обновление при уменьшение, хранить весь массив длин линий, и выбирать максимальный
@@ -170,7 +170,7 @@ Item {
                         onCurrentTextChanged: {
                             pattern.setDenomenator(parseInt(currentText))
                             var fullWidth = pattern.fullWidth()
-                            //pattern.width = fullWidth + 10
+                            pattern.width = fullWidth + 10
                             if (flick.contentWidth < fullWidth)
                                 flick.contentWidth = fullWidth
                         }
@@ -189,7 +189,7 @@ Item {
                         onCurrentTextChanged: {
                             pattern.setBrickSize(parseInt(currentText))
                             var fullWidth = pattern.fullWidth()
-                            //pattern.width = fullWidth + 10 //SOMETHING broken
+                            pattern.width = fullWidth + 10 //SOMETHING broken
                             if (flick.contentWidth < fullWidth)
                                 flick.contentWidth = fullWidth
                         }
@@ -222,7 +222,6 @@ Item {
                         Component.onCompleted: {
                             receiver.connectLine(pattern)
                         }
-                        //TODO on destroyed or something
                     }
                 }
             }

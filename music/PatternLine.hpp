@@ -48,7 +48,7 @@ namespace aurals {
         void paint(QPainter* painter);
 
         Q_INVOKABLE void setNumerator(int num) {
-            if (num == _state.num)
+            if (num == _state.num && _state.bricks.empty() == false)
                 return;
             _state.num = num;
             updateBricks();
@@ -56,7 +56,7 @@ namespace aurals {
         }
 
         Q_INVOKABLE void setDenomenator(int denom) {
-            if (denom == _state.denom)
+            if (denom == _state.denom && _state.bricks.empty() == false)
                 return;
             _state.denom = denom;
             updateBricks();
@@ -64,7 +64,7 @@ namespace aurals {
         }
 
         Q_INVOKABLE void setBrickSize(int size) {
-            if (size == _state.brickSize)
+            if (size == _state.brickSize && _state.bricks.empty() == false)
                 return;
             _state.brickSize = size;
             updateBricks();
