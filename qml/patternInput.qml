@@ -123,6 +123,7 @@ Item {
                     receiver.generateMidi("pattern.mid")
                     audio.openMidiFile("pattern.mid")
                     audio.resetBufer()
+                    //audio.setSampleRate(8000)
                     audio.startMidiPlayer()
                     audio.startRecord()
                 }

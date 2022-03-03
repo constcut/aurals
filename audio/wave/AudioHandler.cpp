@@ -164,7 +164,7 @@ void AudioHandler::mixRecordAndMidi()
     const qint16* midi = reinterpret_cast<const qint16*>(_midiBufer.constData());
 
     for (int i = 0; i < _commonBufer.size() / 2; ++i) {
-        record[i] += midi[i];
+        record[i] += midi[i*2] + midi[i*2+1];
     }
 }
 
