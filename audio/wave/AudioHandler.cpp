@@ -158,6 +158,11 @@ void AudioHandler::loadFile(const QString filename) {
 }
 
 
+void AudioHandler::mixRecordAndMidi() {
+
+}
+
+
 void AudioHandler::saveFile(const QString filename) const {
     QFile f;
     f.setFileName(filename);

@@ -64,7 +64,7 @@ Item {
                 onClicked: {
                     receiver.generateMidi("pattern.mid")
                     audio.openMidiFile("pattern.mid")
-                    audio.saveMidiToWav("pattern.wav")
+                    //audio.saveMidiToWav("pattern.wav")
                     audio.startMidiPlayer()
                 }
             }
@@ -115,6 +115,24 @@ Item {
 
                     for (var i = 0; i < patternRepeater.model; ++i)
                         patternRepeater.itemAt(i).updateCombos()
+                }
+            }
+            ToolButton {
+                text: "Rec"
+                onClicked:  {
+                    receiver.generateMidi("pattern.mid")
+                    audio.openMidiFile("pattern.mid")
+                    audio.startMidiPlayer()
+                    audio.startRecord()
+                }
+            }
+            ToolButton {
+                text: "Stop rec"
+                onClicked: {
+                    audio.stopRecord()
+                    audio.stopMidiPlayer()
+                    audio.mixRecordAndMidi()
+                    audio.saveWavFile("mix.wav")
                 }
             }
         }
