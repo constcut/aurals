@@ -187,6 +187,7 @@ void AudioHandler::mixRecordAndMidi()
 
     //Must be measured 150 ms is so much - maybe Qt wouldn't work fine here
     int pseudoRoundtrip = -7000; //Only for 44100 only on some device.. just hotfix attempt
+    //But maybe issue is in midi patter playing
 
     for (int i = 0; i < _commonBufer.size() / 2; ++i) {
         if (i >= -pseudoRoundtrip)
