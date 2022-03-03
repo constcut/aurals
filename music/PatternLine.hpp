@@ -29,7 +29,7 @@ namespace aurals {
             return false;
         }
 
-        QJsonObject serialize();
+        QJsonObject serialize() const;
     };
 
 
@@ -40,7 +40,7 @@ namespace aurals {
         uint8_t midiNote = 35;
         std::vector<PatternBrick> bricks;
 
-        QJsonObject serialize();
+        QJsonObject serialize() const;
 
     };
 

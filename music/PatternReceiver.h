@@ -39,6 +39,8 @@ namespace aurals {
         Q_INVOKABLE void storeState();
         Q_INVOKABLE void loadState();
 
+        Q_INVOKABLE void saveToFile(QString filename);
+
         //+ state to file, state from file
 
     private:

@@ -2,6 +2,10 @@
 
 #include <QPainter>
 #include <QDebug>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QFile>
 
 #include <cmath>
 #include <numeric>
@@ -134,6 +138,25 @@ void PatternReceiver::storeState() {
     for (auto line: _lines)
         _states.push_back(line->getState());
 }
+
+
+void PatternReceiver::saveToFile(QString filename)
+{
+    QJsonArray arr;
+    for (auto line: _lines)
+        arr.push_back(line->getState().serialize());
+
+    QJsonObject root;
+    root["lines"] = arr;
+
+    QJsonDocument doc(root);
+    auto bytes = doc.toJson();
+
+    QFile output(filename);
+    output.open(QIODevice::WriteOnly);
+    output.write(bytes);
+}
+
 
 void PatternReceiver::loadState()
 {

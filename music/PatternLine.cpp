@@ -47,10 +47,10 @@ void PatternLine::onClick(int x, int y)
 }
 
 
-QJsonObject PatternBrick::serialize()
+QJsonObject PatternBrick::serialize() const
 {
    QJsonObject j;
-   j["x"] = x;
+   j["x"] = x; //Возможно сохранять эти значения лишнее и даже вредное для разных размеров экранов
    j["y"] = y;
    j["w"] = w;
    j["h"] = h;
@@ -60,7 +60,7 @@ QJsonObject PatternBrick::serialize()
 }
 
 
-QJsonObject PatternLineState::serialize()
+QJsonObject PatternLineState::serialize() const
 {
     QJsonObject j;
     j["num"] = num;

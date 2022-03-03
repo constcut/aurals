@@ -100,6 +100,12 @@ Item {
                         patternRepeater.itemAt(i).updateCombos()
                 }
             }
+            ToolButton {
+                text: "S"
+                onClicked: {
+                    receiver.saveToFile("pattern.json")
+                }
+            }
         }
     }
 
