@@ -75,6 +75,7 @@ void AudioHandler::startMidiAndRecording() {
     const double ms = static_cast<double>(_midiBufer.size()) / (channels * bytesPerSample * sampleRate / msInSecond);
     _midiPlayer->start();
 
+    //Вероятно потребуется общее устройство, и регистрация времени каждого семпла в момент получения
     _audioInput->start(_audioReceiver.get());
     _midiOutput->start(_midiPlayer.get());
 
@@ -184,9 +185,15 @@ void AudioHandler::mixRecordAndMidi()
     qint16* record = reinterpret_cast<qint16*>(_commonBufer.data());
     const qint16* midi = reinterpret_cast<const qint16*>(_midiBufer.constData());
 
+    //Must be measured 150 ms is so much - maybe Qt wouldn't work fine here
+    int pseudoRoundtrip = -7000; //Only for 44100 only on some device.. just hotfix attempt
+
     for (int i = 0; i < _commonBufer.size() / 2; ++i) {
-        record[i] += midi[i*2] + midi[i*2+1];
+        if (i >= -pseudoRoundtrip)
+            record[i] += midi[i*2 + pseudoRoundtrip * 2] / 2
+                    + midi[i*2 + 1 + pseudoRoundtrip * 2] / 2;
     }
+    //Doesn't work so simple, we have offset
 }
 
 
