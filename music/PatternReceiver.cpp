@@ -164,3 +164,27 @@ void PatternReceiver::loadState()
         if (i < _lines.size())
             _lines[i]->setState(_states[i]);
 }
+
+
+void PatternReceiver::loadFromFile(QString filename)
+{
+    //Step 1 load state
+    //Step 2 set model repeater
+    //Step 3 load state
+
+    QFile input(filename);
+    input.open(QIODevice::ReadOnly);
+    auto bytes = input.readAll();
+
+    QJsonDocument doc = QJsonDocument::fromJson(bytes);
+    auto mainObject = doc.object();
+    auto arr = mainObject["lines"].toArray();
+
+    _states.clear();
+    for (auto line: arr) {
+        auto lineObj = line.toObject();
+        PatternLineState state;
+        state.deserialize(lineObj);
+        _states.push_back(state);
+    }
+}

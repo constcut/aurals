@@ -30,6 +30,7 @@ namespace aurals {
         }
 
         QJsonObject serialize() const;
+        void deserialize(QJsonObject);
     };
 
 
@@ -41,6 +42,7 @@ namespace aurals {
         std::vector<PatternBrick> bricks;
 
         QJsonObject serialize() const;
+        void deserialize(QJsonObject);
 
     };
 

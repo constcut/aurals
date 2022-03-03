@@ -60,6 +60,16 @@ QJsonObject PatternBrick::serialize() const
 }
 
 
+void PatternBrick::deserialize(QJsonObject object)
+{
+    x = object["x"].toInt();
+    y = object["y"].toInt();
+    w = object["w"].toInt();
+    h = object["h"].toInt();
+    on = object["on"].toBool();
+}
+
+
 QJsonObject PatternLineState::serialize() const
 {
     QJsonObject j;
@@ -76,3 +86,23 @@ QJsonObject PatternLineState::serialize() const
 
     return j;
 }
+
+
+void PatternLineState::deserialize(QJsonObject object)
+{
+    num = object["num"].toInt();
+    denom = object["denom"].toInt();
+    brickSize = object["brickSize"].toInt();
+    midiNote = object["midiNote"].toInt();
+
+    QJsonArray arr = object["bricks"].toArray();
+
+    for (auto brickRef: arr) {
+        auto brickObj = brickRef.toObject();
+        PatternBrick brick;
+        brick.deserialize(brickObj);
+        bricks.push_back(brick);
+    }
+}
+
+

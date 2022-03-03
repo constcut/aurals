@@ -40,6 +40,7 @@ namespace aurals {
         Q_INVOKABLE void loadState();
 
         Q_INVOKABLE void saveToFile(QString filename);
+        Q_INVOKABLE void loadFromFile(QString filename);
 
         //+ state to file, state from file
 
