@@ -185,9 +185,9 @@ void AudioHandler::mixRecordAndMidi()
     qint16* record = reinterpret_cast<qint16*>(_commonBufer.data());
     const qint16* midi = reinterpret_cast<const qint16*>(_midiBufer.constData());
 
-    //Must be measured 150 ms is so much - maybe Qt wouldn't work fine here
+    //Must be measured 150+++ ms is so much - maybe Qt wouldn't work fine here
     int pseudoRoundtrip = -7000; //Only for 44100 only on some device.. just hotfix attempt
-    //But maybe issue is in midi patter playing
+    //But maybe issue is in midi pattern playing
 
     for (int i = 0; i < _commonBufer.size() / 2; ++i) {
         if (i >= -pseudoRoundtrip)
