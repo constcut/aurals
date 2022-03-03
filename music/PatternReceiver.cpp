@@ -161,8 +161,10 @@ void PatternReceiver::saveToFile(QString filename)
 void PatternReceiver::loadState()
 {
     for (size_t i = 0; i < _states.size(); ++i)
-        if (i < _lines.size())
+        if (i < _lines.size()) {
             _lines[i]->setState(_states[i]);
+            _lines[i]->update();
+        }
 }
 
 
