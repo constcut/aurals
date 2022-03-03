@@ -158,8 +158,14 @@ void AudioHandler::loadFile(const QString filename) {
 }
 
 
-void AudioHandler::mixRecordAndMidi() {
+void AudioHandler::mixRecordAndMidi()
+{
+    qint16* record = reinterpret_cast<qint16*>(_commonBufer.data());
+    const qint16* midi = reinterpret_cast<const qint16*>(_midiBufer.constData());
 
+    for (int i = 0; i < _commonBufer.size() / 2; ++i) {
+        record[i] += midi[i];
+    }
 }
 
 

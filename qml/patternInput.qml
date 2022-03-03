@@ -122,6 +122,7 @@ Item {
                 onClicked:  {
                     receiver.generateMidi("pattern.mid")
                     audio.openMidiFile("pattern.mid")
+                    audio.resetBufer()
                     audio.startMidiPlayer()
                     audio.startRecord()
                 }
