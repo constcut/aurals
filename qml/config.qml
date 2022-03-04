@@ -3,9 +3,10 @@ import aurals 1.0
 
 TableView {
 
-    y: 100
+    y: 60
+    x: 40
     height: parent.height - y
-    width: parent.width
+    width: parent.width - x
 
     columnSpacing: 1
     rowSpacing: 1
@@ -14,7 +15,7 @@ TableView {
     model: ConfigTableModel {}
 
     delegate: Rectangle {
-        implicitWidth: 100
+        implicitWidth: 300
         implicitHeight: 50
         Text {
             text: display

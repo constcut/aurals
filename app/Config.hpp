@@ -2,8 +2,9 @@
 #define CONFIG_H
 
 #include <string>
-#include <unordered_map>
+#include <map>
 #include <vector>
+#include <iterator>
 
 #define CONF_PARAM(z) Config::getInst().values[ z ] //TODO maybe replace with QSettings
 
@@ -23,12 +24,12 @@ namespace aurals {
     class Config : public QObject
     {
 
-    public:
+    public: //private
         bool *logs[10];
         std::string logsNames[10];
         int topIndex;
 
-        std::unordered_map<std::string,std::string> values;
+        std::map<std::string,std::string> values;
         void addLine(std::string anotherLine);
 
         double scaleCoef;
@@ -76,17 +77,14 @@ namespace aurals {
 
         void cleanValues() { values.clear(); }
 
+        static Config& getInst() {
+            static Config instance;
+            return instance;
+        }
 
-    public:
-            static Config& getInst() {
-                static Config instance;
-                return instance;
-            }
-
-    public:
-            Config(): topIndex(-1),scaleCoef(1.0),timeCoef(1) {}
-            Config(const Config& root) = delete;
-            Config& operator=(const Config&) = delete;
+        Config(): topIndex(-1),scaleCoef(1.0),timeCoef(1) {}
+        Config(const Config& root) = delete;
+        Config& operator=(const Config&) = delete;
 
     };
 
@@ -121,22 +119,27 @@ namespace aurals {
     public:
         int rowCount(const QModelIndex & = QModelIndex()) const override
         {
-            return 10;
+            return Config::getInst().values.size();
         }
 
         int columnCount(const QModelIndex & = QModelIndex()) const override
         {
-            return 5;
+            return 2;
         }
 
         QVariant data(const QModelIndex &index, int role) const override
         {
-            switch (role) {
-                case Qt::DisplayRole:
-                    return QString("%1, %2").arg(index.column()).arg(index.row());
-                default:
-                    break;
-            }
+            if (role !=  Qt::DisplayRole)
+                return QVariant();
+
+            auto beginIt = Config::getInst().values.begin();
+            auto it = std::next(beginIt, index.row());
+
+            if (index.column() == 0)
+                return it->first.c_str();
+
+            if (index.column() == 1)
+                return it->second.c_str();
 
             return QVariant();
         }
