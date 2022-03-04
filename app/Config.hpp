@@ -10,7 +10,7 @@
 
 #include <QObject>
 #include <QAbstractTableModel>
-//#include <qqml.h>
+#include <QDebug>
 
 
 namespace aurals {
@@ -147,6 +147,14 @@ namespace aurals {
         QHash<int, QByteArray> roleNames() const override
         {
             return { {Qt::DisplayRole, "display"} };
+        }
+
+        Q_INVOKABLE void updateValue(int row, QString value) {
+            auto beginIt = Config::getInst().values.begin();
+            auto it = std::next(beginIt, row);
+            it->second = value.toStdString();
+            qDebug() << "Updated: " << it->first.c_str() << " to "
+                     << it->second.c_str();
         }
     };
 
