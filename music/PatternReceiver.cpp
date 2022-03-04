@@ -107,6 +107,26 @@ MappedMidiSignals PatternReceiver::calculateMappedSignals()
 }
 
 
+
+double PatternReceiver::totalSeconds()
+{
+    if (_lines.empty())
+        return 0.0;
+
+    auto reapeatTimes = calculateRepeatTimes();
+    const int polyRepeats = reapeatTimes[0];
+    auto line = _lines[0];
+    const int brickSize = line->getBrickSize();
+    const double barSize = static_cast<double>(line->getNum()) / line->getDenom();
+    const unsigned long timesShift = (polyRepeats * _repeatTimes) * 480 * 4 * barSize;
+    unsigned long timeSize = 480 * 4 / brickSize;
+    unsigned long finish = timesShift + timeSize * line->getBricks().size();
+    double totalSeconds = finish * (120.0 / _bpm) / 960.0;
+
+    return totalSeconds;
+}
+
+
 void PatternReceiver::generateMidi(QString filename)
 {
     MidiTrack track;

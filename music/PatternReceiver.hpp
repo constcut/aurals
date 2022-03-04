@@ -56,6 +56,7 @@ namespace aurals {
             _secondsLimit = limit;
         }
 
+        Q_INVOKABLE double totalSeconds();
 
     private:
 
