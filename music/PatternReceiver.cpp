@@ -65,9 +65,6 @@ void PatternReceiver::generateMidi(QString filename)
     std::map<unsigned long, std::vector<MiniMidi>> midiMap;
     size_t lineIdx = 0;
 
-    //TODO investigate
-    //track.accumulate(480); //Hot fix for midi generation swallowed notes
-    //track.pushNoteOff(36, 127, 9);
 
     for (auto& line: _lines)
     {
@@ -97,6 +94,12 @@ void PatternReceiver::generateMidi(QString filename)
 
                     midiMap[start].push_back({true, midiNote});
                     midiMap[finish].push_back({false, midiNote});
+
+                    double totalSeconds = finish * (120.0 / _bpm) / 960.0;
+
+                    if (totalSeconds > _secondsLimit) {
+                        qDebug() << "Seconds limit " << totalSeconds;
+                    }
 
                 }
             }

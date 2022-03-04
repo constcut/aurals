@@ -51,6 +51,7 @@ namespace aurals {
 
         int _bpm = 120;
         int _repeatTimes = 2;
+        int _secondsLimit = 60;
 
         std::vector<PatternLineState> _states;
 
