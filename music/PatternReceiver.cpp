@@ -118,7 +118,7 @@ double PatternReceiver::totalSeconds()
     auto line = _lines[0];
     const int brickSize = line->getBrickSize();
     const double barSize = static_cast<double>(line->getNum()) / line->getDenom();
-    const unsigned long timesShift = (polyRepeats * _repeatTimes) * 480 * 4 * barSize;
+    const unsigned long timesShift = (polyRepeats * _repeatTimes - 1) * 480 * 4 * barSize;
     unsigned long timeSize = 480 * 4 / brickSize;
     unsigned long finish = timesShift + timeSize * line->getBricks().size();
     double totalSeconds = finish * (120.0 / _bpm) / 960.0;
