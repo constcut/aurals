@@ -55,7 +55,7 @@ Item {
             }
             ComboBox {
                 implicitWidth: 70
-                model: [2, 3, 4, 1]
+                model: [2, 3, 4, 1, 8, 10, 20, 50]
                 onCurrentTextChanged: {
                     receiver.setRepeatTimes(parseInt(currentText))
                 }
