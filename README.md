@@ -5,6 +5,7 @@ There is a hope to extend it into music therapy applications.
 This application was developed with Qt 5.15.2 using QML. Tested on linux/android/windows.
 
 Current status is pre-alpha, no releases yet.
+Most of components yet build to the stage 'proof of concept', when all types of components would be fullfilled there would start work to complete them all.
 
 ## Features
 
@@ -20,6 +21,8 @@ Current status is pre-alpha, no releases yet.
 * Cepstrum calculation
 * Autocorrelation visualization and YIN algorithm visualization
 * Tapping componet, to tap rhythm using mouse\mobile device screen with export to midi\pcm
+* Piano roll component - to load and edit midi files
+* Pattern input - a way to fast write drums, polyrithm option included
 * Guitar tablature components - to view and edit guitar tabs
 * QML logger component - to read logs on mobile screen (or without running application from command line)
 
@@ -78,6 +81,13 @@ And there is tablature editor\viewer, yet in development:
 
 ![mtherapp screenshot](res/info/screenshots/tab.png)
 
+Piano roll, to load and edit midi files, yet no all the functions like velocy supported:
+
+![mtherapp screenshot](res/info/screenshots/piano_roll.png)
+
+Pattern input lets you write drum tracks fast, it has a polyrithm option, that lets you write different drum instuments with different bar sizes, PI will calculate when bar sizes converge and generate midi\wav:
+
+![mtherapp screenshot](res/info/screenshots/pattern_input.png)
 
 ## Libraries
 
