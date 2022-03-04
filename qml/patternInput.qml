@@ -72,6 +72,7 @@ Item {
             ToolButton {
                 text: ">"
                 onClicked: {
+                    totalTimeText.text = receiver.totalSeconds()
                     receiver.generateMidi("pattern.mid")
                     audio.openMidiFile("pattern.mid")
                     audio.saveMidiToWav("pattern.wav")
@@ -84,6 +85,10 @@ Item {
                     audio.stopMidiPlayer()
 
                 }
+            }
+            Text {
+                id: totalTimeText
+                text: ""
             }
             ToolButton {
                 text: "+"
