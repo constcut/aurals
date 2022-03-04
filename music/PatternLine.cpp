@@ -19,7 +19,7 @@ void PatternLine::paint(QPainter* painter) {
             painter->fillRect(b.x, b.y, b.w, b.h, QBrush(QColor("darkgreen")));
 
         if (b.border)
-            painter->setPen(QColor("darkred"));
+            painter->setPen(QColor("gray"));
 
         painter->drawRect(b.x, b.y, b.w, b.h);
 
