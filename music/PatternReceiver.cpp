@@ -78,15 +78,15 @@ void PatternReceiver::generateMidi(QString filename)
         {
             const unsigned long timesShift = t * 480 * 4 * barSize;
 
+            bool borderReached = false;
             for (size_t i = 0; i < bricks.size(); ++i)
             {
+                unsigned long timeSize = 480 * 4 / brickSize;
+                unsigned long start = timesShift + timeSize * i;
+                unsigned long finish = timesShift + timeSize * (i + 1);
+
                 if (bricks[i].on == true)
                 {
-                    unsigned long timeSize = 480 * 4 / brickSize;
-
-                    unsigned long start = timesShift + timeSize * i;
-                    unsigned long finish = timesShift + timeSize * (i + 1);
-
                     if (midiMap.count(start) == 0)
                         midiMap[start] = {};
                     if (midiMap.count(finish) == 0)
@@ -94,15 +94,16 @@ void PatternReceiver::generateMidi(QString filename)
 
                     midiMap[start].push_back({true, midiNote});
                     midiMap[finish].push_back({false, midiNote});
+                }
 
-                    double totalSeconds = finish * (120.0 / _bpm) / 960.0;
-
-                    if (totalSeconds > _secondsLimit) {
-                        qDebug() << "Seconds limit " << totalSeconds;
-                    }
-
+                double totalSeconds = finish * (120.0 / _bpm) / 960.0;
+                if (totalSeconds > _secondsLimit) {
+                    borderReached = true;
+                    break;
                 }
             }
+            if (borderReached)
+                break;
         }
         ++lineIdx;
     }
