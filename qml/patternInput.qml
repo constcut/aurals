@@ -98,6 +98,8 @@ Item {
                     patternRepeater.model = patternRepeater.model + 1
                     receiver.loadState()
 
+                    //Calculate contentHeight
+
                     for (var i = 0; i < patternRepeater.model; ++i)
                         patternRepeater.itemAt(i).updateCombos()
                 }
@@ -110,6 +112,8 @@ Item {
                     if (patternRepeater.model)
                         patternRepeater.model = patternRepeater.model - 1
                     receiver.loadState()
+
+                    //Calculate contentHeight
 
                     for (var i = 0; i < patternRepeater.model; ++i)
                         patternRepeater.itemAt(i).updateCombos()
@@ -164,7 +168,7 @@ Item {
             width: parent.width
             height: parent.height
             contentWidth: 3000
-            contentHeight:  parent.height
+            contentHeight: 2000
 
             //Component with repeaters + MouseArea
 
@@ -173,7 +177,7 @@ Item {
                 model: 5
 
                 RowLayout {
-                    y: index * 60 //Заменить на значение высоты
+                    y: index * 50 //Заменить на значение высоты
                     spacing: 10
 
                     id: patternRow
