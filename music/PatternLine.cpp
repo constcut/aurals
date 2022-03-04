@@ -4,6 +4,8 @@
 #include <QDebug>
 #include <QJsonArray>
 
+#include <cmath>
+
 using namespace aurals;
 
 void PatternLine::paint(QPainter* painter) {
@@ -15,7 +17,14 @@ void PatternLine::paint(QPainter* painter) {
         const auto& b = _state.bricks[i];
         if (b.on)
             painter->fillRect(b.x, b.y, b.w, b.h, QBrush(QColor("darkgreen")));
+
+        if (b.border)
+            painter->setPen(QColor("blue"));
+
         painter->drawRect(b.x, b.y, b.w, b.h);
+
+        if (b.border)
+            painter->setPen(QColor("black"));
     }
 }
 
@@ -30,9 +39,24 @@ void PatternLine::updateBricks()
     const int brickWidth = 64 * 4 * (1.0 / _state.brickSize);
     const int brickPadding = 8  * 4 * (1.0 / _state.brickSize);
 
+    double currentSize = 0.0;
+
     for (size_t i = 0; i < total; ++i)
-        _state.bricks.push_back({static_cast<int>(i) * (brickWidth + brickPadding),
-                           0, brickWidth, brickHeight});
+    {
+        currentSize += 1.0 / _state.brickSize;
+
+        bool borderBrick = false;
+
+        double proportion = currentSize / (1.0 / _state.denom);
+        if ((proportion - std::floor(proportion)) < 0.00001){
+            qDebug() << "On " << i << " got boder brick";
+            borderBrick = true;
+        }
+
+        const int x = static_cast<int>(i) * (brickWidth + brickPadding);
+        _state.bricks.push_back({x, 0, brickWidth, brickHeight, borderBrick});
+
+    }
 }
 
 

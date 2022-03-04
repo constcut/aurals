@@ -17,6 +17,7 @@ namespace aurals {
         int w;
         int h;
 
+        bool border = false;
         bool on = false;
 
         bool hit(int xHit, int yHit) { //Delayed abstraction for BarView\PianoRoll\PatternBrick
