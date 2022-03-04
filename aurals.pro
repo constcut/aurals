@@ -241,6 +241,7 @@ HEADERS += \
 DISTFILES += \
     ConsoleLog.qml \
     OpenTab.qml \
+    qml/config.qml \
     qml/patternInput.qml \
     res/TODO \
     Tablature.qml \

@@ -15,5 +15,6 @@
         <file>qml/CepstrumQML.qml</file>
         <file>qml/tablature.qml</file>
         <file>qml/patternInput.qml</file>
+        <file>qml/config.qml</file>
     </qresource>
 </RCC>

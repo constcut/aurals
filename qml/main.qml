@@ -26,7 +26,7 @@ ApplicationWindow {
             thatWindow.height = 600
         }
 
-        mainLoader.setSource("patternInput.qml") // tablature audioHandler midiPlayer
+        mainLoader.setSource("config.qml") // tablature audioHandler midiPlayer
     }
 
 
@@ -59,6 +59,12 @@ ApplicationWindow {
             onTriggered: {
                 mainLoader.setSource("consoleLog.qml")
                 mainLoader.focus = true
+            }
+        }
+        MenuItem {
+            text: "Config"
+            onTriggered: {
+                mainLoader.setSource("config.qml")
             }
         }
         MenuItem {
