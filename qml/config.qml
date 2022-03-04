@@ -35,6 +35,7 @@ TableView {
         Text {
             visible: column == 0
             text: display
+            //On double click if color - open color dialog
         }
     }
 
