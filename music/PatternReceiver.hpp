@@ -11,6 +11,14 @@
 namespace aurals {
 
 
+    struct MiniMidi { //TODO общий для PianoRoll - вынести на рефакторинге
+        bool on;
+        uint8_t note;
+    };
+
+    using MappedMidiSignals = std::map<unsigned long, std::vector<MiniMidi>>;
+
+
     class PatternReceiver : public QQuickPaintedItem
     {
         Q_OBJECT
@@ -50,6 +58,9 @@ namespace aurals {
 
 
     private:
+
+        std::vector<int> calculateRepeatTimes();
+        MappedMidiSignals calculateMappedSignals();
 
         std::vector<PatternLine*> _lines;
 

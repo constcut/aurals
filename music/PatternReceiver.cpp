@@ -30,13 +30,8 @@ void PatternReceiver::connectLine(QObject* line) {
 }
 
 
-void PatternReceiver::generateMidi(QString filename)
+std::vector<int> PatternReceiver::calculateRepeatTimes()
 {
-    MidiTrack track;
-
-    track.pushChangeBPM(_bpm, 0);
-    track.pushChangeInstrument(0, 9);
-
     std::vector<double> fullSizes;
     double maxSize = 0.0;
 
@@ -53,18 +48,18 @@ void PatternReceiver::generateMidi(QString filename)
     }
 
     std::vector<int> repeatTimesLine;
-    for (auto singleSize: fullSizes) {
+    for (auto singleSize: fullSizes)
         repeatTimesLine.push_back(lesserCommon / singleSize);
-    }
 
-    struct MiniMidi { //TODO общий для PianoRoll
-        bool on;
-        uint8_t note;
-    };
+    return repeatTimesLine;
+}
 
-    std::map<unsigned long, std::vector<MiniMidi>> midiMap;
+
+MappedMidiSignals PatternReceiver::calculateMappedSignals()
+{
+    std::vector<int> repeatTimesLine = calculateRepeatTimes();
+    MappedMidiSignals midiMap;
     size_t lineIdx = 0;
-
 
     for (auto& line: _lines)
     {
@@ -108,18 +103,28 @@ void PatternReceiver::generateMidi(QString filename)
         ++lineIdx;
     }
 
+    return midiMap;
+}
+
+
+void PatternReceiver::generateMidi(QString filename)
+{
+    MidiTrack track;
+
+    track.pushChangeBPM(_bpm, 0);
+    track.pushChangeInstrument(0, 9);
+
+    MappedMidiSignals midiMap = calculateMappedSignals();
 
     unsigned long prevTime = 0;
     for (const auto& events: midiMap) //Общий код с piano roll - refactoring
     {
-        unsigned long currentTime = events.first; //Rewrite structures binding
-
-        for (auto& event: events.second) {
-
-            if (prevTime != currentTime) {
+        unsigned long currentTime = events.first;
+        for (auto& event: events.second)
+        {
+            if (prevTime != currentTime) { //Можно считать TotalTime тут
                 track.accumulate(currentTime - prevTime);
                 prevTime = currentTime;
-                //Можно считать TotalTime тут
             }
 
             if (event.on)
@@ -127,7 +132,6 @@ void PatternReceiver::generateMidi(QString filename)
             else
                 track.pushNoteOff(event.note, 127, 9);
         }
-
     }
 
     track.pushEvent47();
