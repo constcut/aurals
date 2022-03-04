@@ -40,6 +40,8 @@ void PatternLine::updateBricks()
     const int brickPadding = 8  * 4 * (1.0 / _state.brickSize);
 
     int countTillBorder = (1.0 / _state.denom) / (1.0 / _state.brickSize);
+    if (countTillBorder <= 0)
+        countTillBorder = 1;
 
     for (size_t i = 0; i < total; ++i)
     {
