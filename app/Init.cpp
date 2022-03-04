@@ -329,6 +329,8 @@ int mainInit(int argc, char *argv[]) {
 
     Config::getInst().checkConfig();
 
+    qmlRegisterType<aurals::ConfigTableModel>("aurals", 1, 0, "ConfigTableModel");
+
     qmlRegisterType<aurals::WaveshapeQML>("aurals", 1, 0, "Waveshape");
     qmlRegisterType<aurals::SpectrographQML>("aurals", 1, 0,"Spectrograph");
     qmlRegisterType<aurals::Tapper>("aurals", 1, 0,"Tapper");

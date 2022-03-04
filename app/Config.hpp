@@ -9,7 +9,7 @@
 
 #include <QObject>
 #include <QAbstractTableModel>
-#include <qqml.h>
+//#include <qqml.h>
 
 
 namespace aurals {
@@ -115,8 +115,8 @@ namespace aurals {
     class ConfigTableModel : public QAbstractTableModel
     {
         Q_OBJECT
-        QML_ELEMENT
-        QML_ADDED_IN_MINOR_VERSION(1)
+        //QML_ELEMENT
+        //QML_ADDED_IN_MINOR_VERSION(1)
 
     public:
         int rowCount(const QModelIndex & = QModelIndex()) const override
