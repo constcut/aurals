@@ -163,14 +163,17 @@ Item {
         width: parent.width
         height: parent.height - y
 
+        clip: true
+
         Flickable {
             id: flick
             width: parent.width
             height: parent.height
             contentWidth: 3000
-            contentHeight: 2000
+            contentHeight: parent.height * 2
 
-            //Component with repeaters + MouseArea
+            boundsBehavior: Flickable.StopAtBounds
+            boundsMovement: Flickable.StopAtBounds
 
             Repeater {
                 id: patternRepeater
