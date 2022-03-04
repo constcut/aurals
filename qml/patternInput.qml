@@ -98,7 +98,7 @@ Item {
                     patternRepeater.model = patternRepeater.model + 1
                     receiver.loadState()
 
-                    //Calculate contentHeight
+                    flick.contentHeight = patternRepeater.model * 50 + 10
 
                     for (var i = 0; i < patternRepeater.model; ++i)
                         patternRepeater.itemAt(i).updateCombos()
@@ -113,7 +113,7 @@ Item {
                         patternRepeater.model = patternRepeater.model - 1
                     receiver.loadState()
 
-                    //Calculate contentHeight
+                    flick.contentHeight = patternRepeater.model * 50 + 10
 
                     for (var i = 0; i < patternRepeater.model; ++i)
                         patternRepeater.itemAt(i).updateCombos()
@@ -170,7 +170,7 @@ Item {
             width: parent.width
             height: parent.height
             contentWidth: 3000
-            contentHeight: parent.height * 2
+            contentHeight: patternRepeater.model * 50 + 10
 
             boundsBehavior: Flickable.StopAtBounds
             boundsMovement: Flickable.StopAtBounds
@@ -258,7 +258,7 @@ Item {
                         implicitWidth: 70
                         property var notes: [36, 40, 57, 48, 46, 35, 35, 35]
                         model: 61
-                        currentIndex: notes[index]
+                        currentIndex: index < 8 ? notes[index] : 35
                         onCurrentTextChanged: {
                             pattern.setMidiNote(parseInt(currentText))
                         }
