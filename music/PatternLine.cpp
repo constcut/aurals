@@ -19,7 +19,7 @@ void PatternLine::paint(QPainter* painter) {
             painter->fillRect(b.x, b.y, b.w, b.h, QBrush(QColor("darkgreen")));
 
         if (b.border)
-            painter->setPen(QColor("blue"));
+            painter->setPen(QColor("darkred"));
 
         painter->drawRect(b.x, b.y, b.w, b.h);
 
@@ -39,23 +39,16 @@ void PatternLine::updateBricks()
     const int brickWidth = 64 * 4 * (1.0 / _state.brickSize);
     const int brickPadding = 8  * 4 * (1.0 / _state.brickSize);
 
-    double currentSize = 0.0;
+    int countTillBorder = (1.0 / _state.denom) / (1.0 / _state.brickSize);
 
     for (size_t i = 0; i < total; ++i)
     {
-        currentSize += 1.0 / _state.brickSize;
-
         bool borderBrick = false;
-
-        double proportion = currentSize / (1.0 / _state.denom);
-        if ((proportion - std::floor(proportion)) < 0.00001){
-            qDebug() << "On " << i << " got boder brick";
+        if (i % countTillBorder == 0)
             borderBrick = true;
-        }
 
         const int x = static_cast<int>(i) * (brickWidth + brickPadding);
         _state.bricks.push_back({x, 0, brickWidth, brickHeight, borderBrick});
-
     }
 }
 
