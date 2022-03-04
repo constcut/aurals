@@ -46,6 +46,7 @@ Item {
                 }
             }
             ComboBox {
+                implicitWidth: 80
                 model: [60, 120, 180, 240]
                 currentIndex: 1
                 onCurrentTextChanged: {
@@ -53,9 +54,18 @@ Item {
                 }
             }
             ComboBox {
+                implicitWidth: 70
                 model: [2, 3, 4, 1]
                 onCurrentTextChanged: {
                     receiver.setRepeatTimes(parseInt(currentText))
+                }
+            }
+
+            ComboBox {
+                implicitWidth: 80
+                model: [60, 120, 300, 60000]
+                onCurrentTextChanged: {
+                    receiver.setSecondsLimit(parseInt(currentText))
                 }
             }
 

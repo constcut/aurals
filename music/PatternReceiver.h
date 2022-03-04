@@ -44,6 +44,10 @@ namespace aurals {
 
         Q_INVOKABLE int getStoreSize() { return _states.size(); }
 
+        Q_INVOKABLE void setSecondsLimit(int limit) {
+            _secondsLimit = limit;
+        }
+
 
     private:
 
