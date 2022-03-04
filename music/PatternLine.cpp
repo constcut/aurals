@@ -78,7 +78,9 @@ QJsonObject PatternBrick::serialize() const
    j["y"] = y;
    j["w"] = w;
    j["h"] = h;
+   j["border"] = border;
    j["on"] = on;
+
 
    return j;
 }
@@ -90,6 +92,7 @@ void PatternBrick::deserialize(QJsonObject object)
     y = object["y"].toInt();
     w = object["w"].toInt();
     h = object["h"].toInt();
+    border = object["border"].toBool();
     on = object["on"].toBool();
 }
 
