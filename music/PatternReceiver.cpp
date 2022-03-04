@@ -1,4 +1,4 @@
-#include "PatternReceiver.h"
+#include "PatternReceiver.hpp"
 
 #include <QPainter>
 #include <QDebug>

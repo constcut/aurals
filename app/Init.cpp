@@ -29,7 +29,7 @@
 
 #include "music/PianoRoll.hpp"
 #include "music/PatternLine.hpp"
-#include "music/PatternReceiver.h"
+#include "music/PatternReceiver.hpp"
 
 #include "audio/features/ACFgraph.hpp"
 #include "app/StretchImage.hpp"

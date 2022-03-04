@@ -211,7 +211,7 @@ HEADERS += \
     libs/sf/tsf.h \
     music/GraphicMap.hpp \
     music/PatternLine.hpp \
-    music/PatternReceiver.h \
+    music/PatternReceiver.hpp \
     music/PianoRoll.hpp \
     music/Tapper.hpp \
     tab/Bar.hpp \
