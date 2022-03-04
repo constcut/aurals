@@ -26,7 +26,7 @@ ApplicationWindow {
             thatWindow.height = 600
         }
 
-        mainLoader.setSource("config.qml") // tablature audioHandler midiPlayer
+        mainLoader.setSource("patternInput.qml")
     }
 
 
