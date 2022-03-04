@@ -17,6 +17,8 @@ TableView {
         id: tableModel
     }
 
+    ScrollBar.vertical: ScrollBar { }
+
     delegate: Rectangle {
         implicitWidth: 300
         implicitHeight: 50
