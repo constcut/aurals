@@ -26,7 +26,7 @@ ApplicationWindow {
             thatWindow.height = 600
         }
 
-        mainLoader.setSource("patternInput.qml")
+        mainLoader.setSource("midiPlayer.qml")
     }
 
 
