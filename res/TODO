@@ -170,6 +170,8 @@
 
         4) Ритмическая запись гитары - нули и гост ноты
 
+        X) Embeded python with librosa: возможность использовать разные фитчи, комбинируя их
+
     7) Статическая сборка
 
         а) Выделить библиотеки в отдельные статические, пресобрать их
@@ -234,3 +236,26 @@ https://stackoverflow.com/questions/35068054/does-app-store-accept-qt-app-linked
 https://news.ycombinator.com/item?id=4302517
 https://marketplace.qt.io/products/qt-lgpl-app-template
 https://github.com/dianiux-innova/qtlgplapptemplateExamples
+--------------------------------------------------------------------------------------
+Заменой QT может быть отрисовка json динамически во flutter
+--------------------------------
+
+Генератор датасетов:
+
+Из Json описания ->
+
+    Midi,
+    Neural audio v 0.1 (amplitude, freq),
+    Audio (1 second downsampled)
+    Stft - librosa
+    ConstantQ - librosa
+
+    +++Детальное описание реализации
+
+    В librosa:
+    Оконное автокорреляционное преобразование
+        Как STFT только для функции автокорреляции
+
+
+--------------------------------
+Emmbed python with numpy matplotlib librosa pandas + audio plugins
