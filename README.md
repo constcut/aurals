@@ -117,9 +117,13 @@ https://github.com/berndporr/iir1
 
 https://github.com/rafat/wavelib
 
+All libraries have permissive license, that help use same type of license for this project.
 
-All libraries have permissive license, that help use same license for this project.
 
 ## Icons
 
 All icons used in current version are taken from icons8 site!
+
+## Personal story
+
+For me, its been more then 10 years, since I started working on mobile tablatures.
