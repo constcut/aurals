@@ -240,7 +240,9 @@ HEADERS += \
 
 DISTFILES += \
     ConsoleLog.qml \
+    LICENSE \
     OpenTab.qml \
+    README.md \
     qml/config.qml \
     qml/patternInput.qml \
     res/TODO \
