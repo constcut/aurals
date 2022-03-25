@@ -38,6 +38,8 @@ android {
 
     buildToolsVersion '28.0.3'
 
+
+
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -73,5 +75,7 @@ android {
         resConfig "en"
         minSdkVersion = qtMinSdkVersion
         targetSdkVersion = 30
+
+        ndk.abiFilters 'armeabi-v7a','arm64-v8a','x86_64'
     }
 }
