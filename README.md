@@ -124,6 +124,7 @@ All libraries have permissive license, that help use same type of license for th
 
 All icons used in current version are taken from icons8 site!
 
-## Personal story
 
-For me, its been more then 10 years, since I started working on mobile tablatures.
+## Current status
+
+Project is suspended because lack of resourses, but this would not last forever (I hope).
