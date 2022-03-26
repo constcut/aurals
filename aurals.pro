@@ -16,7 +16,8 @@ QMAKE_CXXFLAGS += -std=c++17
 QMAKE_CXXFLAGS += -Wall
 
 android: QT += androidextras
-android: ANDROID_ABIS = "armeabi-v7a arm64-v8a" #
+android: ANDROID_ABIS = "armeabi-v7a" #
+android: ANDROID_ABIS += "arm64-v8a" #
 
 QMAKE_LFLAGS += -v
 
