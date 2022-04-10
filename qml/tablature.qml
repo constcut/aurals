@@ -39,7 +39,7 @@ Item {
         selectExisting: false
         selectMultiple: false
         onAccepted: {
-            var pcmName = saveFileDialog.fileUrls[0].substring(7)
+            var pcmName = saveFileDialog.fileUrls[0].substring(8)
             tabView.exportMidi("temp.mid", 0)
             audio.openMidiFile("temp.mid")
 
@@ -64,7 +64,7 @@ Item {
         selectExisting: false
         selectMultiple: false
         onAccepted: {
-            var midiName = saveMidiDialog.fileUrls[0].substring(7)
+            var midiName = saveMidiDialog.fileUrls[0].substring(8)
 
             if (Qt.platform.os !== "android")
                 tabView.exportMidi(midiName, 0)

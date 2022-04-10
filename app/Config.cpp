@@ -256,7 +256,7 @@ void Config::checkConfig()
     addValue("turnPinchZoomOn","0");
 
     addValue("upsideDownNotes","1");
-    addValue("showNotesView","0");
+    addValue("showNotesView","1");
 
     addValue("midi.config","on"); //Maybe use default engine if one would like it
     addValue("onloadBaseCheck","1");
