@@ -18,7 +18,7 @@ Item {
         folder: shortcuts.home
         selectMultiple: false
         onAccepted: {
-            var tabName = openFileDialog.fileUrls[0].substring(7)
+            var tabName = openFileDialog.fileUrls[0].substring(8)
             tabView.loadTab(tabName)
             trackCombo.model = tabView.tracksCount()
             mainLayout.refreshTrack()

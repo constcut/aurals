@@ -15,7 +15,7 @@ bool GTabLoader::open(std::string fileName)
     std::ifstream file(fileName, std::ios::binary);
 
     if (file.is_open() == false) {
-        qDebug() << "Failed to open file from loader";
+        qDebug() << "Failed to open file from loader " << fileName.c_str();
         return false;
     }
 
