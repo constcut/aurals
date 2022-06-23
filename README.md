@@ -7,6 +7,10 @@ This application was developed with Qt 5.15.2 using QML. Tested on linux/android
 Current status is pre-alpha, no releases yet.
 Most of components yet build to the stage 'proof of concept', when all types of components would be fullfilled there would start work to complete them all.
 
+Code from this project was used to write an article:
+
+https://habr.com/ru/post/672600/
+
 ## Features
 
 * Audio recording, audio playing (from file or recorder)
