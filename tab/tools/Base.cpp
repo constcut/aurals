@@ -2,12 +2,13 @@
 
 #include <QDirIterator>
 #include <cmath>
+#include <string>
 
 #include "Threads.hpp"
 
 
 using namespace aurals;
-
+using namespace std::string_literals;
 
 
 auto addToMap = [](auto& container, auto value)
@@ -229,6 +230,7 @@ void BaseStatistics::makeBarStats(std::unique_ptr<Bar>& bar, GuitarTuning& tune)
     if (hasNoChords)
     {
         std::string melodyStr;
+        int prevMidiNote = -1;
 
         for (size_t beatI = 0; beatI < bar->size(); ++beatI)
         {
@@ -236,16 +238,22 @@ void BaseStatistics::makeBarStats(std::unique_ptr<Bar>& bar, GuitarTuning& tune)
 
             if (beat->getPause() == false)
             {
+                const int curStringIdx = beat->at(0)->getStringNumber() - 1;
+                const int curStringTune = tune.getTune(curStringIdx);
+                const int curMidiNote = beat->at(0)->getMidiNote(curStringTune);
 
+                if (prevMidiNote != -1)
+                {
+                    const int diff = prevMidiNote - curMidiNote;
+                    melodyStr += std::to_string(diff) + "_"s;
+                }
+
+                prevMidiNote = curMidiNote;
             }
         }
 
         if (melodyStr.empty() == false)
-        {
-
-        }
-
-        addToMap(_barMelodyPattern, melodyStr);
+            addToMap(_barMelodyPattern, melodyStr);
     }
 }
 
@@ -280,19 +288,19 @@ std::string BaseStatistics::scaleStructure(int16_t freqNote)
 std::string nameDiatonicScale(std::string structure)
 {
     if (structure == "2212221")
-        return "Ionian major";
+        return "Ionian major"s;
     else if (structure == "2122212")
-        return "Dorian minor";
+        return "Dorian minor"s;
     else if (structure == "1222122")
-        return "Frigian minor";
+        return "Frigian minor"s;
     else if (structure == "2221221")
-        return "Lidian major";
+        return "Lidian major"s;
     else if (structure == "2212212")
-        return "Miksolidian major";
+        return "Miksolidian major"s;
     else if (structure == "2122122")
-        return "Eolian minor";
+        return "Eolian minor"s;
     else if (structure == "1221222")
-        return "Lokrian";
+        return "Lokrian"s;
     return structure;
 }
 
@@ -300,15 +308,15 @@ std::string nameDiatonicScale(std::string structure)
 std::string namePentanotincScale(std::string structure)
 {
     if (structure == "22323")
-        return "Major pentatonic";
+        return "Major pentatonic"s;
     else if (structure == "32232")
-        return "Minor pentatonic";
+        return "Minor pentatonic"s;
     else if (structure == "23232")
-        return "Pentatonic V3";
+        return "Pentatonic V3"s;
     else if (structure == "32322")
-        return "Pentatonic V4";
+        return "Pentatonic V4"s;
     else if (structure == "23223")
-        return "Pentatonic V5";
+        return "Pentatonic V5"s;
     return structure;
 }
 
@@ -335,13 +343,13 @@ void BaseStatistics::addTrackScaleAndClear()
         addToMap(_scalesStats, namePentanotincScale(structure) + noteName);
     }
     else if (_trackScale.size() == 12)
-        addToMap(_scalesStats, "Chromatic " + noteName);
+        addToMap(_scalesStats, "Chromatic "s + noteName);
     else if (_trackScale.size() < 5)
-        addToMap(_scalesStats, "Incomplete " + noteName);
+        addToMap(_scalesStats, "Incomplete "s + noteName);
     else if (_trackScale.size() == 6)
-        addToMap(_scalesStats, "Pentatonic Modulation " + noteName);
+        addToMap(_scalesStats, "Pentatonic Modulation "s + noteName);
     else
-        addToMap(_scalesStats, "Diatonic Modulation " + noteName);
+        addToMap(_scalesStats, "Diatonic Modulation "s + noteName);
     _trackScale.clear();
 }
 
@@ -353,7 +361,7 @@ void BaseStatistics::start(std::string path, size_t count, size_t skip)
 
     _path = path;
     reset();
-    const std::string basePath{path + "base"};
+    const std::string basePath{path + "base"s};
     size_t filesCount = 0;
     size_t fineFiles = 0;
 
