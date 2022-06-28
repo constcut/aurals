@@ -27,6 +27,7 @@ namespace aurals {
 
     private:
 
+        //TODO enum
         std::uint8_t _duration = 0; // 2 1 . 2 4 8 16 32 64 [8 values] - 3 bits
         std::uint8_t _durationDetail = 0; // none, dot, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 [4 bits] //one of 2-15 means empty(together with pause only!)
         bool _isPaused;

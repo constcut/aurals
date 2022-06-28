@@ -1100,11 +1100,11 @@ void readBeat(std::ifstream &file, Beat *cursorBeat)
 
 
     std::uint8_t durationGP =0;
-    file.read((char*)&durationGP,1);
+    file.read((char*)&durationGP, 1);
 
-    if (gtpLog)  qDebug() <<"Beat duration "<<(int)durationGP;
+    if (gtpLog)  qDebug() << "Beat duration " << (int)durationGP;
 
-    std::uint8_t duration=durationGP+2; //moved from -2 double to 1
+    std::uint8_t duration=durationGP + 2; //moved from -2 double to 1
     //x - double //0 - full //1 - half
     //2- forth(qua)  //3- eights  //4-16th
     //5-32th //6-64th
