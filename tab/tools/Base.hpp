@@ -39,6 +39,7 @@ namespace aurals {
         std::unordered_map<int16_t, size_t> _barDenomStats;
 
         std::unordered_map<std::string, size_t> _barRhythmPattern;
+        std::unordered_map<std::string, size_t> _barMelodyPattern;
 
 
         std::unordered_map<int16_t, size_t> _durStats;
@@ -83,7 +84,7 @@ namespace aurals {
         void reset();
 
         void makeTabStats(std::unique_ptr<Tab>& tab);
-        void makeBarStats(std::unique_ptr<Bar>& bar);
+        void makeBarStats(std::unique_ptr<Bar>& bar, GuitarTuning& tune);
 
         void makeBeatStats(std::unique_ptr<Beat>& beat, GuitarTuning& tune);
         void makeNoteStats(std::unique_ptr<Note>& note, size_t beatSize, bool isDrums,

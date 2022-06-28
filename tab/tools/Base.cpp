@@ -54,6 +54,7 @@ void BaseStatistics::reset()
     _barDenomStats.clear();
     _barSizeStats.clear();
     _barRhythmPattern.clear();
+    _barMelodyPattern.clear();
 }
 
 
@@ -171,7 +172,7 @@ void BaseStatistics::makeTabStats(std::unique_ptr<Tab>& tab)
                 addToMap(_barDenomStats, bar->getSignDenum());
             }
 
-            makeBarStats(bar);
+            makeBarStats(bar, tune);
 
             //TODO skip most of default type information
             continue;
@@ -192,7 +193,7 @@ void BaseStatistics::makeTabStats(std::unique_ptr<Tab>& tab)
 }
 
 
-void BaseStatistics::makeBarStats(std::unique_ptr<Bar>& bar)
+void BaseStatistics::makeBarStats(std::unique_ptr<Bar>& bar, GuitarTuning& tune)
 {
     addToMap(_totalBeatsStats, bar->size());
 
@@ -204,7 +205,8 @@ void BaseStatistics::makeBarStats(std::unique_ptr<Bar>& bar)
         auto& beat = bar->at(beatI);
 
         //Step 0: rhythmic
-        rhythmStr += "1/" + std::to_string(std::pow(2, beat->getDuration())); //TODO dot\detail
+        rhythmStr += "1/" + std::to_string(
+                    static_cast<int>(std::pow(2, beat->getDuration())));
 
         if (auto durDetail = beat->getDurationDetail(); durDetail)
             rhythmStr += ":" + std::to_string(durDetail);
@@ -218,17 +220,33 @@ void BaseStatistics::makeBarStats(std::unique_ptr<Bar>& bar)
 
         if (beat->size() > 1)
             hasNoChords = false;
-    }
 
-    if (hasNoChords)
-    {
-        for (size_t beatI = 0; beatI < bar->size(); ++beatI)
-        {
-            auto& beat = bar->at(beatI);
-        }
+        //TODO + another with pauses
     }
 
     addToMap(_barRhythmPattern, rhythmStr);
+
+    if (hasNoChords)
+    {
+        std::string melodyStr;
+
+        for (size_t beatI = 0; beatI < bar->size(); ++beatI)
+        {
+            auto& beat = bar->at(beatI);
+
+            if (beat->getPause() == false)
+            {
+
+            }
+        }
+
+        if (melodyStr.empty() == false)
+        {
+
+        }
+
+        addToMap(_barMelodyPattern, melodyStr);
+    }
 }
 
 
@@ -398,6 +416,7 @@ void BaseStatistics::writeAllCSV()
     saveStats(_barDenomStats, "barDenums");
     saveStats(_barSizeStats, "barSize"); //TODO sort by value before save
     saveStats(_barRhythmPattern, "rhythmPattern");
+    saveStats(_barMelodyPattern, "melodyPattern");
 
     saveStats(_octaveStats, "octaves");
 
