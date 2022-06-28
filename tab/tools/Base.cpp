@@ -202,6 +202,13 @@ void BaseStatistics::makeBarStats(std::unique_ptr<Bar>& bar)
         //Step 0: rhythmic
         rhythmStr += std::to_string(beat->getDuration()); //TODO dot\detail
 
+        if (auto durDetail = beat->getDurationDetail(); durDetail)
+            rhythmStr += ":" + std::to_string(durDetail);
+
+        if (auto dotted = beat->getDotted(); dotted)
+            for (uint8_t i = dotted; i != 0; --i)
+                rhythmStr += ".";
+
         if (beatI != bar->size() - 1)
             rhythmStr += "_ ";
 
