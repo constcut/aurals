@@ -236,7 +236,7 @@ void BaseStatistics::makeBarStats(std::unique_ptr<Bar>& bar, GuitarTuning& tune)
         {
             auto& beat = bar->at(beatI);
 
-            if (beat->getPause() == false)
+            if (beat->getPause() == false && beat->size())
             {
                 const int curStringIdx = beat->at(0)->getStringNumber() - 1;
                 const int curStringTune = tune.getTune(curStringIdx);
@@ -379,7 +379,8 @@ void BaseStatistics::start(std::string path, size_t count, size_t skip)
             continue;
 
         std::string filePath = nextName.toStdString();
-        if (_loader.open(filePath)) {
+        if (_loader.open(filePath))
+        {
             auto tab = std::move(_loader.getTab());
             ++fineFiles;
             makeTabStats(tab);
