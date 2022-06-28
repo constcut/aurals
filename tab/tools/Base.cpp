@@ -23,7 +23,6 @@ void BaseStatistics::reset()
     _noteStats.clear();
     _midiNoteStats.clear();
     _drumNoteStats.clear();
-    _barSizeStats.clear();
     _durStats.clear();
     _pauseDurStats.clear();
     _stringStats.clear();
@@ -50,6 +49,8 @@ void BaseStatistics::reset()
 
     _barNumStats.clear();
     _barDenomStats.clear();
+    _barSizeStats.clear();
+    _barRhythmPattern.clear();
 }
 
 
@@ -145,7 +146,8 @@ void BaseStatistics::makeTabStats(std::unique_ptr<Tab>& tab)
         if (track->isDrums() == false)
             addTuneStats(tune);
 
-        if (i == 0) {
+        if (i == 0)
+        {
             addToMap(_totalBarsStats, track->size());
 
             animationThr->setupValues(tab.get(), track.get(), 0);
@@ -160,12 +162,13 @@ void BaseStatistics::makeTabStats(std::unique_ptr<Tab>& tab)
             auto& bar = track->at(barI);
             if (i == 0)
             {
-                addToMap(_barSizeStats, static_cast<double>(bar->getSignNum()) /  bar->getSignDenum());
+                std::string fullSizeName = std::to_string(bar->getSignNum()) + "/" + std::to_string( bar->getSignDenum());
+                addToMap(_barSizeStats, fullSizeName);
                 addToMap(_barNumStats, bar->getSignNum());
                 addToMap(_barDenomStats, bar->getSignDenum());
             }
 
-            addToMap(_totalBeatsStats, bar->size());
+            makeBarStats(bar);
 
             for (size_t beatI = 0; beatI < bar->size(); ++beatI)
             {
@@ -179,6 +182,29 @@ void BaseStatistics::makeTabStats(std::unique_ptr<Tab>& tab)
         if (track->isDrums() == false)
             addTrackScaleAndClear();
     }
+}
+
+
+void BaseStatistics::makeBarStats(std::unique_ptr<Bar>& bar)
+{
+    addToMap(_totalBeatsStats, bar->size());
+
+    std::string rhythmStr;
+
+    for (size_t beatI = 0; beatI < bar->size(); ++beatI)
+    {
+        auto& beat = bar->at(beatI);
+
+        //Step 0: rhythmic
+        rhythmStr += std::to_string(beat->getDuration()); //TODO dot\detail
+
+        if (beatI != bar->size() - 1)
+            rhythmStr += ", ";
+
+        //Step 1: melody
+    }
+
+    addToMap(_barRhythmPattern, rhythmStr);
 }
 
 
@@ -333,7 +359,6 @@ void BaseStatistics::writeAllCSV()
     saveStats(_melStats, "melody");
     saveStats(_absHarmStats, "absHarmony");
     saveStats(_harmStats, "harmony");
-    saveStats(_barSizeStats, "barSize");
     saveStats(_instrumentStats, "instruments");
     saveStats(_notesVolumeStats, "noteVolumes");
     saveStats(_totalTracksStats, "totalTracks");
@@ -347,6 +372,8 @@ void BaseStatistics::writeAllCSV()
 
     saveStats(_barNumStats, "barNums");
     saveStats(_barDenomStats, "barDenums");
+    saveStats(_barSizeStats, "barSize"); //TODO sort by value before save
+    saveStats(_barRhythmPattern, "rhythmPattern");
 
     saveStats(_octaveStats, "octaves");
 
