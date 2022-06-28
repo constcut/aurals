@@ -155,17 +155,20 @@ void BaseStatistics::makeTabStats(std::unique_ptr<Tab>& tab)
         }
 
         int prevNote = -1;
-        for (size_t barI = 0; barI < track->size(); ++barI) {
+        for (size_t barI = 0; barI < track->size(); ++barI)
+        {
             auto& bar = track->at(barI);
-            if (i == 0) {
+            if (i == 0)
+            {
                 addToMap(_barSizeStats, static_cast<double>(bar->getSignNum()) /  bar->getSignDenum());
-
                 addToMap(_barNumStats, bar->getSignNum());
                 addToMap(_barDenomStats, bar->getSignDenum());
             }
 
             addToMap(_totalBeatsStats, bar->size());
-            for (size_t beatI = 0; beatI < bar->size(); ++beatI) {
+
+            for (size_t beatI = 0; beatI < bar->size(); ++beatI)
+            {
                 auto& beat = bar->at(beatI);
                 makeBeatStats(beat, tune);
                 addToMap(_totalNotesStats, beat->size());
@@ -277,6 +280,8 @@ void BaseStatistics::addTrackScaleAndClear()
 
 void BaseStatistics::start(std::string path, size_t count, size_t skip)
 {
+    if (path.back() != '/')
+        path += '/';
 
     _path = path;
     reset();
