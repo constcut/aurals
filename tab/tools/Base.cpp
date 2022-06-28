@@ -170,6 +170,10 @@ void BaseStatistics::makeTabStats(std::unique_ptr<Tab>& tab)
 
             makeBarStats(bar);
 
+            //TODO skip most of default type information
+            continue;
+            //TODO return back with addition setting
+
             for (size_t beatI = 0; beatI < bar->size(); ++beatI)
             {
                 auto& beat = bar->at(beatI);
@@ -199,7 +203,7 @@ void BaseStatistics::makeBarStats(std::unique_ptr<Bar>& bar)
         rhythmStr += std::to_string(beat->getDuration()); //TODO dot\detail
 
         if (beatI != bar->size() - 1)
-            rhythmStr += ", ";
+            rhythmStr += "_ ";
 
         //Step 1: melody
     }
