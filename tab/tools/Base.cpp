@@ -1,7 +1,10 @@
 #include "Base.hpp"
-#include "Threads.hpp"
 
 #include <QDirIterator>
+#include <cmath>
+
+#include "Threads.hpp"
+
 
 using namespace aurals;
 
@@ -193,6 +196,7 @@ void BaseStatistics::makeBarStats(std::unique_ptr<Bar>& bar)
 {
     addToMap(_totalBeatsStats, bar->size());
 
+    bool hasNoChords = true;
     std::string rhythmStr;
 
     for (size_t beatI = 0; beatI < bar->size(); ++beatI)
@@ -200,7 +204,7 @@ void BaseStatistics::makeBarStats(std::unique_ptr<Bar>& bar)
         auto& beat = bar->at(beatI);
 
         //Step 0: rhythmic
-        rhythmStr += std::to_string(beat->getDuration()); //TODO dot\detail
+        rhythmStr += "1/" + std::to_string(std::pow(2, beat->getDuration())); //TODO dot\detail
 
         if (auto durDetail = beat->getDurationDetail(); durDetail)
             rhythmStr += ":" + std::to_string(durDetail);
@@ -212,7 +216,16 @@ void BaseStatistics::makeBarStats(std::unique_ptr<Bar>& bar)
         if (beatI != bar->size() - 1)
             rhythmStr += "_ ";
 
-        //Step 1: melody
+        if (beat->size() > 1)
+            hasNoChords = false;
+    }
+
+    if (hasNoChords)
+    {
+        for (size_t beatI = 0; beatI < bar->size(); ++beatI)
+        {
+            auto& beat = bar->at(beatI);
+        }
     }
 
     addToMap(_barRhythmPattern, rhythmStr);
