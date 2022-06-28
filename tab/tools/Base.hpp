@@ -92,13 +92,16 @@ namespace aurals {
         void writeAllCSV();
 
         template<typename T>
-        void saveStats(std::unordered_map<T, size_t>&container, std::string name) {
+        void saveStats(std::unordered_map<T, size_t>&container, std::string name)
+        {
             std::cout << container.size() << " " << name << std::endl;
             std::ofstream os(_path + "/csv/" + name + ".csv");
             os << "value,count" << std::endl;
+
             using ValuePair = std::pair<T, size_t>;
             std::vector<ValuePair> sortedData(container.begin(), container.end());
             std::sort(sortedData.begin(), sortedData.end(), [](auto lhs, auto rhs) { return lhs.second > rhs.second; });
+
             for (auto& p: sortedData)
                 os << p.first << "," << p.second << std::endl;
         }

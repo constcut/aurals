@@ -5,7 +5,10 @@
 
 using namespace aurals;
 
-auto addToMap = [](auto& container, auto value) {
+
+
+auto addToMap = [](auto& container, auto value)
+{
     if (container.count(value))
         container[value] += 1;
     else
@@ -14,8 +17,8 @@ auto addToMap = [](auto& container, auto value) {
 
 
 
-
-void BaseStatistics::reset() {
+void BaseStatistics::reset()
+{
     _bpmStats.clear(); //TODO handlers
     _noteStats.clear();
     _midiNoteStats.clear();
@@ -51,7 +54,8 @@ void BaseStatistics::reset() {
 
 
 
-void BaseStatistics::makeBeatStats(std::unique_ptr<Beat>& beat, GuitarTuning& tune) {
+void BaseStatistics::makeBeatStats(std::unique_ptr<Beat>& beat, GuitarTuning& tune)
+{
     auto dur = beat->getDuration();
     if (beat->getPause()) {
         addToMap(_pauseDurStats, dur);
@@ -75,7 +79,8 @@ void BaseStatistics::makeBeatStats(std::unique_ptr<Beat>& beat, GuitarTuning& tu
 
 
 void BaseStatistics::makeNoteStats(std::unique_ptr<Note>& note, size_t beatSize, bool isDrums,
-                   GuitarTuning& tune,int& prevNote) {
+                   GuitarTuning& tune,int& prevNote)
+{
 
     auto stringNum = note->getStringNumber();
     if (isDrums == false) {
@@ -114,7 +119,8 @@ void BaseStatistics::makeNoteStats(std::unique_ptr<Note>& note, size_t beatSize,
 }
 
 
-void BaseStatistics::addTuneStats(GuitarTuning& tune) {
+void BaseStatistics::addTuneStats(GuitarTuning& tune)
+{
     std::string tuneString;
     for (size_t tuneI = 0; tuneI < tune.getStringsAmount(); ++tuneI)
         tuneString += _noteNames[tune.getTune(tuneI) % 12];
@@ -173,7 +179,8 @@ void BaseStatistics::makeTabStats(std::unique_ptr<Tab>& tab)
 }
 
 
-std::string BaseStatistics::scaleStructure(int16_t freqNote) {
+std::string BaseStatistics::scaleStructure(int16_t freqNote)
+{
     auto foundIt = _trackScale.find(freqNote);
     std::string scaleString;
 
@@ -199,7 +206,8 @@ std::string BaseStatistics::scaleStructure(int16_t freqNote) {
 }
 
 
-std::string nameDiatonicScale(std::string structure) {
+std::string nameDiatonicScale(std::string structure)
+{
     if (structure == "2212221")
         return "Ionian major";
     else if (structure == "2122212")
@@ -218,7 +226,8 @@ std::string nameDiatonicScale(std::string structure) {
 }
 
 
-std::string namePentanotincScale(std::string structure) {
+std::string namePentanotincScale(std::string structure)
+{
     if (structure == "22323")
         return "Major pentatonic";
     else if (structure == "32232")
@@ -233,7 +242,8 @@ std::string namePentanotincScale(std::string structure) {
 }
 
 
-void BaseStatistics::addTrackScaleAndClear() {
+void BaseStatistics::addTrackScaleAndClear()
+{
 
     if (_trackScale.empty())
         return;
@@ -265,7 +275,8 @@ void BaseStatistics::addTrackScaleAndClear() {
 }
 
 
-void BaseStatistics::start(std::string path, size_t count, size_t skip) {
+void BaseStatistics::start(std::string path, size_t count, size_t skip)
+{
 
     _path = path;
     reset();
@@ -302,7 +313,8 @@ void BaseStatistics::start(std::string path, size_t count, size_t skip) {
 }
 
 
-void BaseStatistics::writeAllCSV() {
+void BaseStatistics::writeAllCSV()
+{
     saveStats(_bpmStats, "bpm"); //TODO as hanlder uo map
     saveStats(_noteStats, "notes");
     saveStats(_midiNoteStats, "midiNotes");
