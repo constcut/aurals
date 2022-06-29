@@ -49,7 +49,10 @@ void BaseStatistics::reset()
     _octaveStats.clear();
     _stringsFretsStats = std::vector<std::unordered_map<int16_t, size_t>>(7);
     _stringsEffectsStats = std::vector<std::unordered_map<std::string, size_t>>(7);
+
     _totalLength = 0;
+    _totalBars = 0;
+    _totalMelodyBars = 0;
 
     _barNumStats.clear();
     _barDenomStats.clear();
@@ -196,6 +199,8 @@ void BaseStatistics::makeTabStats(std::unique_ptr<Tab>& tab)
 
 void BaseStatistics::makeBarStats(std::unique_ptr<Bar>& bar, GuitarTuning& tune)
 {
+    ++_totalBars;
+
     addToMap(_totalBeatsStats, bar->size());
 
     bool hasNoChords = true;
@@ -215,6 +220,9 @@ void BaseStatistics::makeBarStats(std::unique_ptr<Bar>& bar, GuitarTuning& tune)
         if (auto dotted = beat->getDotted(); dotted)
             for (uint8_t i = dotted; i != 0; --i)
                 rhythmStr += ".";
+
+        if (beat->getPause())
+            rhythmStr += "p";
 
         if (beatI != bar->size() - 1)
             rhythmStr += "_ ";
@@ -430,10 +438,14 @@ void BaseStatistics::writeAllCSV()
     saveStats(_octaveStats, "octaves");
 
 
-    for (size_t i = 0; i < _stringsFretsStats.size(); ++i) {
+    for (size_t i = 0; i < _stringsFretsStats.size(); ++i)
+    {
         saveStats(_stringsFretsStats[i], "string" + std::to_string(i+1) + "Frets");
         saveStats(_stringsEffectsStats[i], "string" + std::to_string(i+1) + "Effects");
     }
+
+    std::cout << "Total bars analysed: " << _totalBars << std::endl;
+    std::cout << "Total melody bars analysed: " << _totalMelodyBars << std::endl;
 
     const double minutes = _totalLength / 60.0;
     const double hours = minutes / 60.0;
@@ -445,4 +457,5 @@ void BaseStatistics::writeAllCSV()
               << " days: " << days << std::endl;
 
     std::cout << "Moon monthes: " << moonMonthes << std::endl;
+
 }

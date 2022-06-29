@@ -66,6 +66,8 @@ namespace aurals {
 
         std::unordered_map<int32_t, size_t> _trackSecondsLength;
         int64_t _totalLength;
+        int64_t _totalBars;
+        int64_t _totalMelodyBars;
 
         std::vector<std::unordered_map<int16_t, size_t>> _stringsFretsStats;
         std::vector<std::unordered_map<std::string, size_t>> _stringsEffectsStats;
