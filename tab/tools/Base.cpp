@@ -261,7 +261,10 @@ void BaseStatistics::makeBarStats(std::unique_ptr<Bar>& bar, GuitarTuning& tune)
         }
 
         if (melodyStr.empty() == false)
+        {
             addToMap(_barMelodyPattern, melodyStr);
+            ++_totalMelodyBars;
+        }
     }
 }
 
