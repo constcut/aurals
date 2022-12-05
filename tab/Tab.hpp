@@ -5,6 +5,9 @@
 #include <list>
 #include <cassert>
 
+#include <tuple>
+
+
 #include "TabStructs.hpp"
 #include "Chain.hpp"
 #include "tab/tools/Commands.hpp"
@@ -110,24 +113,24 @@ namespace aurals {
 
         void playCommand(MacroCommand& command) {
             if (std::holds_alternative<TabCommand>(command)) {
-                onTabCommand(std::get<TabCommand>(command));
+                onTabCommand(*std::get_if<TabCommand>(&command));
             }
             else if (std::holds_alternative<TrackCommand>(command)) {
-                at(_currentTrack)->onTrackCommand(std::get<TrackCommand>(command));
+                at(_currentTrack)->onTrackCommand(*std::get_if<TrackCommand>(&command));
             }
             else if (std::holds_alternative<IntCommand<TabCommand>>(command)) {
-                auto paramCommand = std::get<IntCommand<TabCommand>>(command);
-                if (_intHandlers.count(paramCommand.type))
-                    (this->*_intHandlers.at(paramCommand.type))(paramCommand.parameter);
+                auto paramCommand = std::get_if<IntCommand<TabCommand>>(&command);
+                if (_intHandlers.count(paramCommand->type))
+                    (this->*_intHandlers.at(paramCommand->type))(paramCommand->parameter);
             }
             else if (std::holds_alternative<TwoIntCommand<TabCommand>>(command)) {
-                auto paramCommand = std::get<TwoIntCommand<TabCommand>>(command);
-                if (_twoIntHandlers.count(paramCommand.type))
-                    (this->*_twoIntHandlers.at(paramCommand.type))(paramCommand.parameter1, paramCommand.parameter2);
+                auto paramCommand = std::get_if<TwoIntCommand<TabCommand>>(&command);
+                if (_twoIntHandlers.count(paramCommand->type))
+                    (this->*_twoIntHandlers.at(paramCommand->type))(paramCommand->parameter1, paramCommand->parameter2);
             } else if (std::holds_alternative<StringCommand<TabCommand>>(command)) {
-                auto paramCommand = std::get<StringCommand<TabCommand>>(command);
-                if (_stringHandlers.count(paramCommand.type))
-                    (this->*_stringHandlers.at(paramCommand.type))(paramCommand.parameter);
+                auto paramCommand = std::get_if<StringCommand<TabCommand>>(&command);
+                if (_stringHandlers.count(paramCommand->type))
+                    (this->*_stringHandlers.at(paramCommand->type))(paramCommand->parameter);
             }
             else {
                 at(_currentTrack)->playCommand(command);

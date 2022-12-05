@@ -26,7 +26,7 @@
         <file>own_tests/2.12.gp4</file>
         <file>own_tests/2.13.gp4</file>
         <file>own_tests/2.14.gp4</file>
-        <file>own_tests/2.15.gp4</file>
+        <file>own_tests/2.12.gp4</file>
         <file>own_tests/2.16.gp4</file>
         <file>own_tests/2.17.gp4</file>
         <file>own_tests/2.18.gp4</file>
@@ -169,8 +169,8 @@
         <file>regression/2.17.gmy</file>
         <file>regression/2.16.mid</file>
         <file>regression/2.16.gmy</file>
-        <file>regression/2.15.mid</file>
-        <file>regression/2.15.gmy</file>
+        <file>regression/2.12.mid</file>
+        <file>regression/2.12.gmy</file>
         <file>regression/2.14.mid</file>
         <file>regression/2.14.gmy</file>
         <file>regression/2.13.mid</file>

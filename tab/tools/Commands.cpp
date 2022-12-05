@@ -156,10 +156,11 @@ std::ifstream& operator>>(std::ifstream& is, MacroCommand& macro) {
 }
 
 
-void aurals::saveMacroComannds(const std::vector<MacroCommand>& commands, std::ofstream& os) {
-
-    for (const auto& command: commands)
-        std::visit([&os](const auto& command){ os << command; }, command);
+void aurals::saveMacroComannds(const std::vector<MacroCommand>& commands, std::ofstream& os)
+{
+    //for (const auto& command: commands)
+        //std::visit([&os](const auto& command){ os << command; }, command);
+    //TODO mac os fail
 }
 
 

@@ -195,13 +195,20 @@ namespace aurals {
 
         void playCommand(MacroCommand& command) {
             if (std::holds_alternative<TwoIntCommand<TrackCommand>>(command)) {
-                auto paramCommand = std::get<TwoIntCommand<TrackCommand>>(command);
-                if (twoIntHandlers.count(paramCommand.type))
-                    (this->*twoIntHandlers.at(paramCommand.type))(paramCommand.parameter1, paramCommand.parameter2);
-            } else if (std::holds_alternative<StringCommand<TrackCommand>>(command)) {
-                auto paramCommand = std::get<StringCommand<TrackCommand>>(command);
-                if (stringHandlers.count(paramCommand.type))
-                    (this->*stringHandlers.at(paramCommand.type))(paramCommand.parameter);
+
+                auto paramCommand = std::get_if<TwoIntCommand<TrackCommand>>(&command);
+
+                if (twoIntHandlers.count(paramCommand->type))
+                    (this->*twoIntHandlers.at(paramCommand->type))(paramCommand->parameter1, paramCommand->parameter2);
+
+            }
+            else if (std::holds_alternative<StringCommand<TrackCommand>>(command))
+            {
+
+                auto paramCommand = std::get_if<StringCommand<TrackCommand>>(&command);
+
+                if (stringHandlers.count(paramCommand->type))
+                    (this->*stringHandlers.at(paramCommand->type))(paramCommand->parameter);
             }
         }
 
