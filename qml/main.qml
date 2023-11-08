@@ -26,7 +26,7 @@ ApplicationWindow {
             thatWindow.height = 600
         }
 
-        mainLoader.setSource("midiPlayer.qml")
+        mainLoader.setSource("search.qml")
     }
 
 
@@ -55,6 +55,10 @@ ApplicationWindow {
     Menu {
         id: mainMenu
         MenuItem {
+            text: "Search"
+            onTriggered: mainLoader.setSource("search.qml")
+        }
+        MenuItem {
             text: "Console"
             onTriggered: {
                 mainLoader.setSource("consoleLog.qml")
@@ -71,7 +75,7 @@ ApplicationWindow {
             text: "Audio"
             onTriggered: mainLoader.setSource("audioHandler.qml")
         }
-        MenuItem {
+        /*MenuItem {
             text: "Tab"
             onTriggered: {
                 mainLoader.setSource("tablature.qml")
@@ -92,16 +96,14 @@ ApplicationWindow {
         MenuItem {
             text: "Pattern"
             onTriggered: mainLoader.setSource("patternInput.qml")
-        }
+        }*/
         MenuItem {
             id: exitMenuItem
             text: "Exit"
             onTriggered:  {
                 if (Qt.platform.os !== "android")
                     Qt.exit(0)
-            }
-
-        }
+        }}
     }
 
 

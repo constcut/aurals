@@ -2,6 +2,7 @@ import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import QtQuick.Dialogs 1.1
+import QtMultimedia 5.12
 
 Item {
     id: audioHandlerItem
@@ -206,7 +207,9 @@ Item {
             ToolButton {
                 text: "Filters"
                 onClicked:  {
-                    thatWindow.requestFilters("records/" + filenameEdit.text)
+                    //thatWindow.requestFilters("records/" + filenameEdit.text)
+                    playMusic.play()
+                    console.log("HHHHHHHH", playMusic.duration)
                 }
             }
             ToolButton {
@@ -217,6 +220,11 @@ Item {
                 visible: false //Yet unknow how to use it
             }
 
+        }
+
+        Audio {
+            id: playMusic
+            source: "file:///Users/constcut/dev/builds/aurals/build-aurals-Desktop_Qt_5_15_2_clang_64bit-Debug/aurals.app/Contents/MacOS/records/2023-11-05T14.01.51.wav"
         }
 
         FileDialog {

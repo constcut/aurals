@@ -12,6 +12,12 @@
 
 #include "midi/MidiRender.hpp"
 
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonValue>
+#include <QJsonDocument>
+
+
 namespace aurals {
 
 
@@ -48,6 +54,9 @@ namespace aurals {
 
         Q_INVOKABLE void setSampleRate(const int newSampleRate);
         Q_INVOKABLE void requestPermission() const;
+
+        Q_INVOKABLE QStringList getReports() const;
+        Q_INVOKABLE QJsonObject getSingleReport(const QString& fn) const;
 
         Q_INVOKABLE QStringList getRecords() const;
         Q_INVOKABLE void saveRecordTimstamp() const;

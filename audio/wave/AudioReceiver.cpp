@@ -1,6 +1,8 @@
 #include "AudioReceiver.hpp"
 
 #include <QTimer>
+#include <QAudioDeviceInfo>
+#include <QDebug>
 
 #include "AudioHandler.hpp"
 
@@ -63,8 +65,11 @@ AudioReceiver::AudioReceiver(const QAudioFormat& format, QObject *parent, QByteA
 
 
 void AudioReceiver::start(){
-    open(QIODevice::WriteOnly);
+    auto list = QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
+
+    bool was_opened = open(QIODevice::WriteOnly);
     AudioHandler* handler = dynamic_cast<AudioHandler*>(this->parent());
+    qDebug() << "Was opened " << was_opened;
     QTimer::singleShot(msToStopRecord, handler, &AudioHandler::requestStopRecord);
 }
 

@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QDateTime>
+#include <QAudioDeviceInfo>
 
 #include "app/AndroidTools.hpp"
 #include "WavFile.hpp"
@@ -14,6 +15,7 @@
 #include "tab/tools/MidiExport.hpp"
 
 #include "midi/MidiEngine.hpp"
+
 
 
 using namespace aurals;
@@ -128,6 +130,7 @@ void AudioHandler::initRecorder() {
         _commonFormat = info.nearestFormat(_commonFormat);
         qDebug() << _commonFormat.sampleRate() << " " << _commonFormat.sampleSize();
     }
+    _commonFormat = info.nearestFormat(_commonFormat);
     _audioReceiver  = std::make_unique<AudioReceiver>(_commonFormat, this, _commonBufer); //    //connect(audioInfo, SIGNAL(update()), SLOT(refreshDisplay()));
     _audioInput = std::make_unique<QAudioInput>(QAudioDeviceInfo::defaultInputDevice(), _commonFormat, nullptr);
 }
@@ -240,10 +243,31 @@ void AudioHandler::requestPermission() const {
 
 QStringList AudioHandler::getRecords() const {
     QDir dir("records/");
-    auto list = dir.entryList({"*"});
-    return list;
+    return dir.entryList({"*"});
 }
 
+Q_INVOKABLE QStringList AudioHandler::getReports() const {
+    QDir dir("json/");
+    return dir.entryList({"*.json"});
+}
+
+Q_INVOKABLE QJsonObject AudioHandler::getSingleReport(const QString& fn) const {
+    QFile file(fn);
+    if (file.open(QIODevice::ReadOnly)) {
+        auto json_string = QString(file.readAll());
+        auto doc = QJsonDocument::fromJson(json_string.toUtf8());
+        auto report = doc.object();
+        qDebug() << "Duration: " << report["duration"].toDouble();
+        return report;
+    }
+    return {};
+}
+
+//Function to return QJsonObject
+
+/*Q_INVOKABLE QString AudioHandler::loadReport(const QString& filename) {
+    QFile file(filename);
+}*/
 
 void AudioHandler::saveRecordTimstamp() const {
     auto timestamp = QDateTime::currentDateTime().toString("yyyy-MM-ddTHH.mm.ss");
