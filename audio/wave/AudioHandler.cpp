@@ -26,6 +26,7 @@ AudioHandler::AudioHandler() {
 }
 
 
+
 void AudioHandler::initAudioHandler() {
     _commonFormat.setSampleRate(44100);
     _commonFormat.setChannelCount(1);
@@ -255,10 +256,7 @@ Q_INVOKABLE QJsonObject AudioHandler::getSingleReport(const QString& fn) const {
     QFile file(fn);
     if (file.open(QIODevice::ReadOnly)) {
         auto json_string = QString(file.readAll());
-        auto doc = QJsonDocument::fromJson(json_string.toUtf8());
-        auto report = doc.object();
-        qDebug() << "Duration: " << report["duration"].toDouble();
-        return report;
+        return QJsonDocument::fromJson(json_string.toUtf8()).object();
     }
     return {};
 }

@@ -5,17 +5,61 @@ import QtQuick.Dialogs 1.1
 import QtMultimedia 5.12
 
 Item {
-    id: audioHandlerItem //TODO rename + delete all exceeds
+    id: searchItem
+
+    Dialog {
+        id: searchFilterDialog
+        width: searchItem.width + 10
+
+        RowLayout {
+            spacing:  10
+            Slider {
+                id: durationSlider
+                from: 0
+                to: 60
+                stepSize: 1
+                value: 10
+                ToolTip {
+                    parent: durationSlider.handle
+                    visible: durationSlider.hovered
+                    text: "max duration: " + durationSlider.value.toFixed(2)
+                }
+                onValueChanged: {
+                    searchItem.reload()
+                }
+            }
+            TextField {
+                id: wordSearch
+                placeholderText: "Word to search"
+            }
+            ToolButton {
+                onClicked: {
+                    var files = audio.getReports();
+                    filesModel.clear()
+                    for (var i = 0 ; i < files.length; ++i) {
+                        var report = audio.getSingleReport("json/" + files[i])
+                        var word_found = false
+                        for (var j = 0; j < report["events"].length; ++j) {
+                            if (report["events"][j]["type"] === "word") {
+                                if (wordSearch.text === report["events"][j]["word"]) {
+                                    word_found = true
+                                    break
+                                }
+                            }
+                        }
+                        if (word_found) {
+                            filesModel.append({"name": files[i]})
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     ColumnLayout {
         spacing:  10
         y: 10
         x: 20
-
-        Audio { //TODO check android, linux, windows
-            id: playMusic
-            source: "file:///Users/constcut/dev/builds/aurals/build-aurals-Desktop_Qt_5_15_2_clang_64bit-Debug/aurals.app/Contents/MacOS/records/2023-11-05T14.01.51.wav"
-        }
 
         ListModel {
             id: filesModel
@@ -60,12 +104,12 @@ Item {
                         //filenameEdit.text = name
                     }
                     onDoubleClicked: {
-                        thatWindow.requestWaveshape("records/" + filenameEdit.text)
+                        //thatWindow.requestWaveshape("records/" + filenameEdit.text)
                     }
                     onPressAndHold: {
                         wrapper.ListView.view.currentIndex = index
                         filesModel.filename = name
-                        filenameEdit.text = name
+                        //filenameEdit.text = name
                         filesMenu.x = mouse.x
                         filesMenu.y = parent.y + mouse.y
                         filesMenu.open()
@@ -78,8 +122,9 @@ Item {
         Menu {
             id: filesMenu
             MenuItem {
-                text: "Play"
+                text: "Open"
                 onTriggered: {
+                    searchFilterDialog.open()
                 }
             }
             MenuItem {
@@ -93,7 +138,7 @@ Item {
         Rectangle { //DELAYED: поиск по записям
             id: mainRect
             width: 600
-            height: audioHandlerItem.height - y - 10
+            height: searchItem.height - y - 10
             ListView {
                 id: filesList
                 clip: true
@@ -114,15 +159,19 @@ Item {
     function reload() {
         var files = audio.getReports();
         filesModel.clear()
-        for (var i = 0 ; i < files.length; ++i)
+        for (var i = 0 ; i < files.length; ++i) {
+            var report = audio.getSingleReport("json/" + files[i])
+            if (report["duration"] > durationSlider.value) {
+                continue;
+            }
+            //TODO slider value in check
             filesModel.append({"name": files[i]})
-        console.log(files)
-        var first = audio.getSingleReport("json/" + files[0])
-        console.log(first["duration"], "report from JS")
+        }
     }
 
     Component.onCompleted: {
-        audioHandlerItem.reload()
+        searchItem.reload()
+        searchFilterDialog.open()
     }
 
     function keyboardEventSend(key, mode) {
