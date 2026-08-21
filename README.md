@@ -1,3 +1,5 @@
+
+
 # Aurals
 Engine for music and voice analysis, and music creation.
 There is a hope to extend it into music therapy applications.
@@ -28,7 +30,7 @@ https://habr.com/ru/post/672600/
 * Piano roll component - to load and edit midi files
 * Pattern input - a way to fast write drums, polyrithm option included
 * Guitar tablature components - to view and edit guitar tabs
-* QML logger component - to read logs on mobile screen (or without running application from command line)
+* QML logger component - to read logs on mobile screen (or without running application from command line); logs are written to log.txt
 
 Application contains several soundfonts and midi files to check functionality,
 Implemented test to detect MIDI files regression.
